@@ -124,7 +124,7 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
         ConfigPantalla();
 
         DAO_Usuario usuario = new DAO_Usuario(getActivity());
-        Usuario nuevo = usuario.BuscarUsuario(id_colaborador);
+        Usuario nuevo = usuario.BuscarUsuario(Integer.parseInt(id_colaborador));
         String cadena = nuevo.getUsuario_nombres() + " "+ nuevo.getUsuario_apater();
         tv_nombreUsuario.setText(cadena);
         tv_nomEmpresa.setText(nom_Empresa);

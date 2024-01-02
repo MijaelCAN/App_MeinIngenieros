@@ -20,18 +20,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
+
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
-import com.mijael.mein.Entidades.Usuario;
-import com.mijael.mein.GET.getApi_Formato_pTrabajo;
-import com.mijael.mein.GET.getApi_OrdenTrabajo;
-import com.mijael.mein.GET.getApi_Usuarios;
-import com.mijael.mein.Utilidades.ToastUtils;
+
 
 
 public class LoginActivity extends AppCompatActivity {

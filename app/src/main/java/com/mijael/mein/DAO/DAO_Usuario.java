@@ -211,7 +211,7 @@ public class DAO_Usuario {
     }
 
 
-    public Usuario BuscarUsuario(String idColaborador){
+    public Usuario BuscarUsuario(int idColaborador){
         Usuario usuario = null;
         SQLiteDatabase db = dataHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM "+ Util_Usuario.TABLA_USUARIO + " WHERE "+ Util_Usuario.CAMPO_ID + " = " + idColaborador, null);
@@ -230,7 +230,7 @@ public class DAO_Usuario {
                 );
             }while (cursor.moveToNext());
         }
-        //cursor.close();
+        cursor.close();
         db.close();
         return usuario;
     }

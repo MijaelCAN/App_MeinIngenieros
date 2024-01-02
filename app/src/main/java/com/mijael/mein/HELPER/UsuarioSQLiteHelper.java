@@ -7,10 +7,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.mijael.mein.Utilidades.Util_Usuario;
 
 public class UsuarioSQLiteHelper extends SQLiteOpenHelper {
+    private static final String DATABASE_NAME = "DB_USUARIOS";
+    private static final int DATABASE_VERSION = 1;
 
     private static UsuarioSQLiteHelper instance;
     public UsuarioSQLiteHelper(Context context) {
-        super(context, Util_Usuario.TABLA_USUARIO, null, Util_Usuario.VERSION_BD);
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
     public static UsuarioSQLiteHelper getInstance(Context context) {
         if (instance == null) {

@@ -54,7 +54,7 @@ public class Usuarios_SyncWorker extends Worker {
                         // Si hay registros, actualizar o insertar según corresponda
                         for (Usuario usuario : todoItems) {
                             // Verificar si el cine ya existe en la base de datos local
-                            Usuario existe = dao_usuario.BuscarUsuario(String.valueOf(usuario.getId_usuario()));
+                            Usuario existe = dao_usuario.BuscarUsuario(usuario.getId_usuario());
                             //boolean existe = dao_usuario.verificarExistenciaUsuario(usuario.getId_usuario());
 
                             if (existe!=null) {
@@ -70,7 +70,7 @@ public class Usuarios_SyncWorker extends Worker {
                     }
                 } else {
                     // Manejo de errores si la solicitud no fue exitosa
-                    resul = Result.retry();
+                    //resul = Result.retry();
                 }
             }
 

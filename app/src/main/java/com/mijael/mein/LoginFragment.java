@@ -34,20 +34,14 @@ import com.android.volley.toolbox.Volley;
 import com.mijael.mein.DAO.DAO_Usuario;
 import com.mijael.mein.Entidades.Usuario;
 import com.mijael.mein.Extras.Validaciones;
-import com.mijael.mein.GET.getApi_Equipos;
-import com.mijael.mein.GET.getApi_Formato_pTrabajo;
-import com.mijael.mein.GET.getApi_OrdenTrabajo;
-import com.mijael.mein.GET.getApi_Usuarios;
+
 import com.mijael.mein.HELPER.DatosLocalSQLiteHelper;
-import com.mijael.mein.SINCRONIZACION.Cines_SyncWorker;
 import com.mijael.mein.SINCRONIZACION.Equipos_SyncWorker;
 import com.mijael.mein.SINCRONIZACION.Formatos_SyncWorker;
 import com.mijael.mein.SINCRONIZACION.Ordenes_SyncWorker;
 import com.mijael.mein.SINCRONIZACION.Usuarios_SyncWorker;
-import com.mijael.mein.Utilidades.ToastUtils;
-import com.mijael.mein.Utilidades.Util_Equipos;
 
-import java.util.List;
+
 import java.util.concurrent.TimeUnit;
 
 
