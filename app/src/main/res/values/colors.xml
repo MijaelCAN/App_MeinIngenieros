@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="blanco">#80515050</color>
+    <color name="blanco_claro">#90FFFFFF</color>
+    <color name="colorGrisClaro">#FABEC3C2</color>
+    <color name="fondo_app">#ECEAEA</color>
+    <color name="color_card">#EFECEC</color>
+    <color name="color_card_dark">#503693F3</color>
+    <color name="generic_color">#00558A</color>
+    <color name="generic_color2">#2D6E97</color>
+    <color name="fondo_patalla">#80FFFFFF</color>
+    <color name="color_inhabilitado">#DAD7D7</color>
+    <color name="color_flotante">#44C603</color>
+</resources>

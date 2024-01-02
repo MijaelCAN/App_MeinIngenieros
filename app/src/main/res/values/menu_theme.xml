@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="MenuTheme" parent="Theme.AppCompat.Light">
+        <!-- Personaliza los atributos que deseas cambiar para el menú -->
+        <!--<item name="android:windowBackground">@color/generic_color</item>-->
+        <item name="android:textColor">#00558A</item>
+        <item name="android:radius">15dp</item>
+        <item name="android:strokeWidth">@integer/material_motion_duration_long_1</item>
+        <item name="android:strokeColor">#00558A</item>
+        <!-- Otros atributos que desees personalizar -->
+    </style>
+</resources>

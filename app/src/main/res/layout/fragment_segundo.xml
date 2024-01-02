@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".SegundoFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/welcome_orden"
+        android:textStyle="bold"/>
+    <LinearLayout
+        android:id="@+id/busqueda"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="25dp">
+
+        <!-- Elemento de filtrar -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Codigo"
+            android:layout_gravity="center_vertical"
+            android:paddingRight="8dp"
+            android:textSize="10dp"/>
+
+        <EditText
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="30dp"
+            android:hint="Buscar"
+            android:textSize="10dp"
+            android:drawableRight="@android:drawable/ic_menu_search"
+            android:layout_gravity="center_vertical"
+            android:padding="8dp"
+            android:background="@drawable/style_2"/>
+
+
+    </LinearLayout>
+    <HorizontalScrollView
+        android:id="@+id/scroll_estado"
+        android:layout_width="match_parent"
+        android:layout_height="359dp"
+        android:layout_below="@+id/busqueda"
+        android:padding="16dp">
+        <LinearLayout
+            android:id="@+id/contenedor_Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/busqueda">
+            <!-- Seccion donde se incrusta el Card -->
+        </LinearLayout>
+    </HorizontalScrollView>
+    <androidx.cardview.widget.CardView
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorGrisClaro"
+        android:layout_below="@+id/scroll_estado">
+
+
+                <!-- Aquí se agregarán dinámicamente las filas de la tabla desde el código Java -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Segundo Fragmento"
+                    android:gravity="center_horizontal"
+                    android:textStyle="bold"/>
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_camara"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="Camara"
+                    android:layout_gravity="center_horizontal"
+                    />
+    </androidx.cardview.widget.CardView>
+    <ImageView
+        android:id="@+id/mi_imagen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="150dp"/>
+
+</RelativeLayout>

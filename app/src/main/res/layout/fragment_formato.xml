@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".FormatoFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/welcome_formato"
+        android:textStyle="bold"/>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_atras"
+        android:layout_width="60dp"
+        android:layout_height="20dp"
+        android:text="Atras"
+        android:textSize="10sp"
+        android:textColor="@color/white"
+        android:background="@drawable/style_1"
+        android:layout_marginLeft="320dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="40dp">
+
+        <!-- Elemento de filtrar -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Codigo"
+            android:layout_gravity="center_vertical"
+            android:paddingRight="8dp"
+            android:textSize="10dp"/>
+
+        <EditText
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="30dp"
+            android:hint="Escribe para Buscar"
+            android:textSize="10dp"
+            android:drawableRight="@android:drawable/ic_menu_search"
+            android:layout_gravity="center_vertical"
+            android:padding="8dp"
+            android:background="@drawable/style_2"/>
+
+        <!-- Espacio entre los elementos -->
+        <Space
+            android:layout_width="8dp"
+            android:layout_height="wrap_content"/>
+
+        <!-- Elemento de mostrar
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mostrar"
+            android:textSize="10dp"
+            android:layout_gravity="center_vertical"
+            android:paddingRight="8dp"/>-->
+
+        <!-- Combobox numerico
+        <Spinner
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:entries="@array/spinner_items"/>-->
+
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        android:layout_width="match_parent"
+        android:layout_height="437dp"
+        android:layout_marginTop="80dp"
+        android:background="@color/colorGrisClaro">
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="403dp"
+            android:layout_marginTop="16dp">
+
+            <ScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TableLayout
+                    android:id="@+id/tb_ordenes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:stretchColumns="*">
+
+                    <!-- Aquí se agregarán dinámicamente las filas de la tabla desde el código Java -->
+
+                </TableLayout>
+
+            </ScrollView>
+
+        </HorizontalScrollView>
+    </androidx.cardview.widget.CardView>
+
+</FrameLayout>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="8dp"
+    tools:context=".Orden_TrabajoFragment2">
+
+    <!-- TODO: Update blank fragment layout -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <!--<View
+                android:id="@+id/semiCircle"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="-500dp"
+                android:background="@drawable/semi_circulo" />-->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ORDENES DE TRABAJO"
+                android:gravity="center_horizontal"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:textSize="22dp"
+                android:visibility="gone"/>
+            <TextView
+                android:id="@+id/id_pTrabajo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="300"
+                android:layout_gravity="center"
+                android:textStyle="bold"
+                android:textColor="@color/blanco_claro"
+                android:textSize="16dp"
+                android:visibility="gone"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:layout_marginBottom="20dp">
+                <EditText
+                    android:id="@+id/txt_buscarOrden"
+                    android:layout_width="320dp"
+                    android:layout_height="wrap_content"
+                    android:hint=" Buscar"
+                    android:textColorHint="@color/blanco_claro"
+                    android:textSize="12sp"
+                    android:background="@drawable/hexagonal_border"
+                    android:visibility="gone"/>
+            </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/contenedor_Card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <!-- Seccion donde se incrusta el Card -->
+                </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

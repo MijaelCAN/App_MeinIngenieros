@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="MiEstiloPopupMenu" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:background">@drawable/style_menu</item>
+        <item name="android:textColor">#00558A</item> <!-- Color del texto -->
+    </style>
+
+    <style name="MySpinnerStyle" parent="Widget.AppCompat.Spinner">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">#000000</item>
+        <item name="android:typeface">serif</item>
+    </style>
+    <style name="MyCustomSpinnerStyle" parent="Widget.AppCompat.Spinner">
+        <!-- Cambiar el color del fondo del spinner -->
+        <item name="android:background">@drawable/style_spinner</item>
+        <!-- Cambiar el color del texto -->
+        <item name="android:textColor">@color/teal_200</item>
+        <!-- Cambiar el color de la flecha desplegable -->
+        <item name="android:drawableEnd">@color/purple_200</item>
+    </style>
+</resources>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/generic_color"
+    android:padding="32dp"
+    tools:context=".LoginFragment">
+    <TextView
+        android:id="@+id/titulo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="150dp"
+        android:text="Bienvenido a"
+        android:textColor="#FFFFFF"/>
+    <TextView
+        android:id="@+id/name_empresa"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="170dp"
+        android:text="MEIN Ingenieros"
+        android:textStyle="bold"
+        android:textSize="35dp"
+        android:fontFamily="sans-serif-light"
+        android:textColor="#FFFFFF"/>
+    <!--<ImageView
+        android:id="@+id/logoImageView"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:src="@drawable/ic_launcher_foreground"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="200dp"
+        android:background="#FFFFFF"
+        android:padding="10dp"
+        android:contentDescription="@string/logo_description"/>-->
+
+    <EditText
+        android:id="@+id/username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/name_empresa"
+        android:layout_marginTop="120dp"
+        android:hint="Usuario"
+        android:textColor="@color/blanco_claro"
+        android:textColorHint="@color/blanco_claro"
+        android:background="@drawable/hexagonal_border"
+        android:padding="10dp"/>
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/username"
+        android:layout_marginTop="16dp"
+        android:hint="Contraseña"
+        android:inputType="textPassword"
+        android:textColor="@color/blanco_claro"
+        android:textColorHint="@color/blanco_claro"
+        android:background="@drawable/hexagonal_border"
+        android:padding="10dp"/>
+    <CheckBox
+        android:id="@+id/remember_me"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/password"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="6dp"
+        android:text="Recuérdame"
+        android:textColor="#FFFFFF" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/login_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/remember_me"
+        android:layout_marginTop="4dp"
+        android:text="Iniciar Sesión"
+        android:background="@drawable/style_border"
+        android:textColor="#FFFFFF"
+        android:padding="12dp" />
+
+    <TextView
+        android:id="@+id/forgotPasswordTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/login_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="¿Olvidaste tu contraseña?"
+        android:textColor="#FFFFFF"/>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_actualizar"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="@string/name_update"
+        android:textColor="@color/blanco_claro"
+        android:background="@drawable/style_1"
+        android:visibility="gone"/>
+</RelativeLayout>

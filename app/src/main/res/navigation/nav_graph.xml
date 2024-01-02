@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/orden_TrabajoFragment2">
+
+    <fragment
+        android:id="@+id/segundoFragment"
+        android:name="com.mijael.mein.SegundoFragment"
+        android:label="fragment_segundo"
+        tools:layout="@layout/fragment_segundo" />
+    <fragment
+        android:id="@+id/dosimetriaFragment3"
+        android:name="com.mijael.mein.DosimetriaFragment"
+        android:label="fragment_dosimetria"
+        tools:layout="@layout/fragment_dosimetria" >
+        <argument
+            android:name="name"
+            app:argType="string"
+            android:defaultValue="usuario" />
+    </fragment>
+    <fragment
+        android:id="@+id/orden_TrabajoFragment2"
+        android:name="com.mijael.mein.Orden_TrabajoFragment2"
+        android:label="fragment_orden__trabajo"
+        tools:layout="@layout/fragment_orden__trabajo2">
+        <argument
+            android:name="idCola"
+            app:argType="string"
+            android:defaultValue="1000" />
+        <action
+            android:id="@+id/action_orden_TrabajoFragment2_to_formatosFragment"
+            app:destination="@id/formatosFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/formatosFragment"
+        android:name="com.mijael.mein.FormatosFragment"
+        android:label="fragment_formatos"
+        tools:layout="@layout/fragment_formatos" >
+        <action
+            android:id="@+id/action_formatosFragment_to_dosimetriaFragment3"
+            app:destination="@id/dosimetriaFragment3" />
+    </fragment>
+</navigation>

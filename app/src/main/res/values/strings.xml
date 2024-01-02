@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">MEIN</string>
+    <string name="name_button">Ingresar</string>
+    <string name="name_update">Actualizar</string>
+    <string name="logo_description">MEIN Ingenieros</string>
+    <string name="drawer_open">Abrir menu</string>
+    <string name="drawer_close">Cerrar menu</string>
+    <string name="company_name">MEIN Ingenieros</string>
+    <string name="agregar_producto">ADD</string>
+    <string name="title_dosimetria">REGISTRAR FORMATO DE CAMPO PARA MEDICIÓN</string>
+    <string name="title_empresa">Empresa: </string>
+    <string name="text_campo">Analista de Campo: </string>
+    <string name="Nota">NOTA: Se realizarán 2 mediciones adicionales en caso los resultados de las tres primeras mediciones del LEQ difieran en más de 3 dB\nPara medición 4 y 5, se calcula si valor es numérico</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="welcome_orden">Orden de Trabajo</string>
+    <string name="welcome_formato">Formato de Plan de Trabajo</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

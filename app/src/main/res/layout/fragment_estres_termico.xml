@@ -1,0 +1,2257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:background="@color/white"
+android:orientation="vertical"
+android:padding="8dp"
+tools:context=".EstresTermicoFragment">
+
+<!-- Botón flotante -->
+
+<ScrollView
+    android:id="@+id/scrollView2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/style_3"
+    app:layout_anchor="@+id/scrollView2"
+    app:layout_anchorGravity="center">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/style_3"
+        android:orientation="vertical">
+        <!-- Primer CardView -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginTop="20dp"
+            android:text="ESTRÉS TÉRMICO "
+            android:paddingLeft="16dp"
+            android:textColor="@color/generic_color"
+            android:textSize="26sp"
+            android:fontFamily="sans-serif-light"/>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            app:cardCornerRadius="8dp">
+            <!--android:background="@drawable/style_border_1"-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:fontFamily="sans-serif-light"
+                    android:text="@string/title_dosimetria"
+                    android:textColor="@color/black"
+                    android:textSize="15sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:gravity="left"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:fontFamily="sans-serif-light"
+                        android:text="@string/title_empresa"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tv_nomEmpresa"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-light"
+                        android:hint=" SIG CONSULTING S.A.C."
+                        android:paddingLeft="8dp"
+                        android:text=""
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        android:textSize="15dp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:gravity="left"
+                    android:orientation="vertical">
+                    <!-- Título Central -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:fontFamily="sans-serif-light"
+                        android:text="@string/text_campo"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tv_nomUsuario"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-light"
+                        android:hint=" Administrador Paterno Materno"
+                        android:paddingLeft="8dp"
+                        android:text=""
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        android:textSize="15dp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+        <!-- Segunda CardView -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="20dp"
+            android:fontFamily="sans-serif-light"
+            android:text="Equipo Utilizado para la Medicion"
+            android:textColor="@color/generic_color"
+            android:textSize="19sp" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:backgroundTint="#EFEDED"
+            android:outlineSpotShadowColor="@color/white"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/style_border_1"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- AQUI INICIA EL DISEÑO DE GPT -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Equipo de Estres Termico:"
+                        android:fontFamily="sans-serif-light"
+                        android:textColor="@color/black"
+                        android:textSize="12dp"/>
+
+                    <AutoCompleteTextView
+                        android:id="@+id/tv_estresTermico"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/style_input"
+                        android:hint="Seleccione"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="sans-serif-light"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        android:textSize="15dp"
+                        android:paddingLeft="8dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp">
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Equipo de Anemómetro:"
+                            android:fontFamily="sans-serif-light"
+                            android:textColor="@color/black"
+                            android:textSize="12sp"/>
+
+                        <AutoCompleteTextView
+                            android:id="@+id/tv_anemometro"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/style_input"
+                            android:hint="Seleccione"
+                            android:layout_marginTop="5dp"
+                            android:fontFamily="sans-serif-light"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="15dp"
+                            android:paddingLeft="8dp"/>
+                        <!--android:onItemSelected="Equipo_Vibracion"-->
+
+                    </LinearLayout>
+                    <!-- ... Otros elementos similares ... -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginLeft="15dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Hora de verificación:"
+                            android:fontFamily="sans-serif-light"
+                            android:textColor="@color/black"
+                            android:textSize="12sp"/>
+                        <TextView
+                            android:id="@+id/tv_horaVerificacion"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:background="@drawable/style_input"
+                            android:fontFamily="sans-serif-light"
+                            android:gravity="center_vertical"
+                            android:hint="Seleccionar"
+                            android:inputType="datetime"
+                            android:onClick="showTimePickerDialog"
+                            android:paddingLeft="8dp"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="15sp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+                <!-- ... Otros elementos similares ... -->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Verificación In Situ:"
+                    android:fontFamily="sans-serif-light"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:layout_marginTop="10dp"/>
+                <RadioGroup
+                    android:id="@+id/radioGroupVerificacion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <RadioButton
+                        android:id="@+id/verf_insitusi"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Si"
+                        android:checked="false"
+                        android:fontFamily="sans-serif-light"
+                        android:buttonTint="@color/teal_200"
+                        android:textColor="@color/black"/>
+                    <RadioButton
+                        android:id="@+id/verf_insituno"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="NO"
+                        android:fontFamily="sans-serif-light"
+                        android:buttonTint="@color/purple_200"
+                        android:textColor="@color/black"/>
+                </RadioGroup>
+
+                <!-- ... Otros elementos similares ... -->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Foto:"
+                    android:fontFamily="sans-serif-light"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_subirFotoEstres"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:textAllCaps="false"
+                        android:text="Subir Foto"
+                        android:textColor="@color/white"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/style_4"/>
+                    <ImageView
+                        android:id="@+id/img_Estres"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:layout_marginTop="5dp"
+                        android:src="@drawable/ic_image" />
+                </LinearLayout>
+                <!-- HASTA AQUI ABARCA EL DISEÑO DE GPT-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_gravity="center_horizontal"
+                    android:fontFamily="sans-serif-light"
+                    android:text="Hora de Monitoreo"
+                    android:textColor="@color/generic_color"
+                    android:textSize="19sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Fecha:"
+                    android:textSize="12dp"
+                    android:fontFamily="sans-serif-light"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:id="@+id/tv_fechaMonitoreo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/black"
+                    android:background="@drawable/style_input"
+                    android:layout_marginTop="5dp"
+                    android:textSize="15sp"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/black"
+                    android:hint="Seleccione Fecha"
+                    android:paddingLeft="8dp"
+                    android:onClick="showDatePickerDialog" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="2dp"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Hora Inicial"
+                            android:textSize="12sp"
+                            android:fontFamily="sans-serif-light"
+                            android:textColor="@color/black"/>
+
+                        <TextView
+                            android:id="@+id/tv_horaInicioMoni"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColorHint="@color/black"
+                            android:background="@drawable/style_input"
+                            android:layout_marginTop="5dp"
+                            android:textSize="15sp"
+                            android:gravity="center_vertical"
+                            android:textColor="@color/black"
+                            android:hint="Seleccione Hora"
+                            android:paddingLeft="8dp"
+                            android:onClick="showTimePickerDialog" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+
+                            android:layout_weight="1"
+                            android:text="Hora final"
+                            android:textSize="12sp"
+                            android:fontFamily="sans-serif-light"
+                            android:textColor="@color/black"/>
+
+                        <TextView
+                            android:id="@+id/tv_horaFinalMoni"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColorHint="@color/black"
+                            android:background="@drawable/style_input"
+                            android:layout_marginTop="5dp"
+                            android:textSize="15sp"
+                            android:gravity="center_vertical"
+                            android:textColor="@color/black"
+                            android:hint="Seleccione Hora"
+                            android:paddingLeft="8dp"
+                            android:onClick="showTimePickerDialog" />
+                    </LinearLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="2dp"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Tiempo Medicion(min)"
+                            android:textSize="12sp"
+                            android:fontFamily="sans-serif-light"
+                            android:textColor="@color/black"/>
+
+                        <EditText
+                            android:id="@+id/txt_timeMedMin"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:textColorHint="@color/black"
+                            android:background="@drawable/style_input"
+                            android:hint="Ingrese jornada"
+                            android:textColor="@color/black"
+                            android:inputType="numberSigned"
+                            android:maxLength="5"
+                            android:textSize="15sp"
+                            android:paddingLeft="8dp"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+
+                            android:layout_weight="1"
+                            android:text="Tiempo Exposicion (h)"
+                            android:textSize="12sp"
+                            android:fontFamily="sans-serif-light"
+                            android:textColor="@color/black"/>
+
+                        <EditText
+                            android:id="@+id/txt_timeExpoHora"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:textColorHint="@color/black"
+                            android:background="@drawable/style_input"
+                            android:hint="Ingrese jornada"
+                            android:textColor="@color/black"
+                            android:inputType="numberSigned"
+                            android:maxLength="5"
+                            android:textSize="15sp"
+                            android:paddingLeft="8dp"/>
+                    </LinearLayout>
+                </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:text="Jornada de Trabajo (h)"
+                    android:textSize="12sp"
+                    android:fontFamily="sans-serif-light"
+                    android:textColor="@color/black"/>
+
+                <EditText
+                    android:id="@+id/txt_jornadaTrabajo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:textColorHint="@color/black"
+                    android:background="@drawable/style_input"
+                    android:hint="Ingrese jornada"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:paddingLeft="8dp"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+        <!-- Tercer CardView -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Datos de Trabajador"
+            android:textColor="@color/generic_color"
+            android:textSize="19sp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="12dp"
+            android:fontFamily="sans-serif-light"/>
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp"
+            android:backgroundTint="#EFEDED">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/style_border_1"
+                android:padding="16dp">
+
+                <!-- Título Central -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+                    <!-- Inicio de la Primera fila Doble-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="2dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:text="Tipo de Documento"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black"/>
+
+                            <Spinner
+                                android:id="@+id/spn_tipoDoc"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/style_input" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="15dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:text="Nº de documento"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black"/>
+
+                            <EditText
+                                android:id="@+id/txt_numDoc"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/style_input"
+                                android:layout_marginTop="5dp"
+                                android:hint=" Digite"
+                                android:inputType="numberSigned"
+                                android:maxLength="8"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                    <!-- Fin de la primera fila Doble -->
+                    <!-- Inicio de la Primera fila Doble-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="2dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="90dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:text="Nombre"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black" />
+
+                            <EditText
+                                android:id="@+id/txt_nomTrabajador"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/style_input"
+                                android:hint=" Digite"
+                                android:textSize="15sp"
+                                android:paddingLeft="8dp"
+                                android:layout_marginTop="5dp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="15dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:text="Edad"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black" />
+
+                            <EditText
+                                android:id="@+id/txt_edad"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/style_input"
+                                android:hint=" Digite"
+                                android:textSize="15sp"
+                                android:paddingLeft="8dp"
+                                android:layout_marginTop="5dp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black"
+                                android:inputType="numberSigned"
+                                android:maxLength="3"/>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="15dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:text="Peso(Kg)"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black" />
+
+                            <EditText
+                                android:id="@+id/txt_peso"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/style_input"
+                                android:hint=" Digite"
+                                android:textSize="15sp"
+                                android:paddingLeft="8dp"
+                                android:layout_marginTop="5dp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black"
+                                android:inputType="numberSigned"
+                                android:maxLength="3"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                    <!-- Fin de la primera fila Doble -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:text="Area de Trabajo"
+                        android:textSize="12sp"
+                        android:fontFamily="sans-serif-light"
+                        android:textColor="@color/black"/>
+
+                    <EditText
+                        android:id="@+id/txt_areaTrabajo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/style_input"
+                        android:hint=" Digite"
+                        android:textSize="15sp"
+                        android:paddingLeft="8dp"
+                        android:layout_marginTop="5dp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:text="Puesto de Trabajo"
+                        android:textSize="12sp"
+                        android:fontFamily="sans-serif-light"
+                        android:textColor="@color/black"/>
+
+                    <EditText
+                        android:id="@+id/txt_puestoTrabajo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/style_input"
+                        android:hint=" Digite"
+                        android:textSize="15sp"
+                        android:paddingLeft="8dp"
+                        android:layout_marginTop="5dp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="2dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:text="Actividades Realizadas"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black" />
+
+                            <EditText
+                                android:id="@+id/txt_aRealizada"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/style_input"
+                                android:hint=" Ingrese actividades"
+                                android:textSize="15sp"
+                                android:paddingLeft="8dp"
+                                android:layout_marginTop="5dp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_gravity="center_horizontal"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Horario de Trabajo"
+                        android:textColor="@color/generic_color"
+                        android:textSize="19sp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Horario de trabajo:"
+                        android:textSize="12dp"
+                        android:fontFamily="sans-serif-light"
+                        android:textColor="@color/black"/>
+
+                    <Spinner
+                        android:id="@+id/spn_horarioTrabajo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/style_input"
+                        android:textSize="10sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="2dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:text="Regimen Laboral"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black"/>
+
+                            <Spinner
+                                android:id="@+id/spn_regimen"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/style_input" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="15dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:text="Horario Refrigerio"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black"/>
+
+                            <Spinner
+                                android:id="@+id/spn_horarioRefrigerio"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/style_input" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Cuarto CardView -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="20dp"
+            android:fontFamily="sans-serif-light"
+            android:text="Condiciones de Trabajo"
+            android:textColor="@color/generic_color"
+            android:textSize="19sp" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:backgroundTint="#EFEDED"
+            app:cardCornerRadius="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/style_border_1"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Texto, Spinner, Texto y Spinner en una fila -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Fuente generadora"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+                    <Spinner
+                        android:id="@+id/spn_fuenteGen"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/style_input" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Descripcion de la fuente generadora"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+                    <EditText
+                        android:id="@+id/txt_descFuenteGen"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/style_input"
+                        android:fontFamily="sans-serif-light"
+                        android:hint="Digite"
+                        android:paddingLeft="8dp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        android:textSize="15sp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Descripcion del ambiente de Trabajo"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+                    <Spinner
+                        android:id="@+id/spn_descTrabajo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/style_input" />
+                    <TextView
+                        android:id="@+id/tv_desTrabajoDetalle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:fontFamily="sans-serif-light"
+                        android:inputType="none"
+                        android:background="@drawable/style_input"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_weight="1"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Control de ingenieria"
+                        android:textColor="@color/black"
+                        android:textSize="12dp" />
+
+                    <RadioGroup
+                        android:id="@+id/radioGroupIng"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/radioIngenieriaSi"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="@color/teal_200"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Sí"
+                            android:textColorHint="@color/black" />
+
+                        <RadioButton
+                            android:id="@+id/radioUngenieriaNo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="@color/purple_200"
+                            android:fontFamily="sans-serif-light"
+                            android:text="No"
+                            android:textColorHint="@color/black" />
+                    </RadioGroup>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/Card_Ingenieria"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4dp"
+                        android:visibility="gone"
+                        app:cardCornerRadius="4dp"
+                        app:cardElevation="2dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Nombre del control"
+                                android:textSize="12dp"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black"/>
+
+                            <EditText
+                                android:id="@+id/txt_nomControl"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/style_input"
+                                android:hint=" Digite"
+                                android:textSize="15sp"
+                                android:layout_marginTop="5dp"
+                                android:paddingLeft="8dp"/>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_gravity="center_horizontal"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Control administrativo"
+                        android:textColor="@color/generic_color"
+                        android:textSize="19sp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Tiempo de cargo"
+                        android:textSize="12dp"
+                        android:fontFamily="sans-serif-light"
+                        android:textColor="@color/black"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <Spinner
+                            android:id="@+id/spn_timeCargoAnyo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/style_input"
+                            android:textSize="10sp" />
+                        <Spinner
+                            android:id="@+id/spn_timeCargoMes"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginLeft="15dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/style_input"
+                            android:textSize="10sp" />
+                    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginTop="10dp"
+                        android:text="Condicion de Trabajo"
+                        android:textSize="12dp"
+                        android:fontFamily="sans-serif-light"
+                        android:textColor="@color/black"/>
+                    <Spinner
+                        android:id="@+id/spn_condicionTrab"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/style_input"
+                        android:textSize="10sp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginTop="10dp"
+                        android:text="Si la actividad realizada es al aire libre sin techo: Existe zonas de sombra:"
+                        android:textSize="12dp"
+                        android:fontFamily="sans-serif-light"
+                        android:textColor="@color/black"/>
+                    <RadioGroup
+                        android:id="@+id/radioGroupZonaSombra"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/radio_AireLibreSi"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="@color/teal_200"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Sí"
+                            android:textColorHint="@color/black" />
+
+                        <RadioButton
+                            android:id="@+id/radio_AireLibreNo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="@color/purple_200"
+                            android:fontFamily="sans-serif-light"
+                            android:text="No"
+                            android:textColorHint="@color/black" />
+                    </RadioGroup>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginTop="10dp"
+                        android:text="Rotación de personal:"
+                        android:textSize="12dp"
+                        android:fontFamily="sans-serif-light"
+                        android:textColor="@color/black"/>
+                    <RadioGroup
+                        android:id="@+id/radioGroupRotacion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/radio_RotacionPersonalSi"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="@color/teal_200"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Sí"
+                            android:textColorHint="@color/black" />
+
+                        <RadioButton
+                            android:id="@+id/radio_RotacionPersonalNo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="@color/purple_200"
+                            android:fontFamily="sans-serif-light"
+                            android:text="No"
+                            android:textColorHint="@color/black" />
+                    </RadioGroup>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginTop="10dp"
+                        android:text="Realiza tiempos de recuperación::"
+                        android:textSize="12dp"
+                        android:fontFamily="sans-serif-light"
+                        android:textColor="@color/black"/>
+                    <RadioGroup
+                        android:id="@+id/radioGroupRecuperacion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/radio_tiempoRecuperacionSi"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="@color/teal_200"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Sí"
+                            android:textColorHint="@color/black" />
+
+                        <RadioButton
+                            android:id="@+id/radio_tiempoRecuperacionNo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="@color/purple_200"
+                            android:fontFamily="sans-serif-light"
+                            android:text="No"
+                            android:textColorHint="@color/black" />
+                    </RadioGroup>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginTop="10dp"
+                        android:text="Existe dispensador de agua cercanas al área::"
+                        android:textSize="12dp"
+                        android:fontFamily="sans-serif-light"
+                        android:textColor="@color/black"/>
+                    <RadioGroup
+                        android:id="@+id/radioGroupDispensador"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/radio_dispensadorSi"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="@color/teal_200"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Sí"
+                            android:textColorHint="@color/black" />
+
+                        <RadioButton
+                            android:id="@+id/radio_dispensadorNo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="@color/purple_200"
+                            android:fontFamily="sans-serif-light"
+                            android:text="No"
+                            android:textColorHint="@color/black" />
+                    </RadioGroup>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginTop="10dp"
+                        android:text="Capacitación sobre los riesgos a la exposición a fuentes de calor:"
+                        android:textSize="12dp"
+                        android:fontFamily="sans-serif-light"
+                        android:textColor="@color/black"/>
+                    <RadioGroup
+                        android:id="@+id/radioGroupCapacitacion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/radio_riegoFuenteCalorSi"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="@color/teal_200"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Sí"
+                            android:textColorHint="@color/black" />
+
+                        <RadioButton
+                            android:id="@+id/radio_riegoFuenteCalorNo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="@color/purple_200"
+                            android:fontFamily="sans-serif-light"
+                            android:text="No"
+                            android:textColorHint="@color/black" />
+                    </RadioGroup>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_gravity="center_horizontal"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Categoria de trabajo"
+                        android:textColor="@color/generic_color"
+                        android:textSize="19sp" />
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="10dp">
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="% Trabajo en Actividad:"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black"
+                                android:textSize="12sp"/>
+
+                            <Spinner
+                                android:id="@+id/spn_porcActividad"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/style_input"
+                                android:layout_marginTop="5dp"/>
+                            <!--android:onItemSelected="Equipo_Vibracion"-->
+
+                        </LinearLayout>
+                        <!-- ... Otros elementos similares ... -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginLeft="15dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="% de Descanso:"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black"
+                                android:textSize="12sp"/>
+                            <Spinner
+                                android:id="@+id/spn_porcDescanso"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/style_input"
+                                android:layout_marginTop="5dp"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Vestimenta del personal evaluado"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+                    <Spinner
+                        android:id="@+id/spn_vestimenta"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/style_input"
+                        android:layout_marginTop="5dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Material de Prenda"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+                    <Spinner
+                        android:id="@+id/spn_materialPrenda"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/style_input"
+                        android:layout_marginTop="5dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Color predominante"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+                    <EditText
+                        android:id="@+id/txt_colorPredominante"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/style_input"
+                        android:fontFamily="sans-serif-light"
+                        android:hint="Digite"
+                        android:paddingLeft="8dp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        android:textSize="15sp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Epp's"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="2dp"
+                        android:orientation="vertical">
+
+                        <CheckBox
+                            android:id="@+id/check_zapatos"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="false"
+                            android:textSize="15sp"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:fontFamily="sans-serif-light"
+                            android:buttonTint="@color/teal_200"
+                            android:text="Zapatos de seguridad" />
+                        <CheckBox
+                            android:id="@+id/check_casco"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="false"
+                            android:textSize="15sp"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:fontFamily="sans-serif-light"
+                            android:buttonTint="@color/purple_200"
+                            android:text="casco" />
+                        <CheckBox
+                            android:id="@+id/check_lentes"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="false"
+                            android:textSize="15sp"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:fontFamily="sans-serif-light"
+                            android:buttonTint="@color/teal_200"
+                            android:text="Lentes" />
+
+                        <CheckBox
+                            android:id="@+id/check_guantes"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="false"
+                            android:textSize="15sp"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:fontFamily="sans-serif-light"
+                            android:buttonTint="@color/purple_200"
+                            android:text="Guantes" />
+                        <CheckBox
+                            android:id="@+id/check_orejeras"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="false"
+                            android:textSize="15sp"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:fontFamily="sans-serif-light"
+                            android:buttonTint="@color/teal_200"
+                            android:text="Orejeras" />
+
+                        <CheckBox
+                            android:id="@+id/check_tapones"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="false"
+                            android:textSize="15sp"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:fontFamily="sans-serif-light"
+                            android:buttonTint="@color/purple_200"
+                            android:text="Tapones" />
+                        <CheckBox
+                            android:id="@+id/check_cubreNuca"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="false"
+                            android:textSize="15sp"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:fontFamily="sans-serif-light"
+                            android:buttonTint="@color/teal_200"
+                            android:text="Cubre nuca" />
+                    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Otros"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+                    <EditText
+                        android:id="@+id/txt_otrosEpps"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/style_input"
+                        android:fontFamily="sans-serif-light"
+                        android:hint="Digite"
+                        android:paddingLeft="8dp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        android:textSize="15sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="20dp"
+            android:fontFamily="sans-serif-light"
+            android:text="CONSUMO METABÓLICO"
+            android:textColor="@color/generic_color"
+            android:textSize="17sp" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:backgroundTint="#EFEDED"
+            app:cardCornerRadius="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/style_border_1"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Contenedor general del Tercer Card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <!-- ACTIVIDADES REALIZADA-->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:fontFamily="sans-serif-light"
+                        android:text="TAREA 01"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        android:layout_gravity="center_horizontal"
+                        android:textStyle="bold"/>
+                    <EditText
+                        android:id="@+id/txt_tarea1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/style_input"
+                        android:fontFamily="sans-serif-light"
+                        android:hint="Digite"
+                        android:paddingLeft="8dp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Ciclo de Trabajo(min)"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+
+                    <!-- HORARIO DE TRABAJO-->
+                    <EditText
+                        android:id="@+id/txt_cicloTrabajo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/style_input"
+                        android:fontFamily="sans-serif-light"
+                        android:hint="Digite"
+                        android:paddingLeft="8dp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Posición"
+                        android:textColor="@color/black"
+                        android:textSize="12dp" />
+                    <Spinner
+                        android:id="@+id/cbx_posicion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/style_input"
+                        android:textSize="10sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:text="Partes del cuerpo"
+                        android:textSize="12sp"
+                        android:fontFamily="sans-serif-light"/>
+                    <Spinner
+                        android:id="@+id/cbx_partesCuerpo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/style_input" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:text="Intensidad"
+                        android:textSize="12sp"
+                        android:fontFamily="sans-serif-light"/>
+                    <Spinner
+                        android:id="@+id/cbx_intensidad"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/style_input" />
+
+                    <!-- ESPACIOOOOOOOOOOOOOOOOOOOOOO -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/black"
+                        android:layout_marginTop="20dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:fontFamily="sans-serif-light"
+                        android:text="TAREA 02"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        android:layout_gravity="center_horizontal"
+                        android:textStyle="bold"/>
+                    <EditText
+                        android:id="@+id/txt_tarea2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/style_input"
+                        android:fontFamily="sans-serif-light"
+                        android:hint="Digite"
+                        android:paddingLeft="8dp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Ciclo de Trabajo(min)"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+
+                    <!-- HORARIO DE TRABAJO-->
+                    <EditText
+                        android:id="@+id/txt_cicloTrabajo2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/style_input"
+                        android:fontFamily="sans-serif-light"
+                        android:hint="Digite"
+                        android:paddingLeft="8dp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Posición"
+                        android:textColor="@color/black"
+                        android:textSize="12dp" />
+                    <Spinner
+                        android:id="@+id/cbx_posicion2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/style_input"
+                        android:textSize="10sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:text="Partes del cuerpo"
+                        android:textSize="12sp"
+                        android:fontFamily="sans-serif-light"/>
+                    <Spinner
+                        android:id="@+id/cbx_partesCuerpo2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/style_input" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:text="Intensidad"
+                        android:textSize="12sp"
+                        android:fontFamily="sans-serif-light"/>
+                    <Spinner
+                        android:id="@+id/cbx_intensidad2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/style_input" />
+                    <!-- ESPACIOOOOOOOOOOOOOOOOOOOOOO -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/black"
+                        android:layout_marginTop="20dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:fontFamily="sans-serif-light"
+                        android:text="TAREA 03"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        android:layout_gravity="center_horizontal"
+                        android:textStyle="bold"/>
+                    <EditText
+                        android:id="@+id/txt_tarea3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/style_input"
+                        android:fontFamily="sans-serif-light"
+                        android:hint="Digite"
+                        android:paddingLeft="8dp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Ciclo de Trabajo(min)"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+
+                    <!-- HORARIO DE TRABAJO-->
+                    <EditText
+                        android:id="@+id/txt_cicloTrabajo3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/style_input"
+                        android:fontFamily="sans-serif-light"
+                        android:hint="Digite"
+                        android:paddingLeft="8dp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Posición"
+                        android:textColor="@color/black"
+                        android:textSize="12dp" />
+                    <Spinner
+                        android:id="@+id/cbx_posicion3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/style_input"
+                        android:textSize="10sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:text="Partes del cuerpo"
+                        android:textSize="12sp"
+                        android:fontFamily="sans-serif-light"/>
+                    <Spinner
+                        android:id="@+id/cbx_partesCuerpo3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/style_input" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:text="Intensidad"
+                        android:textSize="12sp"
+                        android:fontFamily="sans-serif-light"/>
+                    <Spinner
+                        android:id="@+id/cbx_intensidad3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/style_input" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:text="Nota: En caso la POSICIÓN sea SUBIDA DE UNA PENDIENTE ANDANDO"
+                        android:textSize="12sp"
+                        android:fontFamily="sans-serif-light"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:text="Metros de subida"
+                        android:textSize="12sp"
+                        android:layout_marginLeft="20dp"
+                        android:fontFamily="sans-serif-light"/>
+                    <EditText
+                        android:id="@+id/txt_metrosSubida"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/style_input"
+                        android:fontFamily="sans-serif-light"
+                        android:hint="Digite"
+                        android:paddingLeft="8dp"
+                        android:layout_marginLeft="20dp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        android:textSize="15sp" />
+                    <!-- fin de la Segunda fila Doble -->
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="20dp"
+            android:fontFamily="sans-serif-light"
+            android:text="RESULTADOS DE MONITOREO"
+            android:textColor="@color/generic_color"
+            android:textSize="19sp" />
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:backgroundTint="#EFEDED"
+            app:cardCornerRadius="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/style_border_1"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <!--FILA 1 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginRight="15dp"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:text=""
+                            android:textAlignment="center"
+                            android:textColor="@color/black"
+                            android:textSize="12sp"
+                            android:fontFamily="sans-serif-light" />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="15dp"
+                            android:text="Temperatura del bulbo húmedo (WBT) (WET) (Tbh) - (°C)"
+                            android:textSize="12sp"
+                            android:fontFamily="sans-serif-light"
+                            android:textColor="@color/black"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:text="0.1 m"
+                            android:textAlignment="center"
+                            android:textColor="@color/black"
+                            android:textSize="12sp"
+                            android:fontFamily="sans-serif-light"
+                            android:textStyle="bold"/>
+                        <EditText
+                            android:id="@+id/txt_wbgt01"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/style_2"
+                            android:gravity="center_horizontal|center_vertical"
+                            android:inputType="numberSigned|text"
+                            android:maxLength="5"
+                            android:paddingLeft="8dp"
+                            android:layout_marginTop="5dp"
+                            android:textSize="15dp"
+                            android:fontFamily="sans-serif-light"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginHorizontal="15dp">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:text="1.1 m"
+                            android:textAlignment="center"
+                            android:textColor="@color/black"
+                            android:textSize="12sp"
+                            android:fontFamily="sans-serif-light"
+                            android:textStyle="bold"/>
+                        <EditText
+                            android:id="@+id/txt_wbgt11"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/style_2"
+                            android:gravity="center_horizontal|center_vertical"
+                            android:inputType="numberSigned|text"
+                            android:maxLength="5"
+                            android:paddingLeft="8dp"
+                            android:layout_marginTop="5dp"
+                            android:textSize="15dp"
+                            android:fontFamily="sans-serif-light"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:text="1.7 m"
+                            android:textAlignment="center"
+                            android:textColor="@color/black"
+                            android:textSize="12sp"
+                            android:fontFamily="sans-serif-light"
+                            android:textStyle="bold"/>
+                        <EditText
+                            android:id="@+id/txt_wbgt17"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/style_2"
+                            android:gravity="center_horizontal|center_vertical"
+                            android:inputType="numberSigned|text"
+                            android:maxLength="5"
+                            android:paddingLeft="8dp"
+                            android:layout_marginTop="5dp"
+                            android:textSize="15dp"
+                            android:fontFamily="sans-serif-light"/>
+                    </LinearLayout>
+                </LinearLayout>
+                <!--FILA 2 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginTop="15dp"
+                        android:text="Temperatura del aire (TA)/Temperatura del bulbo seco (Tbs) - (°C)"
+                        android:textSize="12sp"
+                        android:fontFamily="sans-serif-light"
+                        android:textColor="@color/black"/>
+                    <EditText
+                        android:id="@+id/txt_t_aire01"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/style_2"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:inputType="numberSigned|text"
+                        android:maxLength="5"
+                        android:paddingLeft="8dp"
+                        android:layout_marginTop="15dp"
+                        android:textSize="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:fontFamily="sans-serif-light"/>
+                    <EditText
+                        android:id="@+id/txt_t_aire11"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/style_2"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:inputType="numberSigned|text"
+                        android:maxLength="5"
+                        android:paddingLeft="8dp"
+                        android:layout_marginTop="15dp"
+                        android:textSize="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:fontFamily="sans-serif-light"/>
+                    <EditText
+                        android:id="@+id/txt_t_aire17"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/style_2"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:inputType="numberSigned|text"
+                        android:maxLength="5"
+                        android:paddingLeft="8dp"
+                        android:layout_marginTop="15dp"
+                        android:textSize="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:fontFamily="sans-serif-light"/>
+                </LinearLayout>
+                <!--FILA 3 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginTop="15dp"
+                        android:text="Temperatura del globo negro (TG) - (°C)"
+                        android:textSize="12sp"
+                        android:fontFamily="sans-serif-light"
+                        android:textColor="@color/black"/>
+                    <EditText
+                        android:id="@+id/txt_t_globo01"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/style_2"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:inputType="numberSigned|text"
+                        android:maxLength="5"
+                        android:paddingLeft="8dp"
+                        android:layout_marginTop="15dp"
+                        android:textSize="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:fontFamily="sans-serif-light"/>
+                    <EditText
+                        android:id="@+id/txt_t_globo11"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/style_2"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:inputType="numberSigned|text"
+                        android:maxLength="5"
+                        android:paddingLeft="8dp"
+                        android:layout_marginTop="15dp"
+                        android:textSize="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:fontFamily="sans-serif-light"/>
+                    <EditText
+                        android:id="@+id/txt_t_globo17"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/style_2"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:inputType="numberSigned|text"
+                        android:maxLength="5"
+                        android:paddingLeft="8dp"
+                        android:layout_marginTop="15dp"
+                        android:textSize="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:fontFamily="sans-serif-light"/>
+                </LinearLayout>
+                <!--FILA 4 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginTop="15dp"
+                        android:text="HR % (Humedad Relativa)"
+                        android:textSize="12sp"
+                        android:fontFamily="sans-serif-light"
+                        android:textColor="@color/black"/>
+                    <EditText
+                        android:id="@+id/txt_h_relativa01"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/style_2"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:inputType="numberSigned|text"
+                        android:maxLength="5"
+                        android:paddingLeft="8dp"
+                        android:layout_marginTop="15dp"
+                        android:textSize="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:fontFamily="sans-serif-light"/>
+                    <EditText
+                        android:id="@+id/txt_h_relativa11"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/style_2"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:inputType="numberSigned|text"
+                        android:maxLength="5"
+                        android:paddingLeft="8dp"
+                        android:layout_marginTop="15dp"
+                        android:textSize="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:fontFamily="sans-serif-light"/>
+                    <EditText
+                        android:id="@+id/txt_h_relativa17"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/style_2"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:inputType="numberSigned|text"
+                        android:maxLength="5"
+                        android:paddingLeft="8dp"
+                        android:layout_marginTop="15dp"
+                        android:textSize="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:fontFamily="sans-serif-light"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="15dp">
+                    <TextView
+                        android:layout_width="352dp"
+                        android:layout_height="wrap_content"
+                        android:text="Velocidad del Viento (m/s)"
+                        android:textSize="12sp"
+                        android:fontFamily="sans-serif-light"
+                        android:textColor="@color/black"/>
+                    <EditText
+                        android:id="@+id/txt_velViento"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/style_2"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:inputType="numberSigned|text"
+                        android:maxLength="5"
+                        android:paddingLeft="8dp"
+                        android:textSize="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:fontFamily="sans-serif-light" />
+
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="20dp"
+            android:text="Observaciones"
+            android:textColor="@color/generic_color"
+            android:textSize="19sp"
+            android:fontFamily="sans-serif-light" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:backgroundTint="#EFEDED"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/style_border_1"
+                android:orientation="vertical"
+                android:padding="16dp">
+                <!-- Texto, Spinner, Texto y Spinner en una fila -->
+
+                <EditText
+                    android:id="@+id/txt_observaciones"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/style_input"
+                    android:gravity="top|start"
+                    android:hint="Ingresa texto aquí..."
+                    android:inputType="textMultiLine"
+                    android:lines="5"
+                    android:paddingLeft="8dp"
+                    android:paddingTop="5dp"
+                    android:textSize="15dp"
+                    android:fontFamily="sans-serif-light"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+</ScrollView>
+
+<com.google.android.material.floatingactionbutton.FloatingActionButton
+    android:id="@+id/fabGuardar"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom|end"
+    android:layout_margin="16dp"
+    android:src="@drawable/ic_check"
+    android:clickable="true"/>
+<com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+    android:id="@+id/fabCancelar"
+    android:layout_width="90dp"
+    android:layout_height="30dp"
+    android:layout_gravity="top|end"
+    android:layout_margin="16dp"
+    android:textAllCaps="false"
+    android:padding="0dp"
+    android:text="Cancelar"
+    android:textSize="12dp"
+    android:textColor="@color/white"
+    android:backgroundTint="#00558A" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

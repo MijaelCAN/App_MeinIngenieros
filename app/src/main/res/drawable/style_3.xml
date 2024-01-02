@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <stroke
+        android:width="1dp"
+        android:color="#00FFFFFF" /> <!-- Aquí el 00 indica que el color es completamente transparente -->
+    <size
+        android:width="200dp"
+        android:height="30dp" />
+    <solid
+        android:color="#00000000" /> <!-- Aquí el 00 indica que el color es completamente transparente -->
+    <corners
+        android:bottomLeftRadius="10dp"
+        android:bottomRightRadius="10dp"
+        android:topLeftRadius="10dp"
+        android:topRightRadius="10dp"/>
+</shape>
