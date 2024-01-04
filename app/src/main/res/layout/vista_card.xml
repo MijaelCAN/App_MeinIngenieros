@@ -42,7 +42,8 @@
                     android:layout_weight="1"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:layout_marginLeft="14dp">
+                    android:layout_marginLeft="14dp"
+                    android:visibility="gone">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_weight="1"
@@ -69,7 +70,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/title_empresa"
+                    android:text="Empresa: "
                     android:textSize="10sp"
                     android:textColor="@color/black"/>
                 <TextView
@@ -90,7 +91,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Cotización"
+                    android:text="Cotización: "
                     android:textSize="10sp"
                     android:textColor="@color/black"/>
                 <TextView
@@ -111,7 +112,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tipo de Servicio"
+                    android:text="Tipo de Servicio: "
                     android:textSize="10sp"
                     android:textColor="@color/black"/>
                 <TextView

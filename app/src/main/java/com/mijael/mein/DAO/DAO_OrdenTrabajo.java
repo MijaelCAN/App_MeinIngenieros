@@ -27,8 +27,9 @@ public class DAO_OrdenTrabajo {
         List<Orden_Trabajo> ordenesTrabajo = new ArrayList<>();
         SQLiteDatabase db = databaseHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + Util_OrdenTrabajo.TABLA_ORDEN_TRABAJO +
-                        " WHERE id_colaborador LIKE ? OR id_colaborador LIKE ? OR id_colaborador LIKE ? OR id_coordinador = " + idColaborador,
-                new String[]{idColaborador + ",%", "%," + idColaborador + ",%", "%," + idColaborador});
+                        " WHERE id_colaborador LIKE ? OR id_colaborador LIKE ? OR id_colaborador LIKE ? OR id_colaborador LIKE ? OR id_coordinador = " + idColaborador +
+                        " ORDER BY _id DESC ",
+                new String[]{idColaborador + ",%", "%," + idColaborador + ",%", "%," + idColaborador, ""+idColaborador});
 
         //Cursor cursor = db.rawQuery("SELECT * FROM "+ Util_OrdenTrabajo.TABLA_ORDEN_TRABAJO + " WHERE id_colaborador LIKE '%"+ idColaborador + ",%' OR  id_colaborador LIKE '%,"+ idColaborador + ",%' OR  id_colaborador LIKE '%,"+ idColaborador +"')", null);
         //String query = "SELECT * FROM " + Util_OrdenTrabajo.TABLA_ORDEN_TRABAJO + " WHERE id_colaborador LIKE '%" + idColaborador + ",%' OR id_colaborador LIKE '%," + idColaborador + ",%' OR id_colaborador LIKE '%," + idColaborador + "')";
@@ -53,7 +54,7 @@ public class DAO_OrdenTrabajo {
         }
 
         cursor.close();
-        db.close();
+        //db.close();
         return ordenesTrabajo;
     }
 

@@ -23,6 +23,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -42,6 +43,7 @@ import com.mijael.mein.Entidades.Formatos_Trabajo;
 import com.mijael.mein.Entidades.Sonometria_Registro;
 import com.mijael.mein.Entidades.Usuario;
 import com.mijael.mein.Extras.FragmentoImagen;
+import com.mijael.mein.Extras.InputDateConfiguration;
 import com.mijael.mein.Extras.Validaciones;
 import com.mijael.mein.HELPER.EquiposSQLiteHelper;
 import com.mijael.mein.HELPER.FormatoTrabajoSQLiteHelper;
@@ -72,25 +74,28 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
     private boolean cargarImagen = false;
     int hora,min;
     String id_plan_trabajo, id_pt_trabajo, id_formato,id_colaborador, nom_Empresa;
-    EditText  txt_areaTrabajo, txt_actRealizadas, txt_numTrabajadores, txt_fuenteGenRuido;
+    EditText  txt_areaTrabajo, txt_actRealizadas, txt_numTrabajadores, txt_fuenteGenRuido, txt_jornada;
     AutoCompleteTextView tv_sonometro, tv_calibrador, tv_anemometro;
     TextView tv_horaCalibracion, tv_mensajeImagen, tv_limitePermisible;
-    Spinner cbx_nivel, cbx_variacion, cbx_horario, cbx_jornada, cbx_aConcentracion;
+    Spinner cbx_nivel, cbx_variacion, cbx_horario, cbx_aConcentracion;
     TextView tv_fechaMonitoreo, tv_horaInicioMonitoreo, tv_horaFinal, tv_nombreUsuario, tv_nomEmpresa;
-    Spinner cbx_tiempoMedicion, cbx_velViento, cbx_humedadRelatva;
+    Spinner cbx_tiempoMedicion;
     EditText txt_leq1, txt_lmax1, txt_lmin1, txt_leq2, txt_lmax2, txt_lmin2, txt_leq3, txt_lmax3, txt_lmin3, txt_leq4, txt_lmax4, txt_lmin4, txt_leq5, txt_lmax5, txt_lmin5;
     AppCompatButton btn_calcularMedicion;
-    TextView tv_resLmin, tv_resLmax, tv_resLeq, tv_nrrTapones, tv_nrrOrej;
+    TextView tv_resLmin, tv_resLmax, tv_resLeq;
     AppCompatButton btn_subirFotoSono;
     ImageView imagen_sono;
     CardView card_ingenier, card_adminis, card_tapones, card_orejeras;
     RadioGroup radioGroupIng, radioGroupAdmin, radioGroupRiesgos, radioGroupPresionSono, radioGroupEppOblig, radioGroup_Aislante, radioGroup_Cabinas,
             radioGroupTimeExpo, radioGroupRotacion, radioGroupTapones, radioGroupOrej;
     RadioButton radioIngSi, radioAdminSi, radioRiesgosSi, radioPresionSi, radioEppSi, radioTimeExpoSi, radioRotacionSi, radioTaponesSi, radioOrejSi, radioaislateSI, radioCabinaSI;
-    EditText txt_otroIng, txt_otrosAdmin, txt_observaciones;
+    EditText txt_otroIng, txt_otrosAdmin, txt_observaciones, txt_velViento, txt_humedadRelatva, tv_nrrTapones, tv_nrrOrej;
     Spinner cbx_marcaTapones, cbx_modeloTapones, cbx_marcaOrej, cbx_modeloOrej;
     FloatingActionButton btn_guardar;
     ExtendedFloatingActionButton btn_cancelar;
+
+    LinearLayout linearOtroHorario, linearOtroRegimen, linearOtroRefrigerio, linearOtroMarcaOrej, linearOtroMarcaTapones, linearOtroModeloOrej, linearOtroModeloTapones;
+    EditText txt_otroHorario, txt_otroRegimen, txt_otroRefrigerio, txt_otroMarcaOrej, txt_otroMarcaTapones, txt_otroModeloOrej, txt_otroModeloTapones;
     Uri uri;
     private View rootView;
     Formatos_Trabajo for_Sonometria;
@@ -120,6 +125,7 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_sonometria,container,false);
         init(rootView);
+        InputDateConfiguration config = new InputDateConfiguration(getActivity(),id_colaborador,nom_Empresa,rootView);
 
         ConfigPantalla();
 
@@ -140,17 +146,23 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
         cbx_nivel.setAdapter(LlenarSpinner("nivel_formato_medicion","nom_nivel",getActivity())); // Llenas Spinner (Nivel, Variacion)
         cbx_variacion.setAdapter(LlenarSpinner("variacion_formato_medicion","nom_variacion",getActivity()));
         cbx_horario.setAdapter(LlenarSpinner("horario_trab_fromato_medicion","desc_horario",getActivity()));
-        cbx_jornada.setAdapter(LlenarSpinner("jornada_trab_formato_medicion","valor_jornada",getActivity()));
+        //cbx_jornada.setAdapter(LlenarSpinner("jornada_trab_formato_medicion","valor_jornada",getActivity()));
         cbx_aConcentracion.setAdapter(LlenarSpinner("SI","NO"));
         cbx_tiempoMedicion .setAdapter(LlenarSpinner("15 min","25 min"));
-        cbx_velViento.setAdapter(LlenarSpinner("velocidadViento","valor_velocidad",getActivity()));
-        cbx_humedadRelatva.setAdapter(LlenarSpinner("humedad_rel_formato_medicion","valor_humedad",getActivity()));
+        //cbx_velViento.setAdapter(LlenarSpinner("velocidadViento","valor_velocidad",getActivity()));
+        //cbx_humedadRelatva.setAdapter(LlenarSpinner("humedad_rel_formato_medicion","valor_humedad",getActivity()));
         cbx_marcaTapones.setAdapter(LlenarSpinner("marca_formato_medicion","nom_marca",getActivity()));
         cbx_marcaOrej.setAdapter(LlenarSpinner("marca_formato_medicion","nom_marca",getActivity()));
         cbx_modeloOrej.setAdapter(LlenarSpinner("modelo_orejeras","nom_modelo",getActivity()));
         cbx_modeloTapones.setAdapter(LlenarSpinner("modelo_Tapones","nom_modelo",getActivity()));
-        LlenarNrr("modelo_Tapones","nrr",cbx_modeloTapones,tv_nrrTapones);
-        LlenarNrr("modelo_orejeras","nrr",cbx_modeloOrej,tv_nrrOrej);
+        //LlenarNrr("modelo_Tapones","nrr",cbx_modeloTapones,tv_nrrTapones);
+        //LlenarNrr("modelo_orejeras","nrr",cbx_modeloOrej,tv_nrrOrej);
+
+        config.MostrarCampos(linearOtroHorario,cbx_horario);
+        config.MostrarCampos(linearOtroMarcaOrej,cbx_marcaOrej);
+        config.MostrarCampos(linearOtroMarcaTapones,cbx_marcaTapones);
+        config.llenarNrrYMostrarCampos("modelo_Tapones","nrr",cbx_modeloTapones,tv_nrrTapones,linearOtroModeloTapones);
+        config.llenarNrrYMostrarCampos("modelo_orejeras","nrr",cbx_modeloOrej,tv_nrrOrej,linearOtroModeloOrej);
         cbx_aConcentracion.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
@@ -228,7 +240,7 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
                         validar.validarCampoObligatorio(txt_areaTrabajo)&&
                         validar.validarCampoObligatorio(txt_actRealizadas)&&
                         validar.validarCampoObligatorio(cbx_horario)&&
-                        validar.validarCampoObligatorio(cbx_jornada)&&
+                        validar.validarCampoObligatorio(txt_jornada)&&
                         validar.validarCampoObligatorio(txt_numTrabajadores)&&
                         validar.validarCampoObligatorio(txt_fuenteGenRuido)&&
                         validar.validarCampoObligatorio(cbx_aConcentracion)&&
@@ -236,8 +248,8 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
                         validar.validarCampoObligatorio(tv_fechaMonitoreo)&&
                         validar.validarCampoObligatorio(tv_horaInicioMonitoreo)&&
                         validar.validarCampoObligatorio(cbx_tiempoMedicion)&&
-                        validar.validarCampoObligatorio(cbx_velViento)&&
-                        validar.validarCampoObligatorio(cbx_humedadRelatva)&&
+                        validar.validarCampoObligatorio(txt_velViento)&&
+                        validar.validarCampoObligatorio(txt_humedadRelatva)&&
                         validar.validarCalculo(calculoRealizado,getActivity())&&
                         validar.validarImagen(cargarImagen,getActivity())&&
                         validar.validarCampoObligatorio(radioGroupIng,getActivity())&&
@@ -261,7 +273,7 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
                         String areaTrabajo = validar.getValor(txt_areaTrabajo);
                         String act_realizadas = validar.getValor(txt_actRealizadas);
                         String horarioTrabajo = validar.getValor(cbx_horario);
-                        String jornadaTrabajo = validar.getValor(cbx_jornada);
+                        String jornadaTrabajo = txt_jornada.getText().toString();
                         String numTrabajadores = validar.getValor(txt_numTrabajadores);
                         String fuenteRuido = validar.getValor(txt_fuenteGenRuido);
                         String a_concentracion = validar.getValor(cbx_aConcentracion);
@@ -270,8 +282,8 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
                         String horaInicial = validar.getValor(tv_horaInicioMonitoreo);
                         String tiempoMedicion = validar.getValor(cbx_tiempoMedicion);
                         String horaFinal = validar.getValor(tv_horaFinal);
-                        String velViento = validar.getValor(cbx_velViento);
-                        String humedadRelativa = validar.getValor(cbx_humedadRelatva);
+                        String velViento = txt_velViento.getText().toString();
+                        String humedadRelativa = txt_humedadRelatva.getText().toString();
                         String lminFinal = validar.getValor(tv_resLmin);
                         String lmaxFinal = validar.getValor(tv_resLmax);
                         String LequiFinal = validar.getValor(tv_resLeq);
@@ -297,6 +309,12 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
                         String modeloOrej = validar.getValor(cbx_modeloOrej);
                         String nrrOrej = validar.getValor(tv_nrrOrej);
                         String oberv = validar.getValor(txt_observaciones);
+
+                        String valorOtroHorario = horarioTrabajo.equals("OTRO")?txt_otroHorario.getText().toString():"null";
+                        String valorOtroMarcaOrej = marcaOrej.equals("OTRO")?txt_otroMarcaOrej.getText().toString():"null";
+                        String valorOtroMarcaTapones = marcaTapones.equals("OTRO")?txt_otroMarcaTapones.getText().toString():"null";
+                        String valorOtroModeloOrej = modeloOrej.equals("OTRO")?txt_otroModeloOrej.getText().toString():"null";
+                        String valorOtroModeloTapones = modeloTapones.equals("OTRO")?txt_otroModeloTapones.getText().toString():"null";
 
 
                         String estado_resultado = "1";
@@ -457,7 +475,7 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
         txt_areaTrabajo = view.findViewById(R.id.txt_areaTrabajo);
         txt_actRealizadas = view.findViewById(R.id.txt_actividades);
         cbx_horario = view.findViewById(R.id.cbx_horarioTrabajo);
-        cbx_jornada = view.findViewById(R.id.cbx_jornada);
+        txt_jornada = view.findViewById(R.id.txt_jornadaTrabajo);
         txt_numTrabajadores = view.findViewById(R.id.txt_numTrabajadores);
         txt_fuenteGenRuido = view.findViewById(R.id.txt_fuenteGenRuido);
         cbx_aConcentracion = view.findViewById(R.id.cbx_Aconcentracion);
@@ -466,8 +484,8 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
         tv_horaInicioMonitoreo = view.findViewById(R.id.tv_horaInicial);
         cbx_tiempoMedicion = view.findViewById(R.id.cbx_tiempoMedicion);
         tv_horaFinal = view.findViewById(R.id.tv_horaFinal);
-        cbx_velViento = view.findViewById(R.id.cbx_veloc_viento);
-        cbx_humedadRelatva = view.findViewById(R.id.cbx_humedad_relativa);
+        txt_velViento = view.findViewById(R.id.txt_velViento);
+        txt_humedadRelatva = view.findViewById(R.id.txt_humedadRelativa);
         txt_leq1 = view.findViewById(R.id.txt_leq_med_1);
         txt_lmax1 = view.findViewById(R.id.txt_lmax_med_1);
         txt_lmin1 = view.findViewById(R.id.txt_lmin_med_1);
@@ -529,6 +547,19 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
         card_adminis = view.findViewById(R.id.Card_Administrativo);
         card_tapones = view.findViewById(R.id.Card_Tapones);
         card_orejeras = view.findViewById(R.id.Card_Orejeras);
+
+
+        linearOtroHorario = view.findViewById(R.id.linearOtroHorario);
+        txt_otroHorario = view.findViewById(R.id.txt_otroHorario);
+
+        linearOtroMarcaOrej = view.findViewById(R.id.linearOtroMarcaOrej);
+        txt_otroMarcaOrej = view.findViewById(R.id.txt_otroMarcaOrej);
+        linearOtroMarcaTapones= view.findViewById(R.id.linearOtroMarcaTapones);
+        txt_otroMarcaTapones = view.findViewById(R.id.txt_otroMarcaTapones);
+        linearOtroModeloOrej = view.findViewById(R.id.linearOtroModeloOrej);
+        txt_otroModeloOrej = view.findViewById(R.id.txt_otroModeloOrej);
+        linearOtroModeloTapones= view.findViewById(R.id.linearOtroModeloTapones);
+        txt_otroModeloTapones = view.findViewById(R.id.txt_otroModeloTapones);
     }
     public void ConfigPantalla(){
         MainActivity activity = (MainActivity) getActivity();

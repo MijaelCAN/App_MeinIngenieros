@@ -18,4 +18,12 @@
         <!-- Cambiar el color de la flecha desplegable -->
         <item name="android:drawableEnd">@color/purple_200</item>
     </style>
+    <style name="EditTextFocusStyle" parent="@android:style/Widget.EditText">
+        <item name="android:background">@drawable/focus_selector</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:shadowColor">#000000</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">0</item>
+        <item name="android:shadowRadius">0</item>
+    </style>
 </resources>

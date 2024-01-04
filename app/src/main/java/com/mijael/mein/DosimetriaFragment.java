@@ -25,6 +25,7 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -46,6 +47,7 @@ import com.mijael.mein.Entidades.Formatos_Trabajo;
 import com.mijael.mein.Entidades.Prueba;
 import com.mijael.mein.Entidades.Usuario;
 import com.mijael.mein.Extras.FragmentoImagen;
+import com.mijael.mein.Extras.InputDateConfiguration;
 import com.mijael.mein.Extras.OnBackPressedListener;
 import com.mijael.mein.Extras.Validaciones;
 import com.mijael.mein.HELPER.EquiposSQLiteHelper;
@@ -71,7 +73,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DosimetriaFragment extends Fragment implements FragmentoImagen.ImagePickerListener{
     Spinner cbx_nivel,cbx_variacion,cbx_tipoDoc, cbx_refrigerio, cbx_regimen, cbx_marcaTapon, cbx_marcaOrej,
-            cbx_tiempoCargo, cbx_horarioTrabajo, cbx_meses, cbx_anio, cbx_modeloTapon, cbx_modeloOrej;
+            cbx_tiempoCargoAnios,cbx_tiempoCargoMeses, cbx_horarioTrabajo, cbx_meses, cbx_anio, cbx_modeloTapon, cbx_modeloOrej;
     ExtendedFloatingActionButton fabCancelar;
     RadioGroup radioGroup_Oido, radioGroup_Enferm, radioGroup_Ingenieria, radioGroup_Adminis, radioGroup_Tapones, radioGroup_Orejeras,
             radioGroup_Aislante, radioGroup_Fachada, radioGroup_Techo, radioGroup_Cerramiento,radioGroup_Cabinas, radioGroup_Capac, radioGroup_SenalPresion, radioGroup_SenalEpps,
@@ -81,8 +83,8 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
     FloatingActionButton fabGuardar;
     EditText txt_numDoc, txt_nombre, txt_edad, txt_areaTrabajo, txt_puestoTrabajo, txt_actividades,
     txt_leq, txt_lpico, txt_lmax, txt_lmin, txt_observaciones, txt_detalleEnferm;
-    TextView tv_hora,tv_horaInicial, tv_horaFinal, tv_fecha, txt_otro, tv_imagen, tv_nombreUsuario, tv_nomEmpresa, tv_nrrTapones, tv_nrrOrej;
-    EditText txt_otroMotivo, txt_jornada, txt_tiempoExposicion, txt_OtroIngenieria, txt_otroAdministrativo;
+    TextView tv_hora,tv_horaInicial, tv_horaFinal, tv_fecha, txt_otro, tv_imagen, tv_nombreUsuario, tv_nomEmpresa;
+    EditText txt_otroMotivo, txt_jornada, txt_tiempoExposicion, txt_OtroIngenieria, txt_otroAdministrativo, tv_nrrTapones, tv_nrrOrej;
     CheckBox check_ruidoGenerado, check_ruidoExterno, check_Contiguo;
     AutoCompleteTextView tv_dosimetro, tv_calibrador;
     List<String> lista_codigos;
@@ -90,11 +92,14 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
     String id_plan_trabajo, id_pt_trabajo, id_formato, id_colaborador, nom_Empresa;
     Uri uri;
     ImageView image;
+    LinearLayout linearOtroHorario, linearOtroRegimen, linearOtroRefrigerio, linearOtroMarcaOrej, linearOtroMarcaTapones, linearOtroModeloOrej, linearOtroModeloTapones;
+    EditText txt_otroHorario, txt_otroRegimen, txt_otroRefrigerio, txt_otroMarcaOrej, txt_otroMarcaTapones, txt_otroModeloOrej, txt_otroModeloTapones;
     Formatos_Trabajo for_Dosimetria;
     public DosimetriaFragment() {
         // Required empty public constructor
     }
     Validaciones validar = new Validaciones();
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -115,6 +120,7 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_dosimetria, container, false);
         init(rootView);
+        InputDateConfiguration config = new InputDateConfiguration(getActivity(),id_colaborador,nom_Empresa,rootView);
 
         ConfigPantalla();
 
@@ -142,7 +148,8 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
         cbx_variacion.setAdapter(LlenarSpinner("variacion_formato_medicion","nom_variacion",getActivity()));
         cbx_regimen.setAdapter(LlenarSpinner("regimen_formato_medicion","nom_regimen",getActivity()));
         cbx_refrigerio.setAdapter(LlenarSpinner("horario_refrig_formato_medicion","nom_horario",getActivity()));
-        cbx_tiempoCargo.setAdapter(LlenarSpinner("tiempo_trab_formato_medicion","nom_tiempo_trab",getActivity()));
+        config.llenarSpinnerConNumeros(cbx_tiempoCargoAnios,10,getActivity());
+        config.llenarSpinnerConNumeros(cbx_tiempoCargoMeses,11,getActivity());
         cbx_horarioTrabajo.setAdapter(LlenarSpinner("horario_trab_fromato_medicion","desc_horario",getActivity()));
         cbx_meses.setAdapter(LlenarSpinner("meses","nom_mes",getActivity()));
         cbx_anio.setAdapter(LlenarSpinner("anios","nom_anio",getActivity()));
@@ -150,13 +157,15 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
         cbx_marcaOrej.setAdapter(LlenarSpinner("marca_formato_medicion","nom_marca",getActivity()));
         cbx_modeloTapon.setAdapter(LlenarSpinner("modelo_Tapones","nom_modelo",getActivity()));
         cbx_modeloOrej.setAdapter(LlenarSpinner("modelo_orejeras","nom_modelo",getActivity()));
-        tv_hora.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {showTimePickerDialog(rootView,tv_hora);}});
-        tv_horaInicial.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {showTimePickerDialog(rootView,tv_horaInicial);}});
-        tv_horaFinal.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {showTimePickerDialog(rootView,tv_horaFinal);}});
-        tv_fecha.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {showDatePickerDialog(rootView,tv_fecha);}});
+        tv_hora.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {config.showTimePickerDialog(rootView,tv_hora);}});
+        tv_horaInicial.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {config.showTimePickerDialog(rootView,tv_horaInicial);}});
+        tv_horaFinal.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {config.showTimePickerDialog(rootView,tv_horaFinal);}});
+        tv_fecha.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {config.showTimePickerDialog(rootView,tv_fecha);}});
 
-        LlenarNrr("modelo_Tapones","nrr",cbx_modeloTapon,tv_nrrTapones);
-        LlenarNrr("modelo_orejeras","nrr",cbx_modeloOrej,tv_nrrOrej);
+        //LlenarNrr("modelo_Tapones","nrr",cbx_modeloTapon,tv_nrrTapones);
+        //LlenarNrr("modelo_orejeras","nrr",cbx_modeloOrej,tv_nrrOrej);
+        config.llenarNrrYMostrarCampos("modelo_Tapones","nrr",cbx_modeloTapon,tv_nrrTapones,linearOtroModeloTapones);
+        config.llenarNrrYMostrarCampos("modelo_orejeras","nrr",cbx_modeloOrej,tv_nrrOrej,linearOtroModeloOrej);
 
         check_ruidoGenerado.setOnCheckedChangeListener(((buttonView, isChecked) -> txt_otroMotivo.setVisibility(isChecked?View.VISIBLE:View.GONE)));
 
@@ -166,6 +175,13 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
         radioGroup_Tapones.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {@Override public void onCheckedChanged(RadioGroup group, int checkedId) {mostrarOpcionesGone(group,checkedId,card_tapones,radio_taponesSI);}});
         radioGroup_Orejeras.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {@Override public void onCheckedChanged(RadioGroup group, int checkedId) {mostrarOpcionesGone(group,checkedId,card_orejeras,radio_orejerasSI);}});
 
+        config.MostrarCampos(linearOtroHorario,cbx_horarioTrabajo);
+        config.MostrarCampos(linearOtroRegimen,cbx_regimen);
+        config.MostrarCampos(linearOtroRefrigerio,cbx_refrigerio);
+        config.MostrarCampos(linearOtroMarcaOrej,cbx_marcaOrej);
+        config.MostrarCampos(linearOtroMarcaTapones,cbx_marcaTapon);
+        //config.MostrarCampos(linearOtroModeloOrej,cbx_modeloOrej);
+        //config.MostrarCampos(linearOtroModeloTapones,cbx_modeloTapon);
         tv_imagen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -198,7 +214,6 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
                         validar.validarCampoObligatorio(cbx_variacion)&&
                         validar.validarCampoObligatorio(tv_fecha)&&
                         validar.validarCampoObligatorio(tv_horaInicial)&&
-                        validar.validarCampoObligatorio(tv_horaFinal)&&
                         validar.validarCampoObligatorio(txt_jornada)&&
                         validar.validarCampoObligatorio(txt_tiempoExposicion)&&
                         validar.validarCampoObligatorio(txt_otroMotivo)&&
@@ -214,15 +229,12 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
                         validar.validarCampoObligatorio(cbx_horarioTrabajo)&&
                         validar.validarCampoObligatorio(cbx_regimen)&&
                         validar.validarCampoObligatorio(cbx_refrigerio)&&
-                        validar.validarCampoObligatorio(cbx_tiempoCargo)&&
+                        validar.validarCampoObligatorio(cbx_tiempoCargoMeses)&&
+                        validar.validarCampoObligatorio(cbx_tiempoCargoAnios)&&
                         validar.validarCampoObligatorio(cbx_meses)&&
                         validar.validarCampoObligatorio(cbx_anio)&&
                         validar.validarCampoObligatorio(txt_OtroIngenieria)&&
                         validar.validarCampoObligatorio(txt_otroAdministrativo)&&
-                        validar.validarCampoObligatorio(txt_leq)&&
-                        validar.validarCampoObligatorio(txt_lpico)&&
-                        validar.validarCampoObligatorio(txt_lmax)&&
-                        validar.validarCampoObligatorio(txt_lmin)&&
                         validar.validarCampoObligatorio(txt_observaciones)
                 ){
                     String valorTvDosimetro = tv_dosimetro.getText().toString();
@@ -286,11 +298,26 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
                         String valorSeleccionadoCbxVariacion = cbx_variacion.getSelectedItem().toString();
                         String valorSeleccionadoCbxTipoDoc = cbx_tipoDoc.getSelectedItem().toString();
                         String valorSeleccionadoCbxHoraioTrabajo = cbx_horarioTrabajo.getSelectedItem().toString();
+                        Log.e("TAG10", valorSeleccionadoCbxHoraioTrabajo);
+
+                        if(valorSeleccionadoCbxHoraioTrabajo.equals("OTRO")){
+                            String valorOtroHorario = txt_otroHorario.getText().toString();
+                        }
                         String valorSeleccionadoCbxRegimen = cbx_regimen.getSelectedItem().toString();
                         String valorSeleccionadoCbxRefrigerio = cbx_refrigerio.getSelectedItem().toString();
-                        String valorSeleccionadoCbxTiempoCargo = cbx_tiempoCargo.getSelectedItem().toString();
+                        String valorTiempoCargoAnio = cbx_tiempoCargoAnios.getSelectedItem().toString();
+                        String valorTiempoCargoMeses = cbx_tiempoCargoMeses.getSelectedItem().toString();
                         String valorSeleccionadoCbxMeses = cbx_meses.getSelectedItem().toString();
                         String valorSeleccionadoCbxAnio = cbx_anio.getSelectedItem().toString();
+
+                        String valorOtroHorario = valorSeleccionadoCbxHoraioTrabajo.equals("OTRO")?txt_otroHorario.getText().toString():"null";
+                        String valorOtroRegimen = valorSeleccionadoCbxRegimen.equals("OTRO")?txt_otroRegimen.getText().toString():"null";
+                        String valorOtroRefrigerio = valorSeleccionadoCbxRegimen.equals("OTRO")?txt_otroRefrigerio.getText().toString():"null";
+                        String valorOtroMarcaOrej = valorMarcaOrejeras.equals("OTRO")?txt_otroMarcaOrej.getText().toString():"null";
+                        String valorOtroMarcaTapones = valorMarcaTapones.equals("OTRO")?txt_otroMarcaTapones.getText().toString():"null";
+                        String valorOtroModeloOrej = valorModeloOrjeras.equals("OTRO")?txt_otroModeloOrej.getText().toString():"null";
+                        String valorOtroModeloTapones = valorModeloTapones.equals("OTRO")?txt_otroModeloTapones.getText().toString():"null";
+
 
                         String estado_resultado = "1";
                         String fecha_registro = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
@@ -337,7 +364,7 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
                                 valorSeleccionadoCbxHoraioTrabajo,
                                 valorSeleccionadoCbxRegimen,
                                 valorSeleccionadoCbxRefrigerio,
-                                valorSeleccionadoCbxTiempoCargo,
+                                valorTiempoCargoAnio,
                                 valorMolestiOido,
                                 valorEnferOido,
                                 valorDetalleEnf,
@@ -478,7 +505,8 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
         cbx_variacion = view.findViewById(R.id.cbx_variacion);
         cbx_regimen = view.findViewById(R.id.cbx_regimen);
         cbx_refrigerio = view.findViewById(R.id.cbx_refrigerio);
-        cbx_tiempoCargo = view.findViewById(R.id.cbx_tiempoCargo);
+        cbx_tiempoCargoAnios = view.findViewById(R.id.cbx_tiempoCargoAnios);
+        cbx_tiempoCargoMeses = view.findViewById(R.id.cbx_tiempoCargoMeses);
         cbx_horarioTrabajo = view.findViewById(R.id.cbx_horarioTrabajo);
         cbx_tipoDoc = view.findViewById(R.id.cbx_tipoDocumento);
         cbx_meses = view.findViewById(R.id.cbx_meses);
@@ -527,16 +555,16 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
         radioGroup_Orejeras = view.findViewById(R.id.radioGroupOrejeras);
         radioGroup_Ingenieria = view.findViewById(R.id.radioGroupIngenieria);
 
-        radioGroup_Aislante = view.findViewById(R.id.radioGroupOido);
-        radioGroup_Fachada = view.findViewById(R.id.radioGroupEnferm);
-        radioGroup_Techo = view.findViewById(R.id.radioGroupAdminis);
-        radioGroup_Cerramiento = view.findViewById(R.id.radioGroupTapones);
-        radioGroup_Cabinas = view.findViewById(R.id.radioGroupOrejeras);
-        radioGroup_Capac = view.findViewById(R.id.radioGroupOido);
-        radioGroup_SenalPresion = view.findViewById(R.id.radioGroupEnferm);
-        radioGroup_SenalEpps = view.findViewById(R.id.radioGroupAdminis);
-        radioGroup_AdmTiempoExpo = view.findViewById(R.id.radioGroupTapones);
-        radioGroup_Rotacion = view.findViewById(R.id.radioGroupOrejeras);
+        radioGroup_Aislante = view.findViewById(R.id.radioGroup_Aislante);
+        radioGroup_Fachada = view.findViewById(R.id.radioGroup_Fachada);
+        radioGroup_Techo = view.findViewById(R.id.radioGroup_Techos);
+        radioGroup_Cerramiento = view.findViewById(R.id.radioGroup_Cerramiento);
+        radioGroup_Cabinas = view.findViewById(R.id.radioGroup_Cabinas);
+        radioGroup_Capac = view.findViewById(R.id.radioGroup_Riesgos);
+        radioGroup_SenalPresion = view.findViewById(R.id.radioGroup_SeñasPresion);
+        radioGroup_SenalEpps = view.findViewById(R.id.radioGroup_EppObliga);
+        radioGroup_AdmTiempoExpo = view.findViewById(R.id.radioGroup_AdminExpo);
+        radioGroup_Rotacion = view.findViewById(R.id.radioGroup_Rotacion);
 
         radio_OidoSi = view.findViewById(R.id.radio_OidoSi);
         radio_enferSi = view.findViewById(R.id.radio_emfermedadSi);
@@ -549,6 +577,22 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
         card_adminis = view.findViewById(R.id.Card_Administrativo);
         card_tapones = view.findViewById(R.id.Card_Tapones);
         card_orejeras = view.findViewById(R.id.Card_Orejeras);
+
+        linearOtroHorario = view.findViewById(R.id.linearOtroHorario);
+        txt_otroHorario = view.findViewById(R.id.txt_otroHorario);
+        linearOtroRegimen = view.findViewById(R.id.linearOtroRegimen);
+        txt_otroRegimen = view.findViewById(R.id.txt_otroRegimen);
+        linearOtroRefrigerio = view.findViewById(R.id.linearOtroRefrigerio);
+        txt_otroRefrigerio = view.findViewById(R.id.txt_otroRefrigerio);
+        linearOtroMarcaOrej = view.findViewById(R.id.linearOtroMarcaOrej);
+        txt_otroMarcaOrej = view.findViewById(R.id.txt_otroMarcaOrej);
+        linearOtroMarcaTapones= view.findViewById(R.id.linearOtroMarcaTapones);
+        txt_otroMarcaTapones = view.findViewById(R.id.txt_otroMarcaTapones);
+        linearOtroModeloOrej = view.findViewById(R.id.linearOtroModeloOrej);
+        txt_otroModeloOrej = view.findViewById(R.id.txt_otroModeloOrej);
+        linearOtroModeloTapones= view.findViewById(R.id.linearOtroModeloTapones);
+        txt_otroModeloTapones = view.findViewById(R.id.txt_otroModeloTapones);
+
 
 
 
@@ -620,7 +664,7 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
             }
         });
     }
-    private void LlenarNrr(String nomTabla, String campoTabla, Spinner spinner, TextView txt) {
+    private void LlenarNrr(String nomTabla, String campoTabla, Spinner spinner, EditText txt) {
         List<Object[]> listaValorNRR = DAO_DatosLocal.obtenerDatos(nomTabla, getActivity());
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

@@ -203,7 +203,7 @@ public class FormatosFragment extends Fragment {
                             MensajeAlerta(registro.getNom_formato());
                         }
                         break;
-                    case "LUXOMETRO":
+                    case "ILUMINACIÓN":
                         // Opción 3 - Navegar a ILUMINACION
                         if (registro.getRealizado() < registro.getCantidad()) {
                             Fragment iluminacion = new IluminacionFragment();

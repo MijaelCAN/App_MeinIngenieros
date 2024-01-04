@@ -55,7 +55,7 @@ public class Ordenes_SyncWorker extends Worker {
                         // Si hay registros, actualizar o insertar según corresponda
                         for (Orden_Trabajo orden : todoItems) {
                             // Verificar si el cine ya existe en la base de datos local
-                            Orden_Trabajo existe = dao_orden.BuscarOrden(orden.getId_ot());
+                            Orden_Trabajo existe = dao_orden.BuscarOrden(orden.getCod_ot());
                             //boolean existe = dao_orden.verificarExistenciaOrden(orden.getCod_ot());
 
                             if (existe!=null) {

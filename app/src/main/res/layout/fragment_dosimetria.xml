@@ -177,12 +177,12 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="5dp"
                                     android:textSize="15dp"
-                                    android:hint="Selecionar"
+                                    android:hint="Seleccione"
                                     android:paddingLeft="8dp"
                                     android:inputType="text"
                                     android:textColor="@color/black"
                                     android:textColorHint="@color/black"
-                                    android:background="@drawable/style_spinner"/>
+                                    style="@style/EditTextFocusStyle"/>
                             </LinearLayout>
 
                             <LinearLayout
@@ -209,11 +209,11 @@
                                     android:layout_marginTop="5dp"
                                     android:textSize="15dp"
                                     android:textColor="@color/black"
-                                    android:hint="Selecionar"
+                                    android:hint="Seleccione"
                                     android:inputType="text"
                                     android:paddingLeft="8dp"
                                     android:textColorHint="@color/black"
-                                    android:background="@drawable/style_spinner"/>
+                                    style="@style/EditTextFocusStyle"/>
                             </LinearLayout>
                         </LinearLayout>
                         <!--_______________________________________________________________________-->
@@ -255,14 +255,13 @@
                                     android:id="@+id/tv_Hora"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:textColorHint="@color/blanco"
+                                    android:textColorHint="@color/black"
                                     android:background="@drawable/style_input"
                                     android:layout_marginTop="5dp"
-                                    android:textSize="12sp"
+                                    android:textSize="16sp"
                                     android:gravity="center_vertical"
                                     android:paddingLeft="8dp"
-                                    android:hint="Seleccione Hora"
-                                    android:inputType="datetime"
+                                    android:hint="Seleccione"
                                     android:onClick="showTimePickerDialog"/>
                             </LinearLayout>
 
@@ -289,9 +288,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="5dp"
                                     android:layout_weight="1"
-                                    android:outlineSpotShadowColor="@color/blanco"
                                     android:textColorHint="@color/blanco"
-                                    android:background="@drawable/style_spinner"/>
+                                    style="@style/EditTextFocusStyle"/>
                             </LinearLayout>
                             <LinearLayout
                                 android:layout_width="0dp"
@@ -316,7 +314,7 @@
                                     android:layout_marginTop="5dp"
                                     android:layout_weight="1"
                                     android:textColorHint="@color/blanco"
-                                    android:background="@drawable/style_spinner" />
+                                    style="@style/EditTextFocusStyle" />
                             </LinearLayout>
                         </LinearLayout>
 
@@ -383,8 +381,7 @@
                             android:layout_marginTop="5dp"
                             android:textSize="15sp"
                             android:gravity="center_vertical"
-                            android:text=""
-                            android:hint="Seleccione Fecha"
+                            android:hint="Seleccione"
                             android:paddingLeft="8dp"
                             android:fontFamily="sans-serif-light"
                             android:onClick="showDatePickerDialog" />
@@ -420,7 +417,7 @@
                                     android:textSize="15sp"
                                     android:gravity="center_vertical"
                                     android:text=""
-                                    android:hint="Seleccione Hora"
+                                    android:hint="Seleccione"
                                     android:paddingLeft="8dp"
                                     android:fontFamily="sans-serif-light"
                                     android:onClick="showTimePickerDialog" />
@@ -452,7 +449,7 @@
                                     android:textSize="15sp"
                                     android:gravity="center_vertical"
                                     android:text=""
-                                    android:hint="Seleccione Hora"
+                                    android:hint="Seleccione"
                                     android:paddingLeft="8dp"
                                     android:fontFamily="sans-serif-light"
                                     android:onClick="showTimePickerDialog"/>
@@ -476,7 +473,7 @@
                             android:layout_marginTop="5dp"
                             android:textColorHint="@color/black"
                             android:textColor="@color/black"
-                            android:background="@drawable/style_input"
+                            style="@style/EditTextFocusStyle"
                             android:hint="Ingrese jornada"
                             android:textSize="15sp"
                             android:paddingLeft="8dp"
@@ -497,7 +494,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textColorHint="@color/black"
-                            android:background="@drawable/style_input"
+                            style="@style/EditTextFocusStyle"
                             android:hint="Ingrese tiempo"
                             android:textColor="@color/black"
                             android:paddingLeft="8dp"
@@ -560,7 +557,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textColorHint="@color/black"
-                            android:background="@drawable/style_input"
+                            style="@style/EditTextFocusStyle"
                             android:hint="Ingrese motivo"
                             android:textSize="15sp"
                             android:paddingLeft="8dp"
@@ -583,7 +580,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textColorHint="@color/black"
-                            android:background="@drawable/style_input"
+                            style="@style/EditTextFocusStyle"
                             android:hint="Ingrese otra fuente"
                             android:paddingLeft="8dp"
                             android:textSize="15sp"
@@ -681,7 +678,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="5dp"
                                     android:layout_weight="1"
-                                    android:background="@drawable/style_spinner" />
+                                    style="@style/EditTextFocusStyle" />
                             </LinearLayout>
 
                             <LinearLayout
@@ -705,7 +702,7 @@
                                     android:id="@+id/txt_numDocumento"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:background="@drawable/style_input"
+                                    style="@style/EditTextFocusStyle"
                                     android:layout_marginTop="5dp"
                                     android:hint="Digite"
                                     android:textColor="@color/black"
@@ -743,13 +740,14 @@
                                     android:id="@+id/txt_nombre"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:background="@drawable/style_input"
+                                    style="@style/EditTextFocusStyle"
                                     android:hint="Digite"
                                     android:paddingLeft="8dp"
                                     android:textSize="15sp"
                                     android:fontFamily="sans-serif-light"
                                     android:textColor="@color/black"
-                                    android:textColorHint="@color/black"/>
+                                    android:textColorHint="@color/black"
+                                    android:focusable="true"/>
                             </LinearLayout>
 
                             <LinearLayout
@@ -773,9 +771,10 @@
                                     android:id="@+id/txt_edad"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:background="@drawable/style_input"
-                                    android:hint=" Digite"
-                                    android:textSize="12sp"/>
+                                    style="@style/EditTextFocusStyle"
+                                    android:hint="Digite"
+                                    android:paddingLeft="8dp"
+                                    android:textSize="16sp"/>
                             </LinearLayout>
                         </LinearLayout>
                         <!-- Fin de la primera fila Doble -->
@@ -793,7 +792,7 @@
                             android:id="@+id/txt_areaTrabajo"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/style_input"
+                            style="@style/EditTextFocusStyle"
                             android:hint="Digite"
                             android:textColorHint="@color/black"
                             android:paddingLeft="8dp"
@@ -816,7 +815,7 @@
                             android:id="@+id/txt_puestoTrabajo"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/style_input"
+                            style="@style/EditTextFocusStyle"
                             android:hint="Digite"
                             android:textSize="15sp"
                             android:fontFamily="sans-serif-light"
@@ -851,7 +850,7 @@
                                     android:id="@+id/txt_actividades"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:background="@drawable/style_input"
+                                    style="@style/EditTextFocusStyle"
                                     android:hint=" Ingrese actividades"
                                     android:textSize="15sp"
                                     android:fontFamily="sans-serif-light"
@@ -890,23 +889,63 @@
                     android:padding="16dp">
 
                     <!-- Título Central -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Horario de trabajo:"
-                        android:textSize="12dp"
-                        android:fontFamily="sans-serif-light"
-                        android:textColor="@color/black"/>
-
-                    <Spinner
-                        android:id="@+id/cbx_horarioTrabajo"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/style_spinner"
-                        android:textSize="10sp" />
+                        android:layout_marginRight="2dp"
+                        android:orientation="horizontal">
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Horario de trabajo:"
+                                android:textSize="12dp"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black"/>
+
+                            <Spinner
+                                android:id="@+id/cbx_horarioTrabajo"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/style_spinner"
+                                android:textSize="10sp" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/linearOtroHorario"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginLeft="15dp"
+                            android:orientation="vertical"
+                            android:visibility="visible">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Otro horario"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black"/>
+
+                            <EditText
+                                android:id="@+id/txt_otroHorario"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                style="@style/EditTextFocusStyle"
+                                android:hint="Digite"
+                                android:paddingLeft="8dp"
+                                android:textSize="16sp"/>
+
+                        </LinearLayout>
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -936,13 +975,48 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:layout_weight="1"
-                                android:background="@drawable/style_spinner" />
+                                android:background="@drawable/style_spinner"/>
                         </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/linearOtroRegimen"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="15dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Otro Regimen"
+                                android:textSize="12sp"
+                                android:layout_marginTop="10dp"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black"/>
+
+                            <EditText
+                                android:id="@+id/txt_otroRegimen"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                style="@style/EditTextFocusStyle"
+                                android:hint="Digite"
+                                android:paddingLeft="8dp"
+                                android:textSize="16sp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="2dp"
+                        android:orientation="horizontal">
 
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="15dp"
                             android:layout_weight="1"
                             android:orientation="vertical">
 
@@ -964,26 +1038,97 @@
                                 android:layout_weight="1"
                                 android:background="@drawable/style_spinner" />
                         </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/linearOtroRefrigerio"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="15dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Otro horario Refrigerio"
+                                android:textSize="12sp"
+                                android:layout_marginTop="10dp"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black"/>
+
+                            <EditText
+                                android:id="@+id/txt_otroRefrigerio"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                style="@style/EditTextFocusStyle"
+                                android:hint="Digite"
+                                android:paddingLeft="8dp"
+                                android:textSize="16sp"/>
+                        </LinearLayout>
                     </LinearLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Tiempo ocupando cargo (en la empresa)"
-                        android:textSize="12dp"
-                        android:fontFamily="sans-serif-light"
-                        android:textColor="@color/black"
-                        android:layout_marginTop="10dp"/>
-
-                    <Spinner
-                        android:id="@+id/cbx_tiempoCargo"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/style_spinner"
-                        android:textSize="10sp" />
+                        android:layout_marginRight="2dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Tiempo ocupando cargo (Años)"
+                                android:textSize="12dp"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black"
+                                android:layout_marginTop="10dp"/>
+
+                            <Spinner
+                                android:id="@+id/cbx_tiempoCargoAnios"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/style_spinner"
+                                android:textSize="10sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="15dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Tiempo ocupando cargo (Meses)"
+                                android:textSize="12sp"
+                                android:layout_marginTop="10dp"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black"/>
+
+                            <Spinner
+                                android:id="@+id/cbx_tiempoCargoMeses"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/style_spinner"
+                                android:textSize="10sp" />
+                        </LinearLayout>
+                    </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
             <!-- Sexto Cardview -->
@@ -1007,8 +1152,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:background="@drawable/style_border_1"
+                    android:orientation="vertical"
                     android:padding="16dp">
 
                     <!-- Título Central -->
@@ -1016,10 +1161,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Molestias al oido"
-                        android:textSize="12dp"
                         android:fontFamily="sans-serif-light"
-                        android:textColor="@color/black"/>
+                        android:text="Molestias al oido"
+                        android:textColor="@color/black"
+                        android:textSize="12dp" />
 
                     <RadioGroup
                         android:id="@+id/radioGroupOido"
@@ -1031,27 +1176,27 @@
                             android:id="@+id/radio_OidoSi"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Sí"
                             android:fontFamily="sans-serif-light"
-                            android:textColor="@color/black"/>
+                            android:text="Sí"
+                            android:textColor="@color/black" />
 
                         <RadioButton
                             android:id="@+id/radio_OidoNo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="No"
                             android:fontFamily="sans-serif-light"
-                            android:textColor="@color/black"/>
+                            android:text="No"
+                            android:textColor="@color/black" />
                     </RadioGroup>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Presenta alguna enfermedad al oido"
-                        android:textSize="12dp"
                         android:fontFamily="sans-serif-light"
-                        android:textColor="@color/black" />
+                        android:text="Presenta alguna enfermedad al oido"
+                        android:textColor="@color/black"
+                        android:textSize="12dp" />
 
                     <RadioGroup
                         android:id="@+id/radioGroupEnferm"
@@ -1063,34 +1208,35 @@
                             android:id="@+id/radio_emfermedadSi"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Sí"
                             android:fontFamily="sans-serif-light"
-                            android:textColor="@color/black"/>
+                            android:text="Sí"
+                            android:textColor="@color/black" />
 
                         <RadioButton
                             android:id="@+id/radio_emfermedadNo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="No"
                             android:fontFamily="sans-serif-light"
-                            android:textColor="@color/black"/>
+                            android:text="No"
+                            android:textColor="@color/black" />
                     </RadioGroup>
+
                     <EditText
                         android:id="@+id/txt_detalleEnferme"
+                        style="@style/EditTextFocusStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/style_input"
                         android:hint=" Ingrese detalle"
                         android:textSize="12sp"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-light"
                         android:text="Fecha de Ultimo examen medico"
                         android:textColor="@color/black"
-                        android:textSize="12sp"
-                        android:fontFamily="sans-serif-light"/>
+                        android:textSize="12sp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -1109,10 +1255,10 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="10dp"
                                 android:layout_weight="1"
-                                android:text="Mes"
-                                android:textSize="12sp"
                                 android:fontFamily="sans-serif-light"
-                                android:textColor="@color/black"/>
+                                android:text="Mes"
+                                android:textColor="@color/black"
+                                android:textSize="12sp" />
 
                             <Spinner
                                 android:id="@+id/cbx_meses"
@@ -1135,10 +1281,10 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="10dp"
                                 android:layout_weight="1"
-                                android:text="Año"
-                                android:textSize="12sp"
                                 android:fontFamily="sans-serif-light"
-                                android:textColor="@color/black" />
+                                android:text="Año"
+                                android:textColor="@color/black"
+                                android:textSize="12sp" />
 
                             <Spinner
                                 android:id="@+id/cbx_anio"
@@ -1153,22 +1299,22 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
                         android:layout_marginTop="12dp"
+                        android:fontFamily="sans-serif-light"
                         android:text="Controles existentes para el ruido"
                         android:textColor="@color/generic_color"
-                        android:textSize="15sp"
-                        android:layout_gravity="center_horizontal"
-                        android:fontFamily="sans-serif-light" />
+                        android:textSize="15sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:layout_weight="1"
-                        android:text="Control de ingenieria"
-                        android:textSize="12dp"
                         android:fontFamily="sans-serif-light"
-                        android:textColor="@color/black" />
+                        android:text="Control de ingenieria"
+                        android:textColor="@color/black"
+                        android:textSize="12dp" />
 
                     <RadioGroup
                         android:id="@+id/radioGroupIngenieria"
@@ -1180,49 +1326,55 @@
                             android:id="@+id/radioIngenieriaSi"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Sí"
                             android:fontFamily="sans-serif-light"
-                            android:textColor="@color/black"/>
+                            android:text="Sí"
+                            android:textColor="@color/black" />
 
                         <RadioButton
                             android:id="@+id/radioUngenieriaNo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="No"
                             android:fontFamily="sans-serif-light"
-                            android:textColor="@color/black"/>
+                            android:text="No"
+                            android:textColor="@color/black" />
                     </RadioGroup>
+
                     <androidx.cardview.widget.CardView
                         android:id="@+id/Card_Ingenieria"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
+                        android:visibility="gone"
                         app:cardCornerRadius="4dp"
-                        app:cardElevation="2dp"
-                        android:visibility="gone">
+                        app:cardElevation="2dp">
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:padding="16dp">
+
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal">
+
                                 <LinearLayout
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:orientation="vertical">
+
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="5dp"
                                         android:layout_weight="1"
-                                        android:text="Aisalantes de sonido"
-                                        android:textSize="12dp"
                                         android:fontFamily="sans-serif-light"
-                                        android:textColor="@color/black" />
+                                        android:text="Aisalantes de sonido"
+                                        android:textColor="@color/black"
+                                        android:textSize="12dp" />
+
                                     <RadioGroup
                                         android:id="@+id/radioGroup_Aislante"
                                         android:layout_width="wrap_content"
@@ -1233,33 +1385,36 @@
                                             android:id="@+id/radioAislanteSi"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="Sí"
                                             android:fontFamily="sans-serif-light"
-                                            android:textColor="@color/black"/>
+                                            android:text="Sí"
+                                            android:textColor="@color/black" />
 
                                         <RadioButton
                                             android:id="@+id/radioAislanteNo"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="No"
                                             android:fontFamily="sans-serif-light"
-                                            android:textColor="@color/black"/>
+                                            android:text="No"
+                                            android:textColor="@color/black" />
                                     </RadioGroup>
                                 </LinearLayout>
+
                                 <LinearLayout
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:orientation="vertical">
+
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="5dp"
                                         android:layout_weight="1"
-                                        android:text="Orientacion Fachadas"
-                                        android:textSize="12dp"
                                         android:fontFamily="sans-serif-light"
-                                        android:textColor="@color/black" />
+                                        android:text="Orientacion Fachadas"
+                                        android:textColor="@color/black"
+                                        android:textSize="12dp" />
+
                                     <RadioGroup
                                         android:id="@+id/radioGroup_Fachada"
                                         android:layout_width="wrap_content"
@@ -1270,20 +1425,21 @@
                                             android:id="@+id/radioFachadaSi"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="Sí"
                                             android:fontFamily="sans-serif-light"
-                                            android:textColor="@color/black"/>
+                                            android:text="Sí"
+                                            android:textColor="@color/black" />
 
                                         <RadioButton
                                             android:id="@+id/radioFachadaNo"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="No"
                                             android:fontFamily="sans-serif-light"
-                                            android:textColor="@color/black"/>
+                                            android:text="No"
+                                            android:textColor="@color/black" />
                                     </RadioGroup>
                                 </LinearLayout>
                             </LinearLayout>
+
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -1301,10 +1457,10 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="5dp"
                                         android:layout_weight="1"
-                                        android:text="Techos altos"
-                                        android:textSize="12dp"
                                         android:fontFamily="sans-serif-light"
-                                        android:textColor="@color/black"/>
+                                        android:text="Techos altos"
+                                        android:textColor="@color/black"
+                                        android:textSize="12dp" />
 
                                     <RadioGroup
                                         android:id="@+id/radioGroup_Techos"
@@ -1316,19 +1472,20 @@
                                             android:id="@+id/radioTechosSi"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="Sí"
                                             android:fontFamily="sans-serif-light"
-                                            android:textColor="@color/black"/>
+                                            android:text="Sí"
+                                            android:textColor="@color/black" />
 
                                         <RadioButton
                                             android:id="@+id/radioTechosNo"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="No"
                                             android:fontFamily="sans-serif-light"
-                                            android:textColor="@color/black"/>
+                                            android:text="No"
+                                            android:textColor="@color/black" />
                                     </RadioGroup>
                                 </LinearLayout>
+
                                 <LinearLayout
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
@@ -1340,10 +1497,10 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="3dp"
                                         android:layout_weight="1"
-                                        android:text="Cerramientos"
-                                        android:textSize="12dp"
                                         android:fontFamily="sans-serif-light"
-                                        android:textColor="@color/black" />
+                                        android:text="Cerramientos"
+                                        android:textColor="@color/black"
+                                        android:textSize="12dp" />
 
                                     <RadioGroup
                                         android:id="@+id/radioGroup_Cerramiento"
@@ -1355,20 +1512,21 @@
                                             android:id="@+id/radioCerramientoSi"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="Sí"
                                             android:fontFamily="sans-serif-light"
-                                            android:textColor="@color/black"/>
+                                            android:text="Sí"
+                                            android:textColor="@color/black" />
 
                                         <RadioButton
                                             android:id="@+id/radioCerramientoNo"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="No"
                                             android:fontFamily="sans-serif-light"
-                                            android:textColor="@color/black"/>
+                                            android:text="No"
+                                            android:textColor="@color/black" />
                                     </RadioGroup>
                                 </LinearLayout>
                             </LinearLayout>
+
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -1386,10 +1544,10 @@
                                         android:layout_height="wrap_content"
 
                                         android:layout_weight="1"
-                                        android:text="Cabinas de aislamiento"
-                                        android:textSize="12dp"
                                         android:fontFamily="sans-serif-light"
-                                        android:textColor="@color/black"/>
+                                        android:text="Cabinas de aislamiento"
+                                        android:textColor="@color/black"
+                                        android:textSize="12dp" />
 
                                     <RadioGroup
                                         android:id="@+id/radioGroup_Cabinas"
@@ -1401,42 +1559,43 @@
                                             android:id="@+id/radioCabinaSi"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="Sí"
                                             android:fontFamily="sans-serif-light"
-                                            android:textColor="@color/black"/>
+                                            android:text="Sí"
+                                            android:textColor="@color/black" />
 
                                         <RadioButton
                                             android:id="@+id/radioCabinaNo"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="No"
                                             android:fontFamily="sans-serif-light"
-                                            android:textColor="@color/black"/>
+                                            android:text="No"
+                                            android:textColor="@color/black" />
                                     </RadioGroup>
                                 </LinearLayout>
                             </LinearLayout>
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:layout_weight="1"
-                                android:text="Otros"
-                                android:textSize="12dp"
                                 android:fontFamily="sans-serif-light"
-                                android:textColor="@color/black" />
+                                android:text="Otros"
+                                android:textColor="@color/black"
+                                android:textSize="12dp" />
 
                             <EditText
                                 android:id="@+id/txt_OtrosIngenieria"
+                                style="@style/EditTextFocusStyle"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:background="@drawable/style_input"
-                                android:hint=" Digite"
-                                android:textSize="15sp"
-                                android:paddingLeft="8dp"
                                 android:layout_marginTop="5dp"
                                 android:fontFamily="sans-serif-light"
+                                android:hint=" Digite"
+                                android:paddingLeft="8dp"
+                                android:textColor="@color/black"
                                 android:textColorHint="@color/black"
-                                android:textColor="@color/black" />
+                                android:textSize="15sp" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
 
@@ -1444,10 +1603,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Control administrativo"
-                        android:textSize="12dp"
                         android:fontFamily="sans-serif-light"
-                        android:textColor="@color/black"/>
+                        android:text="Control administrativo"
+                        android:textColor="@color/black"
+                        android:textSize="12dp" />
 
                     <RadioGroup
                         android:id="@+id/radioGroupAdminis"
@@ -1459,49 +1618,55 @@
                             android:id="@+id/radio_AdministrativoSi"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Sí"
                             android:fontFamily="sans-serif-light"
-                            android:textColor="@color/black"/>
+                            android:text="Sí"
+                            android:textColor="@color/black" />
 
                         <RadioButton
                             android:id="@+id/radio_AdministrativoNo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="No"
                             android:fontFamily="sans-serif-light"
-                            android:textColor="@color/black"/>
+                            android:text="No"
+                            android:textColor="@color/black" />
                     </RadioGroup>
+
                     <androidx.cardview.widget.CardView
                         android:id="@+id/Card_Administrativo"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
+                        android:visibility="gone"
                         app:cardCornerRadius="4dp"
-                        app:cardElevation="2dp"
-                        android:visibility="gone">
+                        app:cardElevation="2dp">
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:padding="10dp">
+
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal">
+
                                 <LinearLayout
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:orientation="vertical">
+
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="5dp"
                                         android:layout_weight="1"
-                                        android:text="Capacitacion sobre Riesgos/\nUso Correcto de EPP's"
-                                        android:textSize="12dp"
                                         android:fontFamily="sans-serif-light"
-                                        android:textColor="@color/black"/>
+                                        android:text="Capacitacion sobre Riesgos/\nUso Correcto de EPP's"
+                                        android:textColor="@color/black"
+                                        android:textSize="12dp" />
+
                                     <RadioGroup
                                         android:id="@+id/radioGroup_Riesgos"
                                         android:layout_width="wrap_content"
@@ -1521,20 +1686,23 @@
                                             android:text="No" />
                                     </RadioGroup>
                                 </LinearLayout>
+
                                 <LinearLayout
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:orientation="vertical">
+
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="5dp"
                                         android:layout_weight="1"
-                                        android:text="Señalizacion de niveles de Presion Sonora"
-                                        android:textSize="12dp"
                                         android:fontFamily="sans-serif-light"
-                                        android:textColor="@color/black" />
+                                        android:text="Señalizacion de niveles de Presion Sonora"
+                                        android:textColor="@color/black"
+                                        android:textSize="12dp" />
+
                                     <RadioGroup
                                         android:id="@+id/radioGroup_SeñasPresion"
                                         android:layout_width="wrap_content"
@@ -1555,6 +1723,7 @@
                                     </RadioGroup>
                                 </LinearLayout>
                             </LinearLayout>
+
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -1572,10 +1741,10 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="5dp"
                                         android:layout_weight="1"
-                                        android:text="Señalizacion de uso Obligatorio de EPP's"
-                                        android:textSize="12dp"
                                         android:fontFamily="sans-serif-light"
-                                        android:textColor="@color/black" />
+                                        android:text="Señalizacion de uso Obligatorio de EPP's"
+                                        android:textColor="@color/black"
+                                        android:textSize="12dp" />
 
                                     <RadioGroup
                                         android:id="@+id/radioGroup_EppObliga"
@@ -1596,6 +1765,7 @@
                                             android:text="No" />
                                     </RadioGroup>
                                 </LinearLayout>
+
                                 <LinearLayout
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
@@ -1607,10 +1777,11 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="3dp"
                                         android:layout_weight="1"
-                                        android:text="Administracion de Tiempo de Exposicion"
-                                        android:textSize="12dp"
                                         android:fontFamily="sans-serif-light"
-                                        android:textColor="@color/black" />
+                                        android:text="Administracion de Tiempo de Exposicion"
+                                        android:textColor="@color/black"
+                                        android:textSize="12dp" />
+
                                     <RadioGroup
                                         android:id="@+id/radioGroup_AdminExpo"
                                         android:layout_width="wrap_content"
@@ -1631,6 +1802,7 @@
                                     </RadioGroup>
                                 </LinearLayout>
                             </LinearLayout>
+
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -1648,10 +1820,10 @@
                                         android:layout_height="wrap_content"
 
                                         android:layout_weight="1"
-                                        android:text="Rotacion de Personal"
-                                        android:textSize="12dp"
                                         android:fontFamily="sans-serif-light"
-                                        android:textColor="@color/black" />
+                                        android:text="Rotacion de Personal"
+                                        android:textColor="@color/black"
+                                        android:textSize="12dp" />
 
                                     <RadioGroup
                                         android:id="@+id/radioGroup_Rotacion"
@@ -1673,46 +1845,48 @@
                                     </RadioGroup>
                                 </LinearLayout>
                             </LinearLayout>
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="Otros"
                                 android:fontFamily="sans-serif-light"
+                                android:text="Otros"
                                 android:textColor="@color/black" />
 
                             <EditText
                                 android:id="@+id/txt_OtrosAdministrativo"
+                                style="@style/EditTextFocusStyle"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:background="@drawable/style_input"
-                                android:hint=" Digite"
-                                android:textSize="15sp"
-                                android:paddingLeft="8dp"
                                 android:layout_marginTop="5dp"
                                 android:fontFamily="sans-serif-light"
+                                android:hint=" Digite"
+                                android:paddingLeft="8dp"
+                                android:textColor="@color/black"
                                 android:textColorHint="@color/black"
-                                android:textColor="@color/black"/>
+                                android:textSize="15sp" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:fontFamily="sans-serif-light"
                         android:text="PROTECTORES AUDITIVOS"
                         android:textColor="@color/generic_color"
-                        android:textSize="12sp"
-                        android:fontFamily="sans-serif-light" />
+                        android:textSize="12sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:layout_weight="1"
-                        android:text="Tapones Auditivos"
-                        android:textSize="12dp"
                         android:fontFamily="sans-serif-light"
-                        android:textColor="@color/black"/>
+                        android:text="Tapones Auditivos"
+                        android:textColor="@color/black"
+                        android:textSize="12dp" />
 
                     <RadioGroup
                         android:id="@+id/radioGroupTapones"
@@ -1724,17 +1898,17 @@
                             android:id="@+id/radioTaponesSi"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Sí"
                             android:fontFamily="sans-serif-light"
-                            android:textColor="@color/black"/>
+                            android:text="Sí"
+                            android:textColor="@color/black" />
 
                         <RadioButton
                             android:id="@+id/radioTaponesNo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="No"
                             android:fontFamily="sans-serif-light"
-                            android:textColor="@color/black"/>
+                            android:text="No"
+                            android:textColor="@color/black" />
                     </RadioGroup>
 
                     <androidx.cardview.widget.CardView
@@ -1769,10 +1943,10 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="10dp"
                                         android:layout_weight="1"
-                                        android:text="Marca"
-                                        android:textSize="12sp"
                                         android:fontFamily="sans-serif-light"
-                                        android:textColor="@color/black" />
+                                        android:text="Marca"
+                                        android:textColor="@color/black"
+                                        android:textSize="12sp" />
 
                                     <Spinner
                                         android:id="@+id/cbx_marcaTapones"
@@ -1784,6 +1958,7 @@
                                 </LinearLayout>
 
                                 <LinearLayout
+                                    android:id="@+id/linearOtroMarcaTapones"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_marginLeft="15dp"
@@ -1795,10 +1970,47 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="10dp"
                                         android:layout_weight="1"
-                                        android:text="Modelo"
-                                        android:textSize="12sp"
                                         android:fontFamily="sans-serif-light"
-                                        android:textColor="@color/black" />
+                                        android:text="Otra Marca"
+                                        android:textColor="@color/black"
+                                        android:textSize="12sp" />
+
+                                    <EditText
+                                        android:id="@+id/txt_otroMarcaTapones"
+                                        style="@style/EditTextFocusStyle"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="5dp"
+                                        android:fontFamily="sans-serif-light"
+                                        android:hint="Digite"
+                                        android:paddingLeft="8dp"
+                                        android:textColor="@color/black"
+                                        android:textColorHint="@color/black"
+                                        android:textSize="15sp" />
+                                </LinearLayout>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="2dp"
+                                android:orientation="horizontal">
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="10dp"
+                                        android:layout_weight="1"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Modelo"
+                                        android:textColor="@color/black"
+                                        android:textSize="12sp" />
 
                                     <Spinner
                                         android:id="@+id/cbx_modeloTapones"
@@ -1808,40 +2020,74 @@
                                         android:layout_weight="1"
                                         android:background="@drawable/style_input" />
                                 </LinearLayout>
+
+                                <LinearLayout
+                                    android:id="@+id/linearOtroModeloTapones"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="15dp"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="10dp"
+                                        android:layout_weight="1"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Otro Modelo"
+                                        android:textColor="@color/black"
+                                        android:textSize="12sp" />
+
+                                    <EditText
+                                        android:id="@+id/txt_otroModeloTapones"
+                                        style="@style/EditTextFocusStyle"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="5dp"
+                                        android:fontFamily="sans-serif-light"
+                                        android:hint="Digite"
+                                        android:paddingLeft="8dp"
+                                        android:textColor="@color/black"
+                                        android:textColorHint="@color/black"
+                                        android:textSize="15sp" />
+                                </LinearLayout>
                             </LinearLayout>
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="NRR"
-                                android:textSize="12dp"
                                 android:fontFamily="sans-serif-light"
-                                android:textColor="@color/black"/>
+                                android:text="NRR"
+                                android:textColor="@color/black"
+                                android:textSize="12dp" />
 
-                            <TextView
+                            <EditText
                                 android:id="@+id/tv_nrrTapones"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textColor="@color/black"
-                                android:textSize="15sp"
-                                android:textColorHint="@color/black"
-                                android:paddingLeft="8dp"
+                                android:background="@drawable/style_input"
+                                android:fontFamily="sans-serif-light"
                                 android:gravity="center_vertical"
                                 android:inputType="none"
-                                android:fontFamily="sans-serif-light"
-                                android:background="@drawable/style_input"/>
+                                android:paddingLeft="8dp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black"
+                                android:textSize="15sp" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:layout_weight="1"
-                        android:text="Orejeras"
-                        android:textSize="12dp"
                         android:fontFamily="sans-serif-light"
-                        android:textColor="@color/black" />
+                        android:text="Orejeras"
+                        android:textColor="@color/black"
+                        android:textSize="12dp" />
+
                     <RadioGroup
                         android:id="@+id/radioGroupOrejeras"
                         android:layout_width="wrap_content"
@@ -1852,18 +2098,19 @@
                             android:id="@+id/radio_OrejerasSi"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Sí"
                             android:fontFamily="sans-serif-light"
-                            android:textColor="@color/black"/>
+                            android:text="Sí"
+                            android:textColor="@color/black" />
 
                         <RadioButton
                             android:id="@+id/radio_OrejerasNo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="No"
                             android:fontFamily="sans-serif-light"
-                            android:textColor="@color/black"/>
+                            android:text="No"
+                            android:textColor="@color/black" />
                     </RadioGroup>
+
                     <androidx.cardview.widget.CardView
                         android:id="@+id/Card_Orejeras"
                         android:layout_width="match_parent"
@@ -1896,10 +2143,10 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="10dp"
                                         android:layout_weight="1"
-                                        android:text="Marca"
-                                        android:textSize="12sp"
                                         android:fontFamily="sans-serif-light"
-                                        android:textColor="@color/black" />
+                                        android:text="Marca"
+                                        android:textColor="@color/black"
+                                        android:textSize="12sp" />
 
                                     <Spinner
                                         android:id="@+id/cbx_marcaOrej"
@@ -1911,6 +2158,7 @@
                                 </LinearLayout>
 
                                 <LinearLayout
+                                    android:id="@+id/linearOtroMarcaOrej"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_marginLeft="15dp"
@@ -1922,10 +2170,47 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="10dp"
                                         android:layout_weight="1"
-                                        android:text="Modelo"
-                                        android:textSize="12sp"
                                         android:fontFamily="sans-serif-light"
-                                        android:textColor="@color/black" />
+                                        android:text=" Otra Marca"
+                                        android:textColor="@color/black"
+                                        android:textSize="12sp" />
+
+                                    <EditText
+                                        android:id="@+id/txt_otroMarcaOrej"
+                                        style="@style/EditTextFocusStyle"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="5dp"
+                                        android:fontFamily="sans-serif-light"
+                                        android:hint="Digite"
+                                        android:paddingLeft="8dp"
+                                        android:textColor="@color/black"
+                                        android:textColorHint="@color/black"
+                                        android:textSize="15sp" />
+                                </LinearLayout>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="2dp"
+                                android:orientation="horizontal">
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="10dp"
+                                        android:layout_weight="1"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Modelo"
+                                        android:textColor="@color/black"
+                                        android:textSize="12sp" />
 
                                     <Spinner
                                         android:id="@+id/cbx_modeloOrej"
@@ -1935,130 +2220,163 @@
                                         android:layout_weight="1"
                                         android:background="@drawable/style_spinner" />
                                 </LinearLayout>
+
+                                <LinearLayout
+                                    android:id="@+id/linearOtroModeloOrej"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="15dp"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="10dp"
+                                        android:layout_weight="1"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Otro Modelo"
+                                        android:textColor="@color/black"
+                                        android:textSize="12sp" />
+
+                                    <EditText
+                                        android:id="@+id/txt_otroModeloOrej"
+                                        style="@style/EditTextFocusStyle"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="5dp"
+                                        android:fontFamily="sans-serif-light"
+                                        android:hint="Digite"
+                                        android:paddingLeft="8dp"
+                                        android:textColor="@color/black"
+                                        android:textColorHint="@color/black"
+                                        android:textSize="15sp" />
+                                </LinearLayout>
                             </LinearLayout>
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="NRR"
-                                android:textSize="12dp"
                                 android:fontFamily="sans-serif-light"
-                                android:textColor="@color/black" />
+                                android:text="NRR"
+                                android:textColor="@color/black"
+                                android:textSize="12dp" />
 
-                            <TextView
+                            <EditText
                                 android:id="@+id/tv_nrrOrej"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textColor="@color/black"
-                                android:textSize="15sp"
-                                android:paddingLeft="8dp"
+                                android:background="@drawable/style_input"
+                                android:fontFamily="sans-serif-light"
                                 android:gravity="center_vertical"
                                 android:inputType="none"
-                                android:fontFamily="sans-serif-light"
-                                android:background="@drawable/style_input"/>
+                                android:paddingLeft="8dp"
+                                android:textColor="@color/black"
+                                android:textSize="15sp" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:fontFamily="sans-serif-light"
                         android:text="RESULTADO DEL MONITOREO"
                         android:textColor="@color/generic_color"
-                        android:textSize="12sp"
-                        android:fontFamily="sans-serif-light"/>
+                        android:textSize="12sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:layout_weight="1"
-                        android:text="Leq dB(A):"
-                        android:textSize="12dp"
                         android:fontFamily="sans-serif-light"
-                        android:textColor="@color/black" />
+                        android:text="Leq dB(A):"
+                        android:textColor="@color/black"
+                        android:textSize="12dp" />
 
                     <EditText
                         android:id="@+id/txt_leq"
+                        style="@style/EditTextFocusStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/style_input"
-                        android:hint="Digite"
-                        android:textSize="15sp"
-                        android:paddingLeft="8dp"
                         android:layout_marginTop="5dp"
                         android:fontFamily="sans-serif-light"
+                        android:hint="Digite"
+                        android:paddingLeft="8dp"
+                        android:textColor="@color/black"
                         android:textColorHint="@color/black"
-                        android:textColor="@color/black"/>
+                        android:textSize="15sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:layout_weight="1"
-                        android:text="Lpico dB(A):"
-                        android:textSize="12dp"
                         android:fontFamily="sans-serif-light"
-                        android:textColor="@color/black" />
+                        android:text="Lpico dB(A):"
+                        android:textColor="@color/black"
+                        android:textSize="12dp" />
 
                     <EditText
                         android:id="@+id/txt_lpico"
+                        style="@style/EditTextFocusStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/style_input"
-                        android:hint=" Digite"
-                        android:textSize="15sp"
-                        android:paddingLeft="8dp"
                         android:layout_marginTop="5dp"
                         android:fontFamily="sans-serif-light"
+                        android:hint=" Digite"
+                        android:paddingLeft="8dp"
+                        android:textColor="@color/black"
                         android:textColorHint="@color/black"
-                        android:textColor="@color/black"/>
+                        android:textSize="15sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:layout_weight="1"
-                        android:text="Lmax dB(A):"
-                        android:textSize="12dp"
                         android:fontFamily="sans-serif-light"
-                        android:textColor="@color/black" />
+                        android:text="Lmax dB(A):"
+                        android:textColor="@color/black"
+                        android:textSize="12dp" />
 
                     <EditText
                         android:id="@+id/txt_lmax"
+                        style="@style/EditTextFocusStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/style_input"
-                        android:hint=" Digite"
-                        android:textSize="15sp"
-                        android:paddingLeft="8dp"
                         android:layout_marginTop="5dp"
                         android:fontFamily="sans-serif-light"
+                        android:hint=" Digite"
+                        android:paddingLeft="8dp"
+                        android:textColor="@color/black"
                         android:textColorHint="@color/black"
-                        android:textColor="@color/black" />
+                        android:textSize="15sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:layout_weight="1"
-                        android:text="Lmin dB(A):"
-                        android:textSize="12dp"
                         android:fontFamily="sans-serif-light"
-                        android:textColor="@color/black" />
+                        android:text="Lmin dB(A):"
+                        android:textColor="@color/black"
+                        android:textSize="12dp" />
 
                     <EditText
                         android:id="@+id/txt_lmin"
+                        style="@style/EditTextFocusStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/style_input"
-                        android:hint="Digite"
-                        android:textSize="15sp"
-                        android:paddingLeft="8dp"
                         android:layout_marginTop="5dp"
                         android:fontFamily="sans-serif-light"
+                        android:hint="Digite"
+                        android:paddingLeft="8dp"
+                        android:textColor="@color/black"
                         android:textColorHint="@color/black"
-                        android:textColor="@color/black"/>
+                        android:textSize="15sp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
             <!-- Septimo CardView -->
@@ -2091,7 +2409,7 @@
                         android:id="@+id/txt_observaciones"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/style_input"
+                        style="@style/EditTextFocusStyle"
                         android:gravity="top|start"
                         android:hint="Ingresa texto aquí..."
                         android:inputType="textMultiLine"

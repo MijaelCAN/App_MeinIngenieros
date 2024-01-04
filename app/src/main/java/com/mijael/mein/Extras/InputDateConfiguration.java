@@ -10,6 +10,8 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -136,5 +138,67 @@ public class InputDateConfiguration {
         listaDatos.add(opcion2);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, listaDatos);
         return adapter;
+    }
+    public void MostrarCampos(LinearLayout layout, Spinner spinner){
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String itemSeleccionado = parent.getItemAtPosition(position).toString();
+                if (itemSeleccionado.equals("OTRO")) {
+                    layout.setVisibility(View.VISIBLE);
+                } else {
+                    layout.setVisibility(View.GONE);
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    public void llenarNrrYMostrarCampos(String nomTabla, String campoTabla, Spinner spinner, EditText txt, LinearLayout layout) {
+        List<Object[]> listaValorNRR = DAO_DatosLocal.obtenerDatos(nomTabla,context);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String itemSelec = parent.getItemAtPosition(position).toString();
+                //Log.e("Valor Modelo ", itemSelec);
+                for (Object[] item : listaValorNRR) {
+                    if (itemSelec.equals(item[0].toString())) {
+                        txt.setText(item[1].toString());
+                        break;
+                    }
+                }
+
+                // Lógica para mostrar/ocultar campos
+                if (itemSelec.equals("OTRO")) {
+                    layout.setVisibility(View.VISIBLE);
+                } else {
+                    layout.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // No se seleccionó ningún elemento en el Spinner
+            }
+        });
+    }
+
+    public void llenarSpinnerConNumeros(Spinner spinner, int numeroMaximo, Context context) {
+        // Crear una lista para almacenar los números
+        List<String> numeros = new ArrayList<>();
+
+        // Llenar la lista con números del 1 hasta el número máximo
+        for (int i = 1; i <= numeroMaximo; i++) {
+            numeros.add(String.valueOf(i));
+        }
+        // Crear un ArrayAdapter y establecerlo en el Spinner
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, numeros);
+        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
     }
 }
