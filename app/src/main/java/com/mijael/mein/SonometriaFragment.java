@@ -173,7 +173,7 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
         cbx_tiempoMedicion.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                    sumarTiempo();
+                    //sumarTiempo();
             }
         });
         btn_subirFotoSono.setOnClickListener(new View.OnClickListener() {
@@ -252,15 +252,15 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
                         validar.validarCampoObligatorio(txt_humedadRelatva)&&
                         validar.validarCalculo(calculoRealizado,getActivity())&&
                         validar.validarImagen(cargarImagen,getActivity())&&
-                        validar.validarCampoObligatorio(radioGroupIng,getActivity())&&
-                        validar.validarCampoObligatorio(radioaislateSI,getActivity())&&
-                        validar.validarCampoObligatorio(radioCabinaSI,getActivity())&&
-                        validar.validarCampoObligatorio(radioGroupTapones,getActivity())&&
-                        validar.validarCampoObligatorio(cbx_marcaTapones)&&
-                        validar.validarCampoObligatorio(cbx_modeloTapones)&&
-                        validar.validarCampoObligatorio(cbx_marcaOrej)&&
-                        validar.validarCampoObligatorio(cbx_modeloOrej)&&
-                        validar.validarCampoObligatorio(radioGroupOrej,getActivity())&&
+                        //validar.validarCampoObligatorio(radioGroupIng,getActivity())&&
+                        //validar.validarCampoObligatorio(radioaislateSI,getActivity())&&
+                        //validar.validarCampoObligatorio(radioCabinaSI,getActivity())&&
+                        //validar.validarCampoObligatorio(radioGroupTapones,getActivity())&&
+                        //validar.validarCampoObligatorio(cbx_marcaTapones)&&
+                        //validar.validarCampoObligatorio(cbx_modeloTapones)&&
+                        //validar.validarCampoObligatorio(cbx_marcaOrej)&&
+                        //validar.validarCampoObligatorio(cbx_modeloOrej)&&
+                        //validar.validarCampoObligatorio(radioGroupOrej,getActivity())&&
                         validar.validarCampoObligatorio(txt_observaciones))
                 {
                     String valorTvSonometro = tv_sonometro.getText().toString();
@@ -274,7 +274,7 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
                         String act_realizadas = validar.getValor(txt_actRealizadas);
                         String horarioTrabajo = validar.getValor(cbx_horario);
                         String jornadaTrabajo = txt_jornada.getText().toString();
-                        String numTrabajadores = validar.getValor(txt_numTrabajadores);
+                        String numTrabajadores = txt_numTrabajadores.getText().toString();
                         String fuenteRuido = validar.getValor(txt_fuenteGenRuido);
                         String a_concentracion = validar.getValor(cbx_aConcentracion);
                         String limPermisible = validar.getValor(tv_limitePermisible);
@@ -310,12 +310,11 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
                         String nrrOrej = validar.getValor(tv_nrrOrej);
                         String oberv = validar.getValor(txt_observaciones);
 
-                        String valorOtroHorario = horarioTrabajo.equals("OTRO")?txt_otroHorario.getText().toString():"null";
-                        String valorOtroMarcaOrej = marcaOrej.equals("OTRO")?txt_otroMarcaOrej.getText().toString():"null";
-                        String valorOtroMarcaTapones = marcaTapones.equals("OTRO")?txt_otroMarcaTapones.getText().toString():"null";
-                        String valorOtroModeloOrej = modeloOrej.equals("OTRO")?txt_otroModeloOrej.getText().toString():"null";
-                        String valorOtroModeloTapones = modeloTapones.equals("OTRO")?txt_otroModeloTapones.getText().toString():"null";
-
+                        if(horarioTrabajo.equals("OTRO")) horarioTrabajo = txt_otroHorario.getText().toString();
+                        if(marcaOrej.equals("OTRO")) marcaOrej = txt_otroMarcaOrej.getText().toString();
+                        if(marcaTapones.equals("OTRO")) marcaTapones = txt_otroMarcaTapones.getText().toString();
+                        if(modeloOrej.equals("OTRO")) modeloOrej = txt_otroModeloOrej.getText().toString();
+                        if(modeloTapones.equals("OTRO")) modeloTapones = txt_otroModeloTapones.getText().toString();
 
                         String estado_resultado = "1";
                         String fecha_registro = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
@@ -326,7 +325,7 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
 
                         Sonometria_Registro registro = new Sonometria_Registro(
                                 -1,
-                                "SO-0001",
+                                "SO-0001",// irrelevante por ahira
                                 id_formato,
                                 id_plan_trabajo,
                                 id_pt_trabajo,
@@ -343,13 +342,13 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
                                 String.valueOf(equipo2.getId_equipo_registro()),
                                 String.valueOf(equipo3.getId_equipo_registro()),
                                 id_colaborador,
-                                "id_Colaborador.getNombre()",
+                                nuevo.getUsuario_nombres(),
                                 horacalibracion,
                                 nivell,
                                 variacion,
                                 areaTrabajo,
                                 act_realizadas,
-                                "id_horario",
+                                "0",
                                 horarioTrabajo,
                                 numTrabajadores,
                                 fuenteRuido,
@@ -386,11 +385,12 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
                                 nrrOrej,
                                 jornadaTrabajo,
                                 fecha_registro,
-                                "usuario_registro"
+                                id_colaborador
                         );
                         DAO_RegistroSonometria nuevoRegistro = new DAO_RegistroSonometria(getActivity());
                         boolean respuesta = nuevoRegistro.RegistroSonometria(registro);
                         if(respuesta){
+
                             Retrofit retrofit = new Retrofit.Builder()
                                     .baseUrl("https://test.meiningenieros.pe/")
                                     .addConverterFactory(GsonConverterFactory.create())
@@ -403,7 +403,7 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
                             String cadenaJson = gson.toJson(registro);
                             RequestBody json = RequestBody.create(MediaType.parse("application/json"), cadenaJson);
 
-                            Call<ResponseBody> call1 = service1.insertData(json);
+                            Call<ResponseBody> call1 = service1.insertDosimetria(json);
                             call1.enqueue(new Callback<ResponseBody>() {
                                 @Override
                                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

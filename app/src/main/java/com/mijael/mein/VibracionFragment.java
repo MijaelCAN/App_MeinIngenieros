@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
@@ -17,12 +18,16 @@ import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.mijael.mein.DAO.DAO_Equipos;
 import com.mijael.mein.DAO.DAO_FormatosTrabajo;
 import com.mijael.mein.DAO.DAO_RegistroIluminacion;
@@ -38,11 +43,21 @@ import com.mijael.mein.Extras.InputDateConfiguration;
 import com.mijael.mein.Extras.Validaciones;
 import com.mijael.mein.HELPER.EquiposSQLiteHelper;
 import com.mijael.mein.HELPER.FormatoTrabajoSQLiteHelper;
+import com.mijael.mein.SERVICIOS.DosimetriaService;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class VibracionFragment extends Fragment implements FragmentoImagen.ImagePickerListener{
@@ -55,12 +70,16 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
     AutoCompleteTextView spn_equipoutilizado;
     Spinner spn_tipoVibracion, spn_tipoDoc, spn_horarioTrabajo, spn_regimen, spn_horarioRefrig, spn_frecuencia;
     RadioGroup radioGroupVerificacion,radioGroupIng, radioGroupAdm, radioGroupSeñal, radioGroupCapac, radioGroupMante;
+    RadioButton radio_ingSI, radio_admSI;
     AppCompatButton btnSubirFotoVibra;
     FloatingActionButton btn_guardar;
     ExtendedFloatingActionButton btnCancelar;
     EditText txt_jornada, txt_timeExpo, txt_numDoc, txt_nomTrab, txt_edadTrab, txt_areaTrab, txt_puestoTrab, txt_actRealizada;
     EditText txt_fuenteGenVibra, txt_descFuenteGen, txt_nombreControl, txt_otrosAdmin, txt_resulX, txt_resulY, txt_resulZ;
     CheckBox check_botas, check_guantes, check_casco, check_proteccionAud;
+    CardView card_ing, card_admn;
+    LinearLayout linearOtroHorario, linearOtroRegimen, linearOtroRefrigerio;
+    EditText txt_otroHorario, txt_otroRegimen, txt_otroRefrigerio;
     ImageView imgVibra;
     Uri uri;
     public VibracionFragment() {
@@ -92,22 +111,30 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
 
         DAO_Equipos equipos = new DAO_Equipos(getActivity());
         List<String> lista_CodEquipos = equipos.obtener_CodEquipos();
+        DAO_Usuario usuario = new DAO_Usuario(getActivity());
+        Usuario nuevo = usuario.BuscarUsuario(Integer.parseInt(id_colaborador));
 
         config.ConfigPantalla();
-        spn_tipoVibracion.setAdapter(config.LlenarSpinner("Cuerpo Completo", "Mano Brazo"));
-        spn_tipoDoc.setAdapter(config.LlenarSpinner("DNI", "CE"));
-        config.configurarAutoCompleteTextView(spn_equipoutilizado,lista_CodEquipos);
+        spn_tipoVibracion.setAdapter(config.LlenarSpinner(new String[]{"Cuerpo Completo", "Mano Brazo"}));
+        spn_tipoDoc.setAdapter(config.LlenarSpinner(new String[]{"DNI", "CE"}));
+            config.configurarAutoCompleteTextView(spn_equipoutilizado,lista_CodEquipos);
 
         spn_horarioTrabajo.setAdapter(config.LlenarSpinner("horario_trab_fromato_medicion","desc_horario",getActivity()));
         spn_regimen.setAdapter(config.LlenarSpinner("regimen_formato_medicion","nom_regimen",getActivity()));
         spn_horarioRefrig.setAdapter(config.LlenarSpinner("horario_refrig_formato_medicion","nom_horario",getActivity()));
         spn_frecuencia.setAdapter(config.LlenarSpinner("frecuencia","nom_frecuencia",getActivity()));
 
+        config.MostrarCampos(linearOtroHorario,spn_horarioTrabajo);
+        config.MostrarCampos(linearOtroRegimen,spn_regimen);
+        config.MostrarCampos(linearOtroRefrigerio,spn_horarioRefrig);
+
         tv_horaVerificacion.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {config.showTimePickerDialog(rootView,tv_horaVerificacion);}});
         tv_fechaMonitoreo.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {config.showDatePickerDialog(rootView,tv_fechaMonitoreo);}});
         tv_horaInicioMoni.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {config.showTimePickerDialog(rootView,tv_horaInicioMoni);}});
         tv_horaFinalMoni.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {config.showTimePickerDialog(rootView,tv_horaFinalMoni);}});
 
+        radioGroupIng.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {@Override public void onCheckedChanged(RadioGroup group, int checkedId) {mostrarOpcionesGone(group,checkedId,card_ing,radio_ingSI);}});
+        radioGroupAdm.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {@Override public void onCheckedChanged(RadioGroup group, int checkedId) {mostrarOpcionesGone(group,checkedId,card_admn,radio_admSI);}});
         btnSubirFotoVibra.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -198,6 +225,11 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
                     String valorY = txt_resulY.getText().toString();
                     String valorZ = txt_resulZ.getText().toString();
 
+                    if(valorHorarioTrabajo.equals("OTRO")) valorHorarioTrabajo = txt_otroHorario.getText().toString();
+                    if(valorRegimen.equals("OTRO")) valorRegimen = txt_otroRegimen.getText().toString();
+                    if(valorRefrigerio.equals("OTRO")) valorRefrigerio = txt_otroRefrigerio.getText().toString();
+
+
                     String fecha_registro = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
                     Equipos equipos1 = equipos.Buscar(valorEquipoUtil);
 
@@ -212,7 +244,7 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
                             equipos1.getSerie(),
                             String.valueOf(equipos1.getId_equipo_registro()),
                             id_colaborador,
-                            "id_Colaborador.getNombre()",
+                            nuevo.getUsuario_nombres(),
                             valorTipoVibracion,
                             valorVerificacion,
                             valorHoraVerif,
@@ -238,7 +270,7 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
                             valorGroupCapac,
                             valorGroupManten,
                             fecha_registro,
-                            "UserRegistro"
+                            id_colaborador
                     );
                     Vibracion_RegistroDetalle detalle = new Vibracion_RegistroDetalle(
                             -1,
@@ -254,22 +286,69 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
                             valorY,
                             valorZ,
                             fecha_registro,
-                            "use_Registro"
+                            id_colaborador
                     );
 
-                    DAO_RegistroVibracion nuevoRegistro = new DAO_RegistroVibracion(getActivity());
-                    boolean estadoRegistro = nuevoRegistro.RegistroVibracion(registro);
-                    boolean estadoDetalle = nuevoRegistro.RegistrarVibracionDetalle(detalle);
-                    if(estadoRegistro && estadoDetalle){
+                    if (config.isOnline()) {
+
+                        Retrofit retrofit = new Retrofit.Builder()
+                                .baseUrl("https://test.meiningenieros.pe/")
+                                .addConverterFactory(GsonConverterFactory.create())
+                                .build();
+
+                        DosimetriaService service1 = retrofit.create(DosimetriaService.class);
+                        Gson gson = new Gson();
+
+                        // Crear un objeto JSON principal
+                        JsonObject jsonObject = new JsonObject();
+
+                        JsonObject registroJson = gson.toJsonTree(registro).getAsJsonObject();
+                        jsonObject.add("cabecera", registroJson);
+
+                        JsonObject detalleJson = gson.toJsonTree(detalle).getAsJsonObject();
+                        jsonObject.add("detalle", detalleJson);
+
+
+                        String cadenaJson = gson.toJson(jsonObject);
+                        RequestBody json = RequestBody.create(MediaType.parse("application/json"), cadenaJson);
+
+                        Call<ResponseBody> call1 = service1.insertVibracion(json);
+                        call1.enqueue(new Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                Log.e("exitoso", "se inserto el registro");
+                                // Mostrar el JSON en el log
+                                Log.e("JSON", cadenaJson);
+                                Log.e("Respuesta",response.toString());
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                Log.e("error", "Error al insertar el registro");
+                            }
+                        });
+                        new AlertDialog.Builder(getContext())
+                                .setTitle("Registro guardado en WEB")
+                                .setMessage("El registro ha sido guardado exitosamente.")
+                                .setPositiveButton(android.R.string.ok, null)
+                                .show();
+                        getFragmentManager().popBackStack();
+
+                    }else{
+                        DAO_RegistroVibracion nuevoRegistro = new DAO_RegistroVibracion(getActivity());
+                        nuevoRegistro.RegistroVibracion(registro);
+                        nuevoRegistro.RegistrarVibracionDetalle(detalle);
+
                         DAO_FormatosTrabajo dao_fromatosTrabajo = new DAO_FormatosTrabajo(getActivity());
                         for_Vibracion = dao_fromatosTrabajo.Buscar(id_plan_trabajo,id_formato);
                         for_Vibracion.setRealizado(for_Vibracion.getRealizado()+1);
                         for_Vibracion.setPor_realizar(for_Vibracion.getPor_realizar()-1);
+
                         dao_fromatosTrabajo.actualizarFormatoTrabajo(for_Vibracion);
 
                         // O muestra un AlertDialog con el mensaje
                         new AlertDialog.Builder(getActivity())
-                                .setTitle("Registro guardado")
+                                .setTitle("Registro guardado Localmente")
                                 .setMessage("El registro ha sido guardado exitosamente.")
                                 .setPositiveButton(android.R.string.ok, null)
                                 .show();
@@ -311,6 +390,13 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
         txt_descFuenteGen = view.findViewById(R.id.txt_descripcionFuente);
         radioGroupIng = view.findViewById(R.id.radioGroupIngenieria);
         radioGroupAdm = view.findViewById(R.id.radioGroupAdminis);
+
+
+        card_ing = view.findViewById(R.id.Card_Ingenieria);
+        card_admn = view.findViewById(R.id.Card_Administrativo);
+        radio_ingSI = view.findViewById(R.id.radioIngenieriaSi);
+        radio_admSI = view.findViewById(R.id.radio_AdministrativoSi);
+
         txt_nombreControl = view.findViewById(R.id.txt_nombreControl);
         radioGroupSeñal = view.findViewById(R.id.radioGroup_SeñalArea);
         radioGroupCapac = view.findViewById(R.id.radioGroup_CapacitacionVibra);
@@ -330,6 +416,13 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
         btn_guardar = view.findViewById(R.id.fabGuardar);
         btnCancelar = view.findViewById(R.id.fabCancelar);
 
+        linearOtroHorario = view.findViewById(R.id.linearOtroHorario);
+        txt_otroHorario = view.findViewById(R.id.txt_otroHorario);
+        linearOtroRegimen = view.findViewById(R.id.linearOtroRegimen);
+        txt_otroRegimen = view.findViewById(R.id.txt_otroRegimen);
+        linearOtroRefrigerio = view.findViewById(R.id.linearOtroRefrigerio);
+        txt_otroRefrigerio = view.findViewById(R.id.txt_otroRefrigerio);
+
     }
 
 
@@ -338,6 +431,13 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
         this.uri = imageUri;
         if (imgVibra != null && imageUri != null) {
             imgVibra.setImageURI(imageUri);
+        }
+    }
+    private void mostrarOpcionesGone(RadioGroup group, int checkedId, CardView card, RadioButton radio) {
+        if (checkedId == radio.getId()) {
+            card.setVisibility(View.VISIBLE);
+        } else {
+            card.setVisibility(View.GONE);
         }
     }
 }

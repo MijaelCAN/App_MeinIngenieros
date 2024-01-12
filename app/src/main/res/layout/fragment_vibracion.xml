@@ -693,23 +693,63 @@ tools:context=".VibracionFragment">
                         android:text="Horario de Trabajo"
                         android:textColor="@color/generic_color"
                         android:textSize="19sp" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Horario de trabajo:"
-                        android:textSize="12dp"
-                        android:fontFamily="sans-serif-light"
-                        android:textColor="@color/black"/>
-
-                    <Spinner
-                        android:id="@+id/cbx_horarioTrabajo"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/style_input"
-                        android:textSize="10sp" />
+                        android:layout_marginRight="2dp"
+                        android:orientation="horizontal">
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Horario de trabajo:"
+                                android:textSize="12dp"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black"/>
+
+                            <Spinner
+                                android:id="@+id/cbx_horarioTrabajo"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/style_spinner"
+                                android:textSize="10sp" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/linearOtroHorario"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginLeft="15dp"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Otro horario"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black"/>
+
+                            <EditText
+                                android:id="@+id/txt_otroHorario"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                style="@style/EditTextFocusStyle"
+                                android:hint="Digite"
+                                android:paddingLeft="8dp"
+                                android:textSize="16sp"/>
+
+                        </LinearLayout>
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -739,13 +779,48 @@ tools:context=".VibracionFragment">
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:layout_weight="1"
-                                android:background="@drawable/style_input" />
+                                android:background="@drawable/style_spinner"/>
                         </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/linearOtroRegimen"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="15dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Otro Regimen"
+                                android:textSize="12sp"
+                                android:layout_marginTop="10dp"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black"/>
+
+                            <EditText
+                                android:id="@+id/txt_otroRegimen"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                style="@style/EditTextFocusStyle"
+                                android:hint="Digite"
+                                android:paddingLeft="8dp"
+                                android:textSize="16sp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="2dp"
+                        android:orientation="horizontal">
 
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="15dp"
                             android:layout_weight="1"
                             android:orientation="vertical">
 
@@ -757,7 +832,7 @@ tools:context=".VibracionFragment">
                                 android:text="Horario Refrigerio"
                                 android:textSize="12sp"
                                 android:fontFamily="sans-serif-light"
-                                android:textColor="@color/black"/>
+                                android:textColor="@color/black" />
 
                             <Spinner
                                 android:id="@+id/cbx_refrigerio"
@@ -765,7 +840,37 @@ tools:context=".VibracionFragment">
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:layout_weight="1"
-                                android:background="@drawable/style_input" />
+                                android:background="@drawable/style_spinner" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/linearOtroRefrigerio"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="15dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Otro horario Refrigerio"
+                                android:textSize="12sp"
+                                android:layout_marginTop="10dp"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black"/>
+
+                            <EditText
+                                android:id="@+id/txt_otroRefrigerio"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                style="@style/EditTextFocusStyle"
+                                android:hint="Digite"
+                                android:paddingLeft="8dp"
+                                android:textSize="16sp"/>
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
@@ -887,7 +992,7 @@ tools:context=".VibracionFragment">
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
-                        android:visibility="visible"
+                        android:visibility="gone"
                         app:cardCornerRadius="4dp"
                         app:cardElevation="2dp">
 
@@ -960,7 +1065,7 @@ tools:context=".VibracionFragment">
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
-                        android:visibility="visible"
+                        android:visibility="gone"
                         app:cardCornerRadius="4dp"
                         app:cardElevation="2dp">
 
@@ -1008,7 +1113,8 @@ tools:context=".VibracionFragment">
                                             android:id="@+id/radioEppNo"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="No" />
+                                            android:text="No"
+                                            android:checked="true"/>
                                     </RadioGroup>
                                 </LinearLayout>
 
@@ -1043,7 +1149,8 @@ tools:context=".VibracionFragment">
                                             android:id="@+id/radioAdminExpoNo"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="No" />
+                                            android:text="No"
+                                            android:checked="true"/>
                                     </RadioGroup>
                                 </LinearLayout>
                             </LinearLayout>
@@ -1085,7 +1192,8 @@ tools:context=".VibracionFragment">
                                             android:id="@+id/radioRotacionNo"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="No" />
+                                            android:text="No"
+                                            android:checked="true"/>
                                     </RadioGroup>
                                 </LinearLayout>
                                 <LinearLayout
@@ -1115,90 +1223,92 @@ tools:context=".VibracionFragment">
                                         app:fontFamily="sans-serif-light" />
                                 </LinearLayout>
                             </LinearLayout>
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="10dp"
-                                android:layout_weight="1"
-                                android:fontFamily="sans-serif-light"
-                                android:text="Epp's"
-                                android:textColor="@color/black"
-                                android:textSize="12sp" />
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="2dp"
-                                android:orientation="vertical">
 
-                                <CheckBox
-                                    android:id="@+id/check_botas"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:checked="false"
-                                    android:textSize="15sp"
-                                    android:textColor="@color/black"
-                                    android:textColorHint="@color/black"
-                                    android:fontFamily="sans-serif-light"
-                                    android:buttonTint="@color/teal_200"
-                                    android:text="Botas" />
-                                <CheckBox
-                                    android:id="@+id/check_guantes"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:checked="false"
-                                    android:textSize="15sp"
-                                    android:textColor="@color/black"
-                                    android:textColorHint="@color/black"
-                                    android:fontFamily="sans-serif-light"
-                                    android:buttonTint="@color/purple_200"
-                                    android:text="Guantes" />
-                                <CheckBox
-                                    android:id="@+id/check_casco"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:checked="false"
-                                    android:textSize="15sp"
-                                    android:textColor="@color/black"
-                                    android:textColorHint="@color/black"
-                                    android:fontFamily="sans-serif-light"
-                                    android:buttonTint="@color/teal_200"
-                                    android:text="Casco" />
-
-                                <CheckBox
-                                    android:id="@+id/check_proteccionAudi"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:checked="false"
-                                    android:textSize="15sp"
-                                    android:textColor="@color/black"
-                                    android:textColorHint="@color/black"
-                                    android:fontFamily="sans-serif-light"
-                                    android:buttonTint="@color/purple_200"
-                                    android:text="Proteccion Auditiva" />
-
-                            </LinearLayout>
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Otros"
-                                android:textSize="12dp"
-                                android:textStyle="bold" />
-
-                            <EditText
-                                android:id="@+id/txt_OtrosAdministrativo"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/style_input"
-                                android:hint=" Digite"
-                                android:textSize="15sp"
-                                android:fontFamily="sans-serif-light"
-                                android:textColor="@color/black"
-                                android:textColorHint="@color/black"
-                                android:paddingLeft="8dp"
-                                android:layout_marginTop="5dp"/>
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Epp's"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="2dp"
+                        android:orientation="vertical">
+
+                        <CheckBox
+                            android:id="@+id/check_botas"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="false"
+                            android:textSize="15sp"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:fontFamily="sans-serif-light"
+                            android:buttonTint="@color/teal_200"
+                            android:text="Botas" />
+                        <CheckBox
+                            android:id="@+id/check_guantes"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="false"
+                            android:textSize="15sp"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:fontFamily="sans-serif-light"
+                            android:buttonTint="@color/purple_200"
+                            android:text="Guantes" />
+                        <CheckBox
+                            android:id="@+id/check_casco"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="false"
+                            android:textSize="15sp"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:fontFamily="sans-serif-light"
+                            android:buttonTint="@color/teal_200"
+                            android:text="Casco" />
+
+                        <CheckBox
+                            android:id="@+id/check_proteccionAudi"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="false"
+                            android:textSize="15sp"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:fontFamily="sans-serif-light"
+                            android:buttonTint="@color/purple_200"
+                            android:text="Proteccion Auditiva" />
+
+                    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Otros"
+                        android:textSize="12dp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/txt_OtrosAdministrativo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/style_input"
+                        android:hint=" Digite"
+                        android:textSize="15sp"
+                        android:fontFamily="sans-serif-light"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        android:paddingLeft="8dp"
+                        android:layout_marginTop="5dp"/>
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

@@ -3,6 +3,8 @@ package com.mijael.mein.Extras;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -24,6 +26,7 @@ import com.mijael.mein.MainActivity;
 import com.mijael.mein.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -131,11 +134,10 @@ public class InputDateConfiguration {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, listaDatos);
         return adapter;
     }
-    public ArrayAdapter<String> LlenarSpinner(String opcion1, String opcion2){
+    public ArrayAdapter<String> LlenarSpinner(String[] opciones){
         ArrayList<String> listaDatos = new ArrayList<>();
         listaDatos.add("seleccione");
-        listaDatos.add(opcion1);
-        listaDatos.add(opcion2);
+        listaDatos.addAll(Arrays.asList(opciones));
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, listaDatos);
         return adapter;
     }
@@ -144,7 +146,7 @@ public class InputDateConfiguration {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String itemSeleccionado = parent.getItemAtPosition(position).toString();
-                if (itemSeleccionado.equals("OTRO")) {
+                if (itemSeleccionado.equals("OTRO") || itemSeleccionado.equals("SI")) {
                     layout.setVisibility(View.VISIBLE);
                 } else {
                     layout.setVisibility(View.GONE);
@@ -193,12 +195,17 @@ public class InputDateConfiguration {
         List<String> numeros = new ArrayList<>();
 
         // Llenar la lista con números del 1 hasta el número máximo
-        for (int i = 1; i <= numeroMaximo; i++) {
+        for (int i = 0; i <= numeroMaximo; i++) {
             numeros.add(String.valueOf(i));
         }
         // Crear un ArrayAdapter y establecerlo en el Spinner
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, numeros);
         //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+    }
+    public boolean isOnline() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnected();
     }
 }

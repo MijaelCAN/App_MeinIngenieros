@@ -7,10 +7,15 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +27,7 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -29,10 +35,13 @@ import android.widget.TimePicker;
 
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.mijael.mein.DAO.DAO_DatosLocal;
 import com.mijael.mein.DAO.DAO_Equipos;
 import com.mijael.mein.DAO.DAO_FormatosTrabajo;
 import com.mijael.mein.DAO.DAO_RegistroIluminacion;
+import com.mijael.mein.DAO.DAO_RegistroRadiacion;
 import com.mijael.mein.DAO.DAO_Usuario;
 import com.mijael.mein.Entidades.Equipos;
 import com.mijael.mein.Entidades.Formatos_Trabajo;
@@ -40,16 +49,29 @@ import com.mijael.mein.Entidades.Iluminacion_Registro;
 import com.mijael.mein.Entidades.Iluminacion_RegistroDetalle;
 import com.mijael.mein.Entidades.Usuario;
 import com.mijael.mein.Extras.FragmentoImagen;
+import com.mijael.mein.Extras.InputDateConfiguration;
 import com.mijael.mein.Extras.Validaciones;
 import com.mijael.mein.HELPER.EquiposSQLiteHelper;
 import com.mijael.mein.HELPER.FormatoTrabajoSQLiteHelper;
+import com.mijael.mein.SERVICIOS.DosimetriaService;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class IluminacionFragment extends Fragment implements FragmentoImagen.ImagePickerListener {
@@ -57,17 +79,20 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
     int hora,min;
     String id_plan_trabajo, id_pt_trabajo, id_formato,id_colaborador, nom_Empresa;
     View rootView;
+    CardView Card_Puesto, Card_Area;
     TextView tv_nombreUsuario, tv_nomEmpresa;
     AutoCompleteTextView tv_luxometro;
     TextView hora_verificacion, fechaMonitoreo, hora_monitoreo;
     EditText ubicacionEquipo, numDoc, nomTrabajador, puestoTrabajador, areaTrabajo, numTrabajadores, nivelMinimo, numLuminarias, tipoArea,
-    il1, il2, il3, il4, il5, il6, il7, il8, areaTrabajoM2, altura_pTrabajo, numLamparas, altura_pLuminaria, colorPared, colorPiso, tareasRealizadas, observaciones;
+    il1, il2, il3, il4, il5, il6, il7, il8, areaTrabajoM2, txt_altura_pTrabajo, numLamparas, altura_pLuminaria, colorPared, colorPiso, tareasRealizadas, observaciones,
+    txt_otroHorario, txt_otroRegimen,
+    txt_longSalon, txt_anchoSalon, txt_alt_PlanosTrabajo_ilu, txt_constanteSalon, txt_numMinPuntosMedicion, txt_largoEscri, txt_anchoEscri, txt_numPuntosMedicion;
     RadioGroup radioGroupLuminaria;
-    CheckBox chekArtificial, checkNatural;
-    Spinner cbx_lux, tipoDoc, horario_Trab, regimen, tareaVisual, estadoLuminarias;
+    Spinner cbx_lux, tipoDoc, horario_Trab, regimen, tareaVisual, estadoLuminarias, spn_tipoIluminacion, spn_tipoMedicion;
     Button btnSubirFotoIlu;
     FloatingActionButton btn_guardar;
     ExtendedFloatingActionButton btnCancelar;
+    LinearLayout linearOtroHorario, linearOtroRegimen;
     ImageView imgIliminacion;
     Uri uri;
     public IluminacionFragment() {
@@ -75,6 +100,8 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
     }
     Formatos_Trabajo for_Iluminacion;
     Validaciones validar = new Validaciones();
+    String valorLargoEscri;
+    String valorAnchoEscri;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -94,19 +121,22 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_iluminacion,container,false);
+        InputDateConfiguration config = new InputDateConfiguration(getActivity(),id_colaborador,nom_Empresa,rootView);
         init(rootView);
 
-        ConfigPantalla();
+        config.ConfigPantalla();
 
         DAO_Equipos equipos = new DAO_Equipos(getActivity());
         List<String> lista_CodEquipos = equipos.obtener_CodEquipos();
-        configurarAutoCompleteTextView(tv_luxometro,lista_CodEquipos);
+        DAO_Usuario usuario = new DAO_Usuario(getActivity());
+        Usuario nuevo = usuario.BuscarUsuario(Integer.parseInt(id_colaborador));
 
-
-        horario_Trab.setAdapter(LlenarSpinner("horario_trab_fromato_medicion","desc_horario",getActivity()));
-        regimen.setAdapter(LlenarSpinner("regimen_formato_medicion","nom_regimen",getActivity()));
-        fechaMonitoreo.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {showDatePickerDialog(rootView,fechaMonitoreo);}});
-        hora_monitoreo.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {showTimePickerDialog(rootView,hora_monitoreo);}});
+        config.configurarAutoCompleteTextView(tv_luxometro,lista_CodEquipos);
+        hora_verificacion.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {config.showTimePickerDialog(rootView,hora_verificacion);}});
+        fechaMonitoreo.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {config.showDatePickerDialog(rootView,fechaMonitoreo);}});
+        hora_monitoreo.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {config.showTimePickerDialog(rootView,hora_monitoreo);}});
+        cbx_lux.setAdapter(config.LlenarSpinner(new String[]{"0.0 lux"}));
+        tipoDoc.setAdapter(config.LlenarSpinner(new String[]{"DNI", "CE"}));
         btnSubirFotoIlu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,12 +146,135 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
             }
         });
 
-        tipoDoc.setAdapter(LlenarSpinner("DNI","CE"));
-        cbx_lux.setAdapter(LlenarSpinner("0.0 lux","0.1 lux")); //PROVISIONAL
-        tareaVisual.setAdapter(LlenarSpinner("Exteriores","Interiores")); //PROVISIONAL
-        estadoLuminarias.setAdapter(LlenarSpinner("Operativa","Inoperativa")); //PROVISIONAL
+        horario_Trab.setAdapter(config.LlenarSpinner("horario_trab_fromato_medicion","desc_horario",getActivity()));
+        regimen.setAdapter(config.LlenarSpinner("regimen_formato_medicion","nom_regimen",getActivity()));
+        config.MostrarCampos(linearOtroHorario,horario_Trab);
+        config.MostrarCampos(linearOtroRegimen,regimen);
 
-        hora_verificacion.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {showTimePickerDialog(rootView,hora_verificacion);}});
+        HashMap<String, String> lista = new HashMap<>();
+        lista.put("1", "En exteriores: distinguir el área de tránsito.");
+        lista.put("2", "En interiores: distinguir el área de tránsito, desplazarse caminando, vigilancia, movimiento de vehículos.");
+        lista.put("3", "Requerimiento visual simple: inspección visual, recuento de piezas, trabajo en banco máquina.");
+        lista.put("4", "Distinción moderada de detalles: ensamble simple, trabajo medio en banco y máquina, inspección simple, empaque y trabajos de oficina.");
+        lista.put("5", "Distinción clara de detalles: maquinado y acabados delicados, ensamble e inspección moderadamente difícil, captura y procesamiento de información, manejo de instrumentos y equipo de laboratorio.");
+        lista.put("6", "Distinción fina de detalles: maquinado de precisión, ensamble e inspección de trabajos delicados, manejo de instrumentos y equipo de precisión, manejo de piezas pequeñas.");
+        lista.put("7", "Alta exactitud en la distinción de detalles: Ensamble, proceso e inspección de piezas pequeñas y complejas y acabado con pulidos finos.");
+        lista.put("8", "Alto grado de especialización en la distinción de detalles.");
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, new ArrayList<>(lista.values()));
+        tareaVisual.setAdapter(adapter);
+        tareaVisual.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String seleccion = (String) parent.getItemAtPosition(position);
+                if(seleccion.equals(lista.get("1"))){
+                    tipoArea.setText("Áreas generales exteriores: patios y estacionamientos");
+                    nivelMinimo.setText("20");
+                } else if (seleccion.equals(lista.get("2"))) {
+                    tipoArea.setText("Áreas generales interiores: almacenes de poco movimiento, pasillos, escaleras, estacionamientos cubiertos, labores en minas subterráneas, iluminación de emergencia.");
+                    nivelMinimo.setText("50");
+                } else if (seleccion.equals(lista.get("3"))) {
+                    tipoArea.setText("Áreas de servicios al personal: almacenaje rudo, recepción y despacho, casetas de vigilancia, cuartos de compresoras y calderos.");
+                    nivelMinimo.setText("200");
+                } else if (seleccion.equals(lista.get("4"))) {
+                    tipoArea.setText("Talleres: áreas de empaque y ensamble, aulas y oficinas.");
+                    nivelMinimo.setText("300");
+                } else if (seleccion.equals(lista.get("5"))) {
+                    tipoArea.setText("Talleres de precisión: salas de cómputo, áreas de dibujo, laboratorios.");
+                    nivelMinimo.setText("500");
+                } else if (seleccion.equals(lista.get("6"))) {
+                    tipoArea.setText("Talleres de alta precisión: de pintura y acabado de superficies, y laboratorios de control de calidad.");
+                    nivelMinimo.setText("750");
+                } else if (seleccion.equals(lista.get("7"))) {
+                    tipoArea.setText("Áreas de proceso: ensamble e inspección de piezas complejas y acabados con pulido fino.");
+                    nivelMinimo.setText("1000");
+                } else if (seleccion.equals(lista.get("8"))) {
+                    tipoArea.setText("Áreas de proceso de gran exactitud.");
+                    nivelMinimo.setText("2000");
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        //FECHA Y HORA DE MONITOREO ARRIBA
+        spn_tipoIluminacion.setAdapter(config.LlenarSpinner(new String[]{"Natural", "Artificial", "Natural y Artificial"}));
+        spn_tipoMedicion.setAdapter(config.LlenarSpinner(new String[]{"Medición por puesto de trabajo", "Medición por área de trabajo"}));
+        spn_tipoMedicion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String seleccion = (String) parent.getItemAtPosition(position);
+                if(seleccion.equals("Medición por puesto de trabajo")){
+                    Card_Puesto.setVisibility(View.VISIBLE);;
+                    Card_Area.setVisibility(View.GONE);
+                } else if (seleccion.equals("Medición por área de trabajo")) {
+                    Card_Puesto.setVisibility(View.GONE);;
+                    Card_Area.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        // SECCION DONDE HACE EL CALCULO AUTOMATICO PARA LOS CAMPOS  * CONSTANTE DE SALON Y NUMERO MINIMO DE PUNTOS DE MEDICION
+        TextWatcher watcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String texto = s.toString();
+                valorLargoEscri = txt_largoEscri.getText().toString();
+                valorAnchoEscri = txt_anchoEscri.getText().toString();
+                Log.e("gggg","ENTRO AL CAMBIO");
+                if (!valorLargoEscri.isEmpty() && TextUtils.isDigitsOnly(texto)&&
+                    !valorAnchoEscri.isEmpty() && TextUtils.isDigitsOnly(texto)) {
+                        Valida_Punto_Medicion(valorLargoEscri, valorAnchoEscri);
+                }else {
+                    txt_numPuntosMedicion.setText("");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        };
+        txt_largoEscri.addTextChangedListener(watcher);
+        txt_anchoEscri.addTextChangedListener(watcher);
+
+        TextWatcher watcher1 = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String texto = s.toString();
+                String val1 = txt_longSalon.getText().toString();
+                String val2 = txt_anchoSalon.getText().toString();
+                String val3 = txt_alt_PlanosTrabajo_ilu.getText().toString();
+                Log.e("gggg","ENTRO AL CAMBIO");
+                if (!val1.isEmpty() && TextUtils.isDigitsOnly(texto)&&
+                        !val2.isEmpty() && TextUtils.isDigitsOnly(texto)&&
+                        !val3.isEmpty() && TextUtils.isDigitsOnly(texto)) {
+                    Constante_Salon(val1, val2, val3);
+                }else {
+                    txt_constanteSalon.setText("");
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        };
+
+        txt_longSalon.addTextChangedListener(watcher1);
+        txt_anchoSalon.addTextChangedListener(watcher1);
+        txt_alt_PlanosTrabajo_ilu.addTextChangedListener(watcher1);
+
+        estadoLuminarias.setAdapter(config.LlenarSpinner(new String[]{"Operativa","Inoperativa/Averiada","Tenues/Amarillas"}));
+
+
         btnCancelar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -141,7 +294,6 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
             public void onClick(View v) {
                 if(
                         validar.validarCampoObligatorio(tv_luxometro) &&
-                        validar.validarCampoObligatorio(radioGroupLuminaria,getActivity()) &&
                         validar.validarCampoObligatorio(ubicacionEquipo) &&
                         validar.validarCampoObligatorio(hora_verificacion) &&
                         validar.validarCampoObligatorio(cbx_lux) &&
@@ -154,12 +306,16 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                         validar.validarCampoObligatorio(horario_Trab) &&
                         validar.validarCampoObligatorio(regimen) &&
                         validar.validarCampoObligatorio(tareaVisual) &&
-                        validar.validarCampoObligatorio(tipoArea) &&
-                        validar.validarCampoObligatorio(nivelMinimo) &&
+                        //validar.validarCampoObligatorio(tipoArea) &&
+                        //validar.validarCampoObligatorio(nivelMinimo) &&
                         validar.validarCampoObligatorio(fechaMonitoreo) &&
                         validar.validarCampoObligatorio(hora_monitoreo) &&
-                        validar.validarCampoObligatorio(numLuminarias) &&
-                        validar.validarImagen(cargarImagen,getActivity()) &&
+                        validar.validarCampoObligatorio(spn_tipoIluminacion) &&
+                        validar.validarCampoObligatorio(spn_tipoMedicion) &&
+
+                                //todo lo que es Oculto no es Validado
+
+                        //validar.validarImagen(cargarImagen,getActivity()) &&
                         validar.validarCampoObligatorio(il1) &&
                         validar.validarCampoObligatorio(il2) &&
                         validar.validarCampoObligatorio(il3) &&
@@ -168,8 +324,9 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                         validar.validarCampoObligatorio(il6) &&
                         validar.validarCampoObligatorio(il7) &&
                         validar.validarCampoObligatorio(il8) &&
-                        validar.validarCampoObligatorio(areaTrabajoM2) &&
-                        validar.validarCampoObligatorio(altura_pTrabajo) &&
+                        //validar.validarCampoObligatorio(areaTrabajoM2) &&
+                        validar.validarCampoObligatorio(numLuminarias) &&
+                        //validar.validarCampoObligatorio(txt_altura_pTrabajo) &&
                         validar.validarCampoObligatorio(numLamparas) &&
                         validar.validarCampoObligatorio(altura_pLuminaria) &&
                         validar.validarCampoObligatorio(colorPared) &&
@@ -179,10 +336,11 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                         validar.validarCampoObligatorio(observaciones)
                 ){
                     String valorTvLuxometro = tv_luxometro.getText().toString();
-                    //FALTA PLAN DE MANTENIMIENTO
+                    String valorGroupLuminaria = validar.getValor2(radioGroupLuminaria,rootView);
                     String valorUbiEquipo = ubicacionEquipo.getText().toString();
-                    String valorHoraVerificacion = hora_monitoreo.getText().toString();
+                    String valorHoraVerificacion = hora_verificacion.getText().toString();
                     String valorLux = cbx_lux.getSelectedItem().toString();
+                    //Valor de foto o referencia hacia la foto
                     String valorTipoDoc = tipoDoc.getSelectedItem().toString();
                     String valorNumDocumento = numDoc.getText().toString();
                     String valorNomTrabajador = nomTrabajador.getText().toString();
@@ -191,14 +349,29 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                     String valorNumPersonas = numTrabajadores.getText().toString();
                     String valorHorarioTrabajo = horario_Trab.getSelectedItem().toString();
                     String valorRegimen = regimen.getSelectedItem().toString();
+
+                    if(valorHorarioTrabajo.equals("OTRO")) valorHorarioTrabajo = txt_otroHorario.getText().toString();
+                    if(valorRegimen.equals("OTRO")) valorRegimen = txt_otroRegimen.getText().toString();
+
                     String valorTareaVisual = tareaVisual.getSelectedItem().toString();
                     String valor_tipoAreaTrabajo = tipoArea.getText().toString();
                     String valorNivelIluminacion = nivelMinimo.getText().toString();
                     String valorFechaMonitoreo = fechaMonitoreo.getText().toString();
                     String valorHoraMonitoreo = hora_monitoreo.getText().toString();
-                    //FALTA LOS DOS CHECKS
-                    String valorNumLuminarias = numLuminarias.getText().toString();
-                    //String valorImagen = Uri.Imagen
+                    String valorTipoIluminacion = spn_tipoIluminacion.getSelectedItem().toString();
+                    String valorTipoMedicion = spn_tipoMedicion.getSelectedItem().toString();
+
+                    String valorLongSalon = txt_longSalon.getText().toString();
+                    String valorAnchoSalon = txt_anchoSalon.getText().toString();
+                    String valorAltPlanosTrabajoIlu = txt_alt_PlanosTrabajo_ilu.getText().toString();
+                    String valoConstanteSalon = txt_constanteSalon.getText().toString();
+                    String valorNumMinPuntoMed= txt_numMinPuntosMedicion.getText().toString();
+                    valorLargoEscri = txt_largoEscri.getText().toString();
+                    valorAnchoEscri = txt_anchoEscri.getText().toString();
+                    String valorNumPuntoMed = txt_numPuntosMedicion.getText().toString();
+                    String valorAltura_pTrabajo = txt_altura_pTrabajo.getText().toString();
+
+
                     String valorIL1 = il1.getText().toString();
                     String valorIL2 = il2.getText().toString();
                     String valorIL3 = il3.getText().toString();
@@ -207,8 +380,10 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                     String valorIL6 = il6.getText().toString();
                     String valorIL7 = il7.getText().toString();
                     String valorIL8 = il8.getText().toString();
-                    String valorAreaTrabajoM2 = areaTrabajoM2.getText().toString();
-                    String valorAltura_pTrabajo = altura_pTrabajo.getText().toString();
+
+
+
+                    String valorNumLuminarias = numLuminarias.getText().toString();
                     String valorNumLamparas = numLamparas.getText().toString();
                     String valorAltura_pLuminaria = altura_pLuminaria.getText().toString();
                     String valorColorPared = colorPared.getText().toString();
@@ -220,14 +395,14 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                     String fecha_registro = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
                     Equipos equipos1 = equipos.Buscar(valorTvLuxometro);
 
-                    Iluminacion_Registro registro = new Iluminacion_Registro(
+                    Iluminacion_Registro cabecera = new Iluminacion_Registro(
                             -1,
                             "IL-001",
                             id_formato,
                             id_plan_trabajo,
                             id_pt_trabajo,
                             id_colaborador,
-                            "id_Colaborador.getNomAnali()",
+                            nuevo.getUsuario_nombres(),
                             String.valueOf(equipos1.getId_equipo_registro()),
                             equipos1.getCod_equipo(),
                             equipos1.getNombre(),
@@ -252,13 +427,22 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                             valorNivelIluminacion,
                             valorEstadoLuminarias,
                             fecha_registro,
-                            "usuario_Registro"
+                            id_colaborador
                     );
 
                     Iluminacion_RegistroDetalle detalle = new Iluminacion_RegistroDetalle(
                             -1,
-                            "ilumi_artificial",
-                            "ilumi_natural",
+                            valorTipoIluminacion,
+                            valorTipoMedicion,
+                            valorLargoEscri,
+                            valorAnchoEscri,
+                            valorNumPuntoMed,
+                            valorAltura_pTrabajo,
+                            valorLongSalon,
+                            valorAnchoSalon,
+                            valorAltPlanosTrabajoIlu,
+                            valoConstanteSalon,
+                            valorNumMinPuntoMed,
                             valorNumLuminarias,
                             valorIL1,
                             valorIL2,
@@ -268,31 +452,75 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                             valorIL6,
                             valorIL7,
                             valorIL8,
-                            "valorMantenimiento",
-                            valorAreaTrabajoM2,
+                            valorGroupLuminaria,
+                            "area m2",
                             valorAltura_pTrabajo,
                             valorNumLamparas,
                             valorAltura_pLuminaria,
                             valorColorPared,
                             valorColorPiso,
                             valorEstadoLuminarias,
-                            fecha_registro,
-                            "usuario_reg"
+                            fecha_registro,id_colaborador
                     );
 
-                    DAO_RegistroIluminacion nuevoRegistro = new DAO_RegistroIluminacion(getActivity());
-                    boolean estadoRegistro = nuevoRegistro.RegistroIluminacion(registro);
-                    boolean estadoDetalle = nuevoRegistro.RegistroIluminacionDetalle(detalle);
-                    if(estadoRegistro && estadoDetalle){
+                    if(config.isOnline()){
+                        Retrofit retrofit = new Retrofit.Builder()
+                                .baseUrl("https://test.meiningenieros.pe/")
+                                .addConverterFactory(GsonConverterFactory.create())
+                                .build();
+
+                        DosimetriaService service1 = retrofit.create(DosimetriaService.class);// DEBERIA CAMBIARSE EL SERVICIO DE MANERA GENERAL
+                        Gson gson = new Gson();
+
+                        // Crear un objeto JSON principal
+                        JsonObject jsonObject = new JsonObject();
+
+                        JsonObject registroJson = gson.toJsonTree(cabecera).getAsJsonObject();
+                        jsonObject.add("cabecera", registroJson);
+
+                        JsonObject detalleJson = gson.toJsonTree(detalle).getAsJsonObject();
+                        jsonObject.add("detalle", detalleJson);
+
+
+                        String cadenaJson = gson.toJson(jsonObject);
+                        RequestBody json = RequestBody.create(MediaType.parse("application/json"), cadenaJson);
+
+                        Call<ResponseBody> call1 = service1.insertIluminacion(json);//INSERT A RILUMINACION
+                        call1.enqueue(new Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                Log.e("exitoso", "se inserto el registro");
+                                // Mostrar el JSON en el log
+                                Log.e("JSON", cadenaJson);
+                                Log.e("Respuesta",response.toString());
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                Log.e("error", "Error al insertar el registro");
+                            }
+                        });
+                        new AlertDialog.Builder(getContext())
+                                .setTitle("Registro guardado en WEB")
+                                .setMessage("El registro ha sido guardado exitosamente.")
+                                .setPositiveButton(android.R.string.ok, null)
+                                .show();
+                        getFragmentManager().popBackStack();
+                    }else{
+                        DAO_RegistroIluminacion nuevoRegistro = new DAO_RegistroIluminacion(getActivity());
+                        nuevoRegistro.RegistroIluminacion(cabecera);
+                        nuevoRegistro.RegistroIluminacionDetalle(detalle);
+
                         DAO_FormatosTrabajo dao_fromatosTrabajo = new DAO_FormatosTrabajo(getActivity());
                         for_Iluminacion = dao_fromatosTrabajo.Buscar(id_plan_trabajo,id_formato);
                         for_Iluminacion.setRealizado(for_Iluminacion.getRealizado()+1);
                         for_Iluminacion.setPor_realizar(for_Iluminacion.getPor_realizar()-1);
+
                         dao_fromatosTrabajo.actualizarFormatoTrabajo(for_Iluminacion);
 
-                        // O muestra un AlertDialog con el mensaje
+
                         new AlertDialog.Builder(getActivity())
-                                .setTitle("Registro guardado")
+                                .setTitle("Registro guardado Localmente")
                                 .setMessage("El registro ha sido guardado exitosamente.")
                                 .setPositiveButton(android.R.string.ok, null)
                                 .show();
@@ -331,8 +559,19 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
         nivelMinimo = view.findViewById(R.id.nivel_min_iluminacion);
         fechaMonitoreo = view.findViewById(R.id.tv_fechaMonitoreo);
         hora_monitoreo = view.findViewById(R.id.tv_horaMonitoreo);
-        chekArtificial = view.findViewById(R.id.check_artificial);
-        checkNatural = view.findViewById(R.id.check_natural);
+        spn_tipoIluminacion = view.findViewById(R.id.cbx_tipoIluminacion);//Agregado recientemente
+
+        spn_tipoMedicion = view.findViewById(R.id.cbx_tipoMedicion);
+        txt_longSalon = view.findViewById(R.id.txt_longSalon);
+        txt_anchoSalon = view.findViewById(R.id.txt_anchoSalon);
+        txt_alt_PlanosTrabajo_ilu = view.findViewById(R.id.txt_alt_PlanosTrabajo_ilu);
+        txt_constanteSalon = view.findViewById(R.id.txt_constanteSalon);
+        txt_numMinPuntosMedicion = view.findViewById(R.id.txt_numMinPuntosMedicion);
+        txt_largoEscri = view.findViewById(R.id.txt_largoEscri);
+        txt_anchoEscri = view.findViewById(R.id.txt_anchoEscri);
+        txt_numPuntosMedicion = view.findViewById(R.id.txt_numPuntosMedicion);
+        txt_altura_pTrabajo = view.findViewById(R.id.txt_alturaPlanosTrabajo);
+
         numLuminarias = view.findViewById(R.id.txt_CantLuminarias);
         btnSubirFotoIlu = view.findViewById(R.id.btn_subirFotoIlu);
         imgIliminacion = view.findViewById(R.id.img_Iluminacion);
@@ -345,7 +584,7 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
         il7 = view.findViewById(R.id.txt_IL_07);
         il8 = view.findViewById(R.id.txt_IL_08);
         areaTrabajoM2 = view.findViewById(R.id.txt_areaTrabajoM2);
-        altura_pTrabajo = view.findViewById(R.id.txt_alturaPlanosTrabajo);
+
         numLamparas = view.findViewById(R.id.txt_Num_lamparas);
         altura_pLuminaria = view.findViewById(R.id.txt_alturaPlanosLuminaria);
         colorPared = view.findViewById(R.id.txt_colorPared);
@@ -357,106 +596,71 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
         btn_guardar = view.findViewById(R.id.fabGuardar);
         btnCancelar = view.findViewById(R.id.fabCancelar);
 
-    }
-    public void ConfigPantalla(){
-        DAO_Usuario usuario = new DAO_Usuario(getActivity());
-        Usuario nuevo = usuario.BuscarUsuario(Integer.parseInt(id_colaborador));
-        String cadena = nuevo.getUsuario_nombres() + " "+ nuevo.getUsuario_apater();
-        tv_nombreUsuario.setText(cadena);
-        tv_nomEmpresa.setText(nom_Empresa);
+        linearOtroHorario = view.findViewById(R.id.linearOtroHorario);
+        txt_otroHorario = view.findViewById(R.id.txt_otroHorario);
+        linearOtroRegimen = view.findViewById(R.id.linearOtroRegimen);
+        txt_otroRegimen = view.findViewById(R.id.txt_otroRegimen);
 
-        MainActivity activity = (MainActivity) getActivity();
-        EditText txt_buscar = activity.findViewById(R.id.txt_buscarOrden);
-        TextView tv_usu2 = activity.findViewById(R.id.txt_usuario2);
-        TextView tv_usu = activity.findViewById(R.id.txt_usuario);
-        txt_buscar.setVisibility(View.GONE);
-        tv_usu2.setText(tv_usu.getText());
-        FragmentContainerView fragmentContainer = activity.findViewById(R.id.fragmentContainerView);
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) fragmentContainer.getLayoutParams();
-        params.topMargin = 120;
-        fragmentContainer.setLayoutParams(params);
-    }
-    private void configurarAutoCompleteTextView(AutoCompleteTextView autoCompleteTextView, List<String> listaElementos) {
-        ArrayAdapter<String> adapter3 = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, listaElementos);
-        autoCompleteTextView.setAdapter(adapter3);
-        autoCompleteTextView.setThreshold(1);
-        autoCompleteTextView.setDropDownBackgroundResource(android.R.color.white);
-        autoCompleteTextView.setFilterTouchesWhenObscured(true);
+        Card_Puesto = view.findViewById(R.id.Card_Puesto);
+        Card_Area = view.findViewById(R.id.Card_Area);
 
-        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Realizar acciones al seleccionar un elemento del AutoCompleteTextView si es necesario
-            }
-        });
     }
-    public void showTimePickerDialog(View view, TextView cajita) {
-        // Crear un TimePicker como diálogo emergente
-        TimePickerDialog timePickerDialog = new TimePickerDialog(
-                getActivity(), // o getActivity() si estás en un fragmento
-                new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        // Acción a realizar cuando se selecciona la hora
-                        String selectedTime = String.format("%02d:%02d", hourOfDay, minute);
-                        // Hacer algo con la hora seleccionada, por ejemplo, mostrarla en un TextView
-                        hora = hourOfDay; min = minute;
-                        cajita.setText(selectedTime);
-                    }
-                },
-                // Establecer la hora actual como predeterminada al abrir el diálogo
-                Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
-                Calendar.getInstance().get(Calendar.MINUTE),
-                true // Opcional, establecer formato de 24 horas
-        );
 
-        timePickerDialog.show(); // Mostrar el diálogo de selección de hora
-    }
-    public void showDatePickerDialog(View view, TextView cajita) {
-        // Obtener la fecha actual
-        final Calendar calendar = Calendar.getInstance();
-        int año = calendar.get(Calendar.YEAR);
-        int mes = calendar.get(Calendar.MONTH);
-        int día = calendar.get(Calendar.DAY_OF_MONTH);
-
-        // Crear un DatePicker como diálogo emergente
-        DatePickerDialog datePickerDialog = new DatePickerDialog(
-                getActivity(), // o getActivity() si estás en un fragmento
-                new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        // Acción a realizar cuando se selecciona la fecha
-                        String selectedDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
-                        // Hacer algo con la fecha seleccionada, por ejemplo, mostrarla en un TextView
-                        cajita.setText(selectedDate);
-                    }
-                },
-                año, mes, día);
-
-        datePickerDialog.show(); // Mostrar el diálogo de selección de fecha
-    }
-    private ArrayAdapter<String> LlenarSpinner(String nombreTabla, String campoTabla, Context context){
-
-        List<String> datosParaSpinner = DAO_DatosLocal.obtenerDatosParaSpinner(nombreTabla, campoTabla,getActivity());
-        ArrayList<String> listaDatos = new ArrayList<>();
-        listaDatos.add("seleccione");
-        listaDatos.addAll(datosParaSpinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, listaDatos);
-        return adapter;
-    }
-    private ArrayAdapter<String> LlenarSpinner(String opcion1, String opcion2){
-        ArrayList<String> listaDatos = new ArrayList<>();
-        listaDatos.add("seleccione");
-        listaDatos.add(opcion1);
-        listaDatos.add(opcion2);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, listaDatos);
-        return adapter;
-    }
     @Override
     public void onImagePicked(Uri imageUri) {
         this.uri = imageUri;
         if (imgIliminacion != null && imageUri != null) {
             imgIliminacion.setImageURI(imageUri);
         }
+    }
+
+    public void Valida_Punto_Medicion(String largoEscri, String anchoEscri){
+        Log.e("FFFF", "entro a validacion de punto");
+        Log.e("valores", largoEscri + " - " + anchoEscri);
+        if (largoEscri==null|| anchoEscri==null) {
+            txt_numPuntosMedicion.setText("");
+            return;
+        }
+        float valorLargoEs = Float.parseFloat(largoEscri);
+        float valorAnchoEs = Float.parseFloat(anchoEscri);
+        float valorMax = Math.max(valorLargoEs, valorAnchoEs);
+        float valorMin = Math.min(valorLargoEs, valorAnchoEs);
+
+        float resultado = Math.round((valorMin < 2 ? valorMax : valorMin) / (0.2 * Math.pow(5, Math.log10(valorMin < 2 ? valorMax : valorMin))));
+        Log.e("gghfg",String.valueOf(resultado));
+        txt_numPuntosMedicion.setText(String.valueOf(resultado));
+    }
+
+    public void Constante_Salon(String longSalon, String anchoSalon, String altPlanLumin){
+        if (longSalon==null || anchoSalon==null || altPlanLumin==null) {
+            txt_constanteSalon.setText("");
+            return;
+        }
+        float valorlongSalon = Float.parseFloat(longSalon);
+        float valorAnchoSalon = Float.parseFloat(anchoSalon);
+        float valorAltPlanLum = Float.parseFloat(altPlanLumin);
+
+        float resultado = (valorlongSalon * valorAnchoSalon) / (valorAltPlanLum * (valorlongSalon + valorAnchoSalon));
+        float resultado1 = Math.round(resultado * 100) / 100f;
+        Log.e("gghfg",String.valueOf(resultado));
+        txt_constanteSalon.setText(String.valueOf(resultado1));
+        Num_Minimo_Punto_Med(resultado1);
+    }
+
+    public void Num_Minimo_Punto_Med(float constSalon){
+        // Aplicar la lógica de la fórmula
+        int resultado;
+        if (constSalon < 1) {
+            resultado = 4;
+        } else if (constSalon >= 1 && constSalon < 2) {
+            resultado = 9;
+        } else if (constSalon >= 2 && constSalon < 3) {
+            resultado = 16;
+        } else if (constSalon >= 3) {
+            resultado = 25;
+        } else {
+            resultado = 0;
+        }
+        txt_numMinPuntosMedicion.setText(String.valueOf(resultado));
     }
 }

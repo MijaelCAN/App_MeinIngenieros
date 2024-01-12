@@ -267,6 +267,7 @@ tools:context=".EstresTermicoFragment">
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="NO"
+                        android:checked="true"
                         android:fontFamily="sans-serif-light"
                         android:buttonTint="@color/purple_200"
                         android:textColor="@color/black"/>
@@ -296,6 +297,7 @@ tools:context=".EstresTermicoFragment">
                         android:textColor="@color/white"
                         android:layout_marginTop="20dp"
                         android:background="@drawable/style_4"/>
+
                     <ImageView
                         android:id="@+id/img_Estres"
                         android:layout_width="match_parent"
@@ -621,6 +623,7 @@ tools:context=".EstresTermicoFragment">
                                 android:hint=" Digite"
                                 android:textSize="15sp"
                                 android:paddingLeft="8dp"
+                                android:inputType="text"
                                 android:layout_marginTop="5dp"
                                 android:textColor="@color/black"
                                 android:textColorHint="@color/black"/>
@@ -654,7 +657,7 @@ tools:context=".EstresTermicoFragment">
                                 android:layout_marginTop="5dp"
                                 android:textColor="@color/black"
                                 android:textColorHint="@color/black"
-                                android:inputType="numberSigned"
+                                android:inputType="numberSigned|text"
                                 android:maxLength="3"/>
                         </LinearLayout>
                         <LinearLayout
@@ -685,7 +688,7 @@ tools:context=".EstresTermicoFragment">
                                 android:layout_marginTop="5dp"
                                 android:textColor="@color/black"
                                 android:textColorHint="@color/black"
-                                android:inputType="numberSigned"
+                                android:inputType="numberDecimal|text"
                                 android:maxLength="3"/>
                         </LinearLayout>
                     </LinearLayout>
@@ -730,6 +733,7 @@ tools:context=".EstresTermicoFragment">
                         android:hint=" Digite"
                         android:textSize="15sp"
                         android:paddingLeft="8dp"
+                        android:inputType="text"
                         android:layout_marginTop="5dp"
                         android:textColor="@color/black"
                         android:textColorHint="@color/black"/>
@@ -764,6 +768,7 @@ tools:context=".EstresTermicoFragment">
                                 android:hint=" Ingrese actividades"
                                 android:textSize="15sp"
                                 android:paddingLeft="8dp"
+                                android:inputType="text"
                                 android:layout_marginTop="5dp"
                                 android:textColor="@color/black"
                                 android:textColorHint="@color/black"/>
@@ -779,23 +784,63 @@ tools:context=".EstresTermicoFragment">
                         android:text="Horario de Trabajo"
                         android:textColor="@color/generic_color"
                         android:textSize="19sp" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Horario de trabajo:"
-                        android:textSize="12dp"
-                        android:fontFamily="sans-serif-light"
-                        android:textColor="@color/black"/>
-
-                    <Spinner
-                        android:id="@+id/spn_horarioTrabajo"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/style_input"
-                        android:textSize="10sp" />
+                        android:layout_marginRight="2dp"
+                        android:orientation="horizontal">
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Horario de trabajo:"
+                                android:textSize="12dp"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black"/>
+
+                            <Spinner
+                                android:id="@+id/cbx_horarioTrabajo"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/style_spinner"
+                                android:textSize="10sp" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/linearOtroHorario"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginLeft="15dp"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Otro horario"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black"/>
+
+                            <EditText
+                                android:id="@+id/txt_otroHorario"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                style="@style/EditTextFocusStyle"
+                                android:hint="Digite"
+                                android:paddingLeft="8dp"
+                                android:textSize="16sp"/>
+
+                        </LinearLayout>
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -820,18 +865,53 @@ tools:context=".EstresTermicoFragment">
                                 android:textColor="@color/black"/>
 
                             <Spinner
-                                android:id="@+id/spn_regimen"
+                                android:id="@+id/cbx_regimen"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:layout_weight="1"
-                                android:background="@drawable/style_input" />
+                                android:background="@drawable/style_spinner"/>
                         </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/linearOtroRegimen"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="15dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Otro Regimen"
+                                android:textSize="12sp"
+                                android:layout_marginTop="10dp"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black"/>
+
+                            <EditText
+                                android:id="@+id/txt_otroRegimen"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                style="@style/EditTextFocusStyle"
+                                android:hint="Digite"
+                                android:paddingLeft="8dp"
+                                android:textSize="16sp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="2dp"
+                        android:orientation="horizontal">
 
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="15dp"
                             android:layout_weight="1"
                             android:orientation="vertical">
 
@@ -843,15 +923,45 @@ tools:context=".EstresTermicoFragment">
                                 android:text="Horario Refrigerio"
                                 android:textSize="12sp"
                                 android:fontFamily="sans-serif-light"
-                                android:textColor="@color/black"/>
+                                android:textColor="@color/black" />
 
                             <Spinner
-                                android:id="@+id/spn_horarioRefrigerio"
+                                android:id="@+id/cbx_refrigerio"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:layout_weight="1"
-                                android:background="@drawable/style_input" />
+                                android:background="@drawable/style_spinner" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/linearOtroRefrigerio"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="15dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Otro horario Refrigerio"
+                                android:textSize="12sp"
+                                android:layout_marginTop="10dp"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black"/>
+
+                            <EditText
+                                android:id="@+id/txt_otroRefrigerio"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                style="@style/EditTextFocusStyle"
+                                android:hint="Digite"
+                                android:paddingLeft="8dp"
+                                android:textSize="16sp"/>
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
@@ -986,6 +1096,7 @@ tools:context=".EstresTermicoFragment">
                             android:buttonTint="@color/purple_200"
                             android:fontFamily="sans-serif-light"
                             android:text="No"
+                            android:checked="true"
                             android:textColorHint="@color/black" />
                     </RadioGroup>
 
@@ -1113,6 +1224,7 @@ tools:context=".EstresTermicoFragment">
                             android:buttonTint="@color/purple_200"
                             android:fontFamily="sans-serif-light"
                             android:text="No"
+                            android:checked="true"
                             android:textColorHint="@color/black" />
                     </RadioGroup>
                     <TextView
@@ -1146,6 +1258,7 @@ tools:context=".EstresTermicoFragment">
                             android:buttonTint="@color/purple_200"
                             android:fontFamily="sans-serif-light"
                             android:text="No"
+                            android:checked="true"
                             android:textColorHint="@color/black" />
                     </RadioGroup>
                     <TextView
@@ -1179,6 +1292,7 @@ tools:context=".EstresTermicoFragment">
                             android:buttonTint="@color/purple_200"
                             android:fontFamily="sans-serif-light"
                             android:text="No"
+                            android:checked="true"
                             android:textColorHint="@color/black" />
                     </RadioGroup>
                     <TextView
@@ -1212,6 +1326,7 @@ tools:context=".EstresTermicoFragment">
                             android:buttonTint="@color/purple_200"
                             android:fontFamily="sans-serif-light"
                             android:text="No"
+                            android:checked="true"
                             android:textColorHint="@color/black" />
                     </RadioGroup>
                     <TextView
@@ -1245,6 +1360,7 @@ tools:context=".EstresTermicoFragment">
                             android:buttonTint="@color/purple_200"
                             android:fontFamily="sans-serif-light"
                             android:text="No"
+                            android:checked="true"
                             android:textColorHint="@color/black" />
                     </RadioGroup>
                     <TextView
@@ -1316,12 +1432,7 @@ tools:context=".EstresTermicoFragment">
                         android:text="Vestimenta del personal evaluado"
                         android:textColor="@color/black"
                         android:textSize="12sp" />
-                    <Spinner
-                        android:id="@+id/spn_vestimenta"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/style_input"
-                        android:layout_marginTop="5dp"/>
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -1407,6 +1518,13 @@ tools:context=".EstresTermicoFragment">
                             android:buttonTint="@color/teal_200"
                             android:text="Lentes" />
 
+                        <Spinner
+                            android:id="@+id/spn_vestimenta"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:background="@drawable/style_input" />
+
                         <CheckBox
                             android:id="@+id/check_guantes"
                             android:layout_width="wrap_content"
@@ -1482,10 +1600,20 @@ tools:context=".EstresTermicoFragment">
             android:layout_height="wrap_content"
             android:layout_marginLeft="12dp"
             android:layout_marginTop="20dp"
+            android:layout_gravity="center_horizontal"
             android:fontFamily="sans-serif-light"
-            android:text="CONSUMO METABÓLICO"
+            android:text="DETERMINACIÓN DE LA TASA METABÓLICA"
             android:textColor="@color/generic_color"
             android:textSize="17sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="sans-serif-light"
+            android:text="(ISO 8996 - Ergonomía del ambiente térmico)"
+            android:textColor="@color/black"
+            android:textSize="15sp" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -1508,345 +1636,740 @@ tools:context=".EstresTermicoFragment">
                     android:gravity="center_vertical"
                     android:orientation="vertical">
 
-                    <!-- ACTIVIDADES REALIZADA-->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="1"
-                        android:fontFamily="sans-serif-light"
-                        android:text="TAREA 01"
-                        android:textColor="@color/black"
-                        android:textSize="12sp"
-                        android:layout_gravity="center_horizontal"
-                        android:textStyle="bold"/>
-                    <EditText
-                        android:id="@+id/txt_tarea1"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:background="@drawable/style_input"
-                        android:fontFamily="sans-serif-light"
-                        android:hint="Digite"
-                        android:paddingLeft="8dp"
-                        android:textColor="@color/black"
-                        android:textColorHint="@color/black"
-                        android:textSize="15sp" />
+                        android:orientation="horizontal"
+                        android:layout_marginTop="10dp">
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Nivel de determinación:"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black"
+                                android:textSize="12sp"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="1"
-                        android:fontFamily="sans-serif-light"
-                        android:text="Ciclo de Trabajo(min)"
-                        android:textColor="@color/black"
-                        android:textSize="12sp" />
+                            <Spinner
+                                android:id="@+id/spn_nivelDeterminacion"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/style_input"
+                                android:layout_marginTop="5dp"/>
+                            <!--android:onItemSelected="Equipo_Vibracion"-->
 
-                    <!-- HORARIO DE TRABAJO-->
-                    <EditText
-                        android:id="@+id/txt_cicloTrabajo"
+                        </LinearLayout>
+                        <!-- ... Otros elementos similares ... -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginLeft="15dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Método de determinación:"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black"
+                                android:textSize="12sp"/>
+                            <Spinner
+                                android:id="@+id/spn_metodoDeterminacion"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/style_input"
+                                android:layout_marginTop="5dp"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- CARDS OOCULTOS TANTEO -->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/Card_Tanteo"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:background="@drawable/style_input"
-                        android:fontFamily="sans-serif-light"
-                        android:hint="Digite"
-                        android:paddingLeft="8dp"
-                        android:textColor="@color/black"
-                        android:textColorHint="@color/black"
-                        android:textSize="15sp" />
+                        android:layout_marginTop="20dp"
+                        android:visibility="gone"
+                        app:cardCornerRadius="4dp"
+                        app:cardElevation="2dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="1"
-                        android:fontFamily="sans-serif-light"
-                        android:text="Posición"
-                        android:textColor="@color/black"
-                        android:textSize="12dp" />
-                    <Spinner
-                        android:id="@+id/cbx_posicion"
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+                            <!-- LINEAR 1A -->
+                            <LinearLayout
+                                android:id="@+id/linear1A"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="2dp"
+                                android:visibility="gone">
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="10dp"
+                                        android:layout_weight="1"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Tipo de Trabajo"
+                                        android:textColor="@color/black"
+                                        android:textSize="12sp" />
+
+                                    <Spinner
+                                        android:id="@+id/cbx_tipoTrabajo"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="5dp"
+                                        android:layout_weight="1"
+                                        android:background="@drawable/style_spinner" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="15dp"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="10dp"
+                                        android:layout_weight="1"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Ocupación:"
+                                        android:textColor="@color/black"
+                                        android:textSize="12sp" />
+
+                                    <Spinner
+                                        android:id="@+id/cbx_ocupacion"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="5dp"
+                                        android:layout_weight="1"
+                                        android:background="@drawable/style_spinner" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:id="@+id/linearOtroMarcaTapones"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="15dp"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="10dp"
+                                        android:layout_weight="1"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Rango de la tasa metabólica (W/m2):"
+                                        android:textColor="@color/black"
+                                        android:textSize="12sp" />
+
+                                    <TextView
+                                        android:id="@+id/tv_tasaMetabolica"
+                                        style="@style/EditTextFocusStyle"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="5dp"
+                                        android:fontFamily="sans-serif-light"
+                                        android:inputType="none"
+                                        android:paddingLeft="8dp"
+                                        android:textColor="@color/black"
+                                        android:textColorHint="@color/black"
+                                        android:textSize="16sp" />
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                            <!-- LINEAR 1B -->
+                            <LinearLayout
+                                android:id="@+id/linear1B"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="2dp"
+                                android:orientation="horizontal"
+                                android:visibility="gone">
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="10dp"
+                                        android:layout_weight="1"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Clase:"
+                                        android:textColor="@color/black"
+                                        android:textSize="12sp" />
+
+                                    <Spinner
+                                        android:id="@+id/cbx_clase"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="5dp"
+                                        android:layout_weight="1"
+                                        android:background="@drawable/style_spinner" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="15dp"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="10dp"
+                                        android:layout_weight="1"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Actividad:"
+                                        android:textColor="@color/black"
+                                        android:textSize="12sp" />
+
+                                    <TextView
+                                        android:id="@+id/tv_actividad"
+                                        style="@style/EditTextFocusStyle"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="5dp"
+                                        android:fontFamily="sans-serif-light"
+                                        android:inputType="none"
+                                        android:paddingLeft="8dp"
+                                        android:textColor="@color/black"
+                                        android:textColorHint="@color/black"
+                                        android:textSize="16sp" />
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="2dp"
+                                android:orientation="horizontal">
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="10dp"
+                                        android:layout_weight="1"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Tasa metabólica media (W/m2):"
+                                        android:textColor="@color/black"
+                                        android:textSize="12sp" />
+
+                                    <EditText
+                                        android:id="@+id/txt_tasaMetaW"
+                                        style="@style/EditTextFocusStyle"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="5dp"
+                                        android:fontFamily="sans-serif-light"
+                                        android:hint="Digite"
+                                        android:paddingLeft="8dp"
+                                        android:textColor="@color/black"
+                                        android:textColorHint="@color/black"
+                                        android:textSize="15sp" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:id="@+id/linearOtroModeloTapones"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="15dp"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="10dp"
+                                        android:layout_weight="1"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Tasa metabólica media (Kcal/h):"
+                                        android:textColor="@color/black"
+                                        android:textSize="12sp" />
+
+                                    <EditText
+                                        android:id="@+id/txt_tasaMetaK"
+                                        style="@style/EditTextFocusStyle"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="5dp"
+                                        android:fontFamily="sans-serif-light"
+                                        android:hint="Digite"
+                                        android:paddingLeft="8dp"
+                                        android:textColor="@color/black"
+                                        android:textColorHint="@color/black"
+                                        android:textSize="15sp" />
+                                </LinearLayout>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- CARD OCULTO OBSERVACION-->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/Card_Observacion"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/style_input"
-                        android:textSize="10sp" />
+                        android:layout_marginTop="20dp"
+                        android:visibility="gone"
+                        app:cardCornerRadius="4dp"
+                        app:cardElevation="2dp">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:fontFamily="sans-serif-light"
+                                android:text="TAREA 01"
+                                android:textColor="@color/black"
+                                android:textSize="12sp"
+                                android:layout_gravity="center_horizontal"
+                                android:textStyle="bold"/>
+                            <EditText
+                                android:id="@+id/txt_tarea1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:background="@drawable/style_input"
+                                android:fontFamily="sans-serif-light"
+                                android:hint="Digite"
+                                android:paddingLeft="8dp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black"
+                                android:textSize="15sp" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="1"
-                        android:text="Partes del cuerpo"
-                        android:textSize="12sp"
-                        android:fontFamily="sans-serif-light"/>
-                    <Spinner
-                        android:id="@+id/cbx_partesCuerpo"
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:fontFamily="sans-serif-light"
+                                android:text="Ciclo de Trabajo(min)"
+                                android:textColor="@color/black"
+                                android:textSize="12sp" />
+
+                            <!-- HORARIO DE TRABAJO-->
+                            <EditText
+                                android:id="@+id/txt_cicloTrabajo"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:background="@drawable/style_input"
+                                android:fontFamily="sans-serif-light"
+                                android:hint="Digite"
+                                android:paddingLeft="8dp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:fontFamily="sans-serif-light"
+                                android:text="Posición"
+                                android:textColor="@color/black"
+                                android:textSize="12dp" />
+                            <Spinner
+                                android:id="@+id/cbx_posicion"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/style_input"
+                                android:textSize="10sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:text="Partes del cuerpo"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif-light"/>
+                            <Spinner
+                                android:id="@+id/cbx_partesCuerpo"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/style_input" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:text="Intensidad"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif-light"/>
+                            <Spinner
+                                android:id="@+id/cbx_intensidad"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/style_input" />
+
+                            <!-- ESPACIOOOOOOOOOOOOOOOOOOOOOO -->
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:background="@color/black"
+                                android:layout_marginTop="20dp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:fontFamily="sans-serif-light"
+                                android:text="TAREA 02"
+                                android:textColor="@color/black"
+                                android:textSize="12sp"
+                                android:layout_gravity="center_horizontal"
+                                android:textStyle="bold"/>
+                            <EditText
+                                android:id="@+id/txt_tarea2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:background="@drawable/style_input"
+                                android:fontFamily="sans-serif-light"
+                                android:hint="Digite"
+                                android:paddingLeft="8dp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:fontFamily="sans-serif-light"
+                                android:text="Ciclo de Trabajo(min)"
+                                android:textColor="@color/black"
+                                android:textSize="12sp" />
+
+                            <!-- HORARIO DE TRABAJO-->
+                            <EditText
+                                android:id="@+id/txt_cicloTrabajo2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:background="@drawable/style_input"
+                                android:fontFamily="sans-serif-light"
+                                android:hint="Digite"
+                                android:paddingLeft="8dp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:fontFamily="sans-serif-light"
+                                android:text="Posición"
+                                android:textColor="@color/black"
+                                android:textSize="12dp" />
+                            <Spinner
+                                android:id="@+id/cbx_posicion2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/style_input"
+                                android:textSize="10sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:text="Partes del cuerpo"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif-light"/>
+                            <Spinner
+                                android:id="@+id/cbx_partesCuerpo2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/style_input" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:text="Intensidad"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif-light"/>
+                            <Spinner
+                                android:id="@+id/cbx_intensidad2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/style_input" />
+                            <!-- ESPACIOOOOOOOOOOOOOOOOOOOOOO -->
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:background="@color/black"
+                                android:layout_marginTop="20dp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:fontFamily="sans-serif-light"
+                                android:text="TAREA 03"
+                                android:textColor="@color/black"
+                                android:textSize="12sp"
+                                android:layout_gravity="center_horizontal"
+                                android:textStyle="bold"/>
+                            <EditText
+                                android:id="@+id/txt_tarea3"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:background="@drawable/style_input"
+                                android:fontFamily="sans-serif-light"
+                                android:hint="Digite"
+                                android:paddingLeft="8dp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:fontFamily="sans-serif-light"
+                                android:text="Ciclo de Trabajo(min)"
+                                android:textColor="@color/black"
+                                android:textSize="12sp" />
+
+                            <!-- HORARIO DE TRABAJO-->
+                            <EditText
+                                android:id="@+id/txt_cicloTrabajo3"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:background="@drawable/style_input"
+                                android:fontFamily="sans-serif-light"
+                                android:hint="Digite"
+                                android:paddingLeft="8dp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:fontFamily="sans-serif-light"
+                                android:text="Posición"
+                                android:textColor="@color/black"
+                                android:textSize="12dp" />
+                            <Spinner
+                                android:id="@+id/cbx_posicion3"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/style_input"
+                                android:textSize="10sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:text="Partes del cuerpo"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif-light"/>
+                            <Spinner
+                                android:id="@+id/cbx_partesCuerpo3"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/style_input" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:text="Intensidad"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif-light"/>
+                            <Spinner
+                                android:id="@+id/cbx_intensidad3"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/style_input" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:text="Nota: En caso la POSICIÓN sea SUBIDA DE UNA PENDIENTE ANDANDO"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif-light"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:text="Metros de subida"
+                                android:textSize="12sp"
+                                android:layout_marginLeft="20dp"
+                                android:fontFamily="sans-serif-light"/>
+                            <EditText
+                                android:id="@+id/txt_metrosSubida"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:background="@drawable/style_input"
+                                android:fontFamily="sans-serif-light"
+                                android:hint="Digite"
+                                android:paddingLeft="8dp"
+                                android:layout_marginLeft="20dp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black"
+                                android:textSize="15sp" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- CARD OCULTO ANALISIS -->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/Card_Analisis"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/style_input" />
+                        android:layout_marginTop="20dp"
+                        android:visibility="gone"
+                        app:cardCornerRadius="4dp"
+                        app:cardElevation="2dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="1"
-                        android:text="Intensidad"
-                        android:textSize="12sp"
-                        android:fontFamily="sans-serif-light"/>
-                    <Spinner
-                        android:id="@+id/cbx_intensidad"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/style_input" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+                            <!-- LINEAR 1B -->
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="2dp"
+                                android:orientation="horizontal"
+                                android:visibility="visible">
 
-                    <!-- ESPACIOOOOOOOOOOOOOOOOOOOOOO -->
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/black"
-                        android:layout_marginTop="20dp"/>
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="1"
-                        android:fontFamily="sans-serif-light"
-                        android:text="TAREA 02"
-                        android:textColor="@color/black"
-                        android:textSize="12sp"
-                        android:layout_gravity="center_horizontal"
-                        android:textStyle="bold"/>
-                    <EditText
-                        android:id="@+id/txt_tarea2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:background="@drawable/style_input"
-                        android:fontFamily="sans-serif-light"
-                        android:hint="Digite"
-                        android:paddingLeft="8dp"
-                        android:textColor="@color/black"
-                        android:textColorHint="@color/black"
-                        android:textSize="15sp" />
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="10dp"
+                                        android:layout_weight="1"
+                                        android:text="Genero:"
+                                        android:textSize="12sp"
+                                        android:fontFamily="sans-serif-light"
+                                        android:textColor="@color/black" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="1"
-                        android:fontFamily="sans-serif-light"
-                        android:text="Ciclo de Trabajo(min)"
-                        android:textColor="@color/black"
-                        android:textSize="12sp" />
+                                    <Spinner
+                                        android:id="@+id/cbx_genero"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="5dp"
+                                        android:layout_weight="1"
+                                        android:background="@drawable/style_spinner" />
+                                </LinearLayout>
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="15dp"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
 
-                    <!-- HORARIO DE TRABAJO-->
-                    <EditText
-                        android:id="@+id/txt_cicloTrabajo2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:background="@drawable/style_input"
-                        android:fontFamily="sans-serif-light"
-                        android:hint="Digite"
-                        android:paddingLeft="8dp"
-                        android:textColor="@color/black"
-                        android:textColorHint="@color/black"
-                        android:textSize="15sp" />
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="10dp"
+                                        android:layout_weight="1"
+                                        android:text="Frecuencia Cardiaca (ppm):"
+                                        android:textSize="12sp"
+                                        android:fontFamily="sans-serif-light"
+                                        android:textColor="@color/black" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="1"
-                        android:fontFamily="sans-serif-light"
-                        android:text="Posición"
-                        android:textColor="@color/black"
-                        android:textSize="12dp" />
-                    <Spinner
-                        android:id="@+id/cbx_posicion2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/style_input"
-                        android:textSize="10sp" />
+                                    <EditText
+                                        android:id="@+id/txt_frecuenciaCardiaca"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        style="@style/EditTextFocusStyle"
+                                        android:inputType="text"
+                                        android:hint="Digite"
+                                        android:textSize="16sp"
+                                        android:paddingLeft="8dp"
+                                        android:layout_marginTop="5dp"
+                                        android:fontFamily="sans-serif-light"
+                                        android:textColorHint="@color/black"
+                                        android:textColor="@color/black"/>
+                                </LinearLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="1"
-                        android:text="Partes del cuerpo"
-                        android:textSize="12sp"
-                        android:fontFamily="sans-serif-light"/>
-                    <Spinner
-                        android:id="@+id/cbx_partesCuerpo2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/style_input" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="1"
-                        android:text="Intensidad"
-                        android:textSize="12sp"
-                        android:fontFamily="sans-serif-light"/>
-                    <Spinner
-                        android:id="@+id/cbx_intensidad2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/style_input" />
-                    <!-- ESPACIOOOOOOOOOOOOOOOOOOOOOO -->
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/black"
-                        android:layout_marginTop="20dp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="1"
-                        android:fontFamily="sans-serif-light"
-                        android:text="TAREA 03"
-                        android:textColor="@color/black"
-                        android:textSize="12sp"
-                        android:layout_gravity="center_horizontal"
-                        android:textStyle="bold"/>
-                    <EditText
-                        android:id="@+id/txt_tarea3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:background="@drawable/style_input"
-                        android:fontFamily="sans-serif-light"
-                        android:hint="Digite"
-                        android:paddingLeft="8dp"
-                        android:textColor="@color/black"
-                        android:textColorHint="@color/black"
-                        android:textSize="15sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="1"
-                        android:fontFamily="sans-serif-light"
-                        android:text="Ciclo de Trabajo(min)"
-                        android:textColor="@color/black"
-                        android:textSize="12sp" />
-
-                    <!-- HORARIO DE TRABAJO-->
-                    <EditText
-                        android:id="@+id/txt_cicloTrabajo3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:background="@drawable/style_input"
-                        android:fontFamily="sans-serif-light"
-                        android:hint="Digite"
-                        android:paddingLeft="8dp"
-                        android:textColor="@color/black"
-                        android:textColorHint="@color/black"
-                        android:textSize="15sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="1"
-                        android:fontFamily="sans-serif-light"
-                        android:text="Posición"
-                        android:textColor="@color/black"
-                        android:textSize="12dp" />
-                    <Spinner
-                        android:id="@+id/cbx_posicion3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/style_input"
-                        android:textSize="10sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="1"
-                        android:text="Partes del cuerpo"
-                        android:textSize="12sp"
-                        android:fontFamily="sans-serif-light"/>
-                    <Spinner
-                        android:id="@+id/cbx_partesCuerpo3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/style_input" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="1"
-                        android:text="Intensidad"
-                        android:textSize="12sp"
-                        android:fontFamily="sans-serif-light"/>
-                    <Spinner
-                        android:id="@+id/cbx_intensidad3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/style_input" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="1"
-                        android:text="Nota: En caso la POSICIÓN sea SUBIDA DE UNA PENDIENTE ANDANDO"
-                        android:textSize="12sp"
-                        android:fontFamily="sans-serif-light"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="1"
-                        android:text="Metros de subida"
-                        android:textSize="12sp"
-                        android:layout_marginLeft="20dp"
-                        android:fontFamily="sans-serif-light"/>
-                    <EditText
-                        android:id="@+id/txt_metrosSubida"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:background="@drawable/style_input"
-                        android:fontFamily="sans-serif-light"
-                        android:hint="Digite"
-                        android:paddingLeft="8dp"
-                        android:layout_marginLeft="20dp"
-                        android:textColor="@color/black"
-                        android:textColorHint="@color/black"
-                        android:textSize="15sp" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
                     <!-- fin de la Segunda fila Doble -->
                 </LinearLayout>
             </LinearLayout>
@@ -1875,13 +2398,36 @@ tools:context=".EstresTermicoFragment">
                 android:orientation="vertical"
                 android:padding="8dp">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tipo de Medicion:"
+                        android:fontFamily="sans-serif-light"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"/>
+
+                    <Spinner
+                        android:id="@+id/spn_tipoMedicion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/style_input"
+                        android:layout_marginTop="5dp"/>
+                    <!--android:onItemSelected="Equipo_Vibracion"-->
+
+                </LinearLayout>
+
                 <!--FILA 1 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
                     <LinearLayout
-                        android:layout_width="200dp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginRight="15dp"
@@ -1896,7 +2442,7 @@ tools:context=".EstresTermicoFragment">
                             android:textSize="12sp"
                             android:fontFamily="sans-serif-light" />
                         <TextView
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="15dp"
                             android:text="Temperatura del bulbo húmedo (WBT) (WET) (Tbh) - (°C)"
@@ -1925,7 +2471,7 @@ tools:context=".EstresTermicoFragment">
                             android:layout_height="wrap_content"
                             android:background="@drawable/style_2"
                             android:gravity="center_horizontal|center_vertical"
-                            android:inputType="numberSigned|text"
+                            android:inputType="number|numberDecimal"
                             android:maxLength="5"
                             android:paddingLeft="8dp"
                             android:layout_marginTop="5dp"
@@ -1933,6 +2479,7 @@ tools:context=".EstresTermicoFragment">
                             android:fontFamily="sans-serif-light"/>
                     </LinearLayout>
                     <LinearLayout
+                        android:id="@+id/linear1_1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -1954,7 +2501,7 @@ tools:context=".EstresTermicoFragment">
                             android:layout_height="wrap_content"
                             android:background="@drawable/style_2"
                             android:gravity="center_horizontal|center_vertical"
-                            android:inputType="numberSigned|text"
+                            android:inputType="number|numberDecimal"
                             android:maxLength="5"
                             android:paddingLeft="8dp"
                             android:layout_marginTop="5dp"
@@ -1962,6 +2509,7 @@ tools:context=".EstresTermicoFragment">
                             android:fontFamily="sans-serif-light"/>
                     </LinearLayout>
                     <LinearLayout
+                        android:id="@+id/linear1_7"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -1982,7 +2530,7 @@ tools:context=".EstresTermicoFragment">
                             android:layout_height="wrap_content"
                             android:background="@drawable/style_2"
                             android:gravity="center_horizontal|center_vertical"
-                            android:inputType="numberSigned|text"
+                            android:inputType="number|numberDecimal"
                             android:maxLength="5"
                             android:paddingLeft="8dp"
                             android:layout_marginTop="5dp"
@@ -1996,10 +2544,10 @@ tools:context=".EstresTermicoFragment">
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
                     <TextView
-                        android:layout_width="200dp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:layout_marginTop="15dp"
+                        android:layout_marginTop="10dp"
                         android:text="Temperatura del aire (TA)/Temperatura del bulbo seco (Tbs) - (°C)"
                         android:textSize="12sp"
                         android:fontFamily="sans-serif-light"
@@ -2011,7 +2559,7 @@ tools:context=".EstresTermicoFragment">
                         android:layout_weight="1"
                         android:background="@drawable/style_2"
                         android:gravity="center_horizontal|center_vertical"
-                        android:inputType="numberSigned|text"
+                        android:inputType="number|numberDecimal"
                         android:maxLength="5"
                         android:paddingLeft="8dp"
                         android:layout_marginTop="15dp"
@@ -2025,7 +2573,7 @@ tools:context=".EstresTermicoFragment">
                         android:layout_weight="1"
                         android:background="@drawable/style_2"
                         android:gravity="center_horizontal|center_vertical"
-                        android:inputType="numberSigned|text"
+                        android:inputType="number|numberDecimal"
                         android:maxLength="5"
                         android:paddingLeft="8dp"
                         android:layout_marginTop="15dp"
@@ -2039,7 +2587,7 @@ tools:context=".EstresTermicoFragment">
                         android:layout_weight="1"
                         android:background="@drawable/style_2"
                         android:gravity="center_horizontal|center_vertical"
-                        android:inputType="numberSigned|text"
+                        android:inputType="number|numberDecimal"
                         android:maxLength="5"
                         android:paddingLeft="8dp"
                         android:layout_marginTop="15dp"
@@ -2053,10 +2601,10 @@ tools:context=".EstresTermicoFragment">
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
                     <TextView
-                        android:layout_width="200dp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:layout_marginTop="15dp"
+                        android:layout_marginTop="10dp"
                         android:text="Temperatura del globo negro (TG) - (°C)"
                         android:textSize="12sp"
                         android:fontFamily="sans-serif-light"
@@ -2068,7 +2616,7 @@ tools:context=".EstresTermicoFragment">
                         android:layout_weight="1"
                         android:background="@drawable/style_2"
                         android:gravity="center_horizontal|center_vertical"
-                        android:inputType="numberSigned|text"
+                        android:inputType="number|numberDecimal"
                         android:maxLength="5"
                         android:paddingLeft="8dp"
                         android:layout_marginTop="15dp"
@@ -2082,7 +2630,7 @@ tools:context=".EstresTermicoFragment">
                         android:layout_weight="1"
                         android:background="@drawable/style_2"
                         android:gravity="center_horizontal|center_vertical"
-                        android:inputType="numberSigned|text"
+                        android:inputType="number|numberDecimal"
                         android:maxLength="5"
                         android:paddingLeft="8dp"
                         android:layout_marginTop="15dp"
@@ -2096,7 +2644,7 @@ tools:context=".EstresTermicoFragment">
                         android:layout_weight="1"
                         android:background="@drawable/style_2"
                         android:gravity="center_horizontal|center_vertical"
-                        android:inputType="numberSigned|text"
+                        android:inputType="number|numberDecimal"
                         android:maxLength="5"
                         android:paddingLeft="8dp"
                         android:layout_marginTop="15dp"
@@ -2110,10 +2658,10 @@ tools:context=".EstresTermicoFragment">
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
                     <TextView
-                        android:layout_width="200dp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:layout_marginTop="15dp"
+                        android:layout_marginTop="10dp"
                         android:text="HR % (Humedad Relativa)"
                         android:textSize="12sp"
                         android:fontFamily="sans-serif-light"
@@ -2125,7 +2673,7 @@ tools:context=".EstresTermicoFragment">
                         android:layout_weight="1"
                         android:background="@drawable/style_2"
                         android:gravity="center_horizontal|center_vertical"
-                        android:inputType="numberSigned|text"
+                        android:inputType="number|numberDecimal"
                         android:maxLength="5"
                         android:paddingLeft="8dp"
                         android:layout_marginTop="15dp"
@@ -2139,7 +2687,7 @@ tools:context=".EstresTermicoFragment">
                         android:layout_weight="1"
                         android:background="@drawable/style_2"
                         android:gravity="center_horizontal|center_vertical"
-                        android:inputType="numberSigned|text"
+                        android:inputType="number|numberDecimal"
                         android:maxLength="5"
                         android:paddingLeft="8dp"
                         android:layout_marginTop="15dp"
@@ -2153,7 +2701,7 @@ tools:context=".EstresTermicoFragment">
                         android:layout_weight="1"
                         android:background="@drawable/style_2"
                         android:gravity="center_horizontal|center_vertical"
-                        android:inputType="numberSigned|text"
+                        android:inputType="number|numberDecimal"
                         android:maxLength="5"
                         android:paddingLeft="8dp"
                         android:layout_marginTop="15dp"
@@ -2165,29 +2713,60 @@ tools:context=".EstresTermicoFragment">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="15dp">
+                    android:orientation="horizontal">
                     <TextView
-                        android:layout_width="352dp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginTop="15dp"
                         android:text="Velocidad del Viento (m/s)"
                         android:textSize="12sp"
                         android:fontFamily="sans-serif-light"
                         android:textColor="@color/black"/>
                     <EditText
                         android:id="@+id/txt_velViento"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:background="@drawable/style_2"
                         android:gravity="center_horizontal|center_vertical"
-                        android:inputType="numberSigned|text"
+                        android:inputType="number|numberDecimal"
                         android:maxLength="5"
                         android:paddingLeft="8dp"
+                        android:layout_marginTop="15dp"
                         android:textSize="15dp"
                         android:layout_marginLeft="15dp"
-                        android:fontFamily="sans-serif-light" />
-
+                        android:fontFamily="sans-serif-light"/>
+                    <EditText
+                        android:id="@+id/txt_velViento2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/style_2"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:inputType="number|numberDecimal"
+                        android:maxLength="5"
+                        android:paddingLeft="8dp"
+                        android:layout_marginTop="15dp"
+                        android:textSize="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:fontFamily="sans-serif-light"/>
+                    <EditText
+                        android:id="@+id/txt_velViento3"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/style_2"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:inputType="number|numberDecimal"
+                        android:maxLength="5"
+                        android:paddingLeft="8dp"
+                        android:layout_marginTop="15dp"
+                        android:textSize="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:fontFamily="sans-serif-light"/>
                 </LinearLayout>
+
             </LinearLayout>
         </androidx.cardview.widget.CardView>
         <TextView

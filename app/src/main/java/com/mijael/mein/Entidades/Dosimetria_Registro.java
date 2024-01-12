@@ -2,26 +2,29 @@ package com.mijael.mein.Entidades;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
+
+
 public class Dosimetria_Registro {
     private int id;
     private String cod_formato;
     private String id_formato;
     private String id_plan_trabajo;
     private String id_pt_formato;
-    private String cod_dosimetro;
-    private String nom_dosimetro;
-    private String cod_calibrador;
-    private String nom_calibrador;
+    private String cod_equipo1;
+    private String nom_equipo1;
+    private String cod_equipo2;
+    private String nom_equipo2;
     private String serie_eq1;
     private String serie_eq2;
-    private String id_dosimetro;
-    private String id_calibrador;
+    private String id_equipo1;
+    private String id_equipo2;
     private String id_analista;
     private String nom_analista;
     private String hora_situ;
     private String nivel;
     private String variacion;
-    private String fec_monitoreo;
+    private Date fec_monitoreo;
     private String hora_inicial;
     private String hora_final;
     private String tiempo_exposicion;
@@ -41,7 +44,8 @@ public class Dosimetria_Registro {
     private String hora_trabajo;
     private String regimen_laboral;
     private String horario_refrigerio;
-    private String tiempo_ocupado;
+    private String anio_ocu_cargo;
+    private String mes_ocu_cargo;
     private String molestia_oido;
     private String enfermedad_oido;
     private String detalle_enf_oido;
@@ -80,31 +84,26 @@ public class Dosimetria_Registro {
     private String user_reg;
     private String fec_reg;
 
-    public Dosimetria_Registro(int id,String cod_formato, String id_formato, String id_plan_trabajo, String id_pt_formato, String cod_dosimetro, String nom_dosimetro,
-                               String cod_calibrador, String nom_calibrador, String serie_eq1, String serie_eq2, String id_dosimetro, String id_calibrador, String id_analista,
-                               String nom_analista, String hora_situ, String nivel, String variacion, String fec_monitoreo, String hora_inicial, String hora_final,
-                               String tiempo_exposicion, String jornada, String tipo_doc_trabajador, String num_doc_trabajador, String nom_trabajador, String puesto_trabajador,
-                               String area_trabajo, String actividades_realizadas, String edad_trabajador, String ch_ruido_externo, String ch_ruido_antiguo,
-                               String ch_ruido_generado_por, String ruido_generado_por, String otro_ruido, String hora_trabajo, String regimen_laboral, String horario_refrigerio,
-                               String tiempo_ocupado, String molestia_oido, String enfermedad_oido, String detalle_enf_oido, String fecha_ultimo_examen, String mes_ultimo_examen,
-                               String anio_ultimo_examen, String ctrl_ingenieria, String aislamiento, String techos, String cabinas, String orientacion, String cerramiento,
-                               String otro_ingenieria, String ctrl_administrativo, String capacitacion, String senializacion_precion, String senializacion_epp, String rotacion,
-                               String adm_tiempo_expo, String otro_administrativo, String tapones_au, String marca_tapones_audi, String modelo_tapones_audi, String nrr_tapones_audi,
-                               String orejereas, String marca_orejeras, String modelo_orejeras, String nrr_orejeras, String leq_dba, String lpico_dba, String lmax_dba,
-                               String lmin_dba, String observacion, String estado_resultado, String user_reg, String fec_reg) {
+    private String var1;
+
+    public Dosimetria_Registro(String var1){
+        this.var1 = var1;
+    }
+
+    public Dosimetria_Registro(int id, String cod_formato, String id_formato, String id_plan_trabajo, String id_pt_formato, String cod_equipo1, String nom_equipo1, String cod_equipo2, String nom_equipo2, String serie_eq1, String serie_eq2, String id_equipo1, String id_equipo2, String id_analista, String nom_analista, String hora_situ, String nivel, String variacion, Date fec_monitoreo, String hora_inicial, String hora_final, String tiempo_exposicion, String jornada, String tipo_doc_trabajador, String num_doc_trabajador, String nom_trabajador, String puesto_trabajador, String area_trabajo, String actividades_realizadas, String edad_trabajador, String ch_ruido_externo, String ch_ruido_antiguo, String ch_ruido_generado_por, String ruido_generado_por, String otro_ruido, String hora_trabajo, String regimen_laboral, String horario_refrigerio, String anio_ocu_cargo, String mes_ocu_cargo, String molestia_oido, String enfermedad_oido, String detalle_enf_oido, String fecha_ultimo_examen, String mes_ultimo_examen, String anio_ultimo_examen, String ctrl_ingenieria, String aislamiento, String techos, String cabinas, String orientacion, String cerramiento, String otro_ingenieria, String ctrl_administrativo, String capacitacion, String senializacion_precion, String senializacion_epp, String rotacion, String adm_tiempo_expo, String otro_administrativo, String tapones_au, String marca_tapones_audi, String modelo_tapones_audi, String nrr_tapones_audi, String orejereas, String marca_orejeras, String modelo_orejeras, String nrr_orejeras, String leq_dba, String lpico_dba, String lmax_dba, String lmin_dba, String observacion, String estado_resultado, String user_reg, String fec_reg, String var1) {
         this.id = id;
         this.cod_formato = cod_formato;
         this.id_formato = id_formato;
         this.id_plan_trabajo = id_plan_trabajo;
         this.id_pt_formato = id_pt_formato;
-        this.cod_dosimetro = cod_dosimetro;
-        this.nom_dosimetro = nom_dosimetro;
-        this.cod_calibrador = cod_calibrador;
-        this.nom_calibrador = nom_calibrador;
+        this.cod_equipo1 = cod_equipo1;
+        this.nom_equipo1 = nom_equipo1;
+        this.cod_equipo2 = cod_equipo2;
+        this.nom_equipo2 = nom_equipo2;
         this.serie_eq1 = serie_eq1;
         this.serie_eq2 = serie_eq2;
-        this.id_dosimetro = id_dosimetro;
-        this.id_calibrador = id_calibrador;
+        this.id_equipo1 = id_equipo1;
+        this.id_equipo2 = id_equipo2;
         this.id_analista = id_analista;
         this.nom_analista = nom_analista;
         this.hora_situ = hora_situ;
@@ -130,7 +129,8 @@ public class Dosimetria_Registro {
         this.hora_trabajo = hora_trabajo;
         this.regimen_laboral = regimen_laboral;
         this.horario_refrigerio = horario_refrigerio;
-        this.tiempo_ocupado = tiempo_ocupado;
+        this.anio_ocu_cargo = anio_ocu_cargo;
+        this.mes_ocu_cargo = mes_ocu_cargo;
         this.molestia_oido = molestia_oido;
         this.enfermedad_oido = enfermedad_oido;
         this.detalle_enf_oido = detalle_enf_oido;
@@ -165,9 +165,9 @@ public class Dosimetria_Registro {
         this.lmin_dba = lmin_dba;
         this.observacion = observacion;
         this.estado_resultado = estado_resultado;
-        this.estado = 1;
         this.user_reg = user_reg;
         this.fec_reg = fec_reg;
+        this.var1 = var1;
     }
 
     public int getId() {
@@ -210,36 +210,36 @@ public class Dosimetria_Registro {
         this.id_pt_formato = id_pt_formato;
     }
 
-    public String getCod_dosimetro() {
-        return cod_dosimetro;
+    public String getCod_equipo1() {
+        return cod_equipo1;
     }
 
-    public void setCod_dosimetro(String cod_dosimetro) {
-        this.cod_dosimetro = cod_dosimetro;
+    public void setCod_equipo1(String cod_equipo1) {
+        this.cod_equipo1 = cod_equipo1;
     }
 
-    public String getNom_dosimetro() {
-        return nom_dosimetro;
+    public String getNom_equipo1() {
+        return nom_equipo1;
     }
 
-    public void setNom_dosimetro(String nom_dosimetro) {
-        this.nom_dosimetro = nom_dosimetro;
+    public void setNom_equipo1(String nom_equipo1) {
+        this.nom_equipo1 = nom_equipo1;
     }
 
-    public String getCod_calibrador() {
-        return cod_calibrador;
+    public String getCod_equipo2() {
+        return cod_equipo2;
     }
 
-    public void setCod_calibrador(String cod_calibrador) {
-        this.cod_calibrador = cod_calibrador;
+    public void setCod_equipo2(String cod_equipo2) {
+        this.cod_equipo2 = cod_equipo2;
     }
 
-    public String getNom_calibrador() {
-        return nom_calibrador;
+    public String getNom_equipo2() {
+        return nom_equipo2;
     }
 
-    public void setNom_calibrador(String nom_calibrador) {
-        this.nom_calibrador = nom_calibrador;
+    public void setNom_equipo2(String nom_equipo2) {
+        this.nom_equipo2 = nom_equipo2;
     }
 
     public String getSerie_eq1() {
@@ -258,20 +258,20 @@ public class Dosimetria_Registro {
         this.serie_eq2 = serie_eq2;
     }
 
-    public String getId_dosimetro() {
-        return id_dosimetro;
+    public String getId_equipo1() {
+        return id_equipo1;
     }
 
-    public void setId_dosimetro(String id_dosimetro) {
-        this.id_dosimetro = id_dosimetro;
+    public void setId_equipo1(String id_equipo1) {
+        this.id_equipo1 = id_equipo1;
     }
 
-    public String getId_calibrador() {
-        return id_calibrador;
+    public String getId_equipo2() {
+        return id_equipo2;
     }
 
-    public void setId_calibrador(String id_calibrador) {
-        this.id_calibrador = id_calibrador;
+    public void setId_equipo2(String id_equipo2) {
+        this.id_equipo2 = id_equipo2;
     }
 
     public String getId_analista() {
@@ -314,11 +314,11 @@ public class Dosimetria_Registro {
         this.variacion = variacion;
     }
 
-    public String getFec_monitoreo() {
+    public Date getFec_monitoreo() {
         return fec_monitoreo;
     }
 
-    public void setFec_monitoreo(String fec_monitoreo) {
+    public void setFec_monitoreo(Date fec_monitoreo) {
         this.fec_monitoreo = fec_monitoreo;
     }
 
@@ -474,12 +474,20 @@ public class Dosimetria_Registro {
         this.horario_refrigerio = horario_refrigerio;
     }
 
-    public String getTiempo_ocupado() {
-        return tiempo_ocupado;
+    public String getAnio_ocu_cargo() {
+        return anio_ocu_cargo;
     }
 
-    public void setTiempo_ocupado(String tiempo_ocupado) {
-        this.tiempo_ocupado = tiempo_ocupado;
+    public void setAnio_ocu_cargo(String anio_ocu_cargo) {
+        this.anio_ocu_cargo = anio_ocu_cargo;
+    }
+
+    public String getMes_ocu_cargo() {
+        return mes_ocu_cargo;
+    }
+
+    public void setMes_ocu_cargo(String mes_ocu_cargo) {
+        this.mes_ocu_cargo = mes_ocu_cargo;
     }
 
     public String getMolestia_oido() {
@@ -776,5 +784,13 @@ public class Dosimetria_Registro {
 
     public void setFec_reg(String fec_reg) {
         this.fec_reg = fec_reg;
+    }
+
+    public String getVar1() {
+        return var1;
+    }
+
+    public void setVar1(String var1) {
+        this.var1 = var1;
     }
 }

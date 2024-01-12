@@ -13,6 +13,8 @@ import com.mijael.mein.Utilidades.Util_IluminacionRegistro;
 import com.mijael.mein.Utilidades.Util_IluminacionRegistroDetalle;
 import com.mijael.mein.Utilidades.Util_RadiacionElectRegistro;
 import com.mijael.mein.Utilidades.Util_RadiacionElectRegistroDetalle;
+import com.mijael.mein.Utilidades.Util_RegistroFormatos;
+import com.mijael.mein.Utilidades.Util_RegistroFormatos_Detalle;
 import com.mijael.mein.Utilidades.Util_SonometriaRegistro;
 import com.mijael.mein.Utilidades.Util_VibracionRegistro;
 import com.mijael.mein.Utilidades.Util_VibracionRegistroDetalle;
@@ -44,6 +46,8 @@ public class RegistroFormatosSQLiteHelper extends SQLiteOpenHelper {
         db.execSQL(Util_EstresTermicoRegistroDetalle.CrearTablaEstresDetalle);
         db.execSQL(Util_RadiacionElectRegistro.CrearTablaRadiacion);
         db.execSQL(Util_RadiacionElectRegistroDetalle.CrearTablaRadiacionDetalle);
+        db.execSQL(Util_RegistroFormatos.CrearTablaRegistroFormato);
+        db.execSQL(Util_RegistroFormatos_Detalle.CrearTablaRegistroDetalle);
     }
 
     @Override
@@ -58,5 +62,7 @@ public class RegistroFormatosSQLiteHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + Util_EstresTermicoRegistroDetalle.TABLA_ESTRES_DETALLE);
         db.execSQL("DROP TABLE IF EXISTS " + Util_RadiacionElectRegistro.TABLA_RADIACION);
         db.execSQL("DROP TABLE IF EXISTS " + Util_RadiacionElectRegistroDetalle.TABLA_RADIACION_DETALLE);
+        db.execSQL("DROP TABLE IF EXISTS " + Util_RegistroFormatos.TABLA_REGISTRO_FORMATOS);
+        db.execSQL("DROP TABLE IF EXISTS " + Util_RegistroFormatos_Detalle.TABLA_REGISTRO_DETALLE);
     }
 }

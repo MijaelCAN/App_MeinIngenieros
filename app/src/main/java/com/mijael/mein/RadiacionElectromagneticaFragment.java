@@ -8,6 +8,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,30 +16,46 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.mijael.mein.DAO.DAO_Equipos;
 import com.mijael.mein.DAO.DAO_FormatosTrabajo;
 import com.mijael.mein.DAO.DAO_RegistroRadiacion;
 import com.mijael.mein.DAO.DAO_RegistroVibracion;
+import com.mijael.mein.DAO.DAO_Usuario;
+import com.mijael.mein.DAO.DAO_VelocidadAire;
 import com.mijael.mein.Entidades.Equipos;
 import com.mijael.mein.Entidades.Formatos_Trabajo;
 import com.mijael.mein.Entidades.RadiacionElec_Registro;
 import com.mijael.mein.Entidades.RadiacionElect_RegistroDetalle;
+import com.mijael.mein.Entidades.Usuario;
 import com.mijael.mein.Extras.FragmentoImagen;
 import com.mijael.mein.Extras.InputDateConfiguration;
 import com.mijael.mein.Extras.Validaciones;
 import com.mijael.mein.HELPER.EquiposSQLiteHelper;
 import com.mijael.mein.HELPER.FormatoTrabajoSQLiteHelper;
+import com.mijael.mein.SERVICIOS.DosimetriaService;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class RadiacionElectromagneticaFragment extends Fragment implements FragmentoImagen.ImagePickerListener{
@@ -57,8 +74,11 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
             txt_jornadaTrabajo, txt_fuenteGen, txt_timeExpo, txt_vestimenta, txt_controlIng, txt_controlAdm, txt_Epps,
             txt_x0, txt_x2, txt_x4, txt_x6, txt_y0, txt_y2, txt_y4, txt_y6, txt_z0, txt_z2, txt_z4, txt_z6;
     Spinner spn_tipoDoc, spn_horarioTrabajo, spn_regimen, spn_horarioRefrigerio, spn_descTrabajo;
-    ImageView imgVibra;
+    ImageView imgRadiacion;
     Uri uri;
+
+    LinearLayout linearOtroHorario, linearOtroRegimen, linearOtroRefrigerio;
+    EditText txt_otroHorario, txt_otroRegimen, txt_otroRefrigerio;
     Formatos_Trabajo for_Electro;
     Validaciones validar = new Validaciones();
 
@@ -91,6 +111,8 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
 
         DAO_Equipos equipos = new DAO_Equipos(getActivity());
         List<String> lista_CodEquipos = equipos.obtener_CodEquipos();
+        DAO_Usuario usuario = new DAO_Usuario(getActivity());
+        Usuario nuevo = usuario.BuscarUsuario(Integer.parseInt(id_colaborador));
 
         config.configurarAutoCompleteTextView(spn_equipoMedicion,lista_CodEquipos);
 
@@ -108,11 +130,15 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
             }
         });
 
-        spn_tipoDoc.setAdapter(config.LlenarSpinner("DNI", "CE"));
-            spn_descTrabajo.setAdapter(config.LlenarSpinner("Trabajo al aire libre sin carga solar o bajo techo", "Trabajo al aire libre con carga solar"));
+        spn_tipoDoc.setAdapter(config.LlenarSpinner(new String[]{"DNI", "CE"}));
+        spn_descTrabajo.setAdapter(config.LlenarSpinner(new String[]{"Trabajo al aire libre sin carga solar o bajo techo", "Trabajo al aire libre con carga solar"}));
         spn_horarioTrabajo.setAdapter(config.LlenarSpinner("horario_trab_fromato_medicion","desc_horario",getActivity()));
         spn_regimen.setAdapter(config.LlenarSpinner("regimen_formato_medicion","nom_regimen",getActivity()));
         spn_horarioRefrigerio.setAdapter(config.LlenarSpinner("horario_refrig_formato_medicion","nom_horario",getActivity()));
+
+        config.MostrarCampos(linearOtroHorario,spn_horarioTrabajo);
+        config.MostrarCampos(linearOtroRegimen,spn_regimen);
+        config.MostrarCampos(linearOtroRefrigerio,spn_horarioRefrigerio);
 
         btnCancelar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -208,10 +234,14 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
                     String valor_z4 = txt_z4.getText().toString();
                     String valor_z6 = txt_z6.getText().toString();
 
+                    if(valorHorarioTrab.equals("OTRO")) valorHorarioTrab = txt_otroHorario.getText().toString();
+                    if(valorRegimen.equals("OTRO")) valorRegimen = txt_otroRegimen.getText().toString();
+                    if(valorRefrigerio.equals("OTRO")) valorRefrigerio = txt_otroRefrigerio.getText().toString();
+
                     String fecha_registro = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
                     Equipos equipos1 = equipos.Buscar(valorEquipoMed);
 
-                    RadiacionElec_Registro elecRegistro = new RadiacionElec_Registro(
+                    RadiacionElec_Registro cabecera = new RadiacionElec_Registro(
                             -1,
                             "RE-001",
                             id_formato,
@@ -222,7 +252,7 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
                             equipos1.getNombre(),
                             equipos1.getSerie(),
                             id_colaborador,
-                            "id_Colaborador.getNombre()",
+                            nuevo.getUsuario_nombres(),
                             valorHoraVerificacion,
                             valorGroupVerifi,
                             valorFechaMoni,
@@ -246,9 +276,9 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
                             valorControlAdm,
                             valorEpps,
                             fecha_registro,
-                            "Usuario_Registro"
+                            id_colaborador
                     );
-                    RadiacionElect_RegistroDetalle registroDetalle = new RadiacionElect_RegistroDetalle(
+                    RadiacionElect_RegistroDetalle detalle = new RadiacionElect_RegistroDetalle(
                             -1,
                             valorFuenteGen,
                             valorVestimenta,
@@ -265,21 +295,67 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
                             valor_z4,
                             valor_z6,
                             fecha_registro,
-                            "Usario Registro"
+                            id_colaborador
                     );
-                    DAO_RegistroRadiacion nuevoRegistro = new DAO_RegistroRadiacion(getActivity());
-                    boolean estadoRegistro = nuevoRegistro.RegistroRadiacion(elecRegistro);
-                    boolean estadoDetalle = nuevoRegistro.RegistrarRadiacionDetalle(registroDetalle);
-                    if(estadoRegistro && estadoDetalle){
+
+                    if(config.isOnline()){
+                        Retrofit retrofit = new Retrofit.Builder()
+                                .baseUrl("https://test.meiningenieros.pe/")
+                                .addConverterFactory(GsonConverterFactory.create())
+                                .build();
+
+                        DosimetriaService service1 = retrofit.create(DosimetriaService.class);// DEBERIA CAMBIARSE EL SERVICIO DE MANERA GENERAL
+                        Gson gson = new Gson();
+
+                        // Crear un objeto JSON principal
+                        JsonObject jsonObject = new JsonObject();
+
+                        JsonObject registroJson = gson.toJsonTree(cabecera).getAsJsonObject();
+                        jsonObject.add("cabecera", registroJson);
+
+                        JsonObject detalleJson = gson.toJsonTree(detalle).getAsJsonObject();
+                        jsonObject.add("detalle", detalleJson);
+
+
+                        String cadenaJson = gson.toJson(jsonObject);
+                        RequestBody json = RequestBody.create(MediaType.parse("application/json"), cadenaJson);
+
+                        Call<ResponseBody> call1 = service1.insertRadiacionElectro(json);//INSERT A RADIACION ELECTROMAGNETICA
+                        call1.enqueue(new Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                Log.e("exitoso", "se inserto el registro");
+                                // Mostrar el JSON en el log
+                                Log.e("JSON", cadenaJson);
+                                Log.e("Respuesta",response.toString());
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                Log.e("error", "Error al insertar el registro");
+                            }
+                        });
+                        new AlertDialog.Builder(getContext())
+                                .setTitle("Registro guardado en WEB")
+                                .setMessage("El registro ha sido guardado exitosamente.")
+                                .setPositiveButton(android.R.string.ok, null)
+                                .show();
+                        getFragmentManager().popBackStack();
+                    }else{
+                        DAO_RegistroRadiacion nuevoRegistro = new DAO_RegistroRadiacion(getActivity());
+                        nuevoRegistro.RegistroRadiacion(cabecera);
+                        nuevoRegistro.RegistrarRadiacionDetalle(detalle);
+
                         DAO_FormatosTrabajo dao_fromatosTrabajo = new DAO_FormatosTrabajo(getActivity());
                         for_Electro = dao_fromatosTrabajo.Buscar(id_plan_trabajo,id_formato);
                         for_Electro.setRealizado(for_Electro.getRealizado()+1);
                         for_Electro.setPor_realizar(for_Electro.getPor_realizar()-1);
+
                         dao_fromatosTrabajo.actualizarFormatoTrabajo(for_Electro);
 
-                        // O muestra un AlertDialog con el mensaje
+
                         new AlertDialog.Builder(getActivity())
-                                .setTitle("Registro guardado")
+                                .setTitle("Registro guardado Localmente")
                                 .setMessage("El registro ha sido guardado exitosamente.")
                                 .setPositiveButton(android.R.string.ok, null)
                                 .show();
@@ -307,6 +383,7 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
         tv_horaFinalMoni = view.findViewById(R.id.tv_horaFinal);
         radioGroupVerificacion = view.findViewById(R.id.radioGroupVerificacion);
         btn_subirFotoElectro = view.findViewById(R.id.btn_subirFotoElectro);
+        imgRadiacion = view.findViewById(R.id.img_Radiacion);
         txt_timeMedicion = view.findViewById(R.id.txt_timeMedicion);
         spn_tipoDoc = view.findViewById(R.id.spn_tipoDoc);
         txt_numDoc = view.findViewById(R.id.txt_numDoc);
@@ -315,9 +392,9 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
         txt_areaTrabajo = view.findViewById(R.id.txt_areaTrabajo);
         txt_puestoTrabajo = view.findViewById(R.id.txt_puestoTrabajo);
         txt_aRealizada = view.findViewById(R.id.txt_aRealizada);
-        spn_horarioTrabajo = view.findViewById(R.id.spn_horarioTrabajo);
-        spn_regimen = view.findViewById(R.id.spn_regimen);
-        spn_horarioRefrigerio = view.findViewById(R.id.spn_horarioRefrigerio);
+        spn_horarioTrabajo = view.findViewById(R.id.cbx_horarioTrabajo);
+        spn_regimen = view.findViewById(R.id.cbx_regimen);
+        spn_horarioRefrigerio = view.findViewById(R.id.cbx_refrigerio);
         txt_jornadaTrabajo = view.findViewById(R.id.txt_jornada);
         txt_fuenteGen = view.findViewById(R.id.txt_fuenteGen);
         txt_timeExpo = view.findViewById(R.id.txt_timeExpo);
@@ -342,14 +419,21 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
         btn_guardar = view.findViewById(R.id.fabGuardar);
         btnCancelar = view.findViewById(R.id.fabCancelar);
 
+        linearOtroHorario = view.findViewById(R.id.linearOtroHorario);
+        txt_otroHorario = view.findViewById(R.id.txt_otroHorario);
+        linearOtroRegimen = view.findViewById(R.id.linearOtroRegimen);
+        txt_otroRegimen = view.findViewById(R.id.txt_otroRegimen);
+        linearOtroRefrigerio = view.findViewById(R.id.linearOtroRefrigerio);
+        txt_otroRefrigerio = view.findViewById(R.id.txt_otroRefrigerio);
+
 
     }
 
     @Override
     public void onImagePicked(Uri imageUri) {
         this.uri = imageUri;
-        if (imgVibra != null && imageUri != null) {
-            imgVibra.setImageURI(imageUri);
+        if (imgRadiacion != null && imageUri != null) {
+            imgRadiacion.setImageURI(imageUri);
         }
     }
 }

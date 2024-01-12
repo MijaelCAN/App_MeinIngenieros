@@ -22,6 +22,17 @@ public class EstresTermico_RegistroDetalle {
     public String epp_tapones;
     public String epp_cnuca;
     public String otro_epp;
+    public String nom_nivel_d;
+    public String metodo_determ;
+    public String tipo_trabajo;
+    public String ocupacion;
+    public String rango_tasa_metab;
+    public String clase;
+    public String actividad_deter;
+    public String tasa_metab;
+    public String tasa_metab_kcal;
+    public String frecuencia_deter;
+    public String genero_deter;
     public String nom_tarea1;
     public String ciclo_trabajo1;
     public String posicion_1;
@@ -38,9 +49,9 @@ public class EstresTermico_RegistroDetalle {
     public String pcuerpo_3;
     public String intensidad_3;
     public String mtr_subida;
-    public String wbgt;
-    public String wbgt_2;
-    public String wbgt_3;
+    public String t_bulbo;
+    public String t_bulbo2;
+    public String t_bulbo3;
     public String t_aire;
     public String t_aire_2;
     public String t_aire_3;
@@ -51,18 +62,22 @@ public class EstresTermico_RegistroDetalle {
     public String h_relativa_2;
     public String h_relativa_3;
     public String v_viento;
+    public String v_viento_2;
+    public String v_viento_3;
     public int estado;
     public String fec_reg;
     public String user_reg;
 
     public EstresTermico_RegistroDetalle(int id_plan_trabajo_formato_reg, String fuente_generadora, String desc_fuente_frio, String zona_sombra, String rotacion_personal,
                                          String tiempo_recuperacion, String dispensador, String capa_expo_frio, String cat_trabajo, String porc_desca, String vestimenta_personal,
-                                         String material_prenda, String color_predominante, String epp_zs, String epp_casco, String epp_lentes, String epp_guantes,
-                                         String epp_orejeras, String epp_tapones, String epp_cnuca, String otro_epp, String nom_tarea1, String ciclo_trabajo1, String posicion_1,
-                                         String pcuerpo_1, String intensidad_1, String nom_tarea2, String ciclo_trabajo2, String posicion_2, String pcuerpo_2, String intensidad_2,
-                                         String nom_tarea3, String ciclo_trabajo3, String posicion_3, String pcuerpo_3, String intensidad_3, String mtr_subida, String wbgt,
-                                         String wbgt_2, String wbgt_3, String t_aire, String t_aire_2, String t_aire_3, String t_globo, String t_globo_2, String t_globo_3,
-                                         String h_relativa, String h_relativa_2, String h_relativa_3, String v_viento, String fec_reg, String user_reg) {
+                                         String material_prenda, String color_predominante, String epp_zs, String epp_casco, String epp_lentes, String epp_guantes, String epp_orejeras,
+                                         String epp_tapones, String epp_cnuca, String otro_epp, String nom_nivel_d, String metodo_determ, String tipo_trabajo, String ocupacion,
+                                         String rango_tasa_metab, String clase, String actividad_deter, String tasa_metab, String tasa_metab_kcal, String frecuencia_deter,
+                                         String genero_deter, String nom_tarea1, String ciclo_trabajo1, String posicion_1, String pcuerpo_1, String intensidad_1, String nom_tarea2,
+                                         String ciclo_trabajo2, String posicion_2, String pcuerpo_2, String intensidad_2, String nom_tarea3, String ciclo_trabajo3, String posicion_3,
+                                         String pcuerpo_3, String intensidad_3, String mtr_subida, String t_bulbo, String t_bulbo2, String t_bulbo3, String t_aire, String t_aire_2,
+                                         String t_aire_3, String t_globo, String t_globo_2, String t_globo_3, String h_relativa, String h_relativa_2, String h_relativa_3, String v_viento,
+                                         String v_viento_2, String v_viento_3, String fec_reg, String user_reg) {
         this.id_plan_trabajo_formato_reg = id_plan_trabajo_formato_reg;
         this.fuente_generadora = fuente_generadora;
         this.desc_fuente_frio = desc_fuente_frio;
@@ -84,6 +99,17 @@ public class EstresTermico_RegistroDetalle {
         this.epp_tapones = epp_tapones;
         this.epp_cnuca = epp_cnuca;
         this.otro_epp = otro_epp;
+        this.nom_nivel_d = nom_nivel_d;
+        this.metodo_determ = metodo_determ;
+        this.tipo_trabajo = tipo_trabajo;
+        this.ocupacion = ocupacion;
+        this.rango_tasa_metab = rango_tasa_metab;
+        this.clase = clase;
+        this.actividad_deter = actividad_deter;
+        this.tasa_metab = tasa_metab;
+        this.tasa_metab_kcal = tasa_metab_kcal;
+        this.frecuencia_deter = frecuencia_deter;
+        this.genero_deter = genero_deter;
         this.nom_tarea1 = nom_tarea1;
         this.ciclo_trabajo1 = ciclo_trabajo1;
         this.posicion_1 = posicion_1;
@@ -100,9 +126,9 @@ public class EstresTermico_RegistroDetalle {
         this.pcuerpo_3 = pcuerpo_3;
         this.intensidad_3 = intensidad_3;
         this.mtr_subida = mtr_subida;
-        this.wbgt = wbgt;
-        this.wbgt_2 = wbgt_2;
-        this.wbgt_3 = wbgt_3;
+        this.t_bulbo = t_bulbo;
+        this.t_bulbo2 = t_bulbo2;
+        this.t_bulbo3 = t_bulbo3;
         this.t_aire = t_aire;
         this.t_aire_2 = t_aire_2;
         this.t_aire_3 = t_aire_3;
@@ -113,7 +139,8 @@ public class EstresTermico_RegistroDetalle {
         this.h_relativa_2 = h_relativa_2;
         this.h_relativa_3 = h_relativa_3;
         this.v_viento = v_viento;
-        this.estado = 1;
+        this.v_viento_2 = v_viento_2;
+        this.v_viento_3 = v_viento_3;
         this.fec_reg = fec_reg;
         this.user_reg = user_reg;
     }
@@ -286,6 +313,94 @@ public class EstresTermico_RegistroDetalle {
         this.otro_epp = otro_epp;
     }
 
+    public String getNom_nivel_d() {
+        return nom_nivel_d;
+    }
+
+    public void setNom_nivel_d(String nom_nivel_d) {
+        this.nom_nivel_d = nom_nivel_d;
+    }
+
+    public String getMetodo_determ() {
+        return metodo_determ;
+    }
+
+    public void setMetodo_determ(String metodo_determ) {
+        this.metodo_determ = metodo_determ;
+    }
+
+    public String getTipo_trabajo() {
+        return tipo_trabajo;
+    }
+
+    public void setTipo_trabajo(String tipo_trabajo) {
+        this.tipo_trabajo = tipo_trabajo;
+    }
+
+    public String getOcupacion() {
+        return ocupacion;
+    }
+
+    public void setOcupacion(String ocupacion) {
+        this.ocupacion = ocupacion;
+    }
+
+    public String getRango_tasa_metab() {
+        return rango_tasa_metab;
+    }
+
+    public void setRango_tasa_metab(String rango_tasa_metab) {
+        this.rango_tasa_metab = rango_tasa_metab;
+    }
+
+    public String getClase() {
+        return clase;
+    }
+
+    public void setClase(String clase) {
+        this.clase = clase;
+    }
+
+    public String getActividad_deter() {
+        return actividad_deter;
+    }
+
+    public void setActividad_deter(String actividad_deter) {
+        this.actividad_deter = actividad_deter;
+    }
+
+    public String getTasa_metab() {
+        return tasa_metab;
+    }
+
+    public void setTasa_metab(String tasa_metab) {
+        this.tasa_metab = tasa_metab;
+    }
+
+    public String getTasa_metab_kcal() {
+        return tasa_metab_kcal;
+    }
+
+    public void setTasa_metab_kcal(String tasa_metab_kcal) {
+        this.tasa_metab_kcal = tasa_metab_kcal;
+    }
+
+    public String getFrecuencia_deter() {
+        return frecuencia_deter;
+    }
+
+    public void setFrecuencia_deter(String frecuencia_deter) {
+        this.frecuencia_deter = frecuencia_deter;
+    }
+
+    public String getGenero_deter() {
+        return genero_deter;
+    }
+
+    public void setGenero_deter(String genero_deter) {
+        this.genero_deter = genero_deter;
+    }
+
     public String getNom_tarea1() {
         return nom_tarea1;
     }
@@ -414,28 +529,28 @@ public class EstresTermico_RegistroDetalle {
         this.mtr_subida = mtr_subida;
     }
 
-    public String getWbgt() {
-        return wbgt;
+    public String getT_bulbo() {
+        return t_bulbo;
     }
 
-    public void setWbgt(String wbgt) {
-        this.wbgt = wbgt;
+    public void setT_bulbo(String t_bulbo) {
+        this.t_bulbo = t_bulbo;
     }
 
-    public String getWbgt_2() {
-        return wbgt_2;
+    public String getT_bulbo2() {
+        return t_bulbo2;
     }
 
-    public void setWbgt_2(String wbgt_2) {
-        this.wbgt_2 = wbgt_2;
+    public void setT_bulbo2(String t_bulbo2) {
+        this.t_bulbo2 = t_bulbo2;
     }
 
-    public String getWbgt_3() {
-        return wbgt_3;
+    public String getT_bulbo3() {
+        return t_bulbo3;
     }
 
-    public void setWbgt_3(String wbgt_3) {
-        this.wbgt_3 = wbgt_3;
+    public void setT_bulbo3(String t_bulbo3) {
+        this.t_bulbo3 = t_bulbo3;
     }
 
     public String getT_aire() {
@@ -516,6 +631,22 @@ public class EstresTermico_RegistroDetalle {
 
     public void setV_viento(String v_viento) {
         this.v_viento = v_viento;
+    }
+
+    public String getV_viento_2() {
+        return v_viento_2;
+    }
+
+    public void setV_viento_2(String v_viento_2) {
+        this.v_viento_2 = v_viento_2;
+    }
+
+    public String getV_viento_3() {
+        return v_viento_3;
+    }
+
+    public void setV_viento_3(String v_viento_3) {
+        this.v_viento_3 = v_viento_3;
     }
 
     public int getEstado() {

@@ -1,0 +1,2096 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="8dp"
+    tools:context=".RadiacionUvFragment">
+
+    <!-- Botón flotante -->
+
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/style_3"
+        app:layout_anchor="@+id/scrollView2"
+        app:layout_anchorGravity="center">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/style_3"
+            android:orientation="vertical">
+            <!-- Primer CardView -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginTop="20dp"
+                android:text="RADIACIÓN UV"
+                android:paddingLeft="16dp"
+                android:textColor="@color/generic_color"
+                android:textSize="26sp"
+                android:fontFamily="sans-serif-light"/>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                app:cardCornerRadius="8dp">
+                <!--android:background="@drawable/style_border_1"-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:fontFamily="sans-serif-light"
+                        android:text="@string/title_dosimetria"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:gravity="left"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="10dp"
+                            android:fontFamily="sans-serif-light"
+                            android:text="@string/title_empresa"
+                            android:textColor="@color/black"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/tv_nomEmpresa"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-light"
+                            android:hint=" SIG CONSULTING S.A.C."
+                            android:paddingLeft="8dp"
+                            android:text=""
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="15dp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:gravity="left"
+                        android:orientation="vertical">
+                        <!-- Título Central -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="10dp"
+                            android:fontFamily="sans-serif-light"
+                            android:text="@string/text_campo"
+                            android:textColor="@color/black"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/tv_nomUsuario"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-light"
+                            android:hint=" Administrador Paterno Materno"
+                            android:paddingLeft="8dp"
+                            android:text=""
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="15dp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+            <!-- Segunda CardView -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="20dp"
+                android:fontFamily="sans-serif-light"
+                android:text="Equipo Utilizado para la Medicion"
+                android:textColor="@color/generic_color"
+                android:textSize="19sp" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:backgroundTint="#EFEDED"
+                android:outlineSpotShadowColor="@color/white"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/style_border_1"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- AQUI INICIA EL DISEÑO DE GPT -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Equipo de Medición"
+                            android:fontFamily="sans-serif-light"
+                            android:textColor="@color/black"
+                            android:textSize="12dp"/>
+
+                        <AutoCompleteTextView
+                            android:id="@+id/tv_equipoRadiacion"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/style_input"
+                            android:hint="Seleccione"
+                            android:layout_marginTop="5dp"
+                            android:fontFamily="sans-serif-light"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="15dp"
+                            android:paddingLeft="8dp"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="10dp">
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Equipo de Anemómetro:"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black"
+                                android:textSize="12sp"/>
+
+                            <AutoCompleteTextView
+                                android:id="@+id/tv_anemometro"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/style_input"
+                                android:hint="Seleccione"
+                                android:layout_marginTop="5dp"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black"
+                                android:textSize="15dp"
+                                android:paddingLeft="8dp"/>
+                            <!--android:onItemSelected="Equipo_Vibracion"-->
+
+                        </LinearLayout>
+                        <!-- ... Otros elementos similares ... -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Hora de verificación:"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black"
+                                android:textSize="12sp"/>
+                            <TextView
+                                android:id="@+id/tv_horaVerificacion"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:background="@drawable/style_input"
+                                android:fontFamily="sans-serif-light"
+                                android:gravity="center_vertical"
+                                android:hint="Seleccionar"
+                                android:inputType="datetime"
+                                android:onClick="showTimePickerDialog"
+                                android:paddingLeft="8dp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black"
+                                android:textSize="15sp" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+                    <!-- ... Otros elementos similares ... -->
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Verificación In Situ:"
+                        android:fontFamily="sans-serif-light"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        android:layout_marginTop="10dp"/>
+                    <RadioGroup
+                        android:id="@+id/radioGroupVerificacion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <RadioButton
+                            android:id="@+id/verf_insitusi"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Si"
+                            android:checked="false"
+                            android:fontFamily="sans-serif-light"
+                            android:buttonTint="@color/teal_200"
+                            android:textColor="@color/black"/>
+                        <RadioButton
+                            android:id="@+id/verf_insituno"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="NO"
+                            android:checked="true"
+                            android:fontFamily="sans-serif-light"
+                            android:buttonTint="@color/purple_200"
+                            android:textColor="@color/black"/>
+                    </RadioGroup>
+
+                    <!-- ... Otros elementos similares ... -->
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Foto:"
+                        android:fontFamily="sans-serif-light"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/btn_subirFotoRadiacion"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:textAllCaps="false"
+                            android:text="Subir Foto"
+                            android:textColor="@color/white"
+                            android:layout_marginTop="20dp"
+                            android:background="@drawable/style_4"/>
+
+                        <ImageView
+                            android:id="@+id/img_radiacionUV"
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp"
+                            android:layout_marginTop="5dp"
+                            android:src="@drawable/ic_image" />
+                    </LinearLayout>
+                    <!-- HASTA AQUI ABARCA EL DISEÑO DE GPT-->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_gravity="center_horizontal"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Hora de Monitoreo"
+                        android:textColor="@color/generic_color"
+                        android:textSize="19sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Fecha:"
+                        android:textSize="12dp"
+                        android:fontFamily="sans-serif-light"
+                        android:textColor="@color/black"/>
+
+                    <TextView
+                        android:id="@+id/tv_fechaMonitoreo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColorHint="@color/black"
+                        android:background="@drawable/style_input"
+                        android:layout_marginTop="5dp"
+                        android:textSize="15sp"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/black"
+                        android:hint="Seleccione Fecha"
+                        android:paddingLeft="8dp"
+                        android:onClick="showDatePickerDialog" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="2dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Hora Inicial"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black"/>
+
+                            <TextView
+                                android:id="@+id/tv_horaInicioMoni"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColorHint="@color/black"
+                                android:background="@drawable/style_input"
+                                android:layout_marginTop="5dp"
+                                android:textSize="15sp"
+                                android:gravity="center_vertical"
+                                android:textColor="@color/black"
+                                android:hint="Seleccione Hora"
+                                android:paddingLeft="8dp"
+                                android:onClick="showTimePickerDialog" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="15dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+
+                                android:layout_weight="1"
+                                android:text="Hora final"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black"/>
+
+                            <TextView
+                                android:id="@+id/tv_horaFinalMoni"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColorHint="@color/black"
+                                android:background="@drawable/style_input"
+                                android:layout_marginTop="5dp"
+                                android:textSize="15sp"
+                                android:gravity="center_vertical"
+                                android:textColor="@color/black"
+                                android:hint="Seleccione Hora"
+                                android:paddingLeft="8dp"
+                                android:onClick="showTimePickerDialog" />
+                        </LinearLayout>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="2dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Tiempo Medicion(min)"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black"/>
+
+                            <EditText
+                                android:id="@+id/txt_timeMedMin"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:textColorHint="@color/black"
+                                android:background="@drawable/style_input"
+                                android:hint="Ingrese jornada"
+                                android:textColor="@color/black"
+                                android:inputType="numberSigned"
+                                android:maxLength="5"
+                                android:textSize="15sp"
+                                android:paddingLeft="8dp"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+
+                                android:layout_weight="1"
+                                android:text="Tiempo Exposicion (h)"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black"/>
+
+                            <EditText
+                                android:id="@+id/txt_timeExpoHora"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:textColorHint="@color/black"
+                                android:background="@drawable/style_input"
+                                android:hint="Ingrese jornada"
+                                android:textColor="@color/black"
+                                android:inputType="numberSigned"
+                                android:maxLength="5"
+                                android:textSize="15sp"
+                                android:paddingLeft="8dp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:text="Jornada de Trabajo (h)"
+                        android:textSize="12sp"
+                        android:fontFamily="sans-serif-light"
+                        android:textColor="@color/black"/>
+
+                    <EditText
+                        android:id="@+id/txt_jornadaTrabajo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:textColorHint="@color/black"
+                        android:background="@drawable/style_input"
+                        android:hint="Ingrese jornada"
+                        android:textColor="@color/black"
+                        android:textSize="15sp"
+                        android:paddingLeft="8dp"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+            <!-- Tercer CardView -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Datos de Trabajador"
+                android:textColor="@color/generic_color"
+                android:textSize="19sp"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="12dp"
+                android:fontFamily="sans-serif-light"/>
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp"
+                android:backgroundTint="#EFEDED">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/style_border_1"
+                    android:padding="16dp">
+
+                    <!-- Título Central -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
+                        <!-- Inicio de la Primera fila Doble-->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="2dp"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_weight="1"
+                                    android:text="Tipo de Documento"
+                                    android:textSize="12sp"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black"/>
+
+                                <Spinner
+                                    android:id="@+id/spn_tipoDoc"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/style_input" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_weight="1"
+                                    android:text="Nº de documento"
+                                    android:textSize="12sp"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black"/>
+
+                                <EditText
+                                    android:id="@+id/txt_numDoc"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/style_input"
+                                    android:layout_marginTop="5dp"
+                                    android:hint=" Digite"
+                                    android:inputType="numberSigned"
+                                    android:maxLength="8"
+                                    android:textSize="12sp"/>
+                            </LinearLayout>
+                        </LinearLayout>
+                        <!-- Fin de la primera fila Doble -->
+                        <!-- Inicio de la Primera fila Doble-->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="2dp"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="90dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_weight="1"
+                                    android:text="Nombre"
+                                    android:textSize="12sp"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black" />
+
+                                <EditText
+                                    android:id="@+id/txt_nomTrabajador"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/style_input"
+                                    android:hint=" Digite"
+                                    android:textSize="15sp"
+                                    android:paddingLeft="8dp"
+                                    android:inputType="text"
+                                    android:layout_marginTop="5dp"
+                                    android:textColor="@color/black"
+                                    android:textColorHint="@color/black"/>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_weight="1"
+                                    android:text="Edad"
+                                    android:textSize="12sp"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black" />
+
+                                <EditText
+                                    android:id="@+id/txt_edad"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/style_input"
+                                    android:hint=" Digite"
+                                    android:textSize="15sp"
+                                    android:paddingLeft="8dp"
+                                    android:layout_marginTop="5dp"
+                                    android:textColor="@color/black"
+                                    android:textColorHint="@color/black"
+                                    android:inputType="numberSigned|text"
+                                    android:maxLength="3"/>
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:visibility="gone">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_weight="1"
+                                    android:text="Peso(Kg)"
+                                    android:textSize="12sp"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black" />
+
+                                <EditText
+                                    android:id="@+id/txt_peso"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/style_input"
+                                    android:hint=" Digite"
+                                    android:textSize="15sp"
+                                    android:paddingLeft="8dp"
+                                    android:layout_marginTop="5dp"
+                                    android:textColor="@color/black"
+                                    android:textColorHint="@color/black"
+                                    android:inputType="numberDecimal|text"
+                                    android:maxLength="3"/>
+                            </LinearLayout>
+                        </LinearLayout>
+                        <!-- Fin de la primera fila Doble -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="1"
+                            android:text="Area de Trabajo"
+                            android:textSize="12sp"
+                            android:fontFamily="sans-serif-light"
+                            android:textColor="@color/black"/>
+
+                        <EditText
+                            android:id="@+id/txt_areaTrabajo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/style_input"
+                            android:hint=" Digite"
+                            android:textSize="15sp"
+                            android:paddingLeft="8dp"
+                            android:layout_marginTop="5dp"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="1"
+                            android:text="Puesto de Trabajo"
+                            android:textSize="12sp"
+                            android:fontFamily="sans-serif-light"
+                            android:textColor="@color/black"/>
+
+                        <EditText
+                            android:id="@+id/txt_puestoTrabajo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/style_input"
+                            android:hint=" Digite"
+                            android:textSize="15sp"
+                            android:paddingLeft="8dp"
+                            android:inputType="text"
+                            android:layout_marginTop="5dp"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="2dp"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_weight="1"
+                                    android:text="Actividades Realizadas"
+                                    android:textSize="12sp"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black" />
+
+                                <EditText
+                                    android:id="@+id/txt_aRealizada"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/style_input"
+                                    android:hint=" Ingrese actividades"
+                                    android:textSize="15sp"
+                                    android:paddingLeft="8dp"
+                                    android:inputType="text"
+                                    android:layout_marginTop="5dp"
+                                    android:textColor="@color/black"
+                                    android:textColorHint="@color/black"/>
+                            </LinearLayout>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="2dp"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="90dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_weight="1"
+                                    android:text="Tipo de piel:"
+                                    android:textSize="12sp"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black" />
+
+                                <Spinner
+                                    android:id="@+id/cbx_tipoPiel"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/style_spinner"
+                                    android:textSize="10sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_weight="1"
+                                    android:text="Color de piel:"
+                                    android:textSize="12sp"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black" />
+
+                                <TextView
+                                    android:id="@+id/tv_colorPiel"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/style_input"
+                                    android:gravity="center_vertical"
+                                    android:textSize="16sp"
+                                    android:paddingLeft="8dp"
+                                    android:layout_marginTop="5dp"
+                                    android:textColor="@color/black"
+                                    android:textColorHint="@color/black"
+                                    android:inputType="text"/>
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:visibility="gone">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_weight="1"
+                                    android:text="Peso(Kg)"
+                                    android:textSize="12sp"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black" />
+
+                                <EditText
+                                    android:id="@+id/txt_pesooooo"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/style_input"
+                                    android:hint=" Digite"
+                                    android:textSize="15sp"
+                                    android:paddingLeft="8dp"
+                                    android:layout_marginTop="5dp"
+                                    android:textColor="@color/black"
+                                    android:textColorHint="@color/black"
+                                    android:inputType="numberDecimal|text"
+                                    android:maxLength="3"/>
+                            </LinearLayout>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="2dp"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Tiempo ocupando cargo (Años)"
+                                    android:textSize="12dp"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black"
+                                    android:layout_marginTop="10dp"/>
+
+                                <Spinner
+                                    android:id="@+id/cbx_tiempoCargoAnios"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/style_spinner"
+                                    android:textSize="10sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Tiempo ocupando cargo (Meses)"
+                                    android:textSize="12sp"
+                                    android:layout_marginTop="10dp"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black"/>
+
+                                <Spinner
+                                    android:id="@+id/cbx_tiempoCargoMeses"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/style_spinner"
+                                    android:textSize="10sp" />
+                            </LinearLayout>
+                        </LinearLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="12dp"
+                            android:layout_marginTop="20dp"
+                            android:layout_gravity="center_horizontal"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Horario de Trabajo"
+                            android:textColor="@color/generic_color"
+                            android:textSize="19sp" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="2dp"
+                            android:orientation="horizontal">
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Horario de trabajo:"
+                                    android:textSize="12dp"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black"/>
+
+                                <Spinner
+                                    android:id="@+id/cbx_horarioTrabajo"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/style_spinner"
+                                    android:textSize="10sp" />
+                            </LinearLayout>
+                            <LinearLayout
+                                android:id="@+id/linearOtroHorario"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="15dp"
+                                android:orientation="vertical"
+                                android:visibility="gone">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Otro horario"
+                                    android:textSize="12sp"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black"/>
+
+                                <EditText
+                                    android:id="@+id/txt_otroHorario"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    style="@style/EditTextFocusStyle"
+                                    android:hint="Digite"
+                                    android:paddingLeft="8dp"
+                                    android:textSize="16sp"/>
+
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="2dp"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_weight="1"
+                                    android:text="Regimen Laboral"
+                                    android:textSize="12sp"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black"/>
+
+                                <Spinner
+                                    android:id="@+id/cbx_regimen"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/style_spinner"/>
+                            </LinearLayout>
+                            <LinearLayout
+                                android:id="@+id/linearOtroRegimen"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:visibility="gone">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Otro Regimen"
+                                    android:textSize="12sp"
+                                    android:layout_marginTop="10dp"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black"/>
+
+                                <EditText
+                                    android:id="@+id/txt_otroRegimen"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    style="@style/EditTextFocusStyle"
+                                    android:hint="Digite"
+                                    android:paddingLeft="8dp"
+                                    android:textSize="16sp"/>
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="2dp"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_weight="1"
+                                    android:text="Horario Refrigerio"
+                                    android:textSize="12sp"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black" />
+
+                                <Spinner
+                                    android:id="@+id/cbx_refrigerio"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/style_spinner" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/linearOtroRefrigerio"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:visibility="gone">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Otro horario Refrigerio"
+                                    android:textSize="12sp"
+                                    android:layout_marginTop="10dp"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black"/>
+
+                                <EditText
+                                    android:id="@+id/txt_otroRefrigerio"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    style="@style/EditTextFocusStyle"
+                                    android:hint="Digite"
+                                    android:paddingLeft="8dp"
+                                    android:textSize="16sp"/>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Cuarto CardView -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="20dp"
+                android:fontFamily="sans-serif-light"
+                android:text="Condiciones de Trabajo"
+                android:textColor="@color/generic_color"
+                android:textSize="19sp" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:backgroundTint="#EFEDED"
+                app:cardCornerRadius="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/style_border_1"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- Texto, Spinner, Texto y Spinner en una fila -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Fuente generadora"
+                            android:textColor="@color/black"
+                            android:textSize="12sp" />
+                        <EditText
+                            android:id="@+id/txt_fuenteGen"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:background="@drawable/style_input"
+                            android:fontFamily="sans-serif-light"
+                            android:hint="Digite"
+                            android:paddingLeft="8dp"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="15sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Tipo de fuente de Radiación:"
+                            android:textColor="@color/black"
+                            android:textSize="12sp" />
+                        <EditText
+                            android:id="@+id/txt_tipoFuenteRadiacion"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:background="@drawable/style_input"
+                            android:fontFamily="sans-serif-light"
+                            android:hint="Digite"
+                            android:paddingLeft="8dp"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="15sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Descripcion del ambiente de Trabajo"
+                            android:textColor="@color/black"
+                            android:textSize="12sp" />
+                        <Spinner
+                            android:id="@+id/spn_descTrabajo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/style_input" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Mantenimiento de fuente (Artificial):"
+                            android:textColor="@color/black"
+                            android:textSize="12sp" />
+                        <EditText
+                            android:id="@+id/txt_mantenimientoFuente"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-serif-light"
+                            android:inputType="none"
+                            android:background="@drawable/style_input"
+                            android:textColor="@color/black"
+                            android:textSize="12sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="12dp"
+                            android:layout_marginTop="20dp"
+                            android:layout_gravity="center_horizontal"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Control Ingeniería"
+                            android:textColor="@color/generic_color"
+                            android:textSize="19sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Espacios con sombra para el descanso:"
+                            android:textColor="@color/black"
+                            android:textSize="12dp" />
+
+                        <RadioGroup
+                            android:id="@+id/radioGroupSombraDescanso"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <RadioButton
+                                android:id="@+id/radioSombraSi"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:buttonTint="@color/teal_200"
+                                android:fontFamily="sans-serif-light"
+                                android:text="Sí"
+                                android:textColorHint="@color/black" />
+
+                            <RadioButton
+                                android:id="@+id/radioSombraNo"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:buttonTint="@color/purple_200"
+                                android:fontFamily="sans-serif-light"
+                                android:text="No"
+                                android:checked="true"
+                                android:textColorHint="@color/black" />
+                        </RadioGroup>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Existe en el ambiente mallas oscuras y tramo tupido:"
+                            android:textColor="@color/black"
+                            android:textSize="12dp" />
+
+                        <RadioGroup
+                            android:id="@+id/radioGroupMallasTramo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <RadioButton
+                                android:id="@+id/radioMallasSi"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:buttonTint="@color/teal_200"
+                                android:fontFamily="sans-serif-light"
+                                android:text="Sí"
+                                android:textColorHint="@color/black" />
+
+                            <RadioButton
+                                android:id="@+id/radioMallasNo"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:buttonTint="@color/purple_200"
+                                android:fontFamily="sans-serif-light"
+                                android:text="No"
+                                android:checked="true"
+                                android:textColorHint="@color/black" />
+                        </RadioGroup>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Otros:"
+                            android:textColor="@color/black"
+                            android:textSize="12sp" />
+                        <EditText
+                            android:id="@+id/txt_OtrosIngenieria"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-serif-light"
+                            android:inputType="none"
+                            android:background="@drawable/style_input"
+                            android:textColor="@color/black"
+                            android:textSize="12sp" />
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/Card_Ingenieria"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="4dp"
+                            android:visibility="gone"
+                            app:cardCornerRadius="4dp"
+                            app:cardElevation="2dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="16dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Nombre del control"
+                                    android:textSize="12dp"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black"/>
+
+                                <EditText
+                                    android:id="@+id/txt_nomControl"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/style_input"
+                                    android:hint=" Digite"
+                                    android:textSize="15sp"
+                                    android:layout_marginTop="5dp"
+                                    android:paddingLeft="8dp"/>
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="12dp"
+                            android:layout_marginTop="20dp"
+                            android:layout_gravity="center_horizontal"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Control administrativo"
+                            android:textColor="@color/generic_color"
+                            android:textSize="19sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Existe un programa de trabajos, faenas y tareas según el riesgo y exposición a la radiación UV:"
+                            android:textColor="@color/black"
+                            android:textSize="12dp" />
+
+                        <RadioGroup
+                            android:id="@+id/radioGroupProgramaTrab"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <RadioButton
+                                android:id="@+id/radioProgramaSi"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:buttonTint="@color/teal_200"
+                                android:fontFamily="sans-serif-light"
+                                android:text="Sí"
+                                android:textColorHint="@color/black" />
+
+                            <RadioButton
+                                android:id="@+id/radioProgramaNo"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:buttonTint="@color/purple_200"
+                                android:fontFamily="sans-serif-light"
+                                android:text="No"
+                                android:checked="true"
+                                android:textColorHint="@color/black" />
+                        </RadioGroup>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Entre las 13:00 - 15:00 horas el trabajo es al aire libre:"
+                            android:textColor="@color/black"
+                            android:textSize="12dp" />
+
+                        <RadioGroup
+                            android:id="@+id/radioGroupAireLibre"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <RadioButton
+                                android:id="@+id/radioAireLibreSi"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:buttonTint="@color/teal_200"
+                                android:fontFamily="sans-serif-light"
+                                android:text="Sí"
+                                android:textColorHint="@color/black" />
+
+                            <RadioButton
+                                android:id="@+id/radioAireLibreNo"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:buttonTint="@color/purple_200"
+                                android:fontFamily="sans-serif-light"
+                                android:text="No"
+                                android:checked="true"
+                                android:textColorHint="@color/black" />
+                        </RadioGroup>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Otros:"
+                            android:textColor="@color/black"
+                            android:textSize="12sp" />
+                        <EditText
+                            android:id="@+id/txt_OtrosAdministrativo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-serif-light"
+                            android:inputType="none"
+                            android:background="@drawable/style_input"
+                            android:textColor="@color/black"
+                            android:textSize="12sp" />
+
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="12dp"
+                            android:layout_marginTop="20dp"
+                            android:layout_gravity="center_horizontal"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Vestimenta o Indumentaria del personal evaluado"
+                            android:textColor="@color/generic_color"
+                            android:textSize="19sp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="2dp"
+                            android:orientation="vertical">
+
+                            <CheckBox
+                                android:id="@+id/check_casco"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:checked="false"
+                                android:textSize="15sp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black"
+                                android:fontFamily="sans-serif-light"
+                                android:buttonTint="@color/purple_200"
+                                android:text="casco" />
+                            <CheckBox
+                                android:id="@+id/check_lentesOscuros"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:checked="false"
+                                android:textSize="15sp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black"
+                                android:fontFamily="sans-serif-light"
+                                android:buttonTint="@color/teal_200"
+                                android:text="Lentes oscuros" />
+                            <CheckBox
+                                android:id="@+id/check_cubreNuca"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:checked="false"
+                                android:textSize="15sp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black"
+                                android:fontFamily="sans-serif-light"
+                                android:buttonTint="@color/teal_200"
+                                android:text="Cubre nuca" />
+                            <CheckBox
+                                android:id="@+id/check_gorroSombrero"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:checked="false"
+                                android:textSize="15sp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black"
+                                android:fontFamily="sans-serif-light"
+                                android:buttonTint="@color/teal_200"
+                                android:text="Gorro o Sombrero ala ancha" />
+
+                        </LinearLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Otros"
+                            android:textColor="@color/black"
+                            android:textSize="12sp" />
+                        <EditText
+                            android:id="@+id/txt_otrosVestimenta"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:background="@drawable/style_input"
+                            android:fontFamily="sans-serif-light"
+                            android:hint="Digite"
+                            android:paddingLeft="8dp"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="15sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="20dp"
+                android:layout_gravity="center_horizontal"
+                android:fontFamily="sans-serif-light"
+                android:text="EPP'S"
+                android:textColor="@color/generic_color"
+                android:textSize="17sp" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:backgroundTint="#EFEDED"
+                app:cardCornerRadius="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/style_border_1"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- Contenedor general del Tercer Card -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
+                        <!-- Primera Fila -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="10dp">
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Lentes con protector de brillo:"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"/>
+
+                                <Spinner
+                                    android:id="@+id/spn_proteccionBrillo"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/style_input"
+                                    android:layout_marginTop="5dp"/>
+                                <!--android:onItemSelected="Equipo_Vibracion"-->
+
+                            </LinearLayout>
+                            <!-- ... Otros elementos similares ... -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginLeft="15dp">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Con protección lateral:"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"/>
+                                <Spinner
+                                    android:id="@+id/spn_proteccionLateral"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/style_input"
+                                    android:layout_marginTop="5dp"/>
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginLeft="15dp">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Gorro:"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"/>
+                                <Spinner
+                                    android:id="@+id/spn_gorro"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/style_input"
+                                    android:layout_marginTop="5dp"/>
+                            </LinearLayout>
+
+                        </LinearLayout>
+                        <!-- Segunda Fila -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="10dp">
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Casco:"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"/>
+
+                                <Spinner
+                                    android:id="@+id/spn_casco"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/style_input"
+                                    android:layout_marginTop="5dp"/>
+                                <!--android:onItemSelected="Equipo_Vibracion"-->
+
+                            </LinearLayout>
+                            <!-- ... Otros elementos similares ... -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginLeft="15dp">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Ninguno:"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"/>
+                                <Spinner
+                                    android:id="@+id/spn_ninguno"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/style_input"
+                                    android:layout_marginTop="5dp"/>
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginLeft="15dp">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Protección tipo legionario:"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"/>
+                                <Spinner
+                                    android:id="@+id/spn_proteccionLegionario"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/style_input"
+                                    android:layout_marginTop="5dp"/>
+                            </LinearLayout>
+
+                        </LinearLayout>
+                        <!-- Tercera Fila -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="10dp">
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Protección con ala ancha:"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"/>
+
+                                <Spinner
+                                    android:id="@+id/spn_proteccionAlaAncha"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/style_input"
+                                    android:layout_marginTop="5dp"/>
+                                <!--android:onItemSelected="Equipo_Vibracion"-->
+
+                            </LinearLayout>
+                            <!-- ... Otros elementos similares ... -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginLeft="15dp">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Ropa: Cuenta con certificación:"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"/>
+                                <Spinner
+                                    android:id="@+id/spn_ropa"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/style_input"
+                                    android:layout_marginTop="5dp"/>
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginLeft="15dp">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Color Oscuro:"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"/>
+                                <Spinner
+                                    android:id="@+id/spn_colorOdcuro"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/style_input"
+                                    android:layout_marginTop="5dp"/>
+                            </LinearLayout>
+
+                        </LinearLayout>
+                        <!-- Cuarta Fila -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="10dp">
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Manga Larga:"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"/>
+
+                                <Spinner
+                                    android:id="@+id/spn_mangaLarga"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/style_input"
+                                    android:layout_marginTop="5dp"/>
+                                <!--android:onItemSelected="Equipo_Vibracion"-->
+
+                            </LinearLayout>
+                            <!-- ... Otros elementos similares ... -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginLeft="15dp">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Trama gruesa:"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"/>
+                                <Spinner
+                                    android:id="@+id/spn_tramaGruesa"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/style_input"
+                                    android:layout_marginTop="5dp"/>
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginLeft="15dp">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Utiliza FPS:"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"/>
+                                <Spinner
+                                    android:id="@+id/spn_utilizaEpps"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/style_input"
+                                    android:layout_marginTop="5dp"/>
+                            </LinearLayout>
+
+                        </LinearLayout>
+                        <!-- Quinta Fila -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="10dp">
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Cuentan con una guía de uso del FPS:"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"/>
+
+                                <Spinner
+                                    android:id="@+id/spn_guiaUsoEpp"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/style_input"
+                                    android:layout_marginTop="5dp"/>
+                                <!--android:onItemSelected="Equipo_Vibracion"-->
+
+                            </LinearLayout>
+                            <!-- ... Otros elementos similares ... -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginLeft="15dp">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Frecuencia de aplicación: cada 2-3 horas:"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"/>
+                                <Spinner
+                                    android:id="@+id/spn_frecuencia2horas"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/style_input"
+                                    android:layout_marginTop="5dp"/>
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginLeft="15dp">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Cada 30 minutos - 1 hora:"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp"/>
+                                <Spinner
+                                    android:id="@+id/spn_frecuencia30min"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/style_input"
+                                    android:layout_marginTop="5dp"/>
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Otros"
+                            android:textColor="@color/black"
+                            android:textSize="12sp" />
+                        <EditText
+                            android:id="@+id/txt_otrosEpps"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:background="@drawable/style_input"
+                            android:fontFamily="sans-serif-light"
+                            android:hint="Digite"
+                            android:paddingLeft="8dp"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="15sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="20dp"
+                android:fontFamily="sans-serif-light"
+                android:text="RESULTADOS DE MONITOREO"
+                android:textColor="@color/generic_color"
+                android:textSize="19sp" />
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:backgroundTint="#EFEDED"
+                app:cardCornerRadius="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/style_border_1"
+                    android:orientation="vertical"
+                    android:padding="8dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="uW/cm2"
+                            android:fontFamily="sans-serif-light"
+                            android:textColor="@color/black"
+                            android:textSize="12sp"/>
+
+                        <EditText
+                            android:id="@+id/txt_uW_cm2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:background="@drawable/style_input"
+                            android:fontFamily="sans-serif-light"
+                            android:hint="Digite"
+                            android:paddingLeft="8dp"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="15sp" />
+                        <!--android:onItemSelected="Equipo_Vibracion"-->
+
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="20dp"
+                android:text="Observaciones"
+                android:textColor="@color/generic_color"
+                android:textSize="19sp"
+                android:fontFamily="sans-serif-light"
+                android:visibility="gone"/>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:backgroundTint="#EFEDED"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/style_border_1"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+                    <!-- Texto, Spinner, Texto y Spinner en una fila -->
+
+                    <EditText
+                        android:id="@+id/txt_observaciones"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/style_input"
+                        android:gravity="top|start"
+                        android:hint="Ingresa texto aquí..."
+                        android:inputType="textMultiLine"
+                        android:lines="5"
+                        android:paddingLeft="8dp"
+                        android:paddingTop="5dp"
+                        android:textSize="15dp"
+                        android:fontFamily="sans-serif-light"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabGuardar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_check"
+        android:clickable="true"/>
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fabCancelar"
+        android:layout_width="90dp"
+        android:layout_height="30dp"
+        android:layout_gravity="top|end"
+        android:layout_margin="16dp"
+        android:textAllCaps="false"
+        android:padding="0dp"
+        android:text="Cancelar"
+        android:textSize="12dp"
+        android:textColor="@color/white"
+        android:backgroundTint="#00558A" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

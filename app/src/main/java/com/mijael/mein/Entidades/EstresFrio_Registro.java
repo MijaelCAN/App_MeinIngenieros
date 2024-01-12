@@ -1,9 +1,8 @@
 package com.mijael.mein.Entidades;
 
-public class EstresTermico_Registro {
+public class EstresFrio_Registro {
     public int codigo;
-    public String cod_formato; //no esta incluido el codigo de registro:
-    public String cod_registro;
+    public String cod_formato;
     public String id_formato;
     public String id_plan_trabajo;
     public String id_pt_formato;
@@ -36,31 +35,24 @@ public class EstresTermico_Registro {
     public String hora_trabajo;
     public String horario_refrigerio;
     public String regimen_laboral;
-    public String desc_area_trabajo;
-    public String area_trab_deta;
     public String ctrl_ingenieria;
     public String nom_ctrl_ingenieria;
-    public String ctrl_administrativo;
     public String anio_ocu_cargo;
     public String mes_ocu_cargo;
     public String cond_trab;
     public String observacion;
-    public String nom_tipo_Medicion;
     public int estado;
     public String fec_reg;
     public String user_reg;
 
-    public EstresTermico_Registro(int codigo, String cod_formato, String cod_registro, String id_formato, String id_plan_trabajo, String id_pt_formato, String id_equipo1,
-                                  String cod_equipo1, String nom_equipo1, String serie_eq1, String id_equipo2, String cod_equipo2, String nom_equipo2, String serie_eq2,
-                                  String id_analista, String nom_analista, String hora_situ, String verf_insitu, String fec_monitoreo, String hora_inicial, String hora_final,
-                                  String tiempo_medicion, String tiempo_exposicion, String jornada, String tipo_doc_trabajador, String num_doc_trabajador, String nom_trabajador,
-                                  String puesto_trabajador, String area_trabajo, String actividades_realizadas, String peso_trabajador, String edad_trabajador, String hora_trabajo,
-                                  String horario_refrigerio, String regimen_laboral, String desc_area_trabajo, String area_trab_deta, String ctrl_ingenieria, String nom_ctrl_ingenieria,
-                                  String ctrl_administrativo, String anio_ocu_cargo, String mes_ocu_cargo, String cond_trab, String observacion, String nom_tipo_Medicion, String fec_reg,
-                                  String user_reg) {
+    public EstresFrio_Registro(int codigo, String cod_formato, String id_formato, String id_plan_trabajo, String id_pt_formato, String id_equipo1, String cod_equipo1, String nom_equipo1,
+                               String serie_eq1, String id_equipo2, String cod_equipo2, String nom_equipo2, String serie_eq2, String id_analista, String nom_analista, String hora_situ,
+                               String verf_insitu, String fec_monitoreo, String hora_inicial, String hora_final, String tiempo_medicion, String tiempo_exposicion, String jornada,
+                               String tipo_doc_trabajador, String num_doc_trabajador, String nom_trabajador, String puesto_trabajador, String area_trabajo, String actividades_realizadas,
+                               String peso_trabajador, String edad_trabajador, String hora_trabajo, String horario_refrigerio, String regimen_laboral, String ctrl_ingenieria,
+                               String nom_ctrl_ingenieria, String anio_ocu_cargo, String mes_ocu_cargo, String cond_trab, String observacion, String fec_reg, String user_reg) {
         this.codigo = codigo;
         this.cod_formato = cod_formato;
-        this.cod_registro = cod_registro;
         this.id_formato = id_formato;
         this.id_plan_trabajo = id_plan_trabajo;
         this.id_pt_formato = id_pt_formato;
@@ -93,16 +85,12 @@ public class EstresTermico_Registro {
         this.hora_trabajo = hora_trabajo;
         this.horario_refrigerio = horario_refrigerio;
         this.regimen_laboral = regimen_laboral;
-        this.desc_area_trabajo = desc_area_trabajo;
-        this.area_trab_deta = area_trab_deta;
         this.ctrl_ingenieria = ctrl_ingenieria;
         this.nom_ctrl_ingenieria = nom_ctrl_ingenieria;
-        this.ctrl_administrativo = ctrl_administrativo;
         this.anio_ocu_cargo = anio_ocu_cargo;
         this.mes_ocu_cargo = mes_ocu_cargo;
         this.cond_trab = cond_trab;
         this.observacion = observacion;
-        this.nom_tipo_Medicion = nom_tipo_Medicion;
         this.fec_reg = fec_reg;
         this.user_reg = user_reg;
     }
@@ -121,14 +109,6 @@ public class EstresTermico_Registro {
 
     public void setCod_formato(String cod_formato) {
         this.cod_formato = cod_formato;
-    }
-
-    public String getCod_registro() {
-        return cod_registro;
-    }
-
-    public void setCod_registro(String cod_registro) {
-        this.cod_registro = cod_registro;
     }
 
     public String getId_formato() {
@@ -387,22 +367,6 @@ public class EstresTermico_Registro {
         this.regimen_laboral = regimen_laboral;
     }
 
-    public String getDesc_area_trabajo() {
-        return desc_area_trabajo;
-    }
-
-    public void setDesc_area_trabajo(String desc_area_trabajo) {
-        this.desc_area_trabajo = desc_area_trabajo;
-    }
-
-    public String getArea_trab_deta() {
-        return area_trab_deta;
-    }
-
-    public void setArea_trab_deta(String area_trab_deta) {
-        this.area_trab_deta = area_trab_deta;
-    }
-
     public String getCtrl_ingenieria() {
         return ctrl_ingenieria;
     }
@@ -417,14 +381,6 @@ public class EstresTermico_Registro {
 
     public void setNom_ctrl_ingenieria(String nom_ctrl_ingenieria) {
         this.nom_ctrl_ingenieria = nom_ctrl_ingenieria;
-    }
-
-    public String getCtrl_administrativo() {
-        return ctrl_administrativo;
-    }
-
-    public void setCtrl_administrativo(String ctrl_administrativo) {
-        this.ctrl_administrativo = ctrl_administrativo;
     }
 
     public String getAnio_ocu_cargo() {
@@ -457,14 +413,6 @@ public class EstresTermico_Registro {
 
     public void setObservacion(String observacion) {
         this.observacion = observacion;
-    }
-
-    public String getNom_tipo_Medicion() {
-        return nom_tipo_Medicion;
-    }
-
-    public void setNom_tipo_Medicion(String nom_tipo_Medicion) {
-        this.nom_tipo_Medicion = nom_tipo_Medicion;
     }
 
     public int getEstado() {

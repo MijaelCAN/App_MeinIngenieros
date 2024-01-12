@@ -36,6 +36,7 @@ import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.mijael.mein.DAO.DAO_DatosLocal;
 import com.mijael.mein.DAO.DAO_Equipos;
 import com.mijael.mein.DAO.DAO_FormatosTrabajo;
@@ -54,7 +55,10 @@ import com.mijael.mein.HELPER.EquiposSQLiteHelper;
 import com.mijael.mein.HELPER.FormatoTrabajoSQLiteHelper;
 import com.mijael.mein.SERVICIOS.DosimetriaService;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -160,7 +164,7 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
         tv_hora.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {config.showTimePickerDialog(rootView,tv_hora);}});
         tv_horaInicial.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {config.showTimePickerDialog(rootView,tv_horaInicial);}});
         tv_horaFinal.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {config.showTimePickerDialog(rootView,tv_horaFinal);}});
-        tv_fecha.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {config.showTimePickerDialog(rootView,tv_fecha);}});
+        tv_fecha.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {config.showDatePickerDialog(rootView,tv_fecha);}});
 
         //LlenarNrr("modelo_Tapones","nrr",cbx_modeloTapon,tv_nrrTapones);
         //LlenarNrr("modelo_orejeras","nrr",cbx_modeloOrej,tv_nrrOrej);
@@ -233,15 +237,22 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
                         validar.validarCampoObligatorio(cbx_tiempoCargoAnios)&&
                         validar.validarCampoObligatorio(cbx_meses)&&
                         validar.validarCampoObligatorio(cbx_anio)&&
-                        validar.validarCampoObligatorio(txt_OtroIngenieria)&&
-                        validar.validarCampoObligatorio(txt_otroAdministrativo)&&
+                        //validar.validarCampoObligatorio(txt_OtroIngenieria)&&
+                        //validar.validarCampoObligatorio(txt_otroAdministrativo)&&
                         validar.validarCampoObligatorio(txt_observaciones)
                 ){
                     String valorTvDosimetro = tv_dosimetro.getText().toString();
                     String valorTvCalibrador = tv_calibrador.getText().toString();
                     if(!valorTvDosimetro.equals(valorTvCalibrador)){
                         String valorTvHora = tv_hora.getText().toString();
-                        String valorTvFecha = tv_fecha.getText().toString();
+                        String Fecha = tv_fecha.getText().toString();
+                        Date valorTvFecha;
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                        try {
+                            valorTvFecha = simpleDateFormat.parse(Fecha);
+                        } catch (ParseException e) {
+                            throw new RuntimeException(e);
+                        }
                         String valorTvH_Inicial = tv_horaInicial.getText().toString();
                         String valorTvH_Final = tv_horaFinal.getText().toString();
 
@@ -264,8 +275,8 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
                         String valorRuidocontiguo = check_Contiguo.getText().toString();
                         String valorRuidoGenePor = check_ruidoGenerado.getText().toString();
 
-                        String valorMolestiOido = validar.getValor(radioGroup_Oido,rootView);
-                        String valorEnferOido= validar.getValor(radioGroup_Enferm,rootView);
+                        String valorMolestiOido = validar.getValor2(radioGroup_Oido,rootView);
+                        String valorEnferOido= validar.getValor2(radioGroup_Enferm,rootView);
                         String valorDetalleEnf = txt_detalleEnferm.getText().toString();
                         String valorGroupIng = validar.getValor2(radioGroup_Ingenieria,rootView);
                         String valorGroupAislante = validar.getValor2(radioGroup_Aislante,rootView);
@@ -281,6 +292,7 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
                         String valorGroupRotacion = validar.getValor2(radioGroup_Rotacion,rootView);
                         String valorGroupoTapones = validar.getValor2(radioGroup_Tapones,rootView);
                         String valorGroupOrejeras = validar.getValor2(radioGroup_Orejeras,rootView);
+
                         String valorMarcaTapones = cbx_marcaTapon.getSelectedItem().toString();
                         String valorModeloTapones = cbx_modeloTapon.getSelectedItem().toString();
                         String valorNrrTapones = tv_nrrTapones.getText().toString();
@@ -298,11 +310,6 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
                         String valorSeleccionadoCbxVariacion = cbx_variacion.getSelectedItem().toString();
                         String valorSeleccionadoCbxTipoDoc = cbx_tipoDoc.getSelectedItem().toString();
                         String valorSeleccionadoCbxHoraioTrabajo = cbx_horarioTrabajo.getSelectedItem().toString();
-                        Log.e("TAG10", valorSeleccionadoCbxHoraioTrabajo);
-
-                        if(valorSeleccionadoCbxHoraioTrabajo.equals("OTRO")){
-                            String valorOtroHorario = txt_otroHorario.getText().toString();
-                        }
                         String valorSeleccionadoCbxRegimen = cbx_regimen.getSelectedItem().toString();
                         String valorSeleccionadoCbxRefrigerio = cbx_refrigerio.getSelectedItem().toString();
                         String valorTiempoCargoAnio = cbx_tiempoCargoAnios.getSelectedItem().toString();
@@ -310,13 +317,20 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
                         String valorSeleccionadoCbxMeses = cbx_meses.getSelectedItem().toString();
                         String valorSeleccionadoCbxAnio = cbx_anio.getSelectedItem().toString();
 
-                        String valorOtroHorario = valorSeleccionadoCbxHoraioTrabajo.equals("OTRO")?txt_otroHorario.getText().toString():"null";
-                        String valorOtroRegimen = valorSeleccionadoCbxRegimen.equals("OTRO")?txt_otroRegimen.getText().toString():"null";
-                        String valorOtroRefrigerio = valorSeleccionadoCbxRegimen.equals("OTRO")?txt_otroRefrigerio.getText().toString():"null";
-                        String valorOtroMarcaOrej = valorMarcaOrejeras.equals("OTRO")?txt_otroMarcaOrej.getText().toString():"null";
-                        String valorOtroMarcaTapones = valorMarcaTapones.equals("OTRO")?txt_otroMarcaTapones.getText().toString():"null";
-                        String valorOtroModeloOrej = valorModeloOrjeras.equals("OTRO")?txt_otroModeloOrej.getText().toString():"null";
-                        String valorOtroModeloTapones = valorModeloTapones.equals("OTRO")?txt_otroModeloTapones.getText().toString():"null";
+                        if(valorSeleccionadoCbxHoraioTrabajo.equals("OTRO")) valorSeleccionadoCbxHoraioTrabajo = txt_otroHorario.getText().toString();
+                        if(valorSeleccionadoCbxRegimen.equals("OTRO")) valorSeleccionadoCbxRegimen = txt_otroRegimen.getText().toString();
+                        if(valorSeleccionadoCbxRefrigerio.equals("OTRO")) valorSeleccionadoCbxRefrigerio = txt_otroRefrigerio.getText().toString();
+                        if(valorMarcaOrejeras.equals("OTRO")) valorMarcaOrejeras = txt_otroMarcaOrej.getText().toString();
+                        if(valorMarcaTapones.equals("OTRO")) valorMarcaTapones = txt_otroMarcaTapones.getText().toString();
+                        if(valorModeloOrjeras.equals("OTRO")) valorModeloOrjeras = txt_otroModeloOrej.getText().toString();
+                        if(valorModeloTapones.equals("OTRO")) valorModeloTapones = txt_otroModeloTapones.getText().toString();
+                        //valorSeleccionadoCbxHoraioTrabajo = valorSeleccionadoCbxHoraioTrabajo.equals("OTRO")?txt_otroHorario.getText().toString():cbx_horarioTrabajo.getSelectedItem().toString();
+                        //valorSeleccionadoCbxRegimen = valorSeleccionadoCbxRegimen.equals("OTRO")?txt_otroRegimen.getText().toString():"null";
+                        //valorSeleccionadoCbxRefrigerio = valorSeleccionadoCbxRefrigerio.equals("OTRO")?txt_otroRefrigerio.getText().toString():"null";
+                        //valorMarcaOrejeras = valorMarcaOrejeras.equals("OTRO")?txt_otroMarcaOrej.getText().toString():"null";
+                        //valorMarcaTapones = valorMarcaTapones.equals("OTRO")?txt_otroMarcaTapones.getText().toString():"null";
+                        //valorModeloOrjeras = valorModeloOrjeras.equals("OTRO")?txt_otroModeloOrej.getText().toString():"null";
+                        //valorModeloTapones = valorModeloTapones.equals("OTRO")?txt_otroModeloTapones.getText().toString():"null";
 
 
                         String estado_resultado = "1";
@@ -325,22 +339,22 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
                         Equipos equipo1 = nuevoequipo.Buscar(valorTvDosimetro);
                         Equipos equipo2 = nuevoequipo.Buscar(valorTvCalibrador);
 
-                        Dosimetria_Registro registro = new Dosimetria_Registro( //AGREGANDO LOS VALORES A LA ENTIDAD DEL FORMATO DE DOSIMETRIA
+                        Dosimetria_Registro cabecera = new Dosimetria_Registro( //AGREGANDO LOS VALORES A LA ENTIDAD DEL FORMATO DE DOSIMETRIA
                                 -1,
                                 "DO-001",
                                 id_formato,
                                 id_plan_trabajo,
                                 id_pt_trabajo,
-                                equipo1.getCod_equipo(),
+                                equipo1.getCodigo(),
                                 equipo1.getNombre(),
-                                equipo2.getCod_equipo(),
+                                equipo2.getCodigo(),
                                 equipo2.getNombre(),
                                 equipo1.getSerie(),
                                 equipo2.getSerie(),
                                 String.valueOf(equipo1.getId_equipo_registro()),
                                 String.valueOf(equipo2.getId_equipo_registro()),
                                 id_colaborador,
-                                "id_Colaborador.getNombre()",
+                                nuevo.getUsuario_nombres(),
                                 valorTvHora,
                                 valorSeleccionadoCbxNivel,
                                 valorSeleccionadoCbxVariacion,
@@ -365,10 +379,11 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
                                 valorSeleccionadoCbxRegimen,
                                 valorSeleccionadoCbxRefrigerio,
                                 valorTiempoCargoAnio,
+                                valorTiempoCargoMeses,
                                 valorMolestiOido,
                                 valorEnferOido,
                                 valorDetalleEnf,
-                                "valor referencial",
+                                "fecha ultimo examen",
                                 valorSeleccionadoCbxMeses,
                                 valorSeleccionadoCbxAnio,
                                 valorGroupIng,
@@ -383,7 +398,7 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
                                 valorGroupSenalPresion,
                                 valorGroupSenalEpp,
                                 valorGroupRotacion,
-                                valorGroupAdmTiempoExpo,
+                                valorTxtTiempo_Expo,
                                 valorTxtOtroAdministrativo,
                                 valorGroupoTapones,
                                 valorMarcaTapones,
@@ -398,28 +413,35 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
                                 valorTxtLmax,
                                 valorTxtLmin,
                                 valorTxtObservaciones,
-                                "1",
+                                estado_resultado,
                                 id_colaborador,
-                                fecha_registro
+                                fecha_registro,
+                                "var1"
                         );
-                        DAO_RegistroDosimetria nuevoRegistro = new DAO_RegistroDosimetria(getActivity());//INSTANCIAR LA CLASE PARA USAR EL METODO DE INSERTAR
-                        boolean confirmar = nuevoRegistro.RegistrarFormato(registro); //LLAMAR AL METODO PARA INSERTAR LOS REGISTROS
-                        if(confirmar){
 
-                            //Prueba
+                        if(config.isOnline()){
                             Retrofit retrofit = new Retrofit.Builder()
                                     .baseUrl("https://test.meiningenieros.pe/")
                                     .addConverterFactory(GsonConverterFactory.create())
                                     .build();
 
                             DosimetriaService service1 = retrofit.create(DosimetriaService.class);
-
+                            Dosimetria_Registro detalle = new Dosimetria_Registro("PRUEBA");
                             Gson gson = new Gson();
-                            // Convertir el objeto persona a JSON
-                            String cadenaJson = gson.toJson(registro);
+                            // Crear un objeto JSON principal
+                            JsonObject jsonObject = new JsonObject();
+
+                            JsonObject registroJson = gson.toJsonTree(cabecera).getAsJsonObject();
+                            jsonObject.add("cabecera", registroJson);
+
+                            JsonObject detalleJson = gson.toJsonTree(detalle).getAsJsonObject();
+                            jsonObject.add("detalle", detalleJson);
+
+
+                            String cadenaJson = gson.toJson(jsonObject);
                             RequestBody json = RequestBody.create(MediaType.parse("application/json"), cadenaJson);
 
-                            Call<ResponseBody> call1 = service1.insertData(json);
+                            Call<ResponseBody> call1 = service1.insertDosimetria(json);
                             call1.enqueue(new Callback<ResponseBody>() {
                                 @Override
                                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -434,7 +456,16 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
                                     Log.e("error", "Error al insertar el registro");
                                 }
                             });
+                            new AlertDialog.Builder(getContext())
+                                    .setTitle("Registro guardado en WEB")
+                                    .setMessage("El registro ha sido guardado exitosamente.")
+                                    .setPositiveButton(android.R.string.ok, null)
+                                    .show();
+                            getFragmentManager().popBackStack();
+                        }else{
 
+                            DAO_RegistroDosimetria nuevoRegistro = new DAO_RegistroDosimetria(getActivity());//INSTANCIAR LA CLASE PARA USAR EL METODO DE INSERTAR
+                            boolean confirmar = nuevoRegistro.RegistrarFormato(cabecera); //LLAMAR AL METODO PARA INSERTAR LOS REGISTROS
 
                             DAO_FormatosTrabajo dao_fromatosTrabajo = new DAO_FormatosTrabajo(getActivity());
                             for_Dosimetria = dao_fromatosTrabajo.Buscar(id_plan_trabajo,id_formato);
@@ -444,7 +475,7 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
 
                             // O muestra un AlertDialog con el mensaje
                             new AlertDialog.Builder(getActivity())
-                                    .setTitle("Registro guardado")
+                                    .setTitle("Registro guardado Localmente")
                                     .setMessage("El registro ha sido guardado exitosamente.")
                                     .setPositiveButton(android.R.string.ok, null)
                                     .show();
@@ -584,6 +615,7 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
         txt_otroRegimen = view.findViewById(R.id.txt_otroRegimen);
         linearOtroRefrigerio = view.findViewById(R.id.linearOtroRefrigerio);
         txt_otroRefrigerio = view.findViewById(R.id.txt_otroRefrigerio);
+
         linearOtroMarcaOrej = view.findViewById(R.id.linearOtroMarcaOrej);
         txt_otroMarcaOrej = view.findViewById(R.id.txt_otroMarcaOrej);
         linearOtroMarcaTapones= view.findViewById(R.id.linearOtroMarcaTapones);

@@ -208,6 +208,7 @@
                                 android:buttonTint="@color/purple_200"
                                 android:fontFamily="sans-serif-light"
                                 android:text="No"
+                                android:checked="true"
                                 android:textColorHint="@color/black" />
                         </RadioGroup>
 
@@ -315,7 +316,22 @@
                                     app:fontFamily="sans-serif-light" />
                             </LinearLayout>
                         </LinearLayout>
-
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/btn_subirFotoIlu"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:textAllCaps="false"
+                            android:text="Subir Foto"
+                            android:textColor="@color/white"
+                            android:layout_marginTop="20dp"
+                            android:background="@drawable/style_4"/>
+                        <ImageView
+                            android:id="@+id/img_Iluminacion"
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp"
+                            android:layout_marginTop="5dp"
+                            android:src="@drawable/ic_image" />
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -531,41 +547,124 @@
                             </LinearLayout>
                         </LinearLayout>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:layout_weight="1"
-                            android:fontFamily="sans-serif-light"
-                            android:text="Horario de trabajo:"
-                            android:textColor="@color/black"
-                            android:textSize="12dp" />
-
-                        <Spinner
-                            android:id="@+id/cbx_horarioTrabajo"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/style_input"
-                            android:textSize="10sp" />
+                            android:layout_marginRight="2dp"
+                            android:orientation="horizontal">
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Horario de trabajo:"
+                                    android:textSize="12dp"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:layout_weight="1"
-                            android:text="Regimen Laboral"
-                            android:textSize="12sp"
-                            android:fontFamily="sans-serif-light"/>
+                                <Spinner
+                                    android:id="@+id/cbx_horarioTrabajo"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/style_spinner"
+                                    android:textSize="10sp" />
+                            </LinearLayout>
+                            <LinearLayout
+                                android:id="@+id/linearOtroHorario"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginLeft="15dp"
+                                android:orientation="vertical"
+                                android:visibility="gone">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Otro horario"
+                                    android:textSize="12sp"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black"/>
 
-                        <Spinner
-                            android:id="@+id/cbx_regimen"
+                                <EditText
+                                    android:id="@+id/txt_otroHorario"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    style="@style/EditTextFocusStyle"
+                                    android:hint="Digite"
+                                    android:paddingLeft="8dp"
+                                    android:textSize="16sp"/>
+
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/style_input" />
+                            android:layout_marginRight="2dp"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_weight="1"
+                                    android:text="Regimen Laboral"
+                                    android:textSize="12sp"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black"/>
+
+                                <Spinner
+                                    android:id="@+id/cbx_regimen"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/style_spinner"/>
+                            </LinearLayout>
+                            <LinearLayout
+                                android:id="@+id/linearOtroRegimen"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:visibility="gone">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Otro Regimen"
+                                    android:textSize="12sp"
+                                    android:layout_marginTop="10dp"
+                                    android:fontFamily="sans-serif-light"
+                                    android:textColor="@color/black"/>
+
+                                <EditText
+                                    android:id="@+id/txt_otroRegimen"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    style="@style/EditTextFocusStyle"
+                                    android:hint="Digite"
+                                    android:paddingLeft="8dp"
+                                    android:textSize="16sp"/>
+                            </LinearLayout>
+                        </LinearLayout>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -685,7 +784,7 @@
 
                                 <TextView
                                     android:id="@+id/tv_fechaMonitoreo"
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="5dp"
                                     android:background="@drawable/style_input"
@@ -731,90 +830,410 @@
                             </LinearLayout>
 
                         </LinearLayout>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:fontFamily="sans-serif-light"
-                            android:text="Tipo de Iluminacion:"
-                            android:layout_marginTop="10dp"
-                            android:textColor="@color/black"
-                            android:textSize="12dp" />
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="2dp"
-                            android:orientation="vertical">
 
-                            <CheckBox
-                                android:id="@+id/check_artificial"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:checked="false"
-                                android:textSize="15sp"
-                                android:textColor="@color/black"
-                                android:textColorHint="@color/black"
-                                android:fontFamily="sans-serif-light"
-                                android:buttonTint="@color/teal_200"
-                                android:text="Artificial" />
-
-                            <CheckBox
-                                android:id="@+id/check_natural"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:checked="false"
-                                android:textSize="15sp"
-                                android:textColor="@color/black"
-                                android:textColorHint="@color/black"
-                                android:fontFamily="sans-serif-light"
-                                android:buttonTint="@color/purple_200"
-                                android:text="Natural" />
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:layout_weight="1"
-                            android:fontFamily="sans-serif-light"
-                            android:text="Cantidad de luminarias"
-                            android:textColor="@color/black"
-                            android:textSize="12sp" />
-                        <EditText
-                            android:id="@+id/txt_CantLuminarias"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:background="@drawable/style_input"
-                            android:fontFamily="sans-serif-light"
-                            android:hint="Digite"
-                            android:paddingLeft="8dp"
-                            android:inputType="numberSigned"
-                            android:textColor="@color/black"
-                            android:textColorHint="@color/black"
-                            android:textSize="15sp" />
-
-                        <androidx.appcompat.widget.AppCompatButton
-                            android:id="@+id/btn_subirFotoIlu"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:textAllCaps="false"
-                            android:text="Subir Foto"
-                            android:textColor="@color/white"
-                            android:layout_marginTop="20dp"
-                            android:background="@drawable/style_4"/>
-                        <ImageView
-                            android:id="@+id/img_Iluminacion"
-                            android:layout_width="match_parent"
-                            android:layout_height="200dp"
-                            android:layout_marginTop="5dp"
-                            android:src="@drawable/ic_image" />
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginRight="2dp"
                             android:orientation="horizontal">
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:fontFamily="sans-serif-light"
+                                    android:text="Tipo de Iluminacion:"
+                                    android:layout_marginTop="10dp"
+                                    android:textColor="@color/black"
+                                    android:textSize="12dp" />
+                                <Spinner
+                                    android:id="@+id/cbx_tipoIluminacion"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/style_spinner"/>
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginLeft="15dp">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:fontFamily="sans-serif-light"
+                                    android:text="Tipo de Medición:"
+                                    android:layout_marginTop="10dp"
+                                    android:textColor="@color/black"
+                                    android:textSize="12dp" />
+                                <Spinner
+                                    android:id="@+id/cbx_tipoMedicion"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/style_spinner"/>
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <!-- CAMPO OCULTO 1 -->
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/Card_Area"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:visibility="visible"
+                            app:cardCornerRadius="4dp"
+                            app:cardElevation="2dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="16dp">
+                                <!-- LINEAR 1A -->
+                                <LinearLayout
+                                    android:id="@+id/linear1A"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="2dp"
+                                    android:visibility="visible">
+
+                                    <LinearLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:orientation="vertical">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="10dp"
+                                            android:layout_weight="1"
+                                            android:fontFamily="sans-serif-light"
+                                            android:text="Longitud de salón (m)"
+                                            android:textColor="@color/black"
+                                            android:textSize="12sp" />
+
+                                        <EditText
+                                            android:id="@+id/txt_longSalon"
+                                            style="@style/EditTextFocusStyle"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="5dp"
+                                            android:fontFamily="sans-serif-light"
+                                            android:inputType="none"
+                                            android:paddingLeft="8dp"
+                                            android:textColor="@color/black"
+                                            android:textColorHint="@color/black"
+                                            android:textSize="16sp" />
+                                    </LinearLayout>
+
+                                    <LinearLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="15dp"
+                                        android:layout_weight="1"
+                                        android:orientation="vertical">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="10dp"
+                                            android:layout_weight="1"
+                                            android:fontFamily="sans-serif-light"
+                                            android:text="Ancho de salón (m)"
+                                            android:textColor="@color/black"
+                                            android:textSize="12sp" />
+
+                                        <EditText
+                                            android:id="@+id/txt_anchoSalon"
+                                            style="@style/EditTextFocusStyle"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="5dp"
+                                            android:fontFamily="sans-serif-light"
+                                            android:inputType="none"
+                                            android:paddingLeft="8dp"
+                                            android:textColor="@color/black"
+                                            android:textColorHint="@color/black"
+                                            android:textSize="16sp" />
+                                    </LinearLayout>
+
+                                    <LinearLayout
+                                        android:id="@+id/linearOtroMarcaTapones"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="15dp"
+                                        android:layout_weight="1"
+                                        android:orientation="vertical">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="10dp"
+                                            android:layout_weight="1"
+                                            android:fontFamily="sans-serif-light"
+                                            android:text="Alt. desde plano trabajo a luminarias (m)"
+                                            android:textColor="@color/black"
+                                            android:textSize="12sp" />
+
+                                        <EditText
+                                            android:id="@+id/txt_alt_PlanosTrabajo_ilu"
+                                            style="@style/EditTextFocusStyle"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="5dp"
+                                            android:fontFamily="sans-serif-light"
+                                            android:inputType="none"
+                                            android:paddingLeft="8dp"
+                                            android:textColor="@color/black"
+                                            android:textColorHint="@color/black"
+                                            android:textSize="16sp" />
+                                    </LinearLayout>
+
+                                </LinearLayout>
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="2dp"
+                                    android:orientation="horizontal">
+
+                                    <LinearLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:orientation="vertical">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="10dp"
+                                            android:layout_weight="1"
+                                            android:fontFamily="sans-serif-light"
+                                            android:text="Constante de salón (k)"
+                                            android:textColor="@color/black"
+                                            android:textSize="12sp" />
+
+                                        <EditText
+                                            android:id="@+id/txt_constanteSalon"
+                                            style="@style/EditTextFocusStyle"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="5dp"
+                                            android:fontFamily="sans-serif-light"
+                                            android:hint="Digite"
+                                            android:paddingLeft="8dp"
+                                            android:inputType="none"
+                                            android:textColor="@color/black"
+                                            android:textColorHint="@color/black"
+                                            android:textSize="15sp" />
+                                    </LinearLayout>
+
+                                    <LinearLayout
+                                        android:id="@+id/linearOtroModeloTapones"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="15dp"
+                                        android:layout_weight="1"
+                                        android:orientation="vertical">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="10dp"
+                                            android:layout_weight="1"
+                                            android:fontFamily="sans-serif-light"
+                                            android:text="Número mínimo de puntos de medición"
+                                            android:textColor="@color/black"
+                                            android:textSize="12sp" />
+
+                                        <EditText
+                                            android:id="@+id/txt_numMinPuntosMedicion"
+                                            style="@style/EditTextFocusStyle"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="5dp"
+                                            android:fontFamily="sans-serif-light"
+                                            android:hint="Digite"
+                                            android:paddingLeft="8dp"
+                                            android:textColor="@color/black"
+                                            android:textColorHint="@color/black"
+                                            android:textSize="15sp" />
+                                    </LinearLayout>
+                                </LinearLayout>
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <!-- CAMPO OCULTO 2 -->
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/Card_Puesto"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:visibility="gone"
+                            app:cardCornerRadius="4dp"
+                            app:cardElevation="2dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="16dp">
+                                <!-- LINEAR 1B -->
+                                <LinearLayout
+                                    android:id="@+id/linear1B"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="2dp"
+                                    android:orientation="horizontal"
+                                    android:visibility="visible">
+
+                                    <LinearLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:orientation="vertical">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="10dp"
+                                            android:layout_weight="1"
+                                            android:fontFamily="sans-serif-light"
+                                            android:text="Largo de escritorio (m)"
+                                            android:textColor="@color/black"
+                                            android:textSize="12sp" />
+
+                                        <EditText
+                                            android:id="@+id/txt_largoEscri"
+                                            style="@style/EditTextFocusStyle"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="5dp"
+                                            android:fontFamily="sans-serif-light"
+                                            android:inputType="none"
+                                            android:paddingLeft="8dp"
+                                            android:textColor="@color/black"
+                                            android:textColorHint="@color/black"
+                                            android:textSize="16sp" />
+                                    </LinearLayout>
+
+                                    <LinearLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="15dp"
+                                        android:layout_weight="1"
+                                        android:orientation="vertical">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="10dp"
+                                            android:layout_weight="1"
+                                            android:fontFamily="sans-serif-light"
+                                            android:text="Ancho de escritorio (m)"
+                                            android:textColor="@color/black"
+                                            android:textSize="12sp" />
+
+                                        <EditText
+                                            android:id="@+id/txt_anchoEscri"
+                                            style="@style/EditTextFocusStyle"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="5dp"
+                                            android:fontFamily="sans-serif-light"
+                                            android:inputType="none"
+                                            android:paddingLeft="8dp"
+                                            android:textColor="@color/black"
+                                            android:textColorHint="@color/black"
+                                            android:textSize="16sp" />
+                                    </LinearLayout>
+                                </LinearLayout>
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="2dp"
+                                    android:orientation="horizontal">
+
+                                    <LinearLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:orientation="vertical">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="10dp"
+                                            android:layout_weight="1"
+                                            android:fontFamily="sans-serif-light"
+                                            android:text="Número de puntos de medición"
+                                            android:textColor="@color/black"
+                                            android:textSize="12sp" />
+
+                                        <EditText
+                                            android:id="@+id/txt_numPuntosMedicion"
+                                            style="@style/EditTextFocusStyle"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="5dp"
+                                            android:fontFamily="sans-serif-light"
+                                            android:hint="Digite"
+                                            android:inputType="none"
+                                            android:paddingLeft="8dp"
+                                            android:textColor="@color/black"
+                                            android:textColorHint="@color/black"
+                                            android:textSize="15sp" />
+                                    </LinearLayout>
+
+                                    <LinearLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="15dp"
+                                        android:layout_weight="1"
+                                        android:orientation="vertical">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="10dp"
+                                            android:layout_weight="1"
+                                            android:fontFamily="sans-serif-light"
+                                            android:text="Alt. de plano de trabajo (m)"
+                                            android:textColor="@color/black"
+                                            android:textSize="12sp" />
+
+                                        <EditText
+                                            android:id="@+id/txt_alturaPlanosTrabajo"
+                                            style="@style/EditTextFocusStyle"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="5dp"
+                                            android:fontFamily="sans-serif-light"
+                                            android:hint="Digite"
+                                            android:paddingLeft="8dp"
+                                            android:textColor="@color/black"
+                                            android:textColorHint="@color/black"
+                                            android:textSize="15sp" />
+                                    </LinearLayout>
+                                </LinearLayout>
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="2dp"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="15dp">
 
                             <LinearLayout
                                 android:layout_width="0dp"
@@ -1072,7 +1491,8 @@
                             android:fontFamily="sans-serif-light"
                             android:text="Area de Trabajo(M2)"
                             android:textColor="@color/black"
-                            android:textSize="12sp" />
+                            android:textSize="12sp"
+                            android:visibility="gone"/>
                         <EditText
                             android:id="@+id/txt_areaTrabajoM2"
                             android:layout_width="match_parent"
@@ -1084,7 +1504,8 @@
                             android:paddingLeft="8dp"
                             android:textColor="@color/black"
                             android:textColorHint="@color/black"
-                            android:textSize="15sp" />
+                            android:textSize="15sp"
+                            android:visibility="gone"/>
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -1102,12 +1523,12 @@
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:fontFamily="sans-serif-light"
-                                    android:text="Altura de planos de Trabajo"
+                                    android:text="Cantidad de luminarias:"
                                     android:textColor="@color/black"
                                     android:textSize="12sp" />
 
                                 <EditText
-                                    android:id="@+id/txt_alturaPlanosTrabajo"
+                                    android:id="@+id/txt_CantLuminarias"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="5dp"

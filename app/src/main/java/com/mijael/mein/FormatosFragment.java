@@ -203,6 +203,7 @@ public class FormatosFragment extends Fragment {
                             MensajeAlerta(registro.getNom_formato());
                         }
                         break;
+                    case "LUXOMETRO":
                     case "ILUMINACIÓN":
                         // Opción 3 - Navegar a ILUMINACION
                         if (registro.getRealizado() < registro.getCantidad()) {
@@ -221,6 +222,7 @@ public class FormatosFragment extends Fragment {
                             MensajeAlerta(registro.getNom_formato());
                         }
                         break;
+                    case "ESTRES POR CALOR":
                     case "ESTRÉS TÉRMICO":
                         // Opción 3 - Navegar a ESTRES TERMICO
                         if (registro.getRealizado() < registro.getCantidad()) {
@@ -235,6 +237,42 @@ public class FormatosFragment extends Fragment {
                         if (registro.getRealizado() < registro.getCantidad()) {
                             Fragment radiacion = new RadiacionElectromagneticaFragment();
                             AbrirFormato(radiacion, registro);
+                        } else {
+                            MensajeAlerta(registro.getNom_formato());
+                        }
+                        break;
+                    case "ESTRÉS POR FRÍO":
+                        // Opción 3 - Navegar a RADIACION
+                        if (registro.getRealizado() < registro.getCantidad()) {
+                            Fragment estreFrio = new EstresFrioFragment();
+                            AbrirFormato(estreFrio, registro);
+                        } else {
+                            MensajeAlerta(registro.getNom_formato());
+                        }
+                        break;
+                    case "VELOCIDAD DEL AIRE":
+                        // Opción 3 - Navegar a RADIACION
+                        if (registro.getRealizado() < registro.getCantidad()) {
+                            Fragment velocidadAire = new VelocidadAireFragment();
+                            AbrirFormato(velocidadAire, registro);
+                        } else {
+                            MensajeAlerta(registro.getNom_formato());
+                        }
+                        break;
+                    case "HUMEDAD RELATIVA":
+                        // Opción 3 - Navegar a RADIACION
+                        if (registro.getRealizado() < registro.getCantidad()) {
+                            Fragment humedadRelativa = new HumedadRelativaFragment();
+                            AbrirFormato(humedadRelativa, registro);
+                        } else {
+                            MensajeAlerta(registro.getNom_formato());
+                        }
+                        break;
+                    case "RADIACIÓN UV":
+                        // Opción 3 - Navegar a RADIACION
+                        if (registro.getRealizado() < registro.getCantidad()) {
+                            Fragment radiacionUv = new RadiacionUvFragment();
+                            AbrirFormato(radiacionUv, registro);
                         } else {
                             MensajeAlerta(registro.getNom_formato());
                         }

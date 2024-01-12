@@ -924,7 +924,7 @@
                             android:layout_weight="1"
                             android:layout_marginLeft="15dp"
                             android:orientation="vertical"
-                            android:visibility="visible">
+                            android:visibility="gone">
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -977,7 +977,6 @@
                                 android:layout_weight="1"
                                 android:background="@drawable/style_spinner"/>
                         </LinearLayout>
-
                         <LinearLayout
                             android:id="@+id/linearOtroRegimen"
                             android:layout_width="0dp"
@@ -1008,6 +1007,7 @@
                                 android:textSize="16sp"/>
                         </LinearLayout>
                     </LinearLayout>
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -1186,6 +1186,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif-light"
                             android:text="No"
+                            android:checked="true"
                             android:textColor="@color/black" />
                     </RadioGroup>
 
@@ -1218,6 +1219,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif-light"
                             android:text="No"
+                            android:checked="true"
                             android:textColor="@color/black" />
                     </RadioGroup>
 
@@ -1336,6 +1338,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif-light"
                             android:text="No"
+                            android:checked="true"
                             android:textColor="@color/black" />
                     </RadioGroup>
 
@@ -1395,6 +1398,7 @@
                                             android:layout_height="wrap_content"
                                             android:fontFamily="sans-serif-light"
                                             android:text="No"
+                                            android:checked="true"
                                             android:textColor="@color/black" />
                                     </RadioGroup>
                                 </LinearLayout>
@@ -1435,6 +1439,7 @@
                                             android:layout_height="wrap_content"
                                             android:fontFamily="sans-serif-light"
                                             android:text="No"
+                                            android:checked="true"
                                             android:textColor="@color/black" />
                                     </RadioGroup>
                                 </LinearLayout>
@@ -1482,6 +1487,7 @@
                                             android:layout_height="wrap_content"
                                             android:fontFamily="sans-serif-light"
                                             android:text="No"
+                                            android:checked="true"
                                             android:textColor="@color/black" />
                                     </RadioGroup>
                                 </LinearLayout>
@@ -1522,6 +1528,7 @@
                                             android:layout_height="wrap_content"
                                             android:fontFamily="sans-serif-light"
                                             android:text="No"
+                                            android:checked="true"
                                             android:textColor="@color/black" />
                                     </RadioGroup>
                                 </LinearLayout>
@@ -1569,6 +1576,7 @@
                                             android:layout_height="wrap_content"
                                             android:fontFamily="sans-serif-light"
                                             android:text="No"
+                                            android:checked="true"
                                             android:textColor="@color/black" />
                                     </RadioGroup>
                                 </LinearLayout>
@@ -1628,6 +1636,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif-light"
                             android:text="No"
+                            android:checked="true"
                             android:textColor="@color/black" />
                     </RadioGroup>
 
@@ -1683,7 +1692,8 @@
                                             android:id="@+id/radioRiesgosNo"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="No" />
+                                            android:text="No"
+                                            android:checked="true"/>
                                     </RadioGroup>
                                 </LinearLayout>
 
@@ -1719,7 +1729,8 @@
                                             android:id="@+id/radioPresionNo"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="No" />
+                                            android:text="No"
+                                            android:checked="true"/>
                                     </RadioGroup>
                                 </LinearLayout>
                             </LinearLayout>
@@ -1762,7 +1773,8 @@
                                             android:id="@+id/radioEppNo"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="No" />
+                                            android:text="No"
+                                            android:checked="true"/>
                                     </RadioGroup>
                                 </LinearLayout>
 
@@ -1798,7 +1810,8 @@
                                             android:id="@+id/radioAdminExpoNo"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="No" />
+                                            android:text="No"
+                                            android:checked="true"/>
                                     </RadioGroup>
                                 </LinearLayout>
                             </LinearLayout>
@@ -1841,7 +1854,8 @@
                                             android:id="@+id/radioRotacionNo"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="No" />
+                                            android:text="No"
+                                            android:checked="true"/>
                                     </RadioGroup>
                                 </LinearLayout>
                             </LinearLayout>
@@ -1908,6 +1922,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif-light"
                             android:text="No"
+                            android:checked="true"
                             android:textColor="@color/black" />
                     </RadioGroup>
 
@@ -1916,7 +1931,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
-                        android:visibility="gone"
+                        android:visibility="visible"
                         app:cardCornerRadius="4dp"
                         app:cardElevation="2dp">
 
@@ -2078,6 +2093,19 @@
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
 
+                    <EditText
+                        android:id="@+id/txt_lmin"
+                        style="@style/EditTextFocusStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="sans-serif-light"
+                        android:hint="Digite"
+                        android:paddingLeft="8dp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        android:textSize="15sp" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -2108,6 +2136,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif-light"
                             android:text="No"
+                            android:checked="true"
                             android:textColor="@color/black" />
                     </RadioGroup>
 
@@ -2365,18 +2394,6 @@
                         android:textColor="@color/black"
                         android:textSize="12dp" />
 
-                    <EditText
-                        android:id="@+id/txt_lmin"
-                        style="@style/EditTextFocusStyle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:fontFamily="sans-serif-light"
-                        android:hint="Digite"
-                        android:paddingLeft="8dp"
-                        android:textColor="@color/black"
-                        android:textColorHint="@color/black"
-                        android:textSize="15sp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
             <!-- Septimo CardView -->

@@ -8,5 +8,26 @@ import retrofit2.http.POST;
 
 public interface DosimetriaService {
     @POST("index.php?/ApkI/Insert_Dosimetria")
-    Call<ResponseBody> insertData(@Body RequestBody json);
+    Call<ResponseBody> insertDosimetria(@Body RequestBody json);
+
+    @POST("index.php?/ApkI/Insert_Vibracion")
+    Call<ResponseBody> insertVibracion(@Body RequestBody json);
+
+    @POST("index.php?/ApkI/Insert_Humedad_Relativa")
+    Call<ResponseBody> insertHumedadRelativa(@Body RequestBody json);
+    @POST("index.php?/ApkI/Insert_Velocidad_Aire")
+    Call<ResponseBody> insertVelocidadAire(@Body RequestBody json);
+
+    @POST("index.php?/ApkI/Insert_Radiacion_Electromag")
+    Call<ResponseBody> insertRadiacionElectro(@Body RequestBody json);
+
+    @POST("index.php?/ApkI/Insert_Estres_Termico")
+    Call<ResponseBody> insertEstresTermico(@Body RequestBody json);
+
+    @POST("index.php?/ApkI/Insert_Radiacion_Uv")
+    Call<ResponseBody> insertRadiacionUV(@Body RequestBody json);
+
+    @POST("index.php?/ApkI/Insert_Iluminacion")
+    Call<ResponseBody> insertIluminacion(@Body RequestBody json);
+
 }

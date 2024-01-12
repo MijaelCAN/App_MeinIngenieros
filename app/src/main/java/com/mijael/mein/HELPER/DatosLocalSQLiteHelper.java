@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 
 public class DatosLocalSQLiteHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "TablasLocales";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     public DatosLocalSQLiteHelper(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
     }
@@ -243,8 +243,8 @@ public class DatosLocalSQLiteHelper extends SQLiteOpenHelper {
                 " nom_anio TEXT NOT NULL " +
                 ")");
         db.execSQL("INSERT INTO anios (id_anio, nom_anio) VALUES " +
-                "(1,'2023'),(2,'2022'),(3,'2021'),(4,'2020'),(5,'2019'),(6,'2018'),"+
-                "(7,'2017'),(8,'2016'),(9,'2015'),(10,'2014'),(11,'2013'),(12,'2012')");
+                "(1,'2024'),(2,'2023'),(3,'2022'),(4,'2021'),(5,'2020'),(6,'2019'),(7,'2018'),"+
+                "(8,'2017'),(9,'2016'),(10,'2015'),(11,'2014'),(12,'2013'),(13,'2012')");
 
         // ---------------------- TABLA -> VELOCIDAD DEL VIENTO -------------------------------------------------------------------------
         db.execSQL("CREATE TABLE velocidadViento(" +

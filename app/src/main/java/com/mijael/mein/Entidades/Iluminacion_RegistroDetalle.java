@@ -2,8 +2,20 @@ package com.mijael.mein.Entidades;
 
 public class Iluminacion_RegistroDetalle {
     private int id_plan_trabajo_formato_reg;
-    private String tipo_iluminacion_art;
-    private String tipo_iluminacion_nat;
+    private  String tipo_iluminacion;
+    private String tipo_medicion_ilu;
+    private String larg_escrit;
+    private String anch_escrit;
+    private String num_pmedicion;
+    private String alt_pltrabajo;
+
+    private String long_salon;
+    private String anch_salon;
+    private String alt_pltrabajo_ilu;
+    private String const_salon;
+
+
+    private String num_min_pmedic;
     private String cant_iluminarias;
     private String il_1;
     private String il_2;
@@ -21,16 +33,27 @@ public class Iluminacion_RegistroDetalle {
     private String color_pared;
     private String color_piso;
     private String estado_fisico;
+    public int estado;
     private String fec_reg;
     private String user_reg;
 
-    public Iluminacion_RegistroDetalle(int id_plan_trabajo_formato_reg, String tipo_iluminacion_art, String tipo_iluminacion_nat, String cant_iluminarias, String il_1,
-                                       String il_2, String il_3, String il_4, String il_5, String il_6, String il_7, String il_8, String plan_mantenimiento_ilum, String area_trabajo_m2,
-                                       String altura_p_trabajo, String n_lamparas, String altura_p_luminaria, String color_pared, String color_piso, String estado_fisico, String fec_reg,
-                                       String user_reg) {
+    public Iluminacion_RegistroDetalle(int id_plan_trabajo_formato_reg, String tipo_iluminacion, String tipo_medicion_ilu, String larg_escrit, String anch_escrit, String num_pmedicion,
+                                       String alt_pltrabajo, String long_salon, String anch_salon, String alt_pltrabajo_ilu, String const_salon, String num_min_pmedic,
+                                       String cant_iluminarias, String il_1, String il_2, String il_3, String il_4, String il_5, String il_6, String il_7, String il_8,
+                                       String plan_mantenimiento_ilum, String area_trabajo_m2, String altura_p_trabajo, String n_lamparas, String altura_p_luminaria, String color_pared,
+                                       String color_piso, String estado_fisico, String fec_reg, String user_reg) {
         this.id_plan_trabajo_formato_reg = id_plan_trabajo_formato_reg;
-        this.tipo_iluminacion_art = tipo_iluminacion_art;
-        this.tipo_iluminacion_nat = tipo_iluminacion_nat;
+        this.tipo_iluminacion = tipo_iluminacion;
+        this.tipo_medicion_ilu = tipo_medicion_ilu;
+        this.larg_escrit = larg_escrit;
+        this.anch_escrit = anch_escrit;
+        this.num_pmedicion = num_pmedicion;
+        this.alt_pltrabajo = alt_pltrabajo;
+        this.long_salon = long_salon;
+        this.anch_salon = anch_salon;
+        this.alt_pltrabajo_ilu = alt_pltrabajo_ilu;
+        this.const_salon = const_salon;
+        this.num_min_pmedic = num_min_pmedic;
         this.cant_iluminarias = cant_iluminarias;
         this.il_1 = il_1;
         this.il_2 = il_2;
@@ -60,20 +83,92 @@ public class Iluminacion_RegistroDetalle {
         this.id_plan_trabajo_formato_reg = id_plan_trabajo_formato_reg;
     }
 
-    public String getTipo_iluminacion_art() {
-        return tipo_iluminacion_art;
+    public String getTipo_iluminacion() {
+        return tipo_iluminacion;
     }
 
-    public void setTipo_iluminacion_art(String tipo_iluminacion_art) {
-        this.tipo_iluminacion_art = tipo_iluminacion_art;
+    public void setTipo_iluminacion(String tipo_iluminacion) {
+        this.tipo_iluminacion = tipo_iluminacion;
     }
 
-    public String getTipo_iluminacion_nat() {
-        return tipo_iluminacion_nat;
+    public String getTipo_medicion_ilu() {
+        return tipo_medicion_ilu;
     }
 
-    public void setTipo_iluminacion_nat(String tipo_iluminacion_nat) {
-        this.tipo_iluminacion_nat = tipo_iluminacion_nat;
+    public void setTipo_medicion_ilu(String tipo_medicion_ilu) {
+        this.tipo_medicion_ilu = tipo_medicion_ilu;
+    }
+
+    public String getLarg_escrit() {
+        return larg_escrit;
+    }
+
+    public void setLarg_escrit(String larg_escrit) {
+        this.larg_escrit = larg_escrit;
+    }
+
+    public String getAnch_escrit() {
+        return anch_escrit;
+    }
+
+    public void setAnch_escrit(String anch_escrit) {
+        this.anch_escrit = anch_escrit;
+    }
+
+    public String getNum_pmedicion() {
+        return num_pmedicion;
+    }
+
+    public void setNum_pmedicion(String num_pmedicion) {
+        this.num_pmedicion = num_pmedicion;
+    }
+
+    public String getAlt_pltrabajo() {
+        return alt_pltrabajo;
+    }
+
+    public void setAlt_pltrabajo(String alt_pltrabajo) {
+        this.alt_pltrabajo = alt_pltrabajo;
+    }
+
+    public String getLong_salon() {
+        return long_salon;
+    }
+
+    public void setLong_salon(String long_salon) {
+        this.long_salon = long_salon;
+    }
+
+    public String getAnch_salon() {
+        return anch_salon;
+    }
+
+    public void setAnch_salon(String anch_salon) {
+        this.anch_salon = anch_salon;
+    }
+
+    public String getAlt_pltrabajo_ilu() {
+        return alt_pltrabajo_ilu;
+    }
+
+    public void setAlt_pltrabajo_ilu(String alt_pltrabajo_ilu) {
+        this.alt_pltrabajo_ilu = alt_pltrabajo_ilu;
+    }
+
+    public String getConst_salon() {
+        return const_salon;
+    }
+
+    public void setConst_salon(String const_salon) {
+        this.const_salon = const_salon;
+    }
+
+    public String getNum_min_pmedic() {
+        return num_min_pmedic;
+    }
+
+    public void setNum_min_pmedic(String num_min_pmedic) {
+        this.num_min_pmedic = num_min_pmedic;
     }
 
     public String getCant_iluminarias() {
@@ -210,6 +305,14 @@ public class Iluminacion_RegistroDetalle {
 
     public void setEstado_fisico(String estado_fisico) {
         this.estado_fisico = estado_fisico;
+    }
+
+    public int getEstado() {
+        return estado;
+    }
+
+    public void setEstado(int estado) {
+        this.estado = estado;
     }
 
     public String getFec_reg() {
