@@ -418,6 +418,7 @@ tools:context=".VibracionFragment">
                     android:textColorHint="@color/black"
                     android:background="@drawable/style_input"
                     android:hint=" Ingrese jornada"
+                    android:inputType="number|numberDecimal"
                     android:textColor="@color/black"
                     android:textSize="15sp"
                     android:paddingLeft="8dp"/>
@@ -441,6 +442,7 @@ tools:context=".VibracionFragment">
                     android:textColorHint="@color/black"
                     android:background="@drawable/style_input"
                     android:hint=" Ingrese tiempo"
+                    android:inputType="number|numberDecimal"
                     android:textSize="15sp"
                     android:paddingLeft="8dp"
                     android:textColor="@color/black" />
@@ -918,6 +920,7 @@ tools:context=".VibracionFragment">
                         android:text="Fuente generadora de vibracion"
                         android:textColor="@color/black"
                         android:textSize="12sp" />
+
                     <EditText
                         android:id="@+id/txt_fuenteGeneradora"
                         android:layout_width="match_parent"
@@ -930,6 +933,7 @@ tools:context=".VibracionFragment">
                         android:textColor="@color/black"
                         android:textColorHint="@color/black"
                         android:textSize="15sp" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -939,6 +943,7 @@ tools:context=".VibracionFragment">
                         android:text="Descripcion de la fuente de vibracion"
                         android:textColor="@color/black"
                         android:textSize="12sp" />
+
                     <EditText
                         android:id="@+id/txt_descripcionFuente"
                         android:layout_width="match_parent"
@@ -951,6 +956,7 @@ tools:context=".VibracionFragment">
                         android:textColor="@color/black"
                         android:textColorHint="@color/black"
                         android:textSize="15sp" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -981,9 +987,9 @@ tools:context=".VibracionFragment">
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:buttonTint="@color/purple_200"
+                            android:checked="true"
                             android:fontFamily="sans-serif-light"
                             android:text="No"
-                            android:checked="true"
                             android:textColorHint="@color/black" />
                     </RadioGroup>
 
@@ -1008,20 +1014,20 @@ tools:context=".VibracionFragment">
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:layout_weight="1"
-                                android:text="Nombre de Control"
-                                android:textSize="12dp"
                                 android:fontFamily="sans-serif-light"
-                                android:textColor="@color/black" />
+                                android:text="Nombre de Control"
+                                android:textColor="@color/black"
+                                android:textSize="12dp" />
 
                             <EditText
                                 android:id="@+id/txt_nombreControl"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
                                 android:background="@drawable/style_input"
                                 android:hint="Digite"
-                                android:layout_marginTop="5dp"
-                                android:textSize="15sp"
-                                android:paddingLeft="8dp"/>
+                                android:paddingLeft="8dp"
+                                android:textSize="15sp" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
 
@@ -1029,8 +1035,8 @@ tools:context=".VibracionFragment">
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Control administrativo"
                         android:fontFamily="sans-serif-light"
+                        android:text="Control administrativo"
                         android:textColor="@color/black"
                         android:textSize="12dp" />
 
@@ -1054,9 +1060,9 @@ tools:context=".VibracionFragment">
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:buttonTint="@color/purple_200"
+                            android:checked="true"
                             android:fontFamily="sans-serif-light"
                             android:text="No"
-                            android:checked="true"
                             android:textColorHint="@color/black" />
                     </RadioGroup>
 
@@ -1113,8 +1119,8 @@ tools:context=".VibracionFragment">
                                             android:id="@+id/radioEppNo"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="No"
-                                            android:checked="true"/>
+                                            android:checked="true"
+                                            android:text="No" />
                                     </RadioGroup>
                                 </LinearLayout>
 
@@ -1149,8 +1155,8 @@ tools:context=".VibracionFragment">
                                             android:id="@+id/radioAdminExpoNo"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="No"
-                                            android:checked="true"/>
+                                            android:checked="true"
+                                            android:text="No" />
                                     </RadioGroup>
                                 </LinearLayout>
                             </LinearLayout>
@@ -1192,10 +1198,11 @@ tools:context=".VibracionFragment">
                                             android:id="@+id/radioRotacionNo"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="No"
-                                            android:checked="true"/>
+                                            android:checked="true"
+                                            android:text="No" />
                                     </RadioGroup>
                                 </LinearLayout>
+
                                 <LinearLayout
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
@@ -1226,6 +1233,7 @@ tools:context=".VibracionFragment">
 
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -1235,6 +1243,7 @@ tools:context=".VibracionFragment">
                         android:text="Epp's"
                         android:textColor="@color/black"
                         android:textSize="12sp" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -1245,49 +1254,52 @@ tools:context=".VibracionFragment">
                             android:id="@+id/check_botas"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:buttonTint="@color/teal_200"
                             android:checked="false"
-                            android:textSize="15sp"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Botas"
                             android:textColor="@color/black"
                             android:textColorHint="@color/black"
-                            android:fontFamily="sans-serif-light"
-                            android:buttonTint="@color/teal_200"
-                            android:text="Botas" />
+                            android:textSize="15sp" />
+
                         <CheckBox
                             android:id="@+id/check_guantes"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:buttonTint="@color/purple_200"
                             android:checked="false"
-                            android:textSize="15sp"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Guantes"
                             android:textColor="@color/black"
                             android:textColorHint="@color/black"
-                            android:fontFamily="sans-serif-light"
-                            android:buttonTint="@color/purple_200"
-                            android:text="Guantes" />
+                            android:textSize="15sp" />
+
                         <CheckBox
                             android:id="@+id/check_casco"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:buttonTint="@color/teal_200"
                             android:checked="false"
-                            android:textSize="15sp"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Casco"
                             android:textColor="@color/black"
                             android:textColorHint="@color/black"
-                            android:fontFamily="sans-serif-light"
-                            android:buttonTint="@color/teal_200"
-                            android:text="Casco" />
+                            android:textSize="15sp" />
 
                         <CheckBox
                             android:id="@+id/check_proteccionAudi"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:buttonTint="@color/purple_200"
                             android:checked="false"
-                            android:textSize="15sp"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Proteccion Auditiva"
                             android:textColor="@color/black"
                             android:textColorHint="@color/black"
-                            android:fontFamily="sans-serif-light"
-                            android:buttonTint="@color/purple_200"
-                            android:text="Proteccion Auditiva" />
+                            android:textSize="15sp" />
 
                     </LinearLayout>
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -1300,25 +1312,26 @@ tools:context=".VibracionFragment">
                         android:id="@+id/txt_OtrosAdministrativo"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
                         android:background="@drawable/style_input"
-                        android:hint=" Digite"
-                        android:textSize="15sp"
                         android:fontFamily="sans-serif-light"
+                        android:hint=" Digite"
+                        android:paddingLeft="8dp"
                         android:textColor="@color/black"
                         android:textColorHint="@color/black"
-                        android:paddingLeft="8dp"
-                        android:layout_marginTop="5dp"/>
+                        android:textSize="15sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
                         android:layout_marginLeft="12dp"
                         android:layout_marginTop="20dp"
-                        android:layout_gravity="center_horizontal"
                         android:fontFamily="sans-serif-light"
                         android:text="Resultados del Monitoreo"
                         android:textColor="@color/generic_color"
                         android:textSize="19sp" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -1328,6 +1341,7 @@ tools:context=".VibracionFragment">
                         android:text="X"
                         android:textColor="@color/black"
                         android:textSize="12sp" />
+
                     <EditText
                         android:id="@+id/txt_x"
                         android:layout_width="match_parent"
@@ -1340,6 +1354,7 @@ tools:context=".VibracionFragment">
                         android:textColor="@color/black"
                         android:textColorHint="@color/black"
                         android:textSize="15sp" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -1349,6 +1364,7 @@ tools:context=".VibracionFragment">
                         android:text="Y"
                         android:textColor="@color/black"
                         android:textSize="12sp" />
+
                     <EditText
                         android:id="@+id/txt_y"
                         android:layout_width="match_parent"
@@ -1361,6 +1377,7 @@ tools:context=".VibracionFragment">
                         android:textColor="@color/black"
                         android:textColorHint="@color/black"
                         android:textSize="15sp" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -1370,6 +1387,7 @@ tools:context=".VibracionFragment">
                         android:text="Z"
                         android:textColor="@color/black"
                         android:textSize="12sp" />
+
                     <EditText
                         android:id="@+id/txt_z"
                         android:layout_width="match_parent"

@@ -1473,92 +1473,6 @@
                             android:textColor="@color/black"
                             android:textSize="12sp" />
 
-
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="12dp"
-                            android:layout_marginTop="20dp"
-                            android:layout_gravity="center_horizontal"
-                            android:fontFamily="sans-serif-light"
-                            android:text="Vestimenta o Indumentaria del personal evaluado"
-                            android:textColor="@color/generic_color"
-                            android:textSize="19sp" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="2dp"
-                            android:orientation="vertical">
-
-                            <CheckBox
-                                android:id="@+id/check_casco"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:checked="false"
-                                android:textSize="15sp"
-                                android:textColor="@color/black"
-                                android:textColorHint="@color/black"
-                                android:fontFamily="sans-serif-light"
-                                android:buttonTint="@color/purple_200"
-                                android:text="casco" />
-                            <CheckBox
-                                android:id="@+id/check_lentesOscuros"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:checked="false"
-                                android:textSize="15sp"
-                                android:textColor="@color/black"
-                                android:textColorHint="@color/black"
-                                android:fontFamily="sans-serif-light"
-                                android:buttonTint="@color/teal_200"
-                                android:text="Lentes oscuros" />
-                            <CheckBox
-                                android:id="@+id/check_cubreNuca"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:checked="false"
-                                android:textSize="15sp"
-                                android:textColor="@color/black"
-                                android:textColorHint="@color/black"
-                                android:fontFamily="sans-serif-light"
-                                android:buttonTint="@color/teal_200"
-                                android:text="Cubre nuca" />
-                            <CheckBox
-                                android:id="@+id/check_gorroSombrero"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:checked="false"
-                                android:textSize="15sp"
-                                android:textColor="@color/black"
-                                android:textColorHint="@color/black"
-                                android:fontFamily="sans-serif-light"
-                                android:buttonTint="@color/teal_200"
-                                android:text="Gorro o Sombrero ala ancha" />
-
-                        </LinearLayout>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:layout_weight="1"
-                            android:fontFamily="sans-serif-light"
-                            android:text="Otros"
-                            android:textColor="@color/black"
-                            android:textSize="12sp" />
-                        <EditText
-                            android:id="@+id/txt_otrosVestimenta"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:background="@drawable/style_input"
-                            android:fontFamily="sans-serif-light"
-                            android:hint="Digite"
-                            android:paddingLeft="8dp"
-                            android:textColor="@color/black"
-                            android:textColorHint="@color/black"
-                            android:textSize="15sp" />
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -1594,82 +1508,302 @@
                         android:gravity="center_vertical"
                         android:orientation="vertical">
                         <!-- Primera Fila -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="12dp"
+                            android:layout_marginTop="20dp"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Lentes"
+                            android:textColor="@color/generic_color"
+                            android:textSize="15sp" />
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginTop="10dp">
+                            android:layout_marginTop="10dp"
+                            android:orientation="horizontal">
+
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:orientation="vertical">
+
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Lentes con protector de brillo:"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_weight="1"
                                     android:fontFamily="sans-serif-light"
+                                    android:text="Con protector de brillo"
                                     android:textColor="@color/black"
-                                    android:textSize="12sp"/>
+                                    android:textSize="12dp" />
 
-                                <Spinner
-                                    android:id="@+id/spn_proteccionBrillo"
-                                    android:layout_width="match_parent"
+                                <RadioGroup
+                                    android:id="@+id/radioGroupProteccionBrillo"
+                                    android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:background="@drawable/style_input"
-                                    android:layout_marginTop="5dp"/>
-                                <!--android:onItemSelected="Equipo_Vibracion"-->
+                                    android:orientation="horizontal">
+
+                                    <RadioButton
+                                        android:id="@+id/radioProtBrilloSi"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:buttonTint="@color/teal_200"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Sí"
+                                        android:textColorHint="@color/black" />
+
+                                    <RadioButton
+                                        android:id="@+id/radioProtBrilloNo"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:buttonTint="@color/purple_200"
+                                        android:checked="true"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="No"
+                                        android:textColorHint="@color/black" />
+                                </RadioGroup>
 
                             </LinearLayout>
                             <!-- ... Otros elementos similares ... -->
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
                                 android:layout_weight="1"
-                                android:orientation="vertical"
-                                android:layout_marginLeft="15dp">
+                                android:orientation="vertical">
+
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Con protección lateral:"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_weight="1"
                                     android:fontFamily="sans-serif-light"
+                                    android:text="Con proteccion lateral"
                                     android:textColor="@color/black"
-                                    android:textSize="12sp"/>
-                                <Spinner
-                                    android:id="@+id/spn_proteccionLateral"
-                                    android:layout_width="match_parent"
+                                    android:textSize="12dp" />
+
+                                <RadioGroup
+                                    android:id="@+id/radioGroupProteccionLateral"
+                                    android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:background="@drawable/style_input"
-                                    android:layout_marginTop="5dp"/>
+                                    android:orientation="horizontal">
+
+                                    <RadioButton
+                                        android:id="@+id/radioProtLateralSi"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:buttonTint="@color/teal_200"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Sí"
+                                        android:textColorHint="@color/black" />
+
+                                    <RadioButton
+                                        android:id="@+id/radioProtLateralNo"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:buttonTint="@color/purple_200"
+                                        android:checked="true"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="No"
+                                        android:textColorHint="@color/black" />
+                                </RadioGroup>
                             </LinearLayout>
+
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
                                 android:layout_weight="1"
-                                android:orientation="vertical"
-                                android:layout_marginLeft="15dp">
+                                android:orientation="vertical">
+
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Gorro:"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_weight="1"
                                     android:fontFamily="sans-serif-light"
+                                    android:text="Lentes Oscuros"
                                     android:textColor="@color/black"
-                                    android:textSize="12sp"/>
-                                <Spinner
-                                    android:id="@+id/spn_gorro"
-                                    android:layout_width="match_parent"
+                                    android:textSize="12dp" />
+
+                                <RadioGroup
+                                    android:id="@+id/radioGroupLentesOscuroo"
+                                    android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:background="@drawable/style_input"
-                                    android:layout_marginTop="5dp"/>
+                                    android:orientation="horizontal">
+
+                                    <RadioButton
+                                        android:id="@+id/radioLentesOscSi"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:buttonTint="@color/teal_200"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Sí"
+                                        android:textColorHint="@color/black" />
+
+                                    <RadioButton
+                                        android:id="@+id/radioLentesOscNo"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:buttonTint="@color/purple_200"
+                                        android:checked="true"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="No"
+                                        android:textColorHint="@color/black" />
+                                </RadioGroup>
                             </LinearLayout>
 
                         </LinearLayout>
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/blanco"
+                            android:layout_marginTop="20dp"/>
                         <!-- Segunda Fila -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="12dp"
+                            android:layout_marginTop="20dp"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Ropa"
+                            android:textColor="@color/generic_color"
+                            android:textSize="15sp" />
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginTop="10dp">
+                            android:layout_marginTop="10dp"
+                            android:orientation="horizontal">
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_weight="1"
+                                    android:fontFamily="sans-serif-light"
+                                    android:text="Cuenta con certificacion"
+                                    android:textColor="@color/black"
+                                    android:textSize="12dp" />
+                                <RadioGroup
+                                    android:id="@+id/radioGroupCertificacion"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+
+                                    <RadioButton
+                                        android:id="@+id/radioCertificacionSi"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:buttonTint="@color/teal_200"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Sí"
+                                        android:textColorHint="@color/black" />
+
+                                    <RadioButton
+                                        android:id="@+id/radioCeritificacacionNo"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:buttonTint="@color/purple_200"
+                                        android:checked="true"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="No"
+                                        android:textColorHint="@color/black" />
+                                </RadioGroup>
+
+                            </LinearLayout>
+                            <!-- ... Otros elementos similares ... -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_weight="1"
+                                    android:fontFamily="sans-serif-light"
+                                    android:text="Color oscuro"
+                                    android:textColor="@color/black"
+                                    android:textSize="12dp" />
+                                <RadioGroup
+                                    android:id="@+id/radioGroupColorOscuro"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+
+                                    <RadioButton
+                                        android:id="@+id/radioColorOscuroSi"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:buttonTint="@color/teal_200"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Sí"
+                                        android:textColorHint="@color/black" />
+
+                                    <RadioButton
+                                        android:id="@+id/radioColorOscuroNo"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:buttonTint="@color/purple_200"
+                                        android:checked="true"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="No"
+                                        android:textColorHint="@color/black" />
+                                </RadioGroup>
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_weight="1"
+                                    android:fontFamily="sans-serif-light"
+                                    android:text="Manga larga"
+                                    android:textColor="@color/black"
+                                    android:textSize="12dp" />
+
+                                <RadioGroup
+                                    android:id="@+id/radioGroupMangaLarga"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+
+                                    <RadioButton
+                                        android:id="@+id/radioMangaLargaSi"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:buttonTint="@color/teal_200"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Sí"
+                                        android:textColorHint="@color/black" />
+
+                                    <RadioButton
+                                        android:id="@+id/radioMangaLargaNo"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:buttonTint="@color/purple_200"
+                                        android:checked="true"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="No"
+                                        android:textColorHint="@color/black" />
+                                </RadioGroup>
+                            </LinearLayout>
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -1678,276 +1812,474 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Casco:"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_weight="1"
                                     android:fontFamily="sans-serif-light"
+                                    android:text="Trama gruesa"
                                     android:textColor="@color/black"
-                                    android:textSize="12sp"/>
-
-                                <Spinner
-                                    android:id="@+id/spn_casco"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:background="@drawable/style_input"
-                                    android:layout_marginTop="5dp"/>
-                                <!--android:onItemSelected="Equipo_Vibracion"-->
-
-                            </LinearLayout>
-                            <!-- ... Otros elementos similares ... -->
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical"
-                                android:layout_marginLeft="15dp">
-                                <TextView
+                                    android:textSize="12dp" />
+                                <RadioGroup
+                                    android:id="@+id/radioGroupTramaGruesa"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Ninguno:"
-                                    android:fontFamily="sans-serif-light"
-                                    android:textColor="@color/black"
-                                    android:textSize="12sp"/>
-                                <Spinner
-                                    android:id="@+id/spn_ninguno"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:background="@drawable/style_input"
-                                    android:layout_marginTop="5dp"/>
+                                    android:orientation="horizontal">
+                                    <RadioButton
+                                        android:id="@+id/radioTramaGruesaSi"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:buttonTint="@color/teal_200"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Sí"
+                                        android:textColorHint="@color/black" />
+                                    <RadioButton
+                                        android:id="@+id/radiTramaGruesaNo"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:buttonTint="@color/purple_200"
+                                        android:checked="true"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="No"
+                                        android:textColorHint="@color/black" />
+                                </RadioGroup>
                             </LinearLayout>
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical"
-                                android:layout_marginLeft="15dp">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Protección tipo legionario:"
-                                    android:fontFamily="sans-serif-light"
-                                    android:textColor="@color/black"
-                                    android:textSize="12sp"/>
-                                <Spinner
-                                    android:id="@+id/spn_proteccionLegionario"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:background="@drawable/style_input"
-                                    android:layout_marginTop="5dp"/>
-                            </LinearLayout>
-
                         </LinearLayout>
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/blanco"
+                            android:layout_marginTop="20dp"/>
                         <!-- Tercera Fila -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="12dp"
+                            android:layout_marginTop="20dp"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Gorro"
+                            android:textColor="@color/generic_color"
+                            android:textSize="15sp" />
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginTop="10dp">
+                            android:layout_marginTop="10dp"
+                            android:orientation="horizontal">
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:orientation="vertical">
+
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Protección con ala ancha:"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_weight="1"
                                     android:fontFamily="sans-serif-light"
+                                    android:text="Utiliza gorro"
                                     android:textColor="@color/black"
-                                    android:textSize="12sp"/>
-
-                                <Spinner
-                                    android:id="@+id/spn_proteccionAlaAncha"
-                                    android:layout_width="match_parent"
+                                    android:textSize="12dp" />
+                                <RadioGroup
+                                    android:id="@+id/radioGroupUtilGorro"
+                                    android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:background="@drawable/style_input"
-                                    android:layout_marginTop="5dp"/>
-                                <!--android:onItemSelected="Equipo_Vibracion"-->
+                                    android:orientation="horizontal">
+
+                                    <RadioButton
+                                        android:id="@+id/radioUtilGorroSi"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:buttonTint="@color/teal_200"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Sí"
+                                        android:textColorHint="@color/black" />
+
+                                    <RadioButton
+                                        android:id="@+id/radioUtilGorroNo"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:buttonTint="@color/purple_200"
+                                        android:checked="true"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="No"
+                                        android:textColorHint="@color/black" />
+                                </RadioGroup>
 
                             </LinearLayout>
-                            <!-- ... Otros elementos similares ... -->
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
                                 android:layout_weight="1"
-                                android:orientation="vertical"
-                                android:layout_marginLeft="15dp">
+                                android:orientation="vertical">
+
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Ropa: Cuenta con certificación:"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_weight="1"
                                     android:fontFamily="sans-serif-light"
+                                    android:text="Proteción tipo Legionario"
                                     android:textColor="@color/black"
-                                    android:textSize="12sp"/>
-                                <Spinner
-                                    android:id="@+id/spn_ropa"
-                                    android:layout_width="match_parent"
+                                    android:textSize="12dp" />
+                                <RadioGroup
+                                    android:id="@+id/radioGroupProtLegionario"
+                                    android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:background="@drawable/style_input"
-                                    android:layout_marginTop="5dp"/>
+                                    android:orientation="horizontal">
+
+                                    <RadioButton
+                                        android:id="@+id/radioProtLegionarioSi"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:buttonTint="@color/teal_200"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Sí"
+                                        android:textColorHint="@color/black" />
+
+                                    <RadioButton
+                                        android:id="@+id/radioProtLegionarioNo"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:buttonTint="@color/purple_200"
+                                        android:checked="true"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="No"
+                                        android:textColorHint="@color/black" />
+                                </RadioGroup>
                             </LinearLayout>
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
                                 android:layout_weight="1"
-                                android:orientation="vertical"
-                                android:layout_marginLeft="15dp">
+                                android:orientation="vertical">
+
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Color Oscuro:"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_weight="1"
                                     android:fontFamily="sans-serif-light"
+                                    android:text="Proteccion con ala ancha"
                                     android:textColor="@color/black"
-                                    android:textSize="12sp"/>
-                                <Spinner
-                                    android:id="@+id/spn_colorOdcuro"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:background="@drawable/style_input"
-                                    android:layout_marginTop="5dp"/>
-                            </LinearLayout>
+                                    android:textSize="12dp" />
 
+                                <RadioGroup
+                                    android:id="@+id/radioGroupAlaAncha"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+
+                                    <RadioButton
+                                        android:id="@+id/radioAlaAnchaSi"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:buttonTint="@color/teal_200"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Sí"
+                                        android:textColorHint="@color/black" />
+
+                                    <RadioButton
+                                        android:id="@+id/radioAlaAnchaNo"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:buttonTint="@color/purple_200"
+                                        android:checked="true"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="No"
+                                        android:textColorHint="@color/black" />
+                                </RadioGroup>
+                            </LinearLayout>
                         </LinearLayout>
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/blanco"
+                            android:layout_marginTop="20dp"/>
                         <!-- Cuarta Fila -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="12dp"
+                            android:layout_marginTop="20dp"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Casco"
+                            android:textColor="@color/generic_color"
+                            android:textSize="15sp" />
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginTop="10dp">
+                            android:layout_marginTop="10dp"
+                            android:orientation="horizontal">
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:orientation="vertical">
+
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Manga Larga:"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_weight="1"
                                     android:fontFamily="sans-serif-light"
+                                    android:text="Utiliza casco"
                                     android:textColor="@color/black"
-                                    android:textSize="12sp"/>
-
-                                <Spinner
-                                    android:id="@+id/spn_mangaLarga"
-                                    android:layout_width="match_parent"
+                                    android:textSize="12dp" />
+                                <RadioGroup
+                                    android:id="@+id/radioGroupUtilCasco"
+                                    android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:background="@drawable/style_input"
-                                    android:layout_marginTop="5dp"/>
-                                <!--android:onItemSelected="Equipo_Vibracion"-->
+                                    android:orientation="horizontal">
+
+                                    <RadioButton
+                                        android:id="@+id/radioUtilCascoSi"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:buttonTint="@color/teal_200"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Sí"
+                                        android:textColorHint="@color/black" />
+
+                                    <RadioButton
+                                        android:id="@+id/radioUtilCascoNo"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:buttonTint="@color/purple_200"
+                                        android:checked="true"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="No"
+                                        android:textColorHint="@color/black" />
+                                </RadioGroup>
 
                             </LinearLayout>
-                            <!-- ... Otros elementos similares ... -->
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
                                 android:layout_weight="1"
-                                android:orientation="vertical"
-                                android:layout_marginLeft="15dp">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Trama gruesa:"
-                                    android:fontFamily="sans-serif-light"
-                                    android:textColor="@color/black"
-                                    android:textSize="12sp"/>
-                                <Spinner
-                                    android:id="@+id/spn_tramaGruesa"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:background="@drawable/style_input"
-                                    android:layout_marginTop="5dp"/>
-                            </LinearLayout>
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical"
-                                android:layout_marginLeft="15dp">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Utiliza FPS:"
-                                    android:fontFamily="sans-serif-light"
-                                    android:textColor="@color/black"
-                                    android:textSize="12sp"/>
-                                <Spinner
-                                    android:id="@+id/spn_utilizaEpps"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:background="@drawable/style_input"
-                                    android:layout_marginTop="5dp"/>
-                            </LinearLayout>
+                                android:orientation="vertical">
 
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_weight="1"
+                                    android:fontFamily="sans-serif-light"
+                                    android:text="Con cubre nuca"
+                                    android:textColor="@color/black"
+                                    android:textSize="12dp" />
+                                <RadioGroup
+                                    android:id="@+id/radioGroupCubreNuca"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+
+                                    <RadioButton
+                                        android:id="@+id/radioCubreNucaSi"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:buttonTint="@color/teal_200"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Sí"
+                                        android:textColorHint="@color/black" />
+
+                                    <RadioButton
+                                        android:id="@+id/radioCubreNucaNo"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:buttonTint="@color/purple_200"
+                                        android:checked="true"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="No"
+                                        android:textColorHint="@color/black" />
+                                </RadioGroup>
+                            </LinearLayout>
                         </LinearLayout>
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/blanco"
+                            android:layout_marginTop="20dp"/>
                         <!-- Quinta Fila -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="12dp"
+                            android:layout_marginTop="20dp"
+                            android:fontFamily="sans-serif-light"
+                            android:text="FPS"
+                            android:textColor="@color/generic_color"
+                            android:textSize="15sp" />
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginTop="10dp">
+                            android:layout_marginTop="10dp"
+                            android:orientation="horizontal">
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:orientation="vertical">
+
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Cuentan con una guía de uso del FPS:"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_weight="1"
                                     android:fontFamily="sans-serif-light"
+                                    android:text="Utiliza FPS"
                                     android:textColor="@color/black"
-                                    android:textSize="12sp"/>
-
-                                <Spinner
-                                    android:id="@+id/spn_guiaUsoEpp"
-                                    android:layout_width="match_parent"
+                                    android:textSize="12dp" />
+                                <RadioGroup
+                                    android:id="@+id/radioGroupUtilFPS"
+                                    android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:background="@drawable/style_input"
-                                    android:layout_marginTop="5dp"/>
-                                <!--android:onItemSelected="Equipo_Vibracion"-->
+                                    android:orientation="horizontal">
+
+                                    <RadioButton
+                                        android:id="@+id/radioUtilFPSSi"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:buttonTint="@color/teal_200"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Sí"
+                                        android:textColorHint="@color/black" />
+
+                                    <RadioButton
+                                        android:id="@+id/radioUtilFPSNo"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:buttonTint="@color/purple_200"
+                                        android:checked="true"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="No"
+                                        android:textColorHint="@color/black" />
+                                </RadioGroup>
 
                             </LinearLayout>
-                            <!-- ... Otros elementos similares ... -->
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
                                 android:layout_weight="1"
-                                android:orientation="vertical"
-                                android:layout_marginLeft="15dp">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Frecuencia de aplicación: cada 2-3 horas:"
-                                    android:fontFamily="sans-serif-light"
-                                    android:textColor="@color/black"
-                                    android:textSize="12sp"/>
-                                <Spinner
-                                    android:id="@+id/spn_frecuencia2horas"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:background="@drawable/style_input"
-                                    android:layout_marginTop="5dp"/>
-                            </LinearLayout>
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical"
-                                android:layout_marginLeft="15dp">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Cada 30 minutos - 1 hora:"
-                                    android:fontFamily="sans-serif-light"
-                                    android:textColor="@color/black"
-                                    android:textSize="12sp"/>
-                                <Spinner
-                                    android:id="@+id/spn_frecuencia30min"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:background="@drawable/style_input"
-                                    android:layout_marginTop="5dp"/>
-                            </LinearLayout>
+                                android:orientation="vertical">
 
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_weight="1"
+                                    android:fontFamily="sans-serif-light"
+                                    android:text="Cuentan con una guia de uso del FPS"
+                                    android:textColor="@color/black"
+                                    android:textSize="12dp" />
+                                <RadioGroup
+                                    android:id="@+id/radioGroupGuiaFPS"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+
+                                    <RadioButton
+                                        android:id="@+id/radiGuiaFPSSi"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:buttonTint="@color/teal_200"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Sí"
+                                        android:textColorHint="@color/black" />
+
+                                    <RadioButton
+                                        android:id="@+id/radioGuiaFPSNo"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:buttonTint="@color/purple_200"
+                                        android:checked="true"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="No"
+                                        android:textColorHint="@color/black" />
+                                </RadioGroup>
+                            </LinearLayout>
                         </LinearLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_weight="1"
+                                android:fontFamily="sans-serif-light"
+                                android:text="Frecuencia de aplicacion"
+                                android:textColor="@color/black"
+                                android:textSize="12dp" />
+
+                            <RadioGroup
+                                android:id="@+id/radioGroupFrecuenciaAplicacion"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <RadioButton
+                                    android:id="@+id/radioFrecuenciaAplicacionSi"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:buttonTint="@color/teal_200"
+                                    android:fontFamily="sans-serif-light"
+                                    android:text="Cada 2 - 3 horas"
+                                    android:tag="1"
+                                    android:checked="true"
+                                    android:textColorHint="@color/black" />
+
+                                <RadioButton
+                                    android:id="@+id/radioFrecuenciaAplicacionNo"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:buttonTint="@color/purple_200"
+                                    android:checked="false"
+                                    android:fontFamily="sans-serif-light"
+                                    android:text="Cada 30 min - 1 hora"
+                                    android:tag="2"
+                                    android:textColorHint="@color/black" />
+                                <RadioButton
+                                    android:id="@+id/radio_otraFrecuencia"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:buttonTint="@android:color/holo_orange_dark"
+                                    android:checked="false"
+                                    android:fontFamily="sans-serif-light"
+                                    android:text="Otro"
+                                    android:tag="2"
+                                    android:textColorHint="@color/black" />
+                            </RadioGroup>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Otra frecuencia:"
+                            android:textColor="@color/black"
+                            android:textSize="12sp"
+                            android:enabled="false"/>
+
+                        <EditText
+                            android:id="@+id/txt_otraFrecuencia"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginLeft="20dp"
+                            android:background="@drawable/style_input"
+                            android:fontFamily="sans-serif-light"
+                            android:hint="Digite"
+                            android:paddingLeft="8dp"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="15sp"
+                            android:enabled="false"/>
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/blanco"
+                            android:layout_marginTop="20dp"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -1958,6 +2290,7 @@
                             android:text="Otros"
                             android:textColor="@color/black"
                             android:textSize="12sp" />
+
                         <EditText
                             android:id="@+id/txt_otrosEpps"
                             android:layout_width="match_parent"

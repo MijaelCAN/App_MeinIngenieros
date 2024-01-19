@@ -197,7 +197,7 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
                 ){
                     String valorEquipoMed = spn_equipoMedicion.getText().toString();
                     String valorHoraVerificacion = tv_horaVerificacion.getText().toString();
-                    String valorGroupVerifi = validar.getValor2(radioGroupVerificacion,rootView);
+                    int valorGroupVerifi = validar.getValor2(radioGroupVerificacion,rootView);
 
                     String valorFechaMoni = tv_fechaMonitoreo.getText().toString();
                     String valorHoraInicioMoni = tv_horaInicioMoni.getText().toString();
@@ -254,7 +254,7 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
                             id_colaborador,
                             nuevo.getUsuario_nombres(),
                             valorHoraVerificacion,
-                            valorGroupVerifi,
+                            "" +valorGroupVerifi,
                             valorFechaMoni,
                             valorHoraInicioMoni,
                             valorHoraFinalMoni,

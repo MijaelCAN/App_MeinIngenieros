@@ -24,7 +24,7 @@ public class Dosimetria_Registro {
     private String hora_situ;
     private String nivel;
     private String variacion;
-    private Date fec_monitoreo;
+    private String fec_monitoreo;
     private String hora_inicial;
     private String hora_final;
     private String tiempo_exposicion;
@@ -49,7 +49,7 @@ public class Dosimetria_Registro {
     private String molestia_oido;
     private String enfermedad_oido;
     private String detalle_enf_oido;
-    private String fecha_ultimo_examen;
+    private String fecha_ultimo_examen; // VALOR REFERENCIAL
     private String mes_ultimo_examen;
     private String anio_ultimo_examen;
     private String ctrl_ingenieria;
@@ -90,7 +90,7 @@ public class Dosimetria_Registro {
         this.var1 = var1;
     }
 
-    public Dosimetria_Registro(int id, String cod_formato, String id_formato, String id_plan_trabajo, String id_pt_formato, String cod_equipo1, String nom_equipo1, String cod_equipo2, String nom_equipo2, String serie_eq1, String serie_eq2, String id_equipo1, String id_equipo2, String id_analista, String nom_analista, String hora_situ, String nivel, String variacion, Date fec_monitoreo, String hora_inicial, String hora_final, String tiempo_exposicion, String jornada, String tipo_doc_trabajador, String num_doc_trabajador, String nom_trabajador, String puesto_trabajador, String area_trabajo, String actividades_realizadas, String edad_trabajador, String ch_ruido_externo, String ch_ruido_antiguo, String ch_ruido_generado_por, String ruido_generado_por, String otro_ruido, String hora_trabajo, String regimen_laboral, String horario_refrigerio, String anio_ocu_cargo, String mes_ocu_cargo, String molestia_oido, String enfermedad_oido, String detalle_enf_oido, String fecha_ultimo_examen, String mes_ultimo_examen, String anio_ultimo_examen, String ctrl_ingenieria, String aislamiento, String techos, String cabinas, String orientacion, String cerramiento, String otro_ingenieria, String ctrl_administrativo, String capacitacion, String senializacion_precion, String senializacion_epp, String rotacion, String adm_tiempo_expo, String otro_administrativo, String tapones_au, String marca_tapones_audi, String modelo_tapones_audi, String nrr_tapones_audi, String orejereas, String marca_orejeras, String modelo_orejeras, String nrr_orejeras, String leq_dba, String lpico_dba, String lmax_dba, String lmin_dba, String observacion, String estado_resultado, String user_reg, String fec_reg, String var1) {
+    public Dosimetria_Registro(int id, String cod_formato, String id_formato, String id_plan_trabajo, String id_pt_formato, String cod_equipo1, String nom_equipo1, String cod_equipo2, String nom_equipo2, String serie_eq1, String serie_eq2, String id_equipo1, String id_equipo2, String id_analista, String nom_analista, String hora_situ, String nivel, String variacion, String fec_monitoreo, String hora_inicial, String hora_final, String tiempo_exposicion, String jornada, String tipo_doc_trabajador, String num_doc_trabajador, String nom_trabajador, String puesto_trabajador, String area_trabajo, String actividades_realizadas, String edad_trabajador, String ch_ruido_externo, String ch_ruido_antiguo, String ch_ruido_generado_por, String ruido_generado_por, String otro_ruido, String hora_trabajo, String regimen_laboral, String horario_refrigerio, String anio_ocu_cargo, String mes_ocu_cargo, String molestia_oido, String enfermedad_oido, String detalle_enf_oido, String fecha_ultimo_examen, String mes_ultimo_examen, String anio_ultimo_examen, String ctrl_ingenieria, String aislamiento, String techos, String cabinas, String orientacion, String cerramiento, String otro_ingenieria, String ctrl_administrativo, String capacitacion, String senializacion_precion, String senializacion_epp, String rotacion, String adm_tiempo_expo, String otro_administrativo, String tapones_au, String marca_tapones_audi, String modelo_tapones_audi, String nrr_tapones_audi, String orejereas, String marca_orejeras, String modelo_orejeras, String nrr_orejeras, String leq_dba, String lpico_dba, String lmax_dba, String lmin_dba, String observacion, String estado_resultado, String user_reg, String fec_reg, String var1) {
         this.id = id;
         this.cod_formato = cod_formato;
         this.id_formato = id_formato;
@@ -314,11 +314,11 @@ public class Dosimetria_Registro {
         this.variacion = variacion;
     }
 
-    public Date getFec_monitoreo() {
+    public String getFec_monitoreo() {
         return fec_monitoreo;
     }
 
-    public void setFec_monitoreo(Date fec_monitoreo) {
+    public void setFec_monitoreo(String fec_monitoreo) {
         this.fec_monitoreo = fec_monitoreo;
     }
 

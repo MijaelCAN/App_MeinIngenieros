@@ -190,7 +190,7 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
                     String valorTipoVibracion = spn_tipoVibracion.getSelectedItem().toString();
                     String valorEquipoUtil = spn_equipoutilizado.getText().toString();
                     String valorHoraVerif = tv_horaVerificacion.getText().toString();
-                    String valorVerificacion = validar.getValor2(radioGroupVerificacion,rootView);
+                    int valorVerificacion = validar.getValor2(radioGroupVerificacion,rootView);
                     //String valorFoto = uri.toString();
                     String valorFechaMoni = tv_fechaMonitoreo.getText().toString();
                     String valorHoraInicioMoni = tv_horaInicioMoni.getText().toString();
@@ -209,17 +209,22 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
                     String valorRegimen = spn_regimen.getSelectedItem().toString();
                     String valorFuenteGenVibra = txt_fuenteGenVibra.getText().toString();
                     String valorDescripcionFuente = txt_descFuenteGen.getText().toString();
-                    String valorGroupIng = validar.getValor2(radioGroupIng,rootView);
+                    int valorGroupIng = validar.getValor2(radioGroupIng,rootView);
                     String valorNombreControl = txt_nombreControl.getText().toString();
-                    String valorGroupAdm = validar.getValor2(radioGroupAdm,rootView);
-                    String valorGroupSeñal = validar.getValor2(radioGroupSeñal,rootView);
-                    String valorGroupCapac = validar.getValor2(radioGroupCapac, rootView);
-                    String valorGroupManten = validar.getValor2(radioGroupMante, rootView);
+                    int valorGroupAdm = validar.getValor2(radioGroupAdm,rootView);
+                    int valorGroupSeñal = validar.getValor2(radioGroupSeñal,rootView);
+                    int valorGroupCapac = validar.getValor2(radioGroupCapac, rootView);
+                    int valorGroupManten = validar.getValor2(radioGroupMante, rootView);
                     String valorFrecuencia = spn_frecuencia.getSelectedItem().toString();
-                    String valorCheckBotas = String.valueOf(check_botas.isChecked());
+
+                    /*String valorCheckBotas = String.valueOf(check_botas.isChecked());
                     String valorCheckGuantes = String.valueOf(check_guantes.isChecked());
                     String valorCheckCasco = String.valueOf(check_casco.isChecked());
-                    String valorCheckProtAudi = String.valueOf(check_proteccionAud.isChecked());
+                    String valorCheckProtAudi = String.valueOf(check_proteccionAud.isChecked());*/
+                    int valorCheckBotas = check_botas.isChecked() ? 1 : 0;
+                    int valorCheckGuantes = check_botas.isChecked() ? 1 : 0;
+                    int valorCheckCasco = check_botas.isChecked() ? 1 : 0;
+                    int valorCheckProtAudi = check_botas.isChecked() ? 1 : 0;
                     String valorOtroAdm = txt_otrosAdmin.getText().toString();
                     String valorX = txt_resulX.getText().toString();
                     String valorY = txt_resulY.getText().toString();
@@ -246,7 +251,7 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
                             id_colaborador,
                             nuevo.getUsuario_nombres(),
                             valorTipoVibracion,
-                            valorVerificacion,
+                            String.valueOf(valorVerificacion),
                             valorHoraVerif,
                             valorFechaMoni,
                             valorHoraInicioMoni,
@@ -263,12 +268,12 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
                             valorHorarioTrabajo,
                             valorRefrigerio,
                             valorRegimen,
-                            valorGroupIng,
+                            String.valueOf(valorGroupIng),
                             valorNombreControl,
-                            valorGroupAdm,
-                            valorGroupSeñal,
-                            valorGroupCapac,
-                            valorGroupManten,
+                            String.valueOf(valorGroupAdm),
+                            String.valueOf(valorGroupSeñal),
+                            String.valueOf(valorGroupCapac),
+                            String.valueOf(valorGroupManten),
                             fecha_registro,
                             id_colaborador
                     );
@@ -277,10 +282,10 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
                             valorFuenteGenVibra,
                             valorDescripcionFuente,
                             valorFrecuencia,
-                            valorCheckBotas,
-                            valorCheckGuantes,
-                            valorCheckCasco,
-                            valorCheckProtAudi,
+                            ""+valorCheckBotas,
+                            ""+valorCheckGuantes,
+                            ""+valorCheckCasco,
+                            ""+valorCheckProtAudi,
                             valorOtroAdm,
                             valorX,
                             valorY,

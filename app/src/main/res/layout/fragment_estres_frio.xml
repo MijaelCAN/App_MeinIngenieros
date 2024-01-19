@@ -155,7 +155,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Equipo de Estrés por Frío:"
+                            android:text="Equipo:"
                             android:fontFamily="sans-serif-light"
                             android:textColor="@color/black"
                             android:textSize="12dp"/>
@@ -561,7 +561,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="5dp"
                                     android:layout_weight="1"
-                                    android:background="@drawable/style_input" />
+                                    android:background="@drawable/style_spinner" />
                             </LinearLayout>
 
                             <LinearLayout
@@ -1021,7 +1021,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:layout_weight="1"
-                            android:background="@drawable/style_input" />
+                            android:background="@drawable/style_spinner" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -1800,7 +1800,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:layout_weight="1"
-                            android:background="@drawable/style_input"
+                            android:background="@drawable/style_spinner"
                             android:textSize="10sp" />
 
                         <LinearLayout
@@ -1828,7 +1828,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="5dp"
-                                    android:background="@drawable/style_input" />
+                                    android:background="@drawable/style_spinner" />
                                 <!--android:onItemSelected="Equipo_Vibracion"-->
 
                             </LinearLayout>
@@ -1853,7 +1853,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="5dp"
-                                    android:background="@drawable/style_input" />
+                                    android:background="@drawable/style_spinner" />
                             </LinearLayout>
 
                         </LinearLayout>
@@ -1882,7 +1882,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="5dp"
-                                    android:background="@drawable/style_input" />
+                                    android:background="@drawable/style_spinner" />
                                 <!--android:onItemSelected="Equipo_Vibracion"-->
 
                             </LinearLayout>
@@ -1907,7 +1907,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="5dp"
-                                    android:background="@drawable/style_input" />
+                                    android:background="@drawable/style_spinner" />
                             </LinearLayout>
 
                         </LinearLayout>
@@ -1955,7 +1955,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="5dp"
-                                    android:background="@drawable/style_input" />
+                                    android:background="@drawable/style_spinner" />
                                 <!--android:onItemSelected="Equipo_Vibracion"-->
 
                             </LinearLayout>
@@ -1980,7 +1980,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="5dp"
-                                    android:background="@drawable/style_input" />
+                                    android:background="@drawable/style_spinner" />
                             </LinearLayout>
 
                         </LinearLayout>

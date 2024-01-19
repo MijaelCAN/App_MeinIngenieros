@@ -61,10 +61,10 @@ public class RegistroFormatos {
     public String anio_ultimo_examen;
     public String ctrl_ingenieria;
     public String ctrl_administrativo;
-    public String nom_epp;
+    public String nom_epp; //no esta en la tabla general
     public String prot_auditivo;
     public String nom_ctrl_ingenieria;
-    public String nom_ctrl_admin;
+    public String nom_ctrl_admin; //pendiente
     public String aislamiento;
     public String techos;
     public String cabinas;
@@ -113,6 +113,23 @@ public class RegistroFormatos {
     public double lmin;
     public double lmax;
     public double lequi;
+
+    public double lequi_md1; //AGREGADO RECIENTEMENTE INICIO
+    public double lequi_md2;
+    public double lequi_md3;
+    public double lequi_md4;
+    public double lequi_md5;
+    public double lmax_md1;
+    public double lmax_md2;
+    public double lmax_md3;
+    public double lmax_md4;
+    public double lmax_md5;
+    public double lmin_md1;
+    public double lmin_md2;
+    public double lmin_md3;
+    public double lmin_md4;
+    public double lmin_md5;//AGREGADO RECIENTEMENTE FINAL
+
     public double lpico_dba;
     public String conformidad;
     public String eval_20p;
@@ -121,6 +138,7 @@ public class RegistroFormatos {
     public String anio_ocu_cargo;
     public String mes_ocu_cargo;
     public String cond_trab;
+    public String porc_descan;
     public String foto;
     public String resultado;
     public int estado_resultado;
@@ -131,6 +149,177 @@ public class RegistroFormatos {
     public int user_act;
     public String fec_eli;
     public int user_eli;
+
+    public RegistroFormatos(int id_plan_trabajo_formato_reg, int id_formato, String cod_registro, String cod_formato, String id_plan_trabajo, String id_pt_formato,
+                            int id_analista, String nom_analista, String cod_equipo1, String nom_equipo1, String cod_equipo2, String nom_equipo2, String cod_equipo3,
+                            String nom_equipo3, String serie_eq1, String serie_eq2, String serie_eq3, int id_equipo1, int id_equipo2, int id_equipo3, String verf_insitu,
+                            String hora_situ, String nivel, String variacion, String luz, String area_trabajo, String desc_area_trabajo, String area_trab_deta,
+                            String actividades_realizadas, int id_horario, String hora_trabajo, int n_personas, String fec_monitoreo, String hora_inicial,
+                            String tiempo_medicion, String hora_final, String v_viento, String h_relativa, String hora_jornada, String min_jornada, String hora_exposicion,
+                            String min_exposicion, String jornada, String nom_trabajador, String tipo_doc_trabajador, String num_doc_trabajador, String puesto_trabajador,
+                            int edad_trabajador, String peso_trabajador, String regimen_laboral, String horario_refrigerio, int tiempo_ocupado, String molestia_oido,
+                            String enfermedad_oido, String detalle_enf_oido, String fecha_ultimo_examen, String mes_ultimo_examen, String anio_ultimo_examen,
+                            String ctrl_ingenieria, String ctrl_administrativo, String nom_epp, String prot_auditivo, String nom_ctrl_ingenieria, String nom_ctrl_admin,
+                            String aislamiento, String techos, String cabinas, String orientacion, String cerramiento, String otro_ingenieria, String capacitacion,
+                            String senializacion_precion, String senializacion_epp, String senializacion_vibracion, String senializacion_area, String mantenimiento_vibracion,
+                            String rotacion, String aislante_detalle, String cabina_detalle, String capacitacion_detalle, String senializacion_nivel_detalle,
+                            String senializacion_epp_detalle, String rotacion_detalle, String tiempo_exposicion_detalle, String tapones_au, String marca_tapones_audi,
+                            String modelo_tapones_audi, String orejereas, String marca_orejeras, String modelo_orejeras, String nrr_orejeras, String nrr_tapones_audi,
+                            String adm_tiempo_expo, String tiempo_exposicion, String otro_administrativo, String tareas_medicion, String tarea_visual,
+                            String tipo_tarea_visual, String nivel_min_ilu, String observacion, String ch_ruido_externo, String ch_ruido_antiguo,
+                            String ch_ruido_generado_por, String ruido_generado_por, String otro_ruido, String area_req_concentr, String lim_max_permis,
+                            String tipo_medicion, String nom_tipo_medicion, double lmin, double lmax, double lequi, double lequi_md1, double lequi_md2, double lequi_md3,
+                            double lequi_md4, double lequi_md5, double lmax_md1, double lmax_md2, double lmax_md3, double lmax_md4, double lmax_md5, double lmin_md1,
+                            double lmin_md2, double lmin_md3, double lmin_md4, double lmin_md5, double lpico_dba, String conformidad, String eval_20p, String tipo_vibracion,
+                            String ubic_equip, String anio_ocu_cargo, String mes_ocu_cargo, String cond_trab,String porc_descan, String foto, String resultado, int estado_resultado,
+                            int estado, String fec_reg, int user_reg, String fec_act, int user_act, String fec_eli, int user_eli) {
+        this.id_plan_trabajo_formato_reg = id_plan_trabajo_formato_reg;
+        this.id_formato = id_formato;
+        this.cod_registro = cod_registro;
+        this.cod_formato = cod_formato;
+        this.id_plan_trabajo = id_plan_trabajo;
+        this.id_pt_formato = id_pt_formato;
+        this.id_analista = id_analista;
+        this.nom_analista = nom_analista;
+        this.cod_equipo1 = cod_equipo1;
+        this.nom_equipo1 = nom_equipo1;
+        this.cod_equipo2 = cod_equipo2;
+        this.nom_equipo2 = nom_equipo2;
+        this.cod_equipo3 = cod_equipo3;
+        this.nom_equipo3 = nom_equipo3;
+        this.serie_eq1 = serie_eq1;
+        this.serie_eq2 = serie_eq2;
+        this.serie_eq3 = serie_eq3;
+        this.id_equipo1 = id_equipo1;
+        this.id_equipo2 = id_equipo2;
+        this.id_equipo3 = id_equipo3;
+        this.verf_insitu = verf_insitu;
+        this.hora_situ = hora_situ;
+        this.nivel = nivel;
+        this.variacion = variacion;
+        this.luz = luz;
+        this.area_trabajo = area_trabajo;
+        this.desc_area_trabajo = desc_area_trabajo;
+        this.area_trab_deta = area_trab_deta;
+        this.actividades_realizadas = actividades_realizadas;
+        this.id_horario = id_horario;
+        this.hora_trabajo = hora_trabajo;
+        this.n_personas = n_personas;
+        this.fec_monitoreo = fec_monitoreo;
+        this.hora_inicial = hora_inicial;
+        this.tiempo_medicion = tiempo_medicion;
+        this.hora_final = hora_final;
+        this.v_viento = v_viento;
+        this.h_relativa = h_relativa;
+        this.hora_jornada = hora_jornada;
+        this.min_jornada = min_jornada;
+        this.hora_exposicion = hora_exposicion;
+        this.min_exposicion = min_exposicion;
+        this.jornada = jornada;
+        this.nom_trabajador = nom_trabajador;
+        this.tipo_doc_trabajador = tipo_doc_trabajador;
+        this.num_doc_trabajador = num_doc_trabajador;
+        this.puesto_trabajador = puesto_trabajador;
+        this.edad_trabajador = edad_trabajador;
+        this.peso_trabajador = peso_trabajador;
+        this.regimen_laboral = regimen_laboral;
+        this.horario_refrigerio = horario_refrigerio;
+        this.tiempo_ocupado = tiempo_ocupado;
+        this.molestia_oido = molestia_oido;
+        this.enfermedad_oido = enfermedad_oido;
+        this.detalle_enf_oido = detalle_enf_oido;
+        this.fecha_ultimo_examen = fecha_ultimo_examen;
+        this.mes_ultimo_examen = mes_ultimo_examen;
+        this.anio_ultimo_examen = anio_ultimo_examen;
+        this.ctrl_ingenieria = ctrl_ingenieria;
+        this.ctrl_administrativo = ctrl_administrativo;
+        this.nom_epp = nom_epp;
+        this.prot_auditivo = prot_auditivo;
+        this.nom_ctrl_ingenieria = nom_ctrl_ingenieria;
+        this.nom_ctrl_admin = nom_ctrl_admin;
+        this.aislamiento = aislamiento;
+        this.techos = techos;
+        this.cabinas = cabinas;
+        this.orientacion = orientacion;
+        this.cerramiento = cerramiento;
+        this.otro_ingenieria = otro_ingenieria;
+        this.capacitacion = capacitacion;
+        this.senializacion_precion = senializacion_precion;
+        this.senializacion_epp = senializacion_epp;
+        this.senializacion_vibracion = senializacion_vibracion;
+        this.senializacion_area = senializacion_area;
+        this.mantenimiento_vibracion = mantenimiento_vibracion;
+        this.rotacion = rotacion;
+        this.aislante_detalle = aislante_detalle;
+        this.cabina_detalle = cabina_detalle;
+        this.capacitacion_detalle = capacitacion_detalle;
+        this.senializacion_nivel_detalle = senializacion_nivel_detalle;
+        this.senializacion_epp_detalle = senializacion_epp_detalle;
+        this.rotacion_detalle = rotacion_detalle;
+        this.tiempo_exposicion_detalle = tiempo_exposicion_detalle;
+        this.tapones_au = tapones_au;
+        this.marca_tapones_audi = marca_tapones_audi;
+        this.modelo_tapones_audi = modelo_tapones_audi;
+        this.orejereas = orejereas;
+        this.marca_orejeras = marca_orejeras;
+        this.modelo_orejeras = modelo_orejeras;
+        this.nrr_orejeras = nrr_orejeras;
+        this.nrr_tapones_audi = nrr_tapones_audi;
+        this.adm_tiempo_expo = adm_tiempo_expo;
+        this.tiempo_exposicion = tiempo_exposicion;
+        this.otro_administrativo = otro_administrativo;
+        this.tareas_medicion = tareas_medicion;
+        this.tarea_visual = tarea_visual;
+        this.tipo_tarea_visual = tipo_tarea_visual;
+        this.nivel_min_ilu = nivel_min_ilu;
+        this.observacion = observacion;
+        this.ch_ruido_externo = ch_ruido_externo;
+        this.ch_ruido_antiguo = ch_ruido_antiguo;
+        this.ch_ruido_generado_por = ch_ruido_generado_por;
+        this.ruido_generado_por = ruido_generado_por;
+        this.otro_ruido = otro_ruido;
+        this.area_req_concentr = area_req_concentr;
+        this.lim_max_permis = lim_max_permis;
+        this.tipo_medicion = tipo_medicion;
+        this.nom_tipo_medicion = nom_tipo_medicion;
+        this.lmin = lmin;
+        this.lmax = lmax;
+        this.lequi = lequi;
+        this.lequi_md1 = lequi_md1;
+        this.lequi_md2 = lequi_md2;
+        this.lequi_md3 = lequi_md3;
+        this.lequi_md4 = lequi_md4;
+        this.lequi_md5 = lequi_md5;
+        this.lmax_md1 = lmax_md1;
+        this.lmax_md2 = lmax_md2;
+        this.lmax_md3 = lmax_md3;
+        this.lmax_md4 = lmax_md4;
+        this.lmax_md5 = lmax_md5;
+        this.lmin_md1 = lmin_md1;
+        this.lmin_md2 = lmin_md2;
+        this.lmin_md3 = lmin_md3;
+        this.lmin_md4 = lmin_md4;
+        this.lmin_md5 = lmin_md5;
+        this.lpico_dba = lpico_dba;
+        this.conformidad = conformidad;
+        this.eval_20p = eval_20p;
+        this.tipo_vibracion = tipo_vibracion;
+        this.ubic_equip = ubic_equip;
+        this.anio_ocu_cargo = anio_ocu_cargo;
+        this.mes_ocu_cargo = mes_ocu_cargo;
+        this.cond_trab = cond_trab;
+        this.porc_descan = porc_descan;
+        this.foto = foto;
+        this.resultado = resultado;
+        this.estado_resultado = estado_resultado;
+        this.estado = estado;
+        this.fec_reg = fec_reg;
+        this.user_reg = user_reg;
+        this.fec_act = fec_act;
+        this.user_act = user_act;
+        this.fec_eli = fec_eli;
+        this.user_eli = user_eli;
+    }
 
     public int getId_plan_trabajo_formato_reg() {
         return id_plan_trabajo_formato_reg;
@@ -1028,6 +1217,126 @@ public class RegistroFormatos {
         this.lequi = lequi;
     }
 
+    public double getLequi_md1() {
+        return lequi_md1;
+    }
+
+    public void setLequi_md1(double lequi_md1) {
+        this.lequi_md1 = lequi_md1;
+    }
+
+    public double getLequi_md2() {
+        return lequi_md2;
+    }
+
+    public void setLequi_md2(double lequi_md2) {
+        this.lequi_md2 = lequi_md2;
+    }
+
+    public double getLequi_md3() {
+        return lequi_md3;
+    }
+
+    public void setLequi_md3(double lequi_md3) {
+        this.lequi_md3 = lequi_md3;
+    }
+
+    public double getLequi_md4() {
+        return lequi_md4;
+    }
+
+    public void setLequi_md4(double lequi_md4) {
+        this.lequi_md4 = lequi_md4;
+    }
+
+    public double getLequi_md5() {
+        return lequi_md5;
+    }
+
+    public void setLequi_md5(double lequi_md5) {
+        this.lequi_md5 = lequi_md5;
+    }
+
+    public double getLmax_md1() {
+        return lmax_md1;
+    }
+
+    public void setLmax_md1(double lmax_md1) {
+        this.lmax_md1 = lmax_md1;
+    }
+
+    public double getLmax_md2() {
+        return lmax_md2;
+    }
+
+    public void setLmax_md2(double lmax_md2) {
+        this.lmax_md2 = lmax_md2;
+    }
+
+    public double getLmax_md3() {
+        return lmax_md3;
+    }
+
+    public void setLmax_md3(double lmax_md3) {
+        this.lmax_md3 = lmax_md3;
+    }
+
+    public double getLmax_md4() {
+        return lmax_md4;
+    }
+
+    public void setLmax_md4(double lmax_md4) {
+        this.lmax_md4 = lmax_md4;
+    }
+
+    public double getLmax_md5() {
+        return lmax_md5;
+    }
+
+    public void setLmax_md5(double lmax_md5) {
+        this.lmax_md5 = lmax_md5;
+    }
+
+    public double getLmin_md1() {
+        return lmin_md1;
+    }
+
+    public void setLmin_md1(double lmin_md1) {
+        this.lmin_md1 = lmin_md1;
+    }
+
+    public double getLmin_md2() {
+        return lmin_md2;
+    }
+
+    public void setLmin_md2(double lmin_md2) {
+        this.lmin_md2 = lmin_md2;
+    }
+
+    public double getLmin_md3() {
+        return lmin_md3;
+    }
+
+    public void setLmin_md3(double lmin_md3) {
+        this.lmin_md3 = lmin_md3;
+    }
+
+    public double getLmin_md4() {
+        return lmin_md4;
+    }
+
+    public void setLmin_md4(double lmin_md4) {
+        this.lmin_md4 = lmin_md4;
+    }
+
+    public double getLmin_md5() {
+        return lmin_md5;
+    }
+
+    public void setLmin_md5(double lmin_md5) {
+        this.lmin_md5 = lmin_md5;
+    }
+
     public double getLpico_dba() {
         return lpico_dba;
     }
@@ -1090,6 +1399,14 @@ public class RegistroFormatos {
 
     public void setCond_trab(String cond_trab) {
         this.cond_trab = cond_trab;
+    }
+
+    public String getPorc_descan() {
+        return porc_descan;
+    }
+
+    public void setPorc_descan(String porc_descan) {
+        this.porc_descan = porc_descan;
     }
 
     public String getFoto() {
@@ -1170,160 +1487,5 @@ public class RegistroFormatos {
 
     public void setUser_eli(int user_eli) {
         this.user_eli = user_eli;
-    }
-
-    public RegistroFormatos(int id_plan_trabajo_formato_reg, int id_formato, String cod_registro, String cod_formato, String id_plan_trabajo, String id_pt_formato,
-                            int id_analista, String nom_analista, String cod_equipo1, String nom_equipo1, String cod_equipo2, String nom_equipo2, String cod_equipo3,
-                            String nom_equipo3, String serie_eq1, String serie_eq2, String serie_eq3, int id_equipo1, int id_equipo2, int id_equipo3, String verf_insitu,
-                            String hora_situ, String nivel, String variacion, String luz, String area_trabajo, String desc_area_trabajo, String area_trab_deta,
-                            String actividades_realizadas, int id_horario, String hora_trabajo, int n_personas, String fec_monitoreo, String hora_inicial,
-                            String tiempo_medicion, String hora_final, String v_viento, String h_relativa, String hora_jornada, String min_jornada, String hora_exposicion,
-                            String min_exposicion, String jornada, String nom_trabajador, String tipo_doc_trabajador, String num_doc_trabajador, String puesto_trabajador,
-                            int edad_trabajador, String peso_trabajador, String regimen_laboral, String horario_refrigerio, int tiempo_ocupado, String molestia_oido,
-                            String enfermedad_oido, String detalle_enf_oido, String fecha_ultimo_examen, String mes_ultimo_examen, String anio_ultimo_examen,
-                            String ctrl_ingenieria, String ctrl_administrativo, String nom_epp, String prot_auditivo, String nom_ctrl_ingenieria, String nom_ctrl_admin,
-                            String aislamiento, String techos, String cabinas, String orientacion, String cerramiento, String otro_ingenieria, String capacitacion,
-                            String senializacion_precion, String senializacion_epp, String senializacion_vibracion, String senializacion_area,
-                            String mantenimiento_vibracion, String rotacion, String aislante_detalle, String cabina_detalle, String capacitacion_detalle,
-                            String senializacion_nivel_detalle, String senializacion_epp_detalle, String rotacion_detalle, String tiempo_exposicion_detalle,
-                            String tapones_au, String marca_tapones_audi, String modelo_tapones_audi, String orejereas, String marca_orejeras, String modelo_orejeras,
-                            String nrr_orejeras, String nrr_tapones_audi, String adm_tiempo_expo, String tiempo_exposicion, String otro_administrativo,
-                            String tareas_medicion, String tarea_visual, String tipo_tarea_visual, String nivel_min_ilu, String observacion, String ch_ruido_externo,
-                            String ch_ruido_antiguo, String ch_ruido_generado_por, String ruido_generado_por, String otro_ruido, String area_req_concentr,
-                            String lim_max_permis, String tipo_medicion, String nom_tipo_medicion, double lmin, double lmax, double lequi, double lpico_dba,
-                            String conformidad, String eval_20p, String tipo_vibracion, String ubic_equip, String anio_ocu_cargo, String mes_ocu_cargo, String cond_trab,
-                            String foto, String resultado, int estado_resultado, String fec_reg, int user_reg, String fec_act, int user_act, String fec_eli, int user_eli) {
-
-        this.id_plan_trabajo_formato_reg = id_plan_trabajo_formato_reg;
-        this.id_formato = id_formato;
-        this.cod_registro = cod_registro;
-        this.cod_formato = cod_formato;
-        this.id_plan_trabajo = id_plan_trabajo;
-        this.id_pt_formato = id_pt_formato;
-        this.id_analista = id_analista;
-        this.nom_analista = nom_analista;
-        this.cod_equipo1 = cod_equipo1;
-        this.nom_equipo1 = nom_equipo1;
-        this.cod_equipo2 = cod_equipo2;
-        this.nom_equipo2 = nom_equipo2;
-        this.cod_equipo3 = cod_equipo3;
-        this.nom_equipo3 = nom_equipo3;
-        this.serie_eq1 = serie_eq1;
-        this.serie_eq2 = serie_eq2;
-        this.serie_eq3 = serie_eq3;
-        this.id_equipo1 = id_equipo1;
-        this.id_equipo2 = id_equipo2;
-        this.id_equipo3 = id_equipo3;
-        this.verf_insitu = verf_insitu;
-        this.hora_situ = hora_situ;
-        this.nivel = nivel;
-        this.variacion = variacion;
-        this.luz = luz;
-        this.area_trabajo = area_trabajo;
-        this.desc_area_trabajo = desc_area_trabajo;
-        this.area_trab_deta = area_trab_deta;
-        this.actividades_realizadas = actividades_realizadas;
-        this.id_horario = id_horario;
-        this.hora_trabajo = hora_trabajo;
-        this.n_personas = n_personas;
-        this.fec_monitoreo = fec_monitoreo;
-        this.hora_inicial = hora_inicial;
-        this.tiempo_medicion = tiempo_medicion;
-        this.hora_final = hora_final;
-        this.v_viento = v_viento;
-        this.h_relativa = h_relativa;
-        this.hora_jornada = hora_jornada;
-        this.min_jornada = min_jornada;
-        this.hora_exposicion = hora_exposicion;
-        this.min_exposicion = min_exposicion;
-        this.jornada = jornada;
-        this.nom_trabajador = nom_trabajador;
-        this.tipo_doc_trabajador = tipo_doc_trabajador;
-        this.num_doc_trabajador = num_doc_trabajador;
-        this.puesto_trabajador = puesto_trabajador;
-        this.edad_trabajador = edad_trabajador;
-        this.peso_trabajador = peso_trabajador;
-        this.regimen_laboral = regimen_laboral;
-        this.horario_refrigerio = horario_refrigerio;
-        this.tiempo_ocupado = tiempo_ocupado;
-        this.molestia_oido = molestia_oido;
-        this.enfermedad_oido = enfermedad_oido;
-        this.detalle_enf_oido = detalle_enf_oido;
-        this.fecha_ultimo_examen = fecha_ultimo_examen;
-        this.mes_ultimo_examen = mes_ultimo_examen;
-        this.anio_ultimo_examen = anio_ultimo_examen;
-        this.ctrl_ingenieria = ctrl_ingenieria;
-        this.ctrl_administrativo = ctrl_administrativo;
-        this.nom_epp = nom_epp;
-        this.prot_auditivo = prot_auditivo;
-        this.nom_ctrl_ingenieria = nom_ctrl_ingenieria;
-        this.nom_ctrl_admin = nom_ctrl_admin;
-        this.aislamiento = aislamiento;
-        this.techos = techos;
-        this.cabinas = cabinas;
-        this.orientacion = orientacion;
-        this.cerramiento = cerramiento;
-        this.otro_ingenieria = otro_ingenieria;
-        this.capacitacion = capacitacion;
-        this.senializacion_precion = senializacion_precion;
-        this.senializacion_epp = senializacion_epp;
-        this.senializacion_vibracion = senializacion_vibracion;
-        this.senializacion_area = senializacion_area;
-        this.mantenimiento_vibracion = mantenimiento_vibracion;
-        this.rotacion = rotacion;
-        this.aislante_detalle = aislante_detalle;
-        this.cabina_detalle = cabina_detalle;
-        this.capacitacion_detalle = capacitacion_detalle;
-        this.senializacion_nivel_detalle = senializacion_nivel_detalle;
-        this.senializacion_epp_detalle = senializacion_epp_detalle;
-        this.rotacion_detalle = rotacion_detalle;
-        this.tiempo_exposicion_detalle = tiempo_exposicion_detalle;
-        this.tapones_au = tapones_au;
-        this.marca_tapones_audi = marca_tapones_audi;
-        this.modelo_tapones_audi = modelo_tapones_audi;
-        this.orejereas = orejereas;
-        this.marca_orejeras = marca_orejeras;
-        this.modelo_orejeras = modelo_orejeras;
-        this.nrr_orejeras = nrr_orejeras;
-        this.nrr_tapones_audi = nrr_tapones_audi;
-        this.adm_tiempo_expo = adm_tiempo_expo;
-        this.tiempo_exposicion = tiempo_exposicion;
-        this.otro_administrativo = otro_administrativo;
-        this.tareas_medicion = tareas_medicion;
-        this.tarea_visual = tarea_visual;
-        this.tipo_tarea_visual = tipo_tarea_visual;
-        this.nivel_min_ilu = nivel_min_ilu;
-        this.observacion = observacion;
-        this.ch_ruido_externo = ch_ruido_externo;
-        this.ch_ruido_antiguo = ch_ruido_antiguo;
-        this.ch_ruido_generado_por = ch_ruido_generado_por;
-        this.ruido_generado_por = ruido_generado_por;
-        this.otro_ruido = otro_ruido;
-        this.area_req_concentr = area_req_concentr;
-        this.lim_max_permis = lim_max_permis;
-        this.tipo_medicion = tipo_medicion;
-        this.nom_tipo_medicion = nom_tipo_medicion;
-        this.lmin = lmin;
-        this.lmax = lmax;
-        this.lequi = lequi;
-        this.lpico_dba = lpico_dba;
-        this.conformidad = conformidad;
-        this.eval_20p = eval_20p;
-        this.tipo_vibracion = tipo_vibracion;
-        this.ubic_equip = ubic_equip;
-        this.anio_ocu_cargo = anio_ocu_cargo;
-        this.mes_ocu_cargo = mes_ocu_cargo;
-        this.cond_trab = cond_trab;
-        this.foto = foto;
-        this.resultado = resultado;
-        this.estado_resultado = estado_resultado;
-        this.fec_reg = fec_reg;
-        this.user_reg = user_reg;
-        this.fec_act = fec_act;
-        this.user_act = user_act;
-        this.fec_eli = fec_eli;
-        this.user_eli = user_eli;
-
-
     }
 }

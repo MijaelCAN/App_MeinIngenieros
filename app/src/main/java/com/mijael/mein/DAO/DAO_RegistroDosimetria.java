@@ -36,7 +36,7 @@ public class DAO_RegistroDosimetria {
         values.put(Util_RegistroFormatos.CAMPO_HORA_SITU,registros.getHora_situ());
         values.put(Util_RegistroFormatos.CAMPO_NIVEL,registros.getNivel());
         values.put(Util_RegistroFormatos.CAMPO_VARIACION,registros.getVariacion());
-        values.put(Util_RegistroFormatos.CAMPO_FEC_MONITOREO, registros.getFec_monitoreo().getTime());
+        values.put(Util_RegistroFormatos.CAMPO_FEC_MONITOREO, registros.getFec_monitoreo());
         values.put(Util_RegistroFormatos.CAMPO_HORA_INICIAL,registros.getHora_inicial());
         values.put(Util_RegistroFormatos.CAMPO_HORA_FINAL,registros.getHora_final());
         values.put(Util_RegistroFormatos.CAMPO_TIEMPO_EXPOSICION,registros.getTiempo_exposicion());

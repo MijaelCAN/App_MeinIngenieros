@@ -85,7 +85,7 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
             spn_posicion3, spn_pCuerpo3, spn_intesidad3, spn_nivelDeterminacion, spn_metodoDeterminacion, spn_tipoTrab, spn_tipoMedicion, spn_clase, spn_genero, spn_ocupacion;
     // CheckBox
     CheckBox check_zapatos, check_casco, check_lentes, check_guantes, check_orejeras, check_tapones, check_cubreNuca;
-    ImageView imgVibra;
+    ImageView imgE_Termico;
     Uri uri;
 
     LinearLayout linearOtroHorario, linearOtroRegimen, linearOtroRefrigerio;
@@ -129,7 +129,26 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
         spn_condicionTrab.setAdapter(config.LlenarSpinner(new String[]{"Aclimatado", "No aclimatado"}));
         spn_nivelDeterminacion.setAdapter(config.LlenarSpinner(new String[]{"Tanteo", "Observación","Análisis"}));
         spn_tipoMedicion.setAdapter(config.LlenarSpinner(new String[]{"Medición a una altura","Medición a tres alturas"}));
+        spn_genero.setAdapter(config.LlenarSpinner(new String[]{"Hombre","Mujer"}));
+        spn_tipoTrab.setAdapter(config.LlenarSpinner(new String[]{"Oficina","Artesanos","Mineria","Industria","Artes","Agricultura","Transporte","Diversos"}));
+        spn_ocupacion.setAdapter(config.LlenarSpinner(new String[]{"Ayudante de laboratorio","Profesor","Dependiente de Comercio","Secretario"}));
+        spn_clase.setAdapter(config.LlenarSpinner(new String[]{"Descanso","Tasa metabólica baja","Tasa metabólica moderada","Tasa metabólica alta","Tasa metabólica muy alta"}));
 
+        spn_descTrabajo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedItem = parent.getItemAtPosition(position).toString();
+                if(selectedItem.equals("Trabajo al aire libre sin carga solar o bajo techo")){
+                    tv_desTrabajoDetalle.setText("IN - Interior y Exterior sin luz solar");
+                } else if (selectedItem.equals("Trabajo al aire libre con carga solar")) {
+                    tv_desTrabajoDetalle.setText("OUT - Exterior con luz solar");
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         spn_nivelDeterminacion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -148,7 +167,6 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
 
             }
         });
-
         spn_metodoDeterminacion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -185,7 +203,6 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
 
             }
         });
-
         spn_tipoMedicion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -230,6 +247,52 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
 
             }
         });
+        spn_ocupacion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedItem = parent.getItemAtPosition(position).toString();
+                if(selectedItem.equals("Ayudante de laboratorio") || selectedItem.equals("Profesor")){
+                    tv_tasaMetabolica.setText("85 a 100");
+                } else if (selectedItem.equals("Dependiente de Comercio")) {
+                    tv_tasaMetabolica.setText("100 a 120");
+                } else if (selectedItem.equals("Secretario")) {
+                    tv_tasaMetabolica.setText("70 a 85");
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        spn_clase.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedItem = parent.getItemAtPosition(position).toString();
+                if(selectedItem.equals("Descanso")){
+                    tv_actividad.setText("Descansando, sentado comodamente");
+                    txt_tasaMetabolicaW.setText("65");
+                } else if (selectedItem.equals("Tasa metabólica baja")) {
+                    tv_actividad.setText("Trabajo manual ligero (escribir, teclear, coser); trabajo con brazos y manos (herramientas pequeñas, inspección, montaje); trabajo con pie y piernas (conducción de vehículos en condiciones normales, empleo de pedales de accionamiento). De pie, taladrado;");
+                    txt_tasaMetabolicaW.setText("100");
+                } else if (selectedItem.equals("Tasa metabólica moderada")) {
+                    tv_actividad.setText("Trabajo sostenido con manos y brazos (clavar, limar); trabajo con brazos y piernas (conducción de camiones, tractores o máquinas en obras); trabajo con tronco y brazos (martillos neumáticos, escardar, recoger frutas y verduras, tirar de o empujar carretil");
+                    txt_tasaMetabolicaW.setText("165");
+                } else if (selectedItem.equals("Tasa metabólica alta")) {
+                    tv_actividad.setText("Trabajo intenso con brazos y tronco; transporte de materiales pesados; palear, empleo de sierra; cepillado o escopelado de madera dura; corte de hierba o cavado manual; caminar a una velocidad de 5.5 km/h hasta 7 km/h. Empujar o tirar de carretillas o carros de mano muy cargados; desbarbado de fundición; colocación de bloques de hormigón.");
+                    txt_tasaMetabolicaW.setText("230");
+                } else if (selectedItem.equals("Tasa metabólica nuy alta")) {
+                    tv_actividad.setText("Actividad muy intensa a ritmo de muy rápido a máximo; trabajo con hacha; cavado o paleado intenso; subir escaleras, rampas o escalas; caminar rápidamente a pequeños pasos; correr; caminar a una velocidad superior a los 7 km/h.");
+                    txt_tasaMetabolicaW.setText("290");
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
 
         config.configurarAutoCompleteTextView(tv_estresTermico,lista_CodEquipos);
         config.configurarAutoCompleteTextView(tv_anemometro,lista_CodEquipos);
@@ -237,8 +300,8 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
         spn_horarioTrabajo.setAdapter(config.LlenarSpinner("horario_trab_fromato_medicion","desc_horario",getActivity()));
         spn_regimen.setAdapter(config.LlenarSpinner("regimen_formato_medicion","nom_regimen",getActivity()));
         spn_horarioRefrigerio.setAdapter(config.LlenarSpinner("horario_refrig_formato_medicion","nom_horario",getActivity()));
-        spn_timeCargoAnyo.setAdapter(config.LlenarSpinner("tiempoAnios","nom_anio",getActivity()));
-        spn_timeCargoMes.setAdapter(config.LlenarSpinner("tiempoMeses","nom_mes",getActivity()));
+        config.llenarSpinnerConNumeros(spn_timeCargoAnyo,10,getActivity());
+        config.llenarSpinnerConNumeros(spn_timeCargoMes,11,getActivity());
         spn_porcActividad.setAdapter(config.LlenarSpinner("actividad_Descanso","nom_act_des",getActivity()));
         spn_porcDescanso.setAdapter(config.LlenarSpinner("actividad_Descanso","nom_act_des",getActivity()));
         spn_vestimenta.setAdapter(config.LlenarSpinner("vestimenta","nom_vestimenta",getActivity()));
@@ -365,7 +428,7 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                     String valorEstresTermico = tv_estresTermico.getText().toString();
                     String valorAnemometro = tv_anemometro.getText().toString();
                     String valorHoraVerificacion = tv_horaVerificacion.getText().toString();
-                    String valorGroupVerificacion = validar.getValor2(radioGroupVerificacion,rootView);
+                    int valorGroupVerificacion = validar.getValor2(radioGroupVerificacion,rootView);
                     String valorFechaMonitoreo = tv_fechaMonitoreo.getText().toString();
                     String valorHoraInicioMoni = tv_horaInicioMoni.getText().toString();
                     String valorHoraFinalMoni = tv_horaFinalMoni.getText().toString();
@@ -392,16 +455,16 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                     String valorDesFuenteGen = txt_descFuenteGen.getText().toString();
                     String valorDesTrabajo = spn_descTrabajo.getSelectedItem().toString();
                     String valorDesTrabDetalle = tv_desTrabajoDetalle.getText().toString();
-                    String valorGroupIng = validar.getValor2(radioGroupIng,rootView);
+                    int valorGroupIng = validar.getValor2(radioGroupIng,rootView);
                     String valorControlIng = txt_nomControl.getText().toString();
-                    String valorTimeCargoAnyo = spn_timeCargoAnyo.getSelectedItem().toString();
-                    String valorTimeCargoMeses = spn_timeCargoMes.getSelectedItem().toString();
+                    String valorTimeCargoAnyo = spn_timeCargoAnyo.getSelectedItem().toString() + "año(s)";
+                    String valorTimeCargoMeses = spn_timeCargoMes.getSelectedItem().toString() + "mes(es)";
                     String valorCondTrabajo = spn_condicionTrab.getSelectedItem().toString();
-                    String valorGroupZonaSombra = validar.getValor2(radioGroupZonaSombra, rootView);
-                    String valorGroupRotacion = validar.getValor2(radioGroupRotacion, rootView);
-                    String valorGroupRecuperacion = validar.getValor2(radioGroupRecuperacion, rootView);
-                    String valorGroupDispensador = validar.getValor2(radioGroupDispensador, rootView);
-                    String valorGroupCapa = validar.getValor2(radioGroupCapacitacion, rootView);
+                    int valorGroupZonaSombra = validar.getValor2(radioGroupZonaSombra, rootView);
+                    int valorGroupRotacion = validar.getValor2(radioGroupRotacion, rootView);
+                    int valorGroupRecuperacion = validar.getValor2(radioGroupRecuperacion, rootView);
+                    int valorGroupDispensador = validar.getValor2(radioGroupDispensador, rootView);
+                    int valorGroupCapa = validar.getValor2(radioGroupCapacitacion, rootView);
                     String valorPorcActividad = spn_porcActividad.getSelectedItem().toString();
                     String valorPorDescanso = spn_porcDescanso.getSelectedItem().toString();
                     String valorVestimenta = spn_vestimenta.getSelectedItem().toString();
@@ -485,7 +548,7 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                             id_colaborador,
                             nuevo.getUsuario_nombres(),
                             valorHoraVerificacion,
-                            valorGroupVerificacion,
+                            "" +valorGroupVerificacion,
                             valorFechaMonitoreo,
                             valorHoraInicioMoni,
                             valorHoraFinalMoni,
@@ -505,7 +568,7 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                             valorRegimen,
                             valorAreaTra,
                             valorDesTrabDetalle,
-                            valorGroupIng,
+                            "" +valorGroupIng,
                             valorControlIng,
                             "false",
                             valorTimeCargoAnyo,
@@ -520,11 +583,11 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                             cabecera.getCodigo(),
                             valorFuenteGen,
                             valorDesFuenteGen,
-                            valorGroupZonaSombra,
-                            valorGroupRotacion,
-                            valorGroupRecuperacion,
-                            valorGroupDispensador,
-                            valorGroupCapa,
+                            "" +valorGroupZonaSombra,
+                            "" +valorGroupRotacion,
+                            "" +valorGroupRecuperacion,
+                            "" +valorGroupDispensador,
+                            "" +valorGroupCapa,
                             valorPorcActividad,
                             valorPorDescanso,
                             valorVestimenta,
@@ -666,6 +729,7 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
         tv_horaVerificacion = view.findViewById(R.id.tv_horaVerificacion);
         radioGroupVerificacion = view.findViewById(R.id.radioGroupVerificacion);
         btn_subirFotoEstres = view.findViewById(R.id.btn_subirFotoEstres);
+        imgE_Termico = view.findViewById(R.id.img_Estres);
         tv_fechaMonitoreo = view.findViewById(R.id.tv_fechaMonitoreo);
         tv_horaInicioMoni = view.findViewById(R.id.tv_horaInicioMoni);
         tv_horaFinalMoni = view.findViewById(R.id.tv_horaFinalMoni);
@@ -787,8 +851,8 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
     @Override
     public void onImagePicked(Uri imageUri) {
         this.uri = imageUri;
-        if (imgVibra != null && imageUri != null) {
-            imgVibra.setImageURI(imageUri);
+        if (imgE_Termico != null && imageUri != null) {
+            imgE_Termico.setImageURI(imageUri);
         }
     }
 

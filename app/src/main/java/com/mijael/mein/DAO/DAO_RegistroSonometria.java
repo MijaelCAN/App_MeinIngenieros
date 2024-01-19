@@ -59,6 +59,23 @@ public class DAO_RegistroSonometria {
         values.put(Util_RegistroFormatos.CAMPO_LMIN, registro.getLmin());
         values.put(Util_RegistroFormatos.CAMPO_LMAX, registro.getLmax());
         values.put(Util_RegistroFormatos.CAMPO_LEQUI, registro.getLequi());
+
+        values.put(Util_RegistroFormatos.CAMPO_LEQUI_MD1, registro.getLequi_md1());
+        values.put(Util_RegistroFormatos.CAMPO_LEQUI_MD2, registro.getLequi_md2());
+        values.put(Util_RegistroFormatos.CAMPO_LEQUI_MD3, registro.getLequi_md3());
+        values.put(Util_RegistroFormatos.CAMPO_LEQUI_MD4, registro.getLequi_md4());
+        values.put(Util_RegistroFormatos.CAMPO_LEQUI_MD5, registro.getLequi_md5());
+        values.put(Util_RegistroFormatos.CAMPO_LMIN_MD1, registro.getLmin_md1());
+        values.put(Util_RegistroFormatos.CAMPO_LMIN_MD2, registro.getLmin_md2());
+        values.put(Util_RegistroFormatos.CAMPO_LMIN_MD3, registro.getLmin_md3());
+        values.put(Util_RegistroFormatos.CAMPO_LMIN_MD4, registro.getLmin_md4());
+        values.put(Util_RegistroFormatos.CAMPO_LMIN_MD5, registro.getLmin_md5());
+        values.put(Util_RegistroFormatos.CAMPO_LMAX_MD1, registro.getLmax_md1());
+        values.put(Util_RegistroFormatos.CAMPO_LMAX_MD2, registro.getLmax_md2());
+        values.put(Util_RegistroFormatos.CAMPO_LMAX_MD3, registro.getLmax_md3());
+        values.put(Util_RegistroFormatos.CAMPO_LMAX_MD4, registro.getLmax_md4());
+        values.put(Util_RegistroFormatos.CAMPO_LMAX_MD5, registro.getLmax_md5());
+
         values.put(Util_RegistroFormatos.CAMPO_CTRL_INGENIERIA, registro.getCtrl_ingenieria());
         values.put(Util_RegistroFormatos.CAMPO_CTRL_ADMINISTRATIVO, registro.getCtrl_administrativo());
         values.put(Util_RegistroFormatos.CAMPO_AISLAMIENTO, registro.getAislamiento());

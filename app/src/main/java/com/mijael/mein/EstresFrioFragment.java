@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -17,6 +18,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -46,6 +48,8 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
     View rootView;
     TextView tv_nombreUsuario, tv_nomEmpresa;
     String id_plan_trabajo, id_pt_trabajo, id_formato,id_colaborador, nom_Empresa;
+    CardView card_ingenier, card_adminis, card_tapones, card_orejeras;
+    RadioButton radioIngSi;
 
     // Spinners
     AutoCompleteTextView spn_equipoEstresFrio, spn_equipoAnemometro;
@@ -152,6 +156,8 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
         config.MostrarCampos(linearOtroHorario,spn_horarioTrabajo);
         config.MostrarCampos(linearOtroRegimen,spn_regimen);
         config.MostrarCampos(linearOtroRefrigerio,spn_horarioRefrig);
+
+        radioGroupIng.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {@Override public void onCheckedChanged(RadioGroup group, int checkedId) {config.mostrarOpcionesGone(group,checkedId,card_ingenier,radioIngSi);}});
         btnCancelar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -171,9 +177,10 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
                         validar.validarCampoObligatorio(spn_equipoEstresFrio) &&
                         validar.validarCampoObligatorio(spn_equipoAnemometro) &&
                         validar.validarCampoObligatorio(tv_horaVerificacion) &&
-                        validar.validarImagen(cargarImagen,getActivity()) &&
+                        //validar.validarImagen(cargarImagen,getActivity()) &&
                         validar.validarCampoObligatorio(tv_fechaMonitoreo) &&
                         validar.validarCampoObligatorio(tv_horaInicioMoni) &&
+                        //validar.validarCampoObligatorio(tv_horaFinalMoni) &&
                         validar.validarCampoObligatorio(txt_timeMed) &&
                         validar.validarCampoObligatorio(txt_timeExpo) &&
                         validar.validarCampoObligatorio(txt_jornada) &&
@@ -194,6 +201,7 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
                         validar.validarCampoObligatorio(spn_tiempoCargoMeses) &&
                         validar.validarCampoObligatorio(spn_condicionTrab) &&
                         validar.validarCampoObligatorio(spn_rotacion) &&
+                        validar.validarCampoObligatorio(spn_tiempoRecuperacion) &&
                         validar.validarCampoObligatorio(spn_ingestaBebidas) &&
                         validar.validarCampoObligatorio(spn_CapacRiesgosExpo) &&
                         validar.validarCampoObligatorio(spn_nivelDeterminacion) &&
@@ -207,7 +215,7 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
                     String valorEstresFrio = spn_equipoEstresFrio.getText().toString();
                     String valorAnemometro = spn_equipoAnemometro.getText().toString();
                     String valorHoraVerificacion = tv_horaVerificacion.getText().toString();
-                    String valorGroupVerificacion = validar.getValor2(radioGroupVerificacion,rootView);
+                    int valorGroupVerificacion = validar.getValor2(radioGroupVerificacion,rootView);
                     String valorFechaMonitoreo = tv_fechaMonitoreo.getText().toString();
                     String valorHoraInicioMoni = tv_horaInicioMoni.getText().toString();
                     String valorHoraFinalMoni = tv_horaFinalMoni.getText().toString();
@@ -234,33 +242,39 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
                     String valorFuenteGen = spn_fuenteGen.getSelectedItem().toString();
                     String valorDesFuenteGen = txt_descFuenteGen.getText().toString();
 
-                    String valorZapatos = String.valueOf(check_calz.isChecked());
-                    String valorCasco = String.valueOf(check_calzLargo.isChecked());
-                    String valorLentes = String.valueOf(check_camisaTirantes.isChecked());
-                    String valorGuantes = String.valueOf(check_camisaManCorta.isChecked());
-                    String valorOrejeras = String.valueOf(check_camisaManLarga.isChecked());
-                    String valorTapones = String.valueOf(check_sujetadorBra.isChecked());
+                    String valorcheck_calz = String.valueOf(check_calz.isChecked());
+                    String valorcheck_calzLargo = String.valueOf(check_calzLargo.isChecked());
+                    String valorcheck_camisaTirantes= String.valueOf(check_camisaTirantes.isChecked());
+                    String valorcheck_camisaManCorta = String.valueOf(check_camisaManCorta.isChecked());
+                    String valorcheck_camisaManLarga = String.valueOf(check_camisaManLarga.isChecked());
+                    String valorcheck_sujetadorBra= String.valueOf(check_sujetadorBra.isChecked());
 
                     String valorcheck_mangacorta = String.valueOf(check_mangaCorta.isChecked());
                     String valorcheck_ligMangasCortas = String.valueOf(check_ligMangasCortas.isChecked());
                     String valorcheck_normalMangasLargas= String.valueOf(check_normalMangasLargas.isChecked());
                     String valorcheck_franelaMangaLarga = String.valueOf(check_franelaMangaLarga.isChecked());
                     String valorcheck_ligMangaLarga = String.valueOf(check_ligMangaLarga.isChecked());
+
                     String valorcheck_pantCorto = String.valueOf(check_pantCorto.isChecked());
                     String valorcheck_pantLigero = String.valueOf(check_pantLigero.isChecked());
                     String valorcheck_pantNormal= String.valueOf(check_pantNormal.isChecked());
-                    String valorCubreNuca = String.valueOf(check_pantNormal.isChecked());
+                    String valorcheck_pantFranela= String.valueOf(check_pantFranela.isChecked());
+
                     String valorcheck_pullSinMangas = String.valueOf(check_pullSinMangas.isChecked());
                     String valorcheck_pullLigero = String.valueOf(check_pullLigero.isChecked());
+                    String valorcheck_pullMedio = String.valueOf(check_pullMedio.isChecked());
                     String valorcheck_pullGrueso= String.valueOf(check_pullGrueso.isChecked());
+
                     String valorcheck_prendaAbrigo= String.valueOf(check_prendaAbrigo.isChecked());
                     String valorcheck_prendaChaqLarga= String.valueOf(check_prendaChaqLarga.isChecked());
                     String valorcheck_prendaParka = String.valueOf(check_prendaParka.isChecked());
                     String valorcheck_prendaMono = String.valueOf(check_prendaMono.isChecked());
+
                     String valorcheck_chaqLigera= String.valueOf(check_chaqLigera.isChecked());
                     String valorcheck_chaqNormal= String.valueOf(check_chaqNormal.isChecked());
                     String valorcheck_chaqBata = String.valueOf(check_chaqBata.isChecked());
                     String valorcheck_chaqMono = String.valueOf(check_chaqMono.isChecked());
+
                     String valorcheck_divZapatodelgado = String.valueOf(check_divZapatodelgado.isChecked());
                     String valorcheck_divZapatogrueso = String.valueOf(check_divZapatogrueso.isChecked());
                     String valorcheck_divCalcetines= String.valueOf(check_divCalcetines.isChecked());
@@ -270,8 +284,8 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
                     String valorcheck_divBotas = String.valueOf(check_divBotas.isChecked());
                     String valorcheck_divGuantes = String.valueOf(check_divGuantes.isChecked());
 
-                    String valorGroupIng = validar.getValor2(radioGroupIng,rootView);
-                    String valorControlIng = txt_nombreControl.getText().toString();
+                    int valorGroupIng = validar.getValor2(radioGroupIng,rootView);
+                    String valorNombreControlIng = txt_nombreControl.getText().toString();
                     String valorTimeCargoAnyo = spn_tiempoCargoAnios.getSelectedItem().toString();
                     String valorTimeCargoMeses = spn_tiempoCargoMeses.getSelectedItem().toString();
                     String valorCondTrabajo = spn_condicionTrab.getSelectedItem().toString();
@@ -279,6 +293,9 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
                     String valorRecuperacion = spn_tiempoRecuperacion.getSelectedItem().toString();
                     String valorIngestaBebida = spn_ingestaBebidas.getSelectedItem().toString();
                     String valorCapacRiesgosExpo = spn_CapacRiesgosExpo.getSelectedItem().toString();
+
+                    String valorNivelDeterminacion = spn_nivelDeterminacion.getSelectedItem().toString();
+                    String valorMetodoDeterminacion = spn_metodoDeterminacion.getSelectedItem().toString();
 
                     String valorAire = txt_t_aire.getText().toString();
                     String valorTAireNegro = txt_t_aireNegro.getText().toString();
@@ -454,6 +471,9 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
         txt_otroRegimen = view.findViewById(R.id.txt_otroRegimen);
         linearOtroRefrigerio = view.findViewById(R.id.linearOtroRefrigerio);
         txt_otroRefrigerio = view.findViewById(R.id.txt_otroRefrigerio);
+
+        card_ingenier = view.findViewById(R.id.Card_Ingenieria);
+        radioIngSi = view.findViewById(R.id.radioIngenieriaSi);
 
 
     }

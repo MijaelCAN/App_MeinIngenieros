@@ -138,11 +138,16 @@ public class Validaciones {
 
         return opcionSeleccionada[0]; // Devolver el valor seleccionado
     }
-    public String getValor2(RadioGroup radioGroup, View view) {
-        //RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radioGroup_verf_insitu);
+    public int getValor2(RadioGroup radioGroup, View view) {
         int radioButtonId = radioGroup.getCheckedRadioButtonId();
-        RadioButton radioButton = (RadioButton) view.findViewById(radioButtonId);
+        RadioButton radioButton = radioGroup.findViewById(radioButtonId);
         String texto = radioButton.getText().toString();
-        return texto;
+        // Verificar el texto seleccionado y devolver el valor correspondiente
+        if (texto.equals("Sí")) {
+            return 1;
+        } else if (texto.equals("No")) {
+            return 2;
+        }
+        return 0;
     }
 }

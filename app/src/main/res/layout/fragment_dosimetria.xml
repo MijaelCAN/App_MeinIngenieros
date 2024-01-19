@@ -473,6 +473,7 @@
                             android:layout_marginTop="5dp"
                             android:textColorHint="@color/black"
                             android:textColor="@color/black"
+                            android:inputType="number|numberDecimal"
                             style="@style/EditTextFocusStyle"
                             android:hint="Ingrese jornada"
                             android:textSize="15sp"
@@ -496,6 +497,7 @@
                             android:textColorHint="@color/black"
                             style="@style/EditTextFocusStyle"
                             android:hint="Ingrese tiempo"
+                            android:inputType="number|numberDecimal"
                             android:textColor="@color/black"
                             android:paddingLeft="8dp"
                             android:textSize="15sp"
@@ -562,7 +564,7 @@
                             android:textSize="15sp"
                             android:paddingLeft="8dp"
                             android:layout_marginLeft="32dp"
-                            android:visibility="visible"
+                            android:visibility="gone"
                             android:fontFamily="sans-serif-light"/>
 
                         <TextView
@@ -1931,7 +1933,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
-                        android:visibility="visible"
+                        android:visibility="gone"
                         app:cardCornerRadius="4dp"
                         app:cardElevation="2dp">
 
@@ -2092,19 +2094,6 @@
                                 android:textSize="15sp" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
-
-                    <EditText
-                        android:id="@+id/txt_lmin"
-                        style="@style/EditTextFocusStyle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:fontFamily="sans-serif-light"
-                        android:hint="Digite"
-                        android:paddingLeft="8dp"
-                        android:textColor="@color/black"
-                        android:textColorHint="@color/black"
-                        android:textSize="15sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -2333,6 +2322,7 @@
                         android:layout_marginTop="5dp"
                         android:fontFamily="sans-serif-light"
                         android:hint="Digite"
+                        android:inputType="number|numberDecimal"
                         android:paddingLeft="8dp"
                         android:textColor="@color/black"
                         android:textColorHint="@color/black"
@@ -2357,6 +2347,7 @@
                         android:fontFamily="sans-serif-light"
                         android:hint=" Digite"
                         android:paddingLeft="8dp"
+                        android:inputType="number|numberDecimal"
                         android:textColor="@color/black"
                         android:textColorHint="@color/black"
                         android:textSize="15sp" />
@@ -2380,6 +2371,7 @@
                         android:fontFamily="sans-serif-light"
                         android:hint=" Digite"
                         android:paddingLeft="8dp"
+                        android:inputType="number|numberDecimal"
                         android:textColor="@color/black"
                         android:textColorHint="@color/black"
                         android:textSize="15sp" />
@@ -2393,6 +2385,19 @@
                         android:text="Lmin dB(A):"
                         android:textColor="@color/black"
                         android:textSize="12dp" />
+                    <EditText
+                        android:id="@+id/txt_lmin"
+                        style="@style/EditTextFocusStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="sans-serif-light"
+                        android:hint="Digite"
+                        android:inputType="number|numberDecimal"
+                        android:paddingLeft="8dp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        android:textSize="15sp" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>

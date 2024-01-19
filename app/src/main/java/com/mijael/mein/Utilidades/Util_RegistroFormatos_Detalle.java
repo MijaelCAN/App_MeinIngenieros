@@ -19,7 +19,8 @@ public class Util_RegistroFormatos_Detalle {
     public static final String CAMPO_IL_6 = "il_6";
     public static final String CAMPO_IL_7 = "il_7";
     public static final String CAMPO_IL_8 = "il_8";
-    public static final String CAMPO_TIPO_ILUMINACION = "tipo_iluminacion";
+    public static final String CAMPO_PUNTOS_MED = "puntos_med"; //AGREGADO RECIENTEMENTE
+    public static final String CAMPO_TIPO_ILUMINACION = "tipo_iluminacion"; //AGREGADO ULTIMO
     public static final String CAMPO_TIPO_ILUMINACION_ART = "tipo_iluminacion_art";
     public static final String CAMPO_TIPO_ILUMINACION_NAT = "tipo_iluminacion_nat";
     public static final String CAMPO_DESC_AMB_TRABAJO = "desc_amb_trabajo";
@@ -131,7 +132,7 @@ public class Util_RegistroFormatos_Detalle {
     public static final String CAMPO_V_VTO10 = "v_vto10";
     public static final String CAMPO_OTRO_VEST = "otro_vest";
 
-    public static final String CAMPO_ID_TIPO_MEDICION_IL = "id_tipo_medicion_ilu";
+    public static final String CAMPO_ID_TIPO_MEDICION_IL = "id_tipo_medicion_ilu";//agregado recientemente INICIO
     public static final String CAMPO_TIPO_MEDICION_ILU = "tipo_medicion_ilu";
     public static final String CAMPO_LARG_ESCRIT = "larg_escrit";
 
@@ -145,7 +146,7 @@ public class Util_RegistroFormatos_Detalle {
     public static final String CAMPO_ANCH_SALON= "anch_salon";
     public static final String CAMPO_ALT_PLTRABAJO_ILU= "alt_pltrabajo_ilu";
     public static final String CAMPO_CONST_SALON = "const_salon";
-    public static final String CAMPO_NUM_MIN_PMEDIC = "num_min_pmedic";
+    public static final String CAMPO_NUM_MIN_PMEDIC = "num_min_pmedic";//agreagdo recientemetne FINAL
 
 
     public static final String CAMPO_TEMP = "temp";

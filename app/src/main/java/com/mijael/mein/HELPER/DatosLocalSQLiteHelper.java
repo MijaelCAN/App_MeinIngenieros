@@ -364,7 +364,7 @@ public class DatosLocalSQLiteHelper extends SQLiteOpenHelper {
                 " nom_intensidad TEXT NOT NULL " +
                 ")");
         db.execSQL("INSERT INTO intensidad (id_intensidad, nom_intensidad) VALUES " +
-                "(1,'Trabajo manual'),(2,'Trabajo con un brazo'),(3,'Trabajo con dos brazos'),(4,'Trabajo con el Cuerpo')");
+                "(1,'Descanso'),(2,'Ligero'),(3,'Moderado'),(4,'Pesado'),(5,'Muy pesado')");
     }
 
     @Override

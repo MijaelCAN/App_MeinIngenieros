@@ -30,4 +30,7 @@ public interface DosimetriaService {
     @POST("index.php?/ApkI/Insert_Iluminacion")
     Call<ResponseBody> insertIluminacion(@Body RequestBody json);
 
+    @POST("index.php?/ApkI/Insert_Sonometria")
+    Call<ResponseBody> insertSonometria(@Body RequestBody json);
+
 }

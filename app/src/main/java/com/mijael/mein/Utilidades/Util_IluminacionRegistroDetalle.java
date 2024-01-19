@@ -6,7 +6,7 @@ public class Util_IluminacionRegistroDetalle {
     public static final String CAMPO_TIPO_ILUMINACION_ART = "tipo_iluminacion_art";
     public static final String CAMPO_TIPO_ILUMINACION_NAT = "tipo_iluminacion_nat";
     public static final String CAMPO_CANT_ILUMINARIAS = "cant_iluminarias";
-    public static final String CAMPO_IL_1 = "il_1";
+    public static final String CAMPO_IL_1 = "il_1"; //ELIMINAR ESTOS CAMPOS QUE YA NO SE USARAN  a cambio de PUNTOS_MED --*
     public static final String CAMPO_IL_2 = "il_2";
     public static final String CAMPO_IL_3 = "il_3";
     public static final String CAMPO_IL_4 = "il_4";

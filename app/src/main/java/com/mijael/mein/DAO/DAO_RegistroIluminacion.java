@@ -112,14 +112,14 @@ public class DAO_RegistroIluminacion {
         values.put(Util_RegistroFormatos_Detalle.CAMPO_NUM_MIN_PMEDIC, registro.getNum_min_pmedic());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_CANT_ILUMINARIAS, registro.getCant_iluminarias());
 
-        values.put(Util_RegistroFormatos_Detalle.CAMPO_IL_1, registro.getIl_1());
+        /*values.put(Util_RegistroFormatos_Detalle.CAMPO_IL_1, registro.getIl_1());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_IL_2, registro.getIl_2());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_IL_3, registro.getIl_3());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_IL_4, registro.getIl_4());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_IL_5, registro.getIl_5());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_IL_6, registro.getIl_6());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_IL_7, registro.getIl_7());
-        values.put(Util_RegistroFormatos_Detalle.CAMPO_IL_8, registro.getIl_8());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_IL_8, registro.getIl_8());*/
         values.put(Util_RegistroFormatos_Detalle.CAMPO_PLAN_MANTENIMIENTO_ILUM, registro.getPlan_mantenimiento_ilum());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_AREA_TRABAJO_M2, registro.getArea_trabajo_m2());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_ALTURA_P_TRABAJO, registro.getAltura_p_trabajo());

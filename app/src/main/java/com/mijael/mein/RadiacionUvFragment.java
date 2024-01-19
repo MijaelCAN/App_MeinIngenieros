@@ -44,6 +44,7 @@ import com.mijael.mein.SERVICIOS.DosimetriaService;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -67,15 +68,16 @@ public class RadiacionUvFragment extends Fragment implements FragmentoImagen.Ima
     FloatingActionButton btn_guardar;
     ExtendedFloatingActionButton btnCancelar;
     Spinner spn_tipoDoc, spn_tipoPiel, spn_timeCargoAnyo, spn_timeCargoMes, spn_horarioTrabajo, spn_regimen,
-            spn_horarioRefrigerio, spn_descTrabajo, spn_proteccionBrillo, spn_proteccionLateral, spn_gorro,
-            spn_casco, spn_ninguno, spn_proteccionLegionario, spn_proteccionAlaAncha, spn_ropa, spn_colorOdcuro,
-            spn_mangaLarga, spn_tramaGruesa, spn_utilizaEpps, spn_guiaUsoEpp, spn_frecuencia2horas, spn_frecuencia30min;
+            spn_horarioRefrigerio, spn_descTrabajo;
     EditText txt_numDoc, txt_nomTrabajador, txt_edad, txt_areaTrabajo, txt_puestoTrabajo, txt_aRealizada, txt_timeExpoHora, txt_jornadaTrabajo,
             txt_mantenimientoFuente, txt_OtrosIngenieria, txt_OtrosAdministrativo, txt_otrosVestimenta, txt_otrosEpps, txt_fuenteGen, txt_tipoFuenteRadiacion,
-            txt_otroHorario, txt_otroRegimen, txt_otroRefrigerio, txt_uW_cm2;
+            txt_otroHorario, txt_otroRegimen, txt_otroRefrigerio, txt_otraFrecuencia, txt_uW_cm2;
     CheckBox check_casco, check_lentesOscuros, check_cubreNuca, check_gorroSombrero;
     RadioGroup radioGroupVerificacion, radioGroupSombraDescanso, radioGroupMallasTramo, radioGroupProgramaTrab,
-            radioGroupAireLibre;
+            radioGroupAireLibre,
+            radioGroupProteccionBrillo, radioGroupProteccionLateral,radioGroupLentesOscuroo,radioGroupCertificacion,radioGroupColorOscuro, radioGroupMangaLarga,
+            radioGroupTramaGruesa, radioGroupUtilGorro, radioGroupProtLegionario, radioGroupAlaAncha,radioGroupUtilCasco, radioGroupCubreNuca, radioGroupUtilFPS, radioGroupGuiaFPS,
+            radioGroupFrecuenciaAplicacion;
     LinearLayout linearOtroHorario, linearOtroRegimen, linearOtroRefrigerio;
     ImageView imgRadiacion;
     Uri uri;
@@ -159,7 +161,7 @@ public class RadiacionUvFragment extends Fragment implements FragmentoImagen.Ima
         config.MostrarCampos(linearOtroRefrigerio,spn_horarioRefrigerio);
 
         spn_descTrabajo.setAdapter(config.LlenarSpinner(new String[]{"Trabajo al aire libre sin carga solar o bajo techo", "Trabajo al aire libre con carga solar"}));
-        spn_proteccionBrillo.setAdapter(config.LlenarSpinner(new String[]{"SI", "NO"}));
+        /*spn_proteccionBrillo.setAdapter(config.LlenarSpinner(new String[]{"SI", "NO"}));
         spn_proteccionLateral.setAdapter(config.LlenarSpinner(new String[]{"SI", "NO"}));
         spn_gorro.setAdapter(config.LlenarSpinner(new String[]{"SI", "NO"}));
         spn_casco.setAdapter(config.LlenarSpinner(new String[]{"SI", "NO"}));
@@ -173,7 +175,18 @@ public class RadiacionUvFragment extends Fragment implements FragmentoImagen.Ima
         spn_utilizaEpps.setAdapter(config.LlenarSpinner(new String[]{"SI", "NO"}));
         spn_guiaUsoEpp.setAdapter(config.LlenarSpinner(new String[]{"SI", "NO"}));
         spn_frecuencia2horas.setAdapter(config.LlenarSpinner(new String[]{"SI", "NO"}));
-        spn_frecuencia30min.setAdapter(config.LlenarSpinner(new String[]{"SI", "NO"}));
+        spn_frecuencia30min.setAdapter(config.LlenarSpinner(new String[]{"SI", "NO"}));*/
+        radioGroupFrecuenciaAplicacion.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId == R.id.radio_otraFrecuencia) {
+                    txt_otraFrecuencia.setEnabled(true);
+                } else {
+                    txt_otraFrecuencia.setEnabled(false);
+                    txt_otraFrecuencia.setText("");
+                }
+            }
+        });
 
         btnCancelar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -221,7 +234,7 @@ public class RadiacionUvFragment extends Fragment implements FragmentoImagen.Ima
                 ){
                     String valorEquipoRadUv = tv_equipoRadiacion.getText().toString();
                     String valorHoraVerificacion = tv_horaVerificacion.getText().toString();
-                    String valorGroupVerificacion = validar.getValor2(radioGroupVerificacion,rootView);
+                    int valorGroupVerificacion = validar.getValor2(radioGroupVerificacion,rootView);
                     String valorFechaMonitoreo = tv_fechaMonitoreo.getText().toString();
                     String valorHoraInicioMoni = tv_horaInicioMoni.getText().toString();
                     String valorHoraFinalMoni = tv_horaFinalMoni.getText().toString();
@@ -252,35 +265,30 @@ public class RadiacionUvFragment extends Fragment implements FragmentoImagen.Ima
                     String valorDesTrabajo = spn_descTrabajo.getSelectedItem().toString();
                     String valorMantenFuente = txt_mantenimientoFuente.getText().toString();
 
-                    String valorGroupSombraDescanso = validar.getValor2(radioGroupSombraDescanso,rootView);
-                    String valorGroupMallasTramo = validar.getValor2(radioGroupMallasTramo,rootView);
+                    int valorGroupSombraDescanso = validar.getValor2(radioGroupSombraDescanso,rootView);
+                    int valorGroupMallasTramo = validar.getValor2(radioGroupMallasTramo,rootView);
                     String valorOtrosIng = txt_OtrosIngenieria.getText().toString();
 
-                    String valorGroupProgramaTrab = validar.getValor2(radioGroupProgramaTrab,rootView);
-                    String valorGroupAireLibre = validar.getValor2(radioGroupAireLibre,rootView);
+                    int valorGroupProgramaTrab = validar.getValor2(radioGroupProgramaTrab,rootView);
+                    int valorGroupAireLibre = validar.getValor2(radioGroupAireLibre,rootView);
                     String valorOtrosAdmin = txt_OtrosAdministrativo.getText().toString();
 
-                    String valorCasco = String.valueOf(check_casco.isChecked());
-                    String valorLentesOscuros = String.valueOf(check_lentesOscuros.isChecked());
-                    String valorCubreNuca = String.valueOf(check_cubreNuca.isChecked());
-                    String valorGorroSombrero = String.valueOf(check_gorroSombrero.isChecked());
-                    String valorOtrosVestimenta = txt_otrosVestimenta.getText().toString();
 
-                    String valorProteccionBrillo = spn_proteccionBrillo.getSelectedItem().toString();
-                    String valorProteccionLateral = spn_proteccionLateral.getSelectedItem().toString();
-                    String valorGorro = spn_gorro.getSelectedItem().toString();
-                    String valorCascospn = spn_casco.getSelectedItem().toString();
-                    String valorNinguno = spn_ninguno.getSelectedItem().toString();
-                    String valorProteccionLegionario = spn_proteccionLegionario.getSelectedItem().toString();
-                    String valorProteccionAlaAncho = spn_proteccionAlaAncha.getSelectedItem().toString();
-                    String valorRopa = spn_ropa.getSelectedItem().toString();
-                    String valorColorOscuro = spn_colorOdcuro.getSelectedItem().toString();
-                    String valorMangaLarga = spn_mangaLarga.getSelectedItem().toString();
-                    String valorTramaGruesa = spn_tramaGruesa.getSelectedItem().toString();
-                    String valorUtilizaEpps = spn_utilizaEpps.getSelectedItem().toString();
-                    String valorGuiaEpps = spn_guiaUsoEpp.getSelectedItem().toString();
-                    String valorFrecuencia2h = spn_frecuencia2horas.getSelectedItem().toString();
-                    String valorFrecuencia30min = spn_frecuencia30min.getSelectedItem().toString();
+                    int valorProteccionBrillo = validar.getValor2(radioGroupProteccionBrillo,rootView);
+                    int valorProteccionLateral = validar.getValor2(radioGroupProteccionLateral,rootView);
+                    int valorLentesOscuros = validar.getValor2(radioGroupLentesOscuroo,rootView);
+                    int valorCertificacion = validar.getValor2(radioGroupCertificacion,rootView);
+                    int valorColorOscuro = validar.getValor2(radioGroupColorOscuro,rootView);
+                    int valorMangaLarga = validar.getValor2(radioGroupMangaLarga,rootView);
+                    int valorTramaGruesa = validar.getValor2(radioGroupTramaGruesa,rootView);
+                    int valorUtilGorro = validar.getValor2(radioGroupUtilGorro,rootView);
+                    int valorProtLegionario = validar.getValor2(radioGroupProtLegionario,rootView);
+                    int valorAlaAncha = validar.getValor2(radioGroupAlaAncha,rootView);
+                    int valorUtilCasco = validar.getValor2(radioGroupUtilCasco,rootView);
+                    int valorCubreNuca = validar.getValor2(radioGroupCubreNuca,rootView);
+                    int valorUtilFPS = validar.getValor2(radioGroupUtilFPS,rootView);
+                    int valorGuiaFPS= validar.getValor2(radioGroupGuiaFPS,rootView);
+                    int valorFrecuenciaApli = validar.getValor2(radioGroupFrecuenciaAplicacion,rootView);
                     String valorOtrosEpps= txt_otrosEpps.getText().toString();
                     String valorUw_cm2= txt_uW_cm2.getText().toString();
 
@@ -300,7 +308,7 @@ public class RadiacionUvFragment extends Fragment implements FragmentoImagen.Ima
                             String.valueOf(equipos1.getId_equipo_registro()),
                             id_colaborador,
                             nuevo.getUsuario_nombres(),
-                            valorGroupVerificacion,
+                            "" +valorGroupVerificacion,
                             valorHoraVerificacion,
                             valorFechaMonitoreo,
                             valorHoraInicioMoni,
@@ -327,25 +335,25 @@ public class RadiacionUvFragment extends Fragment implements FragmentoImagen.Ima
                             id_colaborador
                     );
 
-                    RadiacionUv_RegistroDetalle detalle = new RadiacionUv_RegistroDetalle(
+                   /* RadiacionUv_RegistroDetalle detalle = new RadiacionUv_RegistroDetalle(
                             cabecera.getId(),
                             valorTipoPiel,
                             valorColorPiel,
                             valorFuenteGen,
                             valorTipoFuenteRadiac,
-                            valorGroupSombraDescanso,
-                            valorGroupMallasTramo,
-                            valorGroupProgramaTrab,
-                            valorGroupAireLibre,
+                            "" +valorGroupSombraDescanso,
+                            "" +valorGroupMallasTramo,
+                            "" +valorGroupProgramaTrab,
+                            "" +valorGroupAireLibre,
                             valorMantenFuente,
                             valorCasco,
                             valorLentesOscuros,
                             valorCubreNuca,
                             valorGorroSombrero,
                             valorOtrosVestimenta,
-                            valorProteccionBrillo,
-                            valorProteccionLateral,
-                            valorGorro,
+                            ""+valorProteccionBrillo,
+                            ""+valorProteccionLateral,
+                            ""+valorGorro,
                             valorCascospn,
                             valorNinguno,
                             valorProteccionLegionario,
@@ -361,7 +369,11 @@ public class RadiacionUvFragment extends Fragment implements FragmentoImagen.Ima
                             valorOtrosEpps,
                             fecha_registro,
                             id_colaborador
-                    );
+                    );*/
+
+                    Object detalle = new Object();//OPCIONAL INICIO
+                    HashMap<String,Object> elemntos = new HashMap<>();
+                    elemntos.put("nombre", "MEIN");//OPCIONAL FINAL
 
                     if(config.isOnline()){
                         Retrofit retrofit = new Retrofit.Builder()
@@ -370,6 +382,7 @@ public class RadiacionUvFragment extends Fragment implements FragmentoImagen.Ima
                                 .build();
 
                         DosimetriaService service1 = retrofit.create(DosimetriaService.class);// DEBERIA CAMBIARSE EL SERVICIO DE MANERA GENERAL
+
                         Gson gson = new Gson();
 
                         // Crear un objeto JSON principal
@@ -410,7 +423,7 @@ public class RadiacionUvFragment extends Fragment implements FragmentoImagen.Ima
                         // SECCION DE REGISTRO DE MANERA LOCAL
                         DAO_RegistroRadiacionUV nuevoRegistro = new DAO_RegistroRadiacionUV(getActivity());
                         nuevoRegistro.RegistroRadiacionUV(cabecera);
-                        nuevoRegistro.RegistrarRadiacionUv_Detalle(detalle);
+                        //nuevoRegistro.RegistrarRadiacionUv_Detalle(detalle);
 
                         DAO_FormatosTrabajo dao_fromatosTrabajo = new DAO_FormatosTrabajo(getActivity());
                         for_RadiacionUv = dao_fromatosTrabajo.Buscar(id_plan_trabajo,id_formato);
@@ -476,27 +489,24 @@ public class RadiacionUvFragment extends Fragment implements FragmentoImagen.Ima
         radioGroupAireLibre = view.findViewById(R.id.radioGroupAireLibre);
         txt_OtrosAdministrativo = view.findViewById(R.id.txt_OtrosAdministrativo);
 
-        check_casco = view.findViewById(R.id.check_casco);
-        check_lentesOscuros = view.findViewById(R.id.check_lentesOscuros);
-        check_cubreNuca = view.findViewById(R.id.check_cubreNuca);
-        check_gorroSombrero = view.findViewById(R.id.check_gorroSombrero);
-        txt_otrosVestimenta = view.findViewById(R.id.txt_otrosVestimenta);
 
-        spn_proteccionBrillo = view.findViewById(R.id.spn_proteccionBrillo);
-        spn_proteccionLateral = view.findViewById(R.id.spn_proteccionLateral);
-        spn_gorro = view.findViewById(R.id.spn_gorro);
-        spn_casco = view.findViewById(R.id.spn_casco);
-        spn_ninguno = view.findViewById(R.id.spn_ninguno);
-        spn_proteccionLegionario = view.findViewById(R.id.spn_proteccionLegionario);
-        spn_proteccionAlaAncha = view.findViewById(R.id.spn_proteccionAlaAncha);
-        spn_ropa = view.findViewById(R.id.spn_ropa);
-        spn_colorOdcuro = view.findViewById(R.id.spn_colorOdcuro);
-        spn_mangaLarga = view.findViewById(R.id.spn_mangaLarga);
-        spn_tramaGruesa = view.findViewById(R.id.spn_tramaGruesa);
-        spn_utilizaEpps = view.findViewById(R.id.spn_utilizaEpps);
-        spn_guiaUsoEpp = view.findViewById(R.id.spn_guiaUsoEpp);
-        spn_frecuencia2horas = view.findViewById(R.id.spn_frecuencia2horas);
-        spn_frecuencia30min = view.findViewById(R.id.spn_frecuencia30min);
+        radioGroupProteccionBrillo = view.findViewById(R.id.radioGroupProteccionBrillo);// desde aqui se va a editar
+        radioGroupProteccionLateral = view.findViewById(R.id.radioGroupProteccionLateral);
+        radioGroupLentesOscuroo = view.findViewById(R.id.radioGroupLentesOscuroo);
+        radioGroupCertificacion = view.findViewById(R.id.radioGroupCertificacion);
+        radioGroupColorOscuro = view.findViewById(R.id.radioGroupColorOscuro);
+        radioGroupMangaLarga = view.findViewById(R.id.radioGroupMangaLarga);
+        radioGroupTramaGruesa = view.findViewById(R.id.radioGroupTramaGruesa);
+        radioGroupUtilGorro = view.findViewById(R.id.radioGroupUtilGorro);
+        radioGroupProtLegionario = view.findViewById(R.id.radioGroupProtLegionario);
+        radioGroupAlaAncha = view.findViewById(R.id.radioGroupAlaAncha);
+        radioGroupUtilCasco = view.findViewById(R.id.radioGroupUtilCasco);
+        radioGroupCubreNuca = view.findViewById(R.id.radioGroupCubreNuca);
+        radioGroupUtilFPS = view.findViewById(R.id.radioGroupUtilFPS);// hasta aqui se va a editar
+        radioGroupGuiaFPS = view.findViewById(R.id.radioGroupGuiaFPS);
+        radioGroupFrecuenciaAplicacion = view.findViewById(R.id.radioGroupFrecuenciaAplicacion);
+        txt_otraFrecuencia = view.findViewById(R.id.txt_otraFrecuencia);
+
         txt_otrosEpps = view.findViewById(R.id.txt_otrosEpps);
         txt_uW_cm2 = view.findViewById(R.id.txt_uW_cm2);
 

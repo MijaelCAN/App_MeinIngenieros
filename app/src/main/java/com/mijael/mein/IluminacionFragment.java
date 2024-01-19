@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -92,7 +93,7 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
     Button btnSubirFotoIlu;
     FloatingActionButton btn_guardar;
     ExtendedFloatingActionButton btnCancelar;
-    LinearLayout linearOtroHorario, linearOtroRegimen;
+    LinearLayout linearOtroHorario, linearOtroRegimen, linearPuntosMedicion;
     ImageView imgIliminacion;
     Uri uri;
     public IluminacionFragment() {
@@ -119,6 +120,7 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        List<EditText> editTextList = new ArrayList<>();
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_iluminacion,container,false);
         InputDateConfiguration config = new InputDateConfiguration(getActivity(),id_colaborador,nom_Empresa,rootView);
@@ -231,8 +233,8 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                 valorLargoEscri = txt_largoEscri.getText().toString();
                 valorAnchoEscri = txt_anchoEscri.getText().toString();
                 Log.e("gggg","ENTRO AL CAMBIO");
-                if (!valorLargoEscri.isEmpty() && TextUtils.isDigitsOnly(texto)&&
-                    !valorAnchoEscri.isEmpty() && TextUtils.isDigitsOnly(texto)) {
+                if (!valorLargoEscri.isEmpty() && esNumero(texto)&&
+                    !valorAnchoEscri.isEmpty() && esNumero(texto)) {
                         Valida_Punto_Medicion(valorLargoEscri, valorAnchoEscri);
                 }else {
                     txt_numPuntosMedicion.setText("");
@@ -271,6 +273,47 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
         txt_longSalon.addTextChangedListener(watcher1);
         txt_anchoSalon.addTextChangedListener(watcher1);
         txt_alt_PlanosTrabajo_ilu.addTextChangedListener(watcher1);
+
+        TextWatcher watcher2 = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                linearPuntosMedicion.removeAllViews(); // Elimina todos los EditText previos
+                editTextList.clear();
+                int puntos;
+                try {
+                    puntos = Integer.parseInt(s.toString());
+                } catch (NumberFormatException e) {
+                    puntos = 0;
+                }
+                Log.e("sdfsdfs", "ENTRO AL METODO Y HAY " + puntos + "puntos");
+                // Crea los EditText de forma dinámica y los agrega al layout
+                for (int i = 0; i < puntos; i++) {
+                    EditText editText = new EditText(getActivity());
+                    editText.setHint("IL-0" + (i + 1));
+                    editText.setPadding(8,0,0,0);
+                    editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                    editText.setBackgroundResource(R.drawable.style_input);
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                    );
+                    params.setMargins(0, 8, 0, 0);
+                    editText.setLayoutParams(params);
+                    linearPuntosMedicion.addView(editText);
+                    editTextList.add(editText); //
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        };
+        txt_numPuntosMedicion.addTextChangedListener(watcher2);
+        txt_numMinPuntosMedicion.addTextChangedListener(watcher2);
 
         estadoLuminarias.setAdapter(config.LlenarSpinner(new String[]{"Operativa","Inoperativa/Averiada","Tenues/Amarillas"}));
 
@@ -316,14 +359,14 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                                 //todo lo que es Oculto no es Validado
 
                         //validar.validarImagen(cargarImagen,getActivity()) &&
-                        validar.validarCampoObligatorio(il1) &&
-                        validar.validarCampoObligatorio(il2) &&
-                        validar.validarCampoObligatorio(il3) &&
-                        validar.validarCampoObligatorio(il4) &&
-                        validar.validarCampoObligatorio(il5) &&
-                        validar.validarCampoObligatorio(il6) &&
-                        validar.validarCampoObligatorio(il7) &&
-                        validar.validarCampoObligatorio(il8) &&
+                        //validar.validarCampoObligatorio(il1) &&
+                        //validar.validarCampoObligatorio(il2) &&
+                        //validar.validarCampoObligatorio(il3) &&
+                        //validar.validarCampoObligatorio(il4) &&
+                        //validar.validarCampoObligatorio(il5) &&
+                        //validar.validarCampoObligatorio(il6) &&
+                        //validar.validarCampoObligatorio(il7) &&
+                        //validar.validarCampoObligatorio(il8) &&
                         //validar.validarCampoObligatorio(areaTrabajoM2) &&
                         validar.validarCampoObligatorio(numLuminarias) &&
                         //validar.validarCampoObligatorio(txt_altura_pTrabajo) &&
@@ -336,7 +379,7 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                         validar.validarCampoObligatorio(observaciones)
                 ){
                     String valorTvLuxometro = tv_luxometro.getText().toString();
-                    String valorGroupLuminaria = validar.getValor2(radioGroupLuminaria,rootView);
+                    int valorGroupLuminaria = validar.getValor2(radioGroupLuminaria,rootView);
                     String valorUbiEquipo = ubicacionEquipo.getText().toString();
                     String valorHoraVerificacion = hora_verificacion.getText().toString();
                     String valorLux = cbx_lux.getSelectedItem().toString();
@@ -371,7 +414,12 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                     String valorNumPuntoMed = txt_numPuntosMedicion.getText().toString();
                     String valorAltura_pTrabajo = txt_altura_pTrabajo.getText().toString();
 
-
+                    List<String> editTextValues = new ArrayList<>();
+                    for (EditText editText : editTextList) {
+                        editTextValues.add(editText.getText().toString());
+                    }
+                    Log.e("dfsdfsdf",editTextValues.toString());
+                    String valorPuntosMedicion = String.join("*", editTextValues.toArray(new String[0]));
                     String valorIL1 = il1.getText().toString();
                     String valorIL2 = il2.getText().toString();
                     String valorIL3 = il3.getText().toString();
@@ -404,7 +452,7 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                             id_colaborador,
                             nuevo.getUsuario_nombres(),
                             String.valueOf(equipos1.getId_equipo_registro()),
-                            equipos1.getCod_equipo(),
+                            equipos1.getCodigo(),
                             equipos1.getNombre(),
                             equipos1.getSerie(),
                             valorHoraVerificacion,
@@ -444,15 +492,8 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                             valoConstanteSalon,
                             valorNumMinPuntoMed,
                             valorNumLuminarias,
-                            valorIL1,
-                            valorIL2,
-                            valorIL3,
-                            valorIL4,
-                            valorIL5,
-                            valorIL6,
-                            valorIL7,
-                            valorIL8,
-                            valorGroupLuminaria,
+                            valorPuntosMedicion,
+                            "" +valorGroupLuminaria,
                             "area m2",
                             valorAltura_pTrabajo,
                             valorNumLamparas,
@@ -600,6 +641,7 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
         txt_otroHorario = view.findViewById(R.id.txt_otroHorario);
         linearOtroRegimen = view.findViewById(R.id.linearOtroRegimen);
         txt_otroRegimen = view.findViewById(R.id.txt_otroRegimen);
+        linearPuntosMedicion = view.findViewById(R.id.linearPuntosMedicion);
 
         Card_Puesto = view.findViewById(R.id.Card_Puesto);
         Card_Area = view.findViewById(R.id.Card_Area);
@@ -626,9 +668,10 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
         float valorMax = Math.max(valorLargoEs, valorAnchoEs);
         float valorMin = Math.min(valorLargoEs, valorAnchoEs);
 
-        float resultado = Math.round((valorMin < 2 ? valorMax : valorMin) / (0.2 * Math.pow(5, Math.log10(valorMin < 2 ? valorMax : valorMin))));
-        Log.e("gghfg",String.valueOf(resultado));
-        txt_numPuntosMedicion.setText(String.valueOf(resultado));
+        Double resultado = (valorMin < 2 ? valorMax : valorMin) / (0.2 * Math.pow(5, Math.log10(valorMin < 2 ? valorMax : valorMin)));
+        int resultado1 = (int)Math.round(resultado);
+        Log.e("gghfg",String.valueOf(resultado1));
+        txt_numPuntosMedicion.setText(String.valueOf(resultado1));
     }
 
     public void Constante_Salon(String longSalon, String anchoSalon, String altPlanLumin){
@@ -663,4 +706,16 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
         }
         txt_numMinPuntosMedicion.setText(String.valueOf(resultado));
     }
+    public boolean esNumero(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            double d = Double.parseDouble(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
+    }
+
 }

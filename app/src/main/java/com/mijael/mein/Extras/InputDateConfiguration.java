@@ -5,6 +5,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -13,10 +14,13 @@ import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.FragmentContainerView;
 
 import com.mijael.mein.DAO.DAO_DatosLocal;
@@ -25,10 +29,14 @@ import com.mijael.mein.Entidades.Usuario;
 import com.mijael.mein.MainActivity;
 import com.mijael.mein.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class InputDateConfiguration {
     public int hora=0;
@@ -129,14 +137,14 @@ public class InputDateConfiguration {
 
         List<String> datosParaSpinner = DAO_DatosLocal.obtenerDatosParaSpinner(nombreTabla, campoTabla,context);
         ArrayList<String> listaDatos = new ArrayList<>();
-        listaDatos.add("seleccione");
+        listaDatos.add("");//SUGERENCIA PARA QUE NO APAREZCA SELECCIONE EN EL PDF
         listaDatos.addAll(datosParaSpinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, listaDatos);
         return adapter;
     }
     public ArrayAdapter<String> LlenarSpinner(String[] opciones){
         ArrayList<String> listaDatos = new ArrayList<>();
-        listaDatos.add("seleccione");
+        listaDatos.add("");//SUGERENCIA PARA QUE NO APAREZCA SELECCIONE EN EL PDF
         listaDatos.addAll(Arrays.asList(opciones));
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, listaDatos);
         return adapter;
@@ -207,5 +215,45 @@ public class InputDateConfiguration {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnected();
+    }
+
+    public String convertirFecha(String fechaEntradaStr) {
+        String fechaSalidaStr="";
+        if(!fechaEntradaStr.isEmpty()){
+            SimpleDateFormat formatoEntrada = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            try {
+                Date fechadate = formatoEntrada.parse(fechaEntradaStr);
+                SimpleDateFormat formatoSalida = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                fechaSalidaStr = formatoSalida.format(fechadate);
+                //tv_mostarFecha.setText(String.valueOf(fechaSalidaStr));
+
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return fechaSalidaStr;
+    }
+    public void mostrarOpcionesGone(RadioGroup group, int checkedId, CardView card, RadioButton radio) {
+        if (checkedId == radio.getId()) {
+            card.setVisibility(View.VISIBLE);
+        } else {
+            card.setVisibility(View.GONE);
+            limpiarElementos((ViewGroup) card.getChildAt(0));
+        }
+    }
+    private void limpiarElementos(ViewGroup viewGroup) {
+        int childCount = viewGroup.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View childView = viewGroup.getChildAt(i);
+            if (childView instanceof EditText) {
+                ((EditText) childView).setText("");
+            } else if (childView instanceof Spinner) {
+                ((Spinner) childView).setSelection(0);
+            } else if (childView instanceof RadioGroup) {
+                ((RadioGroup) childView).clearCheck();
+            } else if (childView instanceof ViewGroup) {
+                limpiarElementos((ViewGroup) childView);
+            }
+        }
     }
 }

@@ -33,11 +33,14 @@ import android.widget.TimePicker;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.mijael.mein.DAO.DAO_DatosLocal;
 import com.mijael.mein.DAO.DAO_Equipos;
 import com.mijael.mein.DAO.DAO_FormatosTrabajo;
+import com.mijael.mein.DAO.DAO_RegistroDosimetria;
 import com.mijael.mein.DAO.DAO_RegistroSonometria;
 import com.mijael.mein.DAO.DAO_Usuario;
+import com.mijael.mein.Entidades.Dosimetria_Registro;
 import com.mijael.mein.Entidades.Equipos;
 import com.mijael.mein.Entidades.Formatos_Trabajo;
 import com.mijael.mein.Entidades.Sonometria_Registro;
@@ -57,6 +60,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -278,7 +282,8 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
                         String fuenteRuido = validar.getValor(txt_fuenteGenRuido);
                         String a_concentracion = validar.getValor(cbx_aConcentracion);
                         String limPermisible = validar.getValor(tv_limitePermisible);
-                        String fechaMonitoreo = validar.getValor(tv_fechaMonitoreo);
+                        String f = tv_fechaMonitoreo.getText().toString();
+                        String fechaMonitoreo = config.convertirFecha(f);
                         String horaInicial = validar.getValor(tv_horaInicioMonitoreo);
                         String tiempoMedicion = validar.getValor(cbx_tiempoMedicion);
                         String horaFinal = validar.getValor(tv_horaFinal);
@@ -287,20 +292,37 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
                         String lminFinal = validar.getValor(tv_resLmin);
                         String lmaxFinal = validar.getValor(tv_resLmax);
                         String LequiFinal = validar.getValor(tv_resLeq);
+
+                        String valorLeq_md1 = txt_leq1.getText().toString();
+                        String valorLeq_md2 = txt_leq2.getText().toString();
+                        String valorLeq_md3 = txt_leq3.getText().toString();
+                        String valorLeq_md4 = txt_leq4.getText().toString();
+                        String valorLeq_md5 = txt_leq5.getText().toString();
+                        String valorLmax_md1 = txt_lmax1.getText().toString();
+                        String valorLmax_md2 = txt_lmax2.getText().toString();
+                        String valorLmax_md3 = txt_lmax3.getText().toString();
+                        String valorLmax_md4 = txt_lmax4.getText().toString();
+                        String valorLmax_md5 = txt_lmax5.getText().toString();
+                        String valorLmin_md1 = txt_lmin1.getText().toString();
+                        String valorLmin_md2 = txt_lmin2.getText().toString();
+                        String valorLmin_md3 = txt_lmin3.getText().toString();
+                        String valorLmin_md4 = txt_lmin4.getText().toString();
+                        String valorLmin_md5 = txt_lmin5.getText().toString();
+
                         //falta traerel valor de la imagen
-                        String valorIng = validar.getValor(radioGroupIng,rootView);
-                        String valorAislante = validar.getValor(radioGroup_Aislante,rootView);
-                        String valorCabinas = validar.getValor(radioGroup_Cabinas,rootView);
+                        int valorIng = validar.getValor2(radioGroupIng,rootView);
+                        int valorAislante = validar.getValor2(radioGroup_Aislante,rootView);
+                        int valorCabinas = validar.getValor2(radioGroup_Cabinas,rootView);
                         String otroIng = validar.getValor(txt_otroIng);
-                        String valorAdm = validar.getValor(radioGroupAdmin,rootView);
-                        String valorRiesgos = validar.getValor(radioGroupRiesgos,rootView);
-                        String valorPresionSono = validar.getValor(radioGroupPresionSono,rootView);
-                        String valorEppOblig = validar.getValor(radioGroupEppOblig,rootView);
-                        String valorTimeExpo = validar.getValor(radioGroupTimeExpo,rootView);
-                        String valorRotacion = validar.getValor(radioGroupRotacion,rootView);
+                        int valorAdm = validar.getValor2(radioGroupAdmin,rootView);
+                        int valorRiesgos = validar.getValor2(radioGroupRiesgos,rootView);
+                        int valorPresionSono = validar.getValor2(radioGroupPresionSono,rootView);
+                        int valorEppOblig = validar.getValor2(radioGroupEppOblig,rootView);
+                        int valorTimeExpo = validar.getValor2(radioGroupTimeExpo,rootView);
+                        int valorRotacion = validar.getValor2(radioGroupRotacion,rootView);
                         String otroAdm = validar.getValor(txt_otrosAdmin);
-                        String valorTapones = validar.getValor(radioGroupTapones,rootView);
-                        String valorOrej = validar.getValor(radioGroupOrej,rootView);
+                        int valorTapones = validar.getValor2(radioGroupTapones,rootView);
+                        int valorOrej = validar.getValor2(radioGroupOrej,rootView);
 
                         String marcaTapones = validar.getValor(cbx_marcaTapones);
                         String modeloTapones = validar.getValor(cbx_modeloTapones);
@@ -323,17 +345,17 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
                         Equipos equipo2 = equipos.Buscar(valorTvCalibrador);
                         Equipos equipo3 = equipos.Buscar(valorTvAnemometro);
 
-                        Sonometria_Registro registro = new Sonometria_Registro(
+                        Sonometria_Registro cabecera = new Sonometria_Registro(
                                 -1,
                                 "SO-0001",// irrelevante por ahira
                                 id_formato,
                                 id_plan_trabajo,
                                 id_pt_trabajo,
-                                equipo1.getCod_equipo(),
+                                equipo1.getCodigo(),
                                 equipo1.getNombre(),
-                                equipo2.getCod_equipo(),
+                                equipo2.getCodigo(),
                                 equipo2.getNombre(),
-                                equipo3.getCod_equipo(),
+                                equipo3.getCodigo(),
                                 equipo3.getNombre(),
                                 equipo1.getSerie(),
                                 equipo2.getSerie(),
@@ -342,7 +364,7 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
                                 String.valueOf(equipo2.getId_equipo_registro()),
                                 String.valueOf(equipo3.getId_equipo_registro()),
                                 id_colaborador,
-                                nuevo.getUsuario_nombres(),
+                                nuevo.getUsuario_nombres()+ " " +nuevo.getUsuario_apater()+" "+nuevo.getUsuario_amater(),
                                 horacalibracion,
                                 nivell,
                                 variacion,
@@ -363,23 +385,38 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
                                 lminFinal,
                                 lmaxFinal,
                                 LequiFinal,
-                                valorIng,
-                                valorAdm,
-                                valorAislante,
-                                valorCabinas,
+                                valorLeq_md1,
+                                valorLeq_md2,
+                                valorLeq_md3,
+                                valorLeq_md4,
+                                valorLeq_md5,
+                                valorLmax_md1,
+                                valorLmax_md2,
+                                valorLmax_md3,
+                                valorLmax_md4,
+                                valorLmax_md5,
+                                valorLmin_md1,
+                                valorLmin_md2,
+                                valorLmin_md3,
+                                valorLmin_md4,
+                                valorLmin_md5,
+                                "" +valorIng,
+                                "" +valorAdm,
+                                "" +valorAislante,
+                                "" +valorCabinas,
                                 otroIng,
-                                valorRiesgos,
-                                valorPresionSono,
-                                valorEppOblig,
-                                valorRotacion,
-                                valorTimeExpo,
+                                "" +valorRiesgos,
+                                "" +valorPresionSono,
+                                "" +valorEppOblig,
+                                "" +valorRotacion,
+                                "" + valorTimeExpo,
                                 otroAdm,
                                 oberv,
-                                valorTapones,
+                                "" +valorTapones,
                                 marcaTapones,
                                 modeloTapones,
                                 nrrTapones,
-                                valorOrej,
+                                "" +valorOrej,
                                 marcaOrej,
                                 modeloOrej,
                                 nrrOrej,
@@ -387,23 +424,33 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
                                 fecha_registro,
                                 id_colaborador
                         );
-                        DAO_RegistroSonometria nuevoRegistro = new DAO_RegistroSonometria(getActivity());
-                        boolean respuesta = nuevoRegistro.RegistroSonometria(registro);
-                        if(respuesta){
 
+                        if(config.isOnline()){
                             Retrofit retrofit = new Retrofit.Builder()
                                     .baseUrl("https://test.meiningenieros.pe/")
                                     .addConverterFactory(GsonConverterFactory.create())
                                     .build();
 
                             DosimetriaService service1 = retrofit.create(DosimetriaService.class);
+                            Object detalle = new Object();
+                            HashMap<String,Object> elemntos = new HashMap<>();
+                            elemntos.put("nombre", "MEIN");
 
                             Gson gson = new Gson();
-                            // Convertir el objeto persona a JSON
-                            String cadenaJson = gson.toJson(registro);
+                            // Crear un objeto JSON principal
+                            JsonObject jsonObject = new JsonObject();
+
+                            JsonObject registroJson = gson.toJsonTree(cabecera).getAsJsonObject();
+                            jsonObject.add("cabecera", registroJson);
+
+                            JsonObject detalleJson = gson.toJsonTree(detalle).getAsJsonObject();
+                            jsonObject.add("detalle", detalleJson);
+
+
+                            String cadenaJson = gson.toJson(jsonObject);
                             RequestBody json = RequestBody.create(MediaType.parse("application/json"), cadenaJson);
 
-                            Call<ResponseBody> call1 = service1.insertDosimetria(json);
+                            Call<ResponseBody> call1 = service1.insertSonometria(json); //INSERTAR A SONOMETRIA
                             call1.enqueue(new Callback<ResponseBody>() {
                                 @Override
                                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -418,24 +465,38 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
                                     Log.e("error", "Error al insertar el registro");
                                 }
                             });
+                            new AlertDialog.Builder(getContext())
+                                    .setTitle("Registro guardado en WEB")
+                                    .setMessage("El registro ha sido guardado exitosamente.")
+                                    .setPositiveButton(android.R.string.ok, null)
+                                    .show();
+                            getFragmentManager().popBackStack();
+                        }else{
 
+                            DAO_RegistroSonometria nuevoRegistro = new DAO_RegistroSonometria(getActivity());//INSTANCIAR LA CLASE PARA USAR EL METODO DE INSERTAR
+                            nuevoRegistro.RegistroSonometria(cabecera); //LLAMAR AL METODO PARA INSERTAR LOS REGISTROS
 
                             DAO_FormatosTrabajo dao_fromatosTrabajo = new DAO_FormatosTrabajo(getActivity());
                             for_Sonometria = dao_fromatosTrabajo.Buscar(id_plan_trabajo,id_formato);
                             for_Sonometria.setRealizado(for_Sonometria.getRealizado()+1);
                             for_Sonometria.setPor_realizar(for_Sonometria.getPor_realizar()-1);
                             dao_fromatosTrabajo.actualizarFormatoTrabajo(for_Sonometria);
+
+                            // O muestra un AlertDialog con el mensaje
+                            new AlertDialog.Builder(getActivity())
+                                    .setTitle("Registro guardado Localmente")
+                                    .setMessage("El registro ha sido guardado exitosamente.")
+                                    .setPositiveButton(android.R.string.ok, null)
+                                    .show();
+
+                            // Regresa al Fragment anterior
+                            getFragmentManager().popBackStack();
+
                         }
 
-                        // O muestra un AlertDialog con el mensaje
-                        new AlertDialog.Builder(getActivity())
-                                .setTitle("Registro guardado")
-                                .setMessage("El registro ha sido guardado exitosamente.")
-                                .setPositiveButton(android.R.string.ok, null)
-                                .show();
-
-                        // Regresa al Fragment anterior
-                        getFragmentManager().popBackStack();
+                    }else {
+                        tv_calibrador.setError("Equipo no debe Repetir");
+                        tv_calibrador.requestFocus();
                     }
                 }
             }
@@ -636,14 +697,14 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
 
         List<String> datosParaSpinner = DAO_DatosLocal.obtenerDatosParaSpinner(nombreTabla, campoTabla,getActivity());
         ArrayList<String> listaDatos = new ArrayList<>();
-        listaDatos.add("seleccione");
+        listaDatos.add(""); //SUGERENCIA PARA QUE NO APAREZCA SELECCIONE EN EL PDF
         listaDatos.addAll(datosParaSpinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, listaDatos);
         return adapter;
     }
     private ArrayAdapter<String> LlenarSpinner(String opcion1, String opcion2){
         ArrayList<String> listaDatos = new ArrayList<>();
-        listaDatos.add("seleccione");
+        listaDatos.add("");//SUGERENCIA PARA QUE NO APAREZCA SELECCIONE EN EL PDF
         listaDatos.add(opcion1);
         listaDatos.add(opcion2);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, listaDatos);
@@ -683,6 +744,7 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
             card.setVisibility(View.VISIBLE);
         } else {
             card.setVisibility(View.GONE);
+            limpiarElementos((ViewGroup) card.getChildAt(0));
         }
     }
     private void LlenarNrr(String nomTabla, String campoTabla, Spinner spinner, TextView txt) {
@@ -723,7 +785,8 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
         String med14 = txt_lmax4.getText().toString();
         String med15 = txt_lmax5.getText().toString();
 
-        double fj = 60.0 / 600.0;
+        //double fj = 60.0 / 600.0;
+        double fj = 5;
         double fj_final = 15.0 / 600.0;
 
 
@@ -790,13 +853,31 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
         double multi12 = (1 * fj * pot_lj12);
         double multi13 = (1 * fj * pot_lj13);
         double multi14 = !med14.isEmpty() ? (1 * fj * pot_lj14) : 0.0;
-        double multi15 = !med15.isEmpty() ? (1 * fj_final * pot_lj15) : 0.0;
+        double multi15 = !med15.isEmpty() ? (1 * fj * pot_lj15) : 0.0;
+        //double multi15 = !med15.isEmpty() ? (1 * fj_final * pot_lj15) : 0.0;
 
-        double suma = multi1 + multi2 + multi3 + multi4 + multi5 + multi6 + multi7 + multi8 + multi9 + multi10 + multi11 + multi12 + multi13 + multi14 + multi15;
-        double Leq_dBA = Math.round(10 * Math.log10(suma) * 10) / 10.0;
+        double suma = (multi1 + multi2 + multi3)/15;
+        //double suma = (multi1 + multi2 + multi3 + multi4 + multi5 + multi6 + multi7 + multi8 + multi9 + multi10 + multi11 + multi12 + multi13 + multi14 + multi15)/15;
+        double Leq_dBA = Math.round(10 * Math.log10(suma) * 100) / 100.0;
         tv_resLmin.setText(String.valueOf(minimo));
         tv_resLmax.setText(String.valueOf(maximo));
         tv_resLeq.setText(String.valueOf(Leq_dBA));
         calculoRealizado = true;
+    }
+
+    private void limpiarElementos(ViewGroup viewGroup) {
+        int childCount = viewGroup.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View childView = viewGroup.getChildAt(i);
+            if (childView instanceof EditText) {
+                ((EditText) childView).setText("");
+            } else if (childView instanceof Spinner) {
+                ((Spinner) childView).setSelection(0);
+            } else if (childView instanceof RadioGroup) {
+                ((RadioGroup) childView).clearCheck();
+            } else if (childView instanceof ViewGroup) {
+                limpiarElementos((ViewGroup) childView);
+            }
+        }
     }
 }

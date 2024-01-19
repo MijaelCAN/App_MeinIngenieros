@@ -174,10 +174,10 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
         check_ruidoGenerado.setOnCheckedChangeListener(((buttonView, isChecked) -> txt_otroMotivo.setVisibility(isChecked?View.VISIBLE:View.GONE)));
 
         radioGroup_Enferm.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {@Override public void onCheckedChanged(RadioGroup group, int checkedId) {mostrarOpcionesEnferm(group,checkedId);}});
-        radioGroup_Ingenieria.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {@Override public void onCheckedChanged(RadioGroup group, int checkedId) {mostrarOpcionesGone(group,checkedId,card_ingenier,radio_ingenierSI);}});
-        radioGroup_Adminis.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {@Override public void onCheckedChanged(RadioGroup group, int checkedId) {mostrarOpcionesGone(group,checkedId,card_adminis,radio_adminisSI);}});
-        radioGroup_Tapones.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {@Override public void onCheckedChanged(RadioGroup group, int checkedId) {mostrarOpcionesGone(group,checkedId,card_tapones,radio_taponesSI);}});
-        radioGroup_Orejeras.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {@Override public void onCheckedChanged(RadioGroup group, int checkedId) {mostrarOpcionesGone(group,checkedId,card_orejeras,radio_orejerasSI);}});
+        radioGroup_Ingenieria.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {@Override public void onCheckedChanged(RadioGroup group, int checkedId) {config.mostrarOpcionesGone(group,checkedId,card_ingenier,radio_ingenierSI);}});
+        radioGroup_Adminis.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {@Override public void onCheckedChanged(RadioGroup group, int checkedId) {config.mostrarOpcionesGone(group,checkedId,card_adminis,radio_adminisSI);}});
+        radioGroup_Tapones.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {@Override public void onCheckedChanged(RadioGroup group, int checkedId) {config.mostrarOpcionesGone(group,checkedId,card_tapones,radio_taponesSI);}});
+        radioGroup_Orejeras.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {@Override public void onCheckedChanged(RadioGroup group, int checkedId) {config.mostrarOpcionesGone(group,checkedId,card_orejeras,radio_orejerasSI);}});
 
         config.MostrarCampos(linearOtroHorario,cbx_horarioTrabajo);
         config.MostrarCampos(linearOtroRegimen,cbx_regimen);
@@ -220,7 +220,7 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
                         validar.validarCampoObligatorio(tv_horaInicial)&&
                         validar.validarCampoObligatorio(txt_jornada)&&
                         validar.validarCampoObligatorio(txt_tiempoExposicion)&&
-                        validar.validarCampoObligatorio(txt_otroMotivo)&&
+                        //validar.validarCampoObligatorio(txt_otroMotivo)&&
                         validar.validarCampoObligatorio(txt_otro)&&
                         // CAMPO DE FOTOGRAFIA
                         validar.validarCampoObligatorio(cbx_tipoDoc)&&
@@ -245,14 +245,9 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
                     String valorTvCalibrador = tv_calibrador.getText().toString();
                     if(!valorTvDosimetro.equals(valorTvCalibrador)){
                         String valorTvHora = tv_hora.getText().toString();
-                        String Fecha = tv_fecha.getText().toString();
-                        Date valorTvFecha;
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                        try {
-                            valorTvFecha = simpleDateFormat.parse(Fecha);
-                        } catch (ParseException e) {
-                            throw new RuntimeException(e);
-                        }
+                        String f = tv_fecha.getText().toString();
+                        String valorTvFecha = config.convertirFecha(f);
+                        Log.e("valorFECHA", String.valueOf(valorTvFecha));
                         String valorTvH_Inicial = tv_horaInicial.getText().toString();
                         String valorTvH_Final = tv_horaFinal.getText().toString();
 
@@ -271,27 +266,30 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
                         String valorTxtOtroAdministrativo = txt_otroAdministrativo.getText().toString();
 
 
-                        String valorRuidoExterno = check_ruidoExterno.getText().toString();
+                        /*String valorRuidoExterno = check_ruidoExterno.getText().toString();
                         String valorRuidocontiguo = check_Contiguo.getText().toString();
-                        String valorRuidoGenePor = check_ruidoGenerado.getText().toString();
+                        String valorRuidoGenePor = check_ruidoGenerado.getText().toString();*/
+                        int valorRuidoExterno = check_ruidoExterno.isChecked() ? 1 : 0;
+                        int valorRuidocontiguo = check_Contiguo.isChecked() ? 1 : 0;
+                        int valorRuidoGenePor = check_ruidoGenerado.isChecked() ? 1 : 0;
 
-                        String valorMolestiOido = validar.getValor2(radioGroup_Oido,rootView);
-                        String valorEnferOido= validar.getValor2(radioGroup_Enferm,rootView);
+                        int valorMolestiOido = validar.getValor2(radioGroup_Oido,rootView);
+                        int valorEnferOido= validar.getValor2(radioGroup_Enferm,rootView);
                         String valorDetalleEnf = txt_detalleEnferm.getText().toString();
-                        String valorGroupIng = validar.getValor2(radioGroup_Ingenieria,rootView);
-                        String valorGroupAislante = validar.getValor2(radioGroup_Aislante,rootView);
-                        String valorGroupFachada = validar.getValor2(radioGroup_Fachada,rootView);
-                        String valorGroupTechos = validar.getValor2(radioGroup_Techo,rootView);
-                        String valorGroupCerramiento = validar.getValor2(radioGroup_Cerramiento,rootView);
-                        String valorGroupCabinas = validar.getValor2(radioGroup_Cabinas,rootView);
-                        String valorGroupAdm = validar.getValor2(radioGroup_Adminis,rootView);
-                        String valorGroupCapac = validar.getValor2(radioGroup_Capac,rootView);
-                        String valorGroupSenalPresion = validar.getValor2(radioGroup_SenalPresion,rootView);
-                        String valorGroupSenalEpp = validar.getValor2(radioGroup_SenalEpps,rootView);
-                        String valorGroupAdmTiempoExpo = validar.getValor2(radioGroup_AdmTiempoExpo,rootView);
-                        String valorGroupRotacion = validar.getValor2(radioGroup_Rotacion,rootView);
-                        String valorGroupoTapones = validar.getValor2(radioGroup_Tapones,rootView);
-                        String valorGroupOrejeras = validar.getValor2(radioGroup_Orejeras,rootView);
+                        int valorGroupIng = validar.getValor2(radioGroup_Ingenieria,rootView);
+                        int valorGroupAislante = validar.getValor2(radioGroup_Aislante,rootView);
+                        int valorGroupFachada = validar.getValor2(radioGroup_Fachada,rootView);
+                        int valorGroupTechos = validar.getValor2(radioGroup_Techo,rootView);
+                        int valorGroupCerramiento = validar.getValor2(radioGroup_Cerramiento,rootView);
+                        int valorGroupCabinas = validar.getValor2(radioGroup_Cabinas,rootView);
+                        int valorGroupAdm = validar.getValor2(radioGroup_Adminis,rootView);
+                        int valorGroupCapac = validar.getValor2(radioGroup_Capac,rootView);
+                        int valorGroupSenalPresion = validar.getValor2(radioGroup_SenalPresion,rootView);
+                        int valorGroupSenalEpp = validar.getValor2(radioGroup_SenalEpps,rootView);
+                        int valorGroupAdmTiempoExpo = validar.getValor2(radioGroup_AdmTiempoExpo,rootView);
+                        int valorGroupRotacion = validar.getValor2(radioGroup_Rotacion,rootView);
+                        int valorGroupoTapones = validar.getValor2(radioGroup_Tapones,rootView);
+                        int valorGroupOrejeras = validar.getValor2(radioGroup_Orejeras,rootView);
 
                         String valorMarcaTapones = cbx_marcaTapon.getSelectedItem().toString();
                         String valorModeloTapones = cbx_modeloTapon.getSelectedItem().toString();
@@ -312,8 +310,8 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
                         String valorSeleccionadoCbxHoraioTrabajo = cbx_horarioTrabajo.getSelectedItem().toString();
                         String valorSeleccionadoCbxRegimen = cbx_regimen.getSelectedItem().toString();
                         String valorSeleccionadoCbxRefrigerio = cbx_refrigerio.getSelectedItem().toString();
-                        String valorTiempoCargoAnio = cbx_tiempoCargoAnios.getSelectedItem().toString();
-                        String valorTiempoCargoMeses = cbx_tiempoCargoMeses.getSelectedItem().toString();
+                        String valorTiempoCargoAnio = cbx_tiempoCargoAnios.getSelectedItem().toString() + " año(s)";
+                        String valorTiempoCargoMeses = cbx_tiempoCargoMeses.getSelectedItem().toString() + " mes(es)";
                         String valorSeleccionadoCbxMeses = cbx_meses.getSelectedItem().toString();
                         String valorSeleccionadoCbxAnio = cbx_anio.getSelectedItem().toString();
 
@@ -354,7 +352,7 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
                                 String.valueOf(equipo1.getId_equipo_registro()),
                                 String.valueOf(equipo2.getId_equipo_registro()),
                                 id_colaborador,
-                                nuevo.getUsuario_nombres(),
+                                nuevo.getUsuario_nombres()+" "+nuevo.getUsuario_apater()+" "+nuevo.getUsuario_amater(),
                                 valorTvHora,
                                 valorSeleccionadoCbxNivel,
                                 valorSeleccionadoCbxVariacion,
@@ -370,9 +368,9 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
                                 valorTxtAreaTrabajo,
                                 valorTxtActividades,
                                 valorTxtEdad,
-                                valorRuidoExterno,
-                                valorRuidocontiguo,
-                                valorRuidoGenePor,
+                                ""+valorRuidoExterno,
+                                ""+valorRuidocontiguo,
+                                ""+valorRuidoGenePor,
                                 valorTxtOtroMotivo,
                                 valorTxtOtro,
                                 valorSeleccionadoCbxHoraioTrabajo,
@@ -380,31 +378,31 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
                                 valorSeleccionadoCbxRefrigerio,
                                 valorTiempoCargoAnio,
                                 valorTiempoCargoMeses,
-                                valorMolestiOido,
-                                valorEnferOido,
+                                String.valueOf(valorMolestiOido),
+                                String.valueOf(valorEnferOido),
                                 valorDetalleEnf,
                                 "fecha ultimo examen",
                                 valorSeleccionadoCbxMeses,
                                 valorSeleccionadoCbxAnio,
-                                valorGroupIng,
-                                valorGroupAislante,
-                                valorGroupTechos,
-                                valorGroupCabinas,
-                                valorGroupFachada,
-                                valorGroupCerramiento,
+                                String.valueOf(valorGroupIng),
+                                String.valueOf(valorGroupAislante),
+                                String.valueOf(valorGroupTechos),
+                                String.valueOf(valorGroupCabinas),
+                                String.valueOf(valorGroupFachada),
+                                String.valueOf(valorGroupCerramiento),
                                 valorTxtOtroIngenieria,
-                                valorGroupAdm,
-                                valorGroupCapac,
-                                valorGroupSenalPresion,
-                                valorGroupSenalEpp,
-                                valorGroupRotacion,
+                                String.valueOf(valorGroupAdm),
+                                String.valueOf(valorGroupCapac),
+                                String.valueOf(valorGroupSenalPresion),
+                                String.valueOf(valorGroupSenalEpp),
+                                String.valueOf(valorGroupRotacion),
                                 valorTxtTiempo_Expo,
                                 valorTxtOtroAdministrativo,
-                                valorGroupoTapones,
+                                String.valueOf(valorGroupoTapones),
                                 valorMarcaTapones,
                                 valorModeloTapones,
                                 valorNrrTapones,
-                                valorGroupOrejeras,
+                                String.valueOf(valorGroupOrejeras),
                                 valorMarcaOrejeras,
                                 valorModeloOrjeras,
                                 valorNrrOrejeras,
@@ -508,6 +506,7 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
             txt_detalleEnferm.setVisibility(View.VISIBLE);
         } else {
             txt_detalleEnferm.setVisibility(View.GONE);
+            txt_detalleEnferm.setText("");
         }
     }
     private void mostrarOpcionesGone(RadioGroup group, int checkedId, CardView card, RadioButton radio) {
@@ -633,7 +632,7 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
 
         List<String> datosParaSpinner = DAO_DatosLocal.obtenerDatosParaSpinner(nombreTabla, campoTabla,getActivity());
         ArrayList<String> listaDatos = new ArrayList<>();
-        listaDatos.add("Seleccione");
+        listaDatos.add("");
         listaDatos.addAll(datosParaSpinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, listaDatos);
         return adapter;
@@ -729,5 +728,19 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
         params.topMargin = 120;
         fragmentContainer.setLayoutParams(params);
     }
-
+    private void limpiarElementos(ViewGroup viewGroup) {
+        int childCount = viewGroup.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View childView = viewGroup.getChildAt(i);
+            if (childView instanceof EditText) {
+                ((EditText) childView).setText("");
+            } else if (childView instanceof Spinner) {
+                ((Spinner) childView).setSelection(0);
+            } else if (childView instanceof RadioGroup) {
+                ((RadioGroup) childView).clearCheck();
+            } else if (childView instanceof ViewGroup) {
+                limpiarElementos((ViewGroup) childView);
+            }
+        }
+    }
 }

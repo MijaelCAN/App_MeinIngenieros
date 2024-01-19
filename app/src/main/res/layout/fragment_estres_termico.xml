@@ -1146,35 +1146,56 @@ tools:context=".EstresTermicoFragment">
                         android:text="Control administrativo"
                         android:textColor="@color/generic_color"
                         android:textSize="19sp" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Tiempo de cargo"
-                        android:textSize="12dp"
-                        android:fontFamily="sans-serif-light"
-                        android:textColor="@color/black"/>
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
-                        <Spinner
-                            android:id="@+id/spn_timeCargoAnyo"
-                            android:layout_width="match_parent"
+                        <LinearLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
                             android:layout_weight="1"
-                            android:background="@drawable/style_input"
-                            android:textSize="10sp" />
-                        <Spinner
-                            android:id="@+id/spn_timeCargoMes"
-                            android:layout_width="match_parent"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Tiempo ocupando el cargo(Años):"
+                                android:textSize="12dp"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black"/>
+                            <Spinner
+                                android:id="@+id/spn_timeCargoAnyo"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/style_input"
+                                android:textSize="10sp" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginLeft="15dp"
                             android:layout_weight="1"
-                            android:background="@drawable/style_input"
-                            android:textSize="10sp" />
+                            android:orientation="vertical"
+                            android:layout_marginLeft="15dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Tiempo ocupando el cargo(Meses):"
+                                android:textSize="12dp"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="@color/black"/>
+                            <Spinner
+                                android:id="@+id/spn_timeCargoMes"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/style_input"
+                                android:textSize="10sp" />
+                        </LinearLayout>
                     </LinearLayout>
                     <TextView
                         android:layout_width="wrap_content"
@@ -1432,6 +1453,12 @@ tools:context=".EstresTermicoFragment">
                         android:text="Vestimenta del personal evaluado"
                         android:textColor="@color/black"
                         android:textSize="12sp" />
+                    <Spinner
+                        android:id="@+id/spn_vestimenta"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/style_input" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -1517,13 +1544,6 @@ tools:context=".EstresTermicoFragment">
                             android:fontFamily="sans-serif-light"
                             android:buttonTint="@color/teal_200"
                             android:text="Lentes" />
-
-                        <Spinner
-                            android:id="@+id/spn_vestimenta"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:background="@drawable/style_input" />
 
                         <CheckBox
                             android:id="@+id/check_guantes"
@@ -1853,7 +1873,7 @@ tools:context=".EstresTermicoFragment">
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="5dp"
                                         android:fontFamily="sans-serif-light"
-                                        android:inputType="none"
+                                        android:inputType="text"
                                         android:paddingLeft="8dp"
                                         android:textColor="@color/black"
                                         android:textColorHint="@color/black"
@@ -2010,7 +2030,7 @@ tools:context=".EstresTermicoFragment">
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:layout_weight="1"
-                                android:background="@drawable/style_input"
+                                android:background="@drawable/style_spinner"
                                 android:textSize="10sp" />
 
                             <TextView
@@ -2027,7 +2047,7 @@ tools:context=".EstresTermicoFragment">
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:layout_weight="1"
-                                android:background="@drawable/style_input" />
+                                android:background="@drawable/style_spinner" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -2043,7 +2063,7 @@ tools:context=".EstresTermicoFragment">
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:layout_weight="1"
-                                android:background="@drawable/style_input" />
+                                android:background="@drawable/style_spinner" />
 
                             <!-- ESPACIOOOOOOOOOOOOOOOOOOOOOO -->
                             <View
@@ -2115,7 +2135,7 @@ tools:context=".EstresTermicoFragment">
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:layout_weight="1"
-                                android:background="@drawable/style_input"
+                                android:background="@drawable/style_spinner"
                                 android:textSize="10sp" />
 
                             <TextView
@@ -2132,7 +2152,7 @@ tools:context=".EstresTermicoFragment">
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:layout_weight="1"
-                                android:background="@drawable/style_input" />
+                                android:background="@drawable/style_spinner" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -2148,7 +2168,7 @@ tools:context=".EstresTermicoFragment">
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:layout_weight="1"
-                                android:background="@drawable/style_input" />
+                                android:background="@drawable/style_spinner" />
                             <!-- ESPACIOOOOOOOOOOOOOOOOOOOOOO -->
                             <View
                                 android:layout_width="match_parent"
@@ -2219,7 +2239,7 @@ tools:context=".EstresTermicoFragment">
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:layout_weight="1"
-                                android:background="@drawable/style_input"
+                                android:background="@drawable/style_spinner"
                                 android:textSize="10sp" />
 
                             <TextView
@@ -2236,7 +2256,7 @@ tools:context=".EstresTermicoFragment">
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:layout_weight="1"
-                                android:background="@drawable/style_input" />
+                                android:background="@drawable/style_spinner" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -2252,7 +2272,7 @@ tools:context=".EstresTermicoFragment">
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:layout_weight="1"
-                                android:background="@drawable/style_input" />
+                                android:background="@drawable/style_spinner" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -2415,7 +2435,7 @@ tools:context=".EstresTermicoFragment">
                         android:id="@+id/spn_tipoMedicion"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/style_input"
+                        android:background="@drawable/style_spinner"
                         android:layout_marginTop="5dp"/>
                     <!--android:onItemSelected="Equipo_Vibracion"-->
 

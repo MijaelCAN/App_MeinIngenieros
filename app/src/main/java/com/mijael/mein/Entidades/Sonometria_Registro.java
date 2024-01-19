@@ -40,6 +40,24 @@ public class Sonometria_Registro {
     private String lmin;
     private String lmax;
     private String lequi;
+
+    public String lequi_md1; //AGREGADO RECIENTEMENTE INICIO
+    public String lequi_md2;
+    public String lequi_md3;
+    public String lequi_md4;
+    public String lequi_md5;
+    public String lmax_md1;
+    public String lmax_md2;
+    public String lmax_md3;
+    public String lmax_md4;
+    public String lmax_md5;
+    public String lmin_md1;
+    public String lmin_md2;
+    public String lmin_md3;
+    public String lmin_md4;
+    public String lmin_md5; //AGREAGDO RECUIENTEMENTE FINAL
+
+
     private String ctrl_ingenieria;
     private String ctrl_administrativo;
     private String aislamiento;
@@ -65,15 +83,16 @@ public class Sonometria_Registro {
     private String fec_reg;
     private String user_reg;
 
-    public Sonometria_Registro(int id, String cod_formato, String id_formato, String id_plan_trabajo, String id_pt_formato, String cod_equipo1, String nom_equipo1, String cod_equipo2, String nom_equipo2,
-                               String cod_equipo3, String nom_equipo3, String serie_eq1, String serie_eq2, String serie_eq3, String id_equipo1, String id_equipo2, String id_equipo3,
-                               String id_analista, String nom_analista, String hora_situ, String nivel, String variacion, String area_trabajo, String actividades_realizadas,
+    public Sonometria_Registro(int id, String cod_formato, String id_formato, String id_plan_trabajo, String id_pt_formato, String cod_equipo1, String nom_equipo1, String cod_equipo2,
+                               String nom_equipo2, String cod_equipo3, String nom_equipo3, String serie_eq1, String serie_eq2, String serie_eq3, String id_equipo1, String id_equipo2,
+                               String id_equipo3, String id_analista, String nom_analista, String hora_situ, String nivel, String variacion, String area_trabajo, String actividades_realizadas,
                                String id_horario, String hora_trabajo, String n_personas, String ruido_generado_por, String area_req_concentr, String lim_max_permis, String fec_monitoreo,
-                               String hora_inicial, String tiempo_medicion, String hora_final, String v_viento, String h_relativa, String lmin, String lmax, String lequi,
-                               String ctrl_ingenieria, String ctrl_administrativo, String aislamiento, String cabinas, String otro_ingenieria, String capacitacion,
-                               String senializacion_precion, String senializacion_epp, String rotacion, String tiempo_exposicion, String otro_administrativo, String observacion,
-                               String tapones_au, String marca_tapones_audi, String modelo_tapones_audi, String nrr_tapones_audi, String orejereas, String marca_orejeras,
-                               String modelo_orejeras, String nrr_orejeras, String jornada, String fec_reg, String user_reg) {
+                               String hora_inicial, String tiempo_medicion, String hora_final, String v_viento, String h_relativa, String lmin, String lmax, String lequi, String lequi_md1,
+                               String lequi_md2, String lequi_md3, String lequi_md4, String lequi_md5, String lmax_md1, String lmax_md2, String lmax_md3, String lmax_md4, String lmax_md5,
+                               String lmin_md1, String lmin_md2, String lmin_md3, String lmin_md4, String lmin_md5, String ctrl_ingenieria, String ctrl_administrativo, String aislamiento,
+                               String cabinas, String otro_ingenieria, String capacitacion, String senializacion_precion, String senializacion_epp, String rotacion, String tiempo_exposicion,
+                               String otro_administrativo, String observacion, String tapones_au, String marca_tapones_audi, String modelo_tapones_audi, String nrr_tapones_audi, String orejereas,
+                               String marca_orejeras, String modelo_orejeras, String nrr_orejeras, String jornada, String fec_reg, String user_reg) {
         this.id = id;
         this.cod_formato = cod_formato;
         this.id_formato = id_formato;
@@ -113,6 +132,21 @@ public class Sonometria_Registro {
         this.lmin = lmin;
         this.lmax = lmax;
         this.lequi = lequi;
+        this.lequi_md1 = lequi_md1;
+        this.lequi_md2 = lequi_md2;
+        this.lequi_md3 = lequi_md3;
+        this.lequi_md4 = lequi_md4;
+        this.lequi_md5 = lequi_md5;
+        this.lmax_md1 = lmax_md1;
+        this.lmax_md2 = lmax_md2;
+        this.lmax_md3 = lmax_md3;
+        this.lmax_md4 = lmax_md4;
+        this.lmax_md5 = lmax_md5;
+        this.lmin_md1 = lmin_md1;
+        this.lmin_md2 = lmin_md2;
+        this.lmin_md3 = lmin_md3;
+        this.lmin_md4 = lmin_md4;
+        this.lmin_md5 = lmin_md5;
         this.ctrl_ingenieria = ctrl_ingenieria;
         this.ctrl_administrativo = ctrl_administrativo;
         this.aislamiento = aislamiento;
@@ -134,7 +168,6 @@ public class Sonometria_Registro {
         this.modelo_orejeras = modelo_orejeras;
         this.nrr_orejeras = nrr_orejeras;
         this.jornada = jornada;
-        this.estado = 1;
         this.fec_reg = fec_reg;
         this.user_reg = user_reg;
     }
@@ -449,6 +482,127 @@ public class Sonometria_Registro {
 
     public void setLequi(String lequi) {
         this.lequi = lequi;
+    }
+
+
+    public String getLequi_md1() {
+        return lequi_md1;
+    }
+
+    public void setLequi_md1(String lequi_md1) {
+        this.lequi_md1 = lequi_md1;
+    }
+
+    public String getLequi_md2() {
+        return lequi_md2;
+    }
+
+    public void setLequi_md2(String lequi_md2) {
+        this.lequi_md2 = lequi_md2;
+    }
+
+    public String getLequi_md3() {
+        return lequi_md3;
+    }
+
+    public void setLequi_md3(String lequi_md3) {
+        this.lequi_md3 = lequi_md3;
+    }
+
+    public String getLequi_md4() {
+        return lequi_md4;
+    }
+
+    public void setLequi_md4(String lequi_md4) {
+        this.lequi_md4 = lequi_md4;
+    }
+
+    public String getLequi_md5() {
+        return lequi_md5;
+    }
+
+    public void setLequi_md5(String lequi_md5) {
+        this.lequi_md5 = lequi_md5;
+    }
+
+    public String getLmax_md1() {
+        return lmax_md1;
+    }
+
+    public void setLmax_md1(String lmax_md1) {
+        this.lmax_md1 = lmax_md1;
+    }
+
+    public String getLmax_md2() {
+        return lmax_md2;
+    }
+
+    public void setLmax_md2(String lmax_md2) {
+        this.lmax_md2 = lmax_md2;
+    }
+
+    public String getLmax_md3() {
+        return lmax_md3;
+    }
+
+    public void setLmax_md3(String lmax_md3) {
+        this.lmax_md3 = lmax_md3;
+    }
+
+    public String getLmax_md4() {
+        return lmax_md4;
+    }
+
+    public void setLmax_md4(String lmax_md4) {
+        this.lmax_md4 = lmax_md4;
+    }
+
+    public String getLmax_md5() {
+        return lmax_md5;
+    }
+
+    public void setLmax_md5(String lmax_md5) {
+        this.lmax_md5 = lmax_md5;
+    }
+
+    public String getLmin_md1() {
+        return lmin_md1;
+    }
+
+    public void setLmin_md1(String lmin_md1) {
+        this.lmin_md1 = lmin_md1;
+    }
+
+    public String getLmin_md2() {
+        return lmin_md2;
+    }
+
+    public void setLmin_md2(String lmin_md2) {
+        this.lmin_md2 = lmin_md2;
+    }
+
+    public String getLmin_md3() {
+        return lmin_md3;
+    }
+
+    public void setLmin_md3(String lmin_md3) {
+        this.lmin_md3 = lmin_md3;
+    }
+
+    public String getLmin_md4() {
+        return lmin_md4;
+    }
+
+    public void setLmin_md4(String lmin_md4) {
+        this.lmin_md4 = lmin_md4;
+    }
+
+    public String getLmin_md5() {
+        return lmin_md5;
+    }
+
+    public void setLmin_md5(String lmin_md5) {
+        this.lmin_md5 = lmin_md5;
     }
 
     public String getCtrl_ingenieria() {
