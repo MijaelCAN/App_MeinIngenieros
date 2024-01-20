@@ -250,7 +250,7 @@ tools:context=".VibracionFragment">
                         android:id="@+id/verf_insitusi"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Si"
+                        android:text="Sí"
                         android:checked="true"
                         android:fontFamily="sans-serif-light"
                         android:buttonTint="@color/teal_200"
@@ -510,7 +510,6 @@ tools:context=".VibracionFragment">
                                 android:layout_weight="1"
                                 android:background="@drawable/style_input" />
                         </LinearLayout>
-
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -534,8 +533,30 @@ tools:context=".VibracionFragment">
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/style_input"
                                 android:layout_marginTop="5dp"
-                                android:hint=" Digite"
-                                android:textSize="12sp"/>
+                                android:hint="Digite"
+                                android:paddingLeft="8dp"
+                                android:textSize="16sp"/>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/linearBuscarDni"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="15dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:id="@+id/btn_BuscarDni"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:textAllCaps="false"
+                                android:text="Buscar"
+                                android:textSize="19dp"
+                                android:textColor="@color/white"
+                                android:layout_marginTop="33dp"
+                                android:background="@drawable/style_4"/>
                         </LinearLayout>
                     </LinearLayout>
                     <!-- Fin de la primera fila Doble -->

@@ -64,7 +64,7 @@ public class RadiacionUvFragment extends Fragment implements FragmentoImagen.Ima
     String id_plan_trabajo, id_pt_trabajo, id_formato,id_colaborador, nom_Empresa;
     AutoCompleteTextView tv_equipoRadiacion;
     TextView  tv_horaVerificacion, tv_fechaMonitoreo, tv_horaInicioMoni, tv_horaFinalMoni, tv_colorPiel;
-    AppCompatButton btn_subirFotoRadiacion;
+    AppCompatButton btn_subirFotoRadiacion,btn_BuscarDni;
     FloatingActionButton btn_guardar;
     ExtendedFloatingActionButton btnCancelar;
     Spinner spn_tipoDoc, spn_tipoPiel, spn_timeCargoAnyo, spn_timeCargoMes, spn_horarioTrabajo, spn_regimen,
@@ -78,7 +78,7 @@ public class RadiacionUvFragment extends Fragment implements FragmentoImagen.Ima
             radioGroupProteccionBrillo, radioGroupProteccionLateral,radioGroupLentesOscuroo,radioGroupCertificacion,radioGroupColorOscuro, radioGroupMangaLarga,
             radioGroupTramaGruesa, radioGroupUtilGorro, radioGroupProtLegionario, radioGroupAlaAncha,radioGroupUtilCasco, radioGroupCubreNuca, radioGroupUtilFPS, radioGroupGuiaFPS,
             radioGroupFrecuenciaAplicacion;
-    LinearLayout linearOtroHorario, linearOtroRegimen, linearOtroRefrigerio;
+    LinearLayout linearOtroHorario, linearOtroRegimen, linearOtroRefrigerio,linearBuscarDni;
     ImageView imgRadiacion;
     Uri uri;
 
@@ -149,6 +149,37 @@ public class RadiacionUvFragment extends Fragment implements FragmentoImagen.Ima
 
             }
         });
+
+        spn_tipoDoc.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String itemSelecionado = parent.getItemAtPosition(position).toString();
+                if(itemSelecionado.equals("DNI")){
+                    if(config.isOnline()){
+                        linearBuscarDni.setVisibility(View.VISIBLE);
+                    }
+                }else{
+                    linearBuscarDni.setVisibility(View.GONE);
+                    txt_nomTrabajador.setText("");
+                    txt_numDoc.setText("");
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        btn_BuscarDni.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String dni = txt_numDoc.getText().toString();
+                if(!dni.isEmpty()){
+                    config.buscarTrabajador(dni,txt_nomTrabajador);
+                }
+            }
+        });
+
         config.llenarSpinnerConNumeros(spn_timeCargoAnyo,10,getActivity());
         config.llenarSpinnerConNumeros(spn_timeCargoMes,11,getActivity());
 
@@ -235,7 +266,11 @@ public class RadiacionUvFragment extends Fragment implements FragmentoImagen.Ima
                     String valorEquipoRadUv = tv_equipoRadiacion.getText().toString();
                     String valorHoraVerificacion = tv_horaVerificacion.getText().toString();
                     int valorGroupVerificacion = validar.getValor2(radioGroupVerificacion,rootView);
-                    String valorFechaMonitoreo = tv_fechaMonitoreo.getText().toString();
+
+                    String f = tv_fechaMonitoreo.getText().toString();
+                    String valorFechaMonitoreo = config.convertirFecha(f);
+                    //String valorFechaMonitoreo = tv_fechaMonitoreo.getText().toString();
+
                     String valorHoraInicioMoni = tv_horaInicioMoni.getText().toString();
                     String valorHoraFinalMoni = tv_horaFinalMoni.getText().toString();
                     String valorTimeExpo = txt_timeExpoHora.getText().toString();
@@ -307,7 +342,7 @@ public class RadiacionUvFragment extends Fragment implements FragmentoImagen.Ima
                             equipos1.getSerie(),
                             String.valueOf(equipos1.getId_equipo_registro()),
                             id_colaborador,
-                            nuevo.getUsuario_nombres(),
+                            nuevo.getUsuario_nombres()+ " " +nuevo.getUsuario_apater()+" "+nuevo.getUsuario_amater(),
                             "" +valorGroupVerificacion,
                             valorHoraVerificacion,
                             valorFechaMonitoreo,
@@ -519,6 +554,8 @@ public class RadiacionUvFragment extends Fragment implements FragmentoImagen.Ima
         txt_otroRegimen = view.findViewById(R.id.txt_otroRegimen);
         linearOtroRefrigerio = view.findViewById(R.id.linearOtroRefrigerio);
         txt_otroRefrigerio = view.findViewById(R.id.txt_otroRefrigerio);
+        linearBuscarDni = view.findViewById(R.id.linearBuscarDni);
+        btn_BuscarDni = view.findViewById(R.id.btn_BuscarDni);
 
 
     }

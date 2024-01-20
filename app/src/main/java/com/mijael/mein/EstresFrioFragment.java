@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -83,12 +84,12 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
             check_divGuantes;
 
     // Buttons
-    AppCompatButton btnSubirFotoEstres;
+    AppCompatButton btnSubirFotoEstres, btn_BuscarDni;
     FloatingActionButton btn_guardar;
     ExtendedFloatingActionButton btnCancelar;
 
     // LinearLayouts
-    LinearLayout linearOtroHorario, linearOtroRegimen, linearOtroRefrigerio;
+    LinearLayout linearOtroHorario, linearOtroRegimen, linearOtroRefrigerio, linearBuscarDni;
     ImageView imgVibra;
     Uri uri;
     public EstresFrioFragment() {
@@ -156,6 +157,38 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
         config.MostrarCampos(linearOtroHorario,spn_horarioTrabajo);
         config.MostrarCampos(linearOtroRegimen,spn_regimen);
         config.MostrarCampos(linearOtroRefrigerio,spn_horarioRefrig);
+
+        spn_tipoDoc.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String itemSelecionado = parent.getItemAtPosition(position).toString();
+                if(itemSelecionado.equals("DNI")){
+                    if(config.isOnline()){
+                        linearBuscarDni.setVisibility(View.VISIBLE);
+                    }
+                }else{
+                    linearBuscarDni.setVisibility(View.GONE);
+                    txt_nomTrab.setText("");
+                    txt_numDoc.setText("");
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        btn_BuscarDni.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String dni = txt_numDoc.getText().toString();
+                if(!dni.isEmpty()){
+                    config.buscarTrabajador(dni,txt_nomTrab);
+                }
+            }
+        });
+
+
 
         radioGroupIng.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {@Override public void onCheckedChanged(RadioGroup group, int checkedId) {config.mostrarOpcionesGone(group,checkedId,card_ingenier,radioIngSi);}});
         btnCancelar.setOnClickListener(new View.OnClickListener() {
@@ -471,6 +504,8 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
         txt_otroRegimen = view.findViewById(R.id.txt_otroRegimen);
         linearOtroRefrigerio = view.findViewById(R.id.linearOtroRefrigerio);
         txt_otroRefrigerio = view.findViewById(R.id.txt_otroRefrigerio);
+        linearBuscarDni = view.findViewById(R.id.linearBuscarDni);
+        btn_BuscarDni = view.findViewById(R.id.btn_BuscarDni);
 
         card_ingenier = view.findViewById(R.id.Card_Ingenieria);
         radioIngSi = view.findViewById(R.id.radioIngenieriaSi);

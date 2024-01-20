@@ -85,6 +85,7 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
     RadioButton radio_OidoSi, radio_enferSi, radio_ingenierSI, radio_adminisSI, radio_taponesSI,radio_orejerasSI;
     CardView card_ingenier, card_adminis, card_tapones, card_orejeras;
     FloatingActionButton fabGuardar;
+    AppCompatButton btn_BuscarDni;
     EditText txt_numDoc, txt_nombre, txt_edad, txt_areaTrabajo, txt_puestoTrabajo, txt_actividades,
     txt_leq, txt_lpico, txt_lmax, txt_lmin, txt_observaciones, txt_detalleEnferm;
     TextView tv_hora,tv_horaInicial, tv_horaFinal, tv_fecha, txt_otro, tv_imagen, tv_nombreUsuario, tv_nomEmpresa;
@@ -96,7 +97,7 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
     String id_plan_trabajo, id_pt_trabajo, id_formato, id_colaborador, nom_Empresa;
     Uri uri;
     ImageView image;
-    LinearLayout linearOtroHorario, linearOtroRegimen, linearOtroRefrigerio, linearOtroMarcaOrej, linearOtroMarcaTapones, linearOtroModeloOrej, linearOtroModeloTapones;
+    LinearLayout linearOtroHorario, linearOtroRegimen, linearOtroRefrigerio, linearOtroMarcaOrej, linearOtroMarcaTapones, linearOtroModeloOrej, linearOtroModeloTapones, linearBuscarDni;
     EditText txt_otroHorario, txt_otroRegimen, txt_otroRefrigerio, txt_otroMarcaOrej, txt_otroMarcaTapones, txt_otroModeloOrej, txt_otroModeloTapones;
     Formatos_Trabajo for_Dosimetria;
     public DosimetriaFragment() {
@@ -186,6 +187,40 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
         config.MostrarCampos(linearOtroMarcaTapones,cbx_marcaTapon);
         //config.MostrarCampos(linearOtroModeloOrej,cbx_modeloOrej);
         //config.MostrarCampos(linearOtroModeloTapones,cbx_modeloTapon);
+
+
+
+        cbx_tipoDoc.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String itemSelecionado = parent.getItemAtPosition(position).toString();
+                if(itemSelecionado.equals("DNI")){
+                    if(config.isOnline()){
+                        linearBuscarDni.setVisibility(View.VISIBLE);
+                    }
+                }else{
+                    linearBuscarDni.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        btn_BuscarDni.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String dni = txt_numDoc.getText().toString();
+                if(!dni.isEmpty()){
+                    config.buscarTrabajador(dni,txt_nombre);
+                }
+            }
+        });
+
+
+
+
         tv_imagen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -623,6 +658,8 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
         txt_otroModeloOrej = view.findViewById(R.id.txt_otroModeloOrej);
         linearOtroModeloTapones= view.findViewById(R.id.linearOtroModeloTapones);
         txt_otroModeloTapones = view.findViewById(R.id.txt_otroModeloTapones);
+        linearBuscarDni = view.findViewById(R.id.linearBuscarDni);
+        btn_BuscarDni = view.findViewById(R.id.btn_BuscarDni);
 
 
 

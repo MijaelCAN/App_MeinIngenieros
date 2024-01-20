@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -67,7 +68,7 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
     AutoCompleteTextView spn_equipoMedicion;
     TextView tv_horaVerificacion, tv_fechaMonitoreo, tv_horaInicioMoni, tv_horaFinalMoni;
     RadioGroup radioGroupVerificacion;
-    AppCompatButton btn_subirFotoElectro;
+    AppCompatButton btn_subirFotoElectro,btn_BuscarDni;
     FloatingActionButton btn_guardar;
     ExtendedFloatingActionButton btnCancelar;
     EditText txt_timeMedicion, txt_numDoc, txt_nomTrabajador, txt_edad, txt_areaTrabajo, txt_puestoTrabajo, txt_aRealizada,
@@ -77,7 +78,7 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
     ImageView imgRadiacion;
     Uri uri;
 
-    LinearLayout linearOtroHorario, linearOtroRegimen, linearOtroRefrigerio;
+    LinearLayout linearOtroHorario, linearOtroRegimen, linearOtroRefrigerio,linearBuscarDni;
     EditText txt_otroHorario, txt_otroRegimen, txt_otroRefrigerio;
     Formatos_Trabajo for_Electro;
     Validaciones validar = new Validaciones();
@@ -140,6 +141,37 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
         config.MostrarCampos(linearOtroRegimen,spn_regimen);
         config.MostrarCampos(linearOtroRefrigerio,spn_horarioRefrigerio);
 
+
+        spn_tipoDoc.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String itemSelecionado = parent.getItemAtPosition(position).toString();
+                if(itemSelecionado.equals("DNI")){
+                    if(config.isOnline()){
+                        linearBuscarDni.setVisibility(View.VISIBLE);
+                    }
+                }else{
+                    linearBuscarDni.setVisibility(View.GONE);
+                    txt_nomTrabajador.setText("");
+                    txt_numDoc.setText("");
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        btn_BuscarDni.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String dni = txt_numDoc.getText().toString();
+                if(!dni.isEmpty()){
+                    config.buscarTrabajador(dni,txt_nomTrabajador);
+                }
+            }
+        });
+
         btnCancelar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -199,7 +231,10 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
                     String valorHoraVerificacion = tv_horaVerificacion.getText().toString();
                     int valorGroupVerifi = validar.getValor2(radioGroupVerificacion,rootView);
 
-                    String valorFechaMoni = tv_fechaMonitoreo.getText().toString();
+                    String f = tv_fechaMonitoreo.getText().toString();
+                    String valorFechaMoni = config.convertirFecha(f);
+                    //String valorFechaMoni = tv_fechaMonitoreo.getText().toString();
+
                     String valorHoraInicioMoni = tv_horaInicioMoni.getText().toString();
                     String valorHoraFinalMoni = tv_horaFinalMoni.getText().toString();
                     String valorTimeMedi = txt_timeMedicion.getText().toString();
@@ -248,11 +283,11 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
                             id_plan_trabajo,
                             id_pt_trabajo,
                             String.valueOf(equipos1.getId_equipo_registro()),
-                            equipos1.getCod_equipo(),
+                            equipos1.getCodigo(),
                             equipos1.getNombre(),
                             equipos1.getSerie(),
                             id_colaborador,
-                            nuevo.getUsuario_nombres(),
+                            nuevo.getUsuario_nombres()+ " " +nuevo.getUsuario_apater()+" "+nuevo.getUsuario_amater(),
                             valorHoraVerificacion,
                             "" +valorGroupVerifi,
                             valorFechaMoni,
@@ -425,6 +460,8 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
         txt_otroRegimen = view.findViewById(R.id.txt_otroRegimen);
         linearOtroRefrigerio = view.findViewById(R.id.linearOtroRefrigerio);
         txt_otroRefrigerio = view.findViewById(R.id.txt_otroRefrigerio);
+        linearBuscarDni = view.findViewById(R.id.linearBuscarDni);
+        btn_BuscarDni = view.findViewById(R.id.btn_BuscarDni);
 
 
     }

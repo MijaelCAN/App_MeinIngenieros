@@ -7,6 +7,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
@@ -93,7 +94,8 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
     Button btnSubirFotoIlu;
     FloatingActionButton btn_guardar;
     ExtendedFloatingActionButton btnCancelar;
-    LinearLayout linearOtroHorario, linearOtroRegimen, linearPuntosMedicion;
+    AppCompatButton btn_BuscarDni;
+    LinearLayout linearOtroHorario, linearOtroRegimen, linearPuntosMedicion, linearBuscarDni;
     ImageView imgIliminacion;
     Uri uri;
     public IluminacionFragment() {
@@ -139,6 +141,37 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
         hora_monitoreo.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {config.showTimePickerDialog(rootView,hora_monitoreo);}});
         cbx_lux.setAdapter(config.LlenarSpinner(new String[]{"0.0 lux"}));
         tipoDoc.setAdapter(config.LlenarSpinner(new String[]{"DNI", "CE"}));
+
+
+        tipoDoc.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String itemSelecionado = parent.getItemAtPosition(position).toString();
+                if(itemSelecionado.equals("DNI")){
+                    if(config.isOnline()){
+                        linearBuscarDni.setVisibility(View.VISIBLE);
+                    }
+                }else{
+                    linearBuscarDni.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        btn_BuscarDni.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String dni = numDoc.getText().toString();
+                if(!dni.isEmpty()){
+                    config.buscarTrabajador(dni,nomTrabajador);
+                }
+            }
+        });
+
+
         btnSubirFotoIlu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -154,14 +187,14 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
         config.MostrarCampos(linearOtroRegimen,regimen);
 
         HashMap<String, String> lista = new HashMap<>();
-        lista.put("1", "En exteriores: distinguir el área de tránsito.");
-        lista.put("2", "En interiores: distinguir el área de tránsito, desplazarse caminando, vigilancia, movimiento de vehículos.");
-        lista.put("3", "Requerimiento visual simple: inspección visual, recuento de piezas, trabajo en banco máquina.");
-        lista.put("4", "Distinción moderada de detalles: ensamble simple, trabajo medio en banco y máquina, inspección simple, empaque y trabajos de oficina.");
-        lista.put("5", "Distinción clara de detalles: maquinado y acabados delicados, ensamble e inspección moderadamente difícil, captura y procesamiento de información, manejo de instrumentos y equipo de laboratorio.");
-        lista.put("6", "Distinción fina de detalles: maquinado de precisión, ensamble e inspección de trabajos delicados, manejo de instrumentos y equipo de precisión, manejo de piezas pequeñas.");
-        lista.put("7", "Alta exactitud en la distinción de detalles: Ensamble, proceso e inspección de piezas pequeñas y complejas y acabado con pulidos finos.");
-        lista.put("8", "Alto grado de especialización en la distinción de detalles.");
+        lista.put("1", "En exteriores");
+        lista.put("2", "En interiores");
+        lista.put("3", "Requerimiento visual simple");
+        lista.put("4", "Distinción moderada de detalles");
+        lista.put("5", "Distinción clara de detalles");
+        lista.put("6", "Distinción fina de detalles");
+        lista.put("7", "Alta exactitud en la distinción de detalles");
+        lista.put("8", "Alto grado de especialización en la distinción de detalles");
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, new ArrayList<>(lista.values()));
         tareaVisual.setAdapter(adapter);
         tareaVisual.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -399,10 +432,21 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                     String valorTareaVisual = tareaVisual.getSelectedItem().toString();
                     String valor_tipoAreaTrabajo = tipoArea.getText().toString();
                     String valorNivelIluminacion = nivelMinimo.getText().toString();
-                    String valorFechaMonitoreo = fechaMonitoreo.getText().toString();
+
+                    String f = fechaMonitoreo.getText().toString();
+                    String valorFechaMonitoreo = config.convertirFecha(f);
+                    //String valorFechaMonitoreo = fechaMonitoreo.getText().toString();
+
                     String valorHoraMonitoreo = hora_monitoreo.getText().toString();
                     String valorTipoIluminacion = spn_tipoIluminacion.getSelectedItem().toString();
                     String valorTipoMedicion = spn_tipoMedicion.getSelectedItem().toString();
+
+                    String valorIdTipoMedicion = "";
+                    if(valorTipoMedicion.equals("Medición por puesto de trabajo")){
+                        valorIdTipoMedicion = "1";
+                    } else if (valorTipoMedicion.equals("Medición por área de trabajo")) {
+                        valorIdTipoMedicion = "2";
+                    }
 
                     String valorLongSalon = txt_longSalon.getText().toString();
                     String valorAnchoSalon = txt_anchoSalon.getText().toString();
@@ -450,7 +494,7 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                             id_plan_trabajo,
                             id_pt_trabajo,
                             id_colaborador,
-                            nuevo.getUsuario_nombres(),
+                            nuevo.getUsuario_nombres()+ " " +nuevo.getUsuario_apater()+" "+nuevo.getUsuario_amater(),
                             String.valueOf(equipos1.getId_equipo_registro()),
                             equipos1.getCodigo(),
                             equipos1.getNombre(),
@@ -471,7 +515,7 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                             valorObservaciones,
                             valorUbiEquipo,
                             valorTareaVisual,
-                            valorNivelIluminacion,
+                            valor_tipoAreaTrabajo,
                             valorNivelIluminacion,
                             valorEstadoLuminarias,
                             fecha_registro,
@@ -481,6 +525,7 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                     Iluminacion_RegistroDetalle detalle = new Iluminacion_RegistroDetalle(
                             -1,
                             valorTipoIluminacion,
+                            valorIdTipoMedicion,
                             valorTipoMedicion,
                             valorLargoEscri,
                             valorAnchoEscri,
@@ -642,6 +687,8 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
         linearOtroRegimen = view.findViewById(R.id.linearOtroRegimen);
         txt_otroRegimen = view.findViewById(R.id.txt_otroRegimen);
         linearPuntosMedicion = view.findViewById(R.id.linearPuntosMedicion);
+        linearBuscarDni = view.findViewById(R.id.linearBuscarDni);
+        btn_BuscarDni = view.findViewById(R.id.btn_BuscarDni);
 
         Card_Puesto = view.findViewById(R.id.Card_Puesto);
         Card_Area = view.findViewById(R.id.Card_Area);

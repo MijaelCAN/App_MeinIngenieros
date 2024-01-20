@@ -174,7 +174,11 @@ public class VelocidadAireFragment extends Fragment implements FragmentoImagen.I
                     String valorTecnicaAcon = spn_tecnicaAcon.getSelectedItem().toString();
                     String valorDetalleTecnica ="";
                     if(valorHorarioTrabajo.equals("SI")){valorDetalleTecnica = txt_otroDetalleTecnica.getText().toString();}
-                    String valorFechaMoni = tv_fechaMonitoreo.getText().toString();
+
+                    String f = tv_fechaMonitoreo.getText().toString();
+                    String valorFechaMoni = config.convertirFecha(f);
+                    //String valorFechaMoni = tv_fechaMonitoreo.getText().toString();
+
                     String valorHoraInicioMoni = tv_horaInicioMoni.getText().toString();
                     String valorHoraFinalMoni = tv_horaFinalMoni.getText().toString();
                     String valorVel1= txt_vel1.getText().toString();
@@ -201,11 +205,11 @@ public class VelocidadAireFragment extends Fragment implements FragmentoImagen.I
                             id_plan_trabajo,
                             id_pt_trabajo,
                             String.valueOf(equipos1.getId_equipo_registro()),
-                            equipos1.getCod_equipo(),
+                            equipos1.getCodigo(),
                             equipos1.getNombre(),
                             equipos1.getSerie(),
                             id_colaborador,
-                            nuevo.getUsuario_nombres(),
+                            nuevo.getUsuario_nombres()+ " " +nuevo.getUsuario_apater()+" "+nuevo.getUsuario_amater(),
                             valorHoraInicioMoni,
                             valorHoraFinalMoni,
                             valorAreaTrab,

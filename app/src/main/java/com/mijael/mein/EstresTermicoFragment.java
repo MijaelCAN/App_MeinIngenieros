@@ -72,10 +72,10 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
             txt_t_globo11, txt_t_globo17, txt_h_relativa01, txt_h_relativa11, txt_h_relativa17, txt_velViento,  txt_observacion, txt_frecuenciaCardiaca,
             txt_velViento2,txt_velViento3;
     CardView card_ingenier, Card_Tanteo, Card_Observacion, Card_Analisis;
-    LinearLayout linear1A, linear1B,linear1_1,linear1_7;
+    LinearLayout linear1A, linear1B,linear1_1,linear1_7, linearBuscarDni;
     RadioGroup radioGroupVerificacion, radioGroupIng, radioGroupZonaSombra, radioGroupRotacion, radioGroupRecuperacion,radioGroupDispensador, radioGroupCapacitacion;
     RadioButton radio_ingenierSI;
-    AppCompatButton btn_subirFotoEstres;
+    AppCompatButton btn_subirFotoEstres, btn_BuscarDni;
     FloatingActionButton btn_guardar;
     ExtendedFloatingActionButton btnCancelar;
     EditText txt_timeMedMin, txt_timeExpoHora, txt_jornadaTrabajo, txt_numDoc, txt_nomTrabajador, txt_edad, txt_peso,txt_areaTrabajo, txt_puestoTrabajo, txt_aRealizada,
@@ -133,6 +133,37 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
         spn_tipoTrab.setAdapter(config.LlenarSpinner(new String[]{"Oficina","Artesanos","Mineria","Industria","Artes","Agricultura","Transporte","Diversos"}));
         spn_ocupacion.setAdapter(config.LlenarSpinner(new String[]{"Ayudante de laboratorio","Profesor","Dependiente de Comercio","Secretario"}));
         spn_clase.setAdapter(config.LlenarSpinner(new String[]{"Descanso","Tasa metabólica baja","Tasa metabólica moderada","Tasa metabólica alta","Tasa metabólica muy alta"}));
+
+
+        spn_tipoDoc.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String itemSelecionado = parent.getItemAtPosition(position).toString();
+                if(itemSelecionado.equals("DNI")){
+                    if(config.isOnline()){
+                        linearBuscarDni.setVisibility(View.VISIBLE);
+                    }
+                }else{
+                    linearBuscarDni.setVisibility(View.GONE);
+                    txt_nomTrabajador.setText("");
+                    txt_numDoc.setText("");
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        btn_BuscarDni.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String dni = txt_numDoc.getText().toString();
+                if(!dni.isEmpty()){
+                    config.buscarTrabajador(dni,txt_nomTrabajador);
+                }
+            }
+        });
 
         spn_descTrabajo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -429,7 +460,11 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                     String valorAnemometro = tv_anemometro.getText().toString();
                     String valorHoraVerificacion = tv_horaVerificacion.getText().toString();
                     int valorGroupVerificacion = validar.getValor2(radioGroupVerificacion,rootView);
-                    String valorFechaMonitoreo = tv_fechaMonitoreo.getText().toString();
+
+                    String f = tv_fechaMonitoreo.getText().toString();
+                    String valorFechaMonitoreo = config.convertirFecha(f);
+                    //String valorFechaMonitoreo = tv_fechaMonitoreo.getText().toString();
+
                     String valorHoraInicioMoni = tv_horaInicioMoni.getText().toString();
                     String valorHoraFinalMoni = tv_horaFinalMoni.getText().toString();
                     String valorTimeMed = txt_timeMedMin.getText().toString();
@@ -538,15 +573,15 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                             id_plan_trabajo,
                             id_pt_trabajo,
                             String.valueOf(equipos1.getId_equipo_registro()),
-                            equipos1.getCod_equipo(),
+                            equipos1.getCodigo(),
                             equipos1.getNombre(),
                             equipos1.getSerie(),
                             String.valueOf(equipos2.getId_equipo_registro()),
-                            equipos2.getCod_equipo(),
+                            equipos2.getCodigo(),
                             equipos2.getNombre(),
                             equipos2.getSerie(),
                             id_colaborador,
-                            nuevo.getUsuario_nombres(),
+                            nuevo.getUsuario_nombres()+ " " +nuevo.getUsuario_apater()+" "+nuevo.getUsuario_amater(),
                             valorHoraVerificacion,
                             "" +valorGroupVerificacion,
                             valorFechaMonitoreo,
@@ -842,6 +877,8 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
         linear1B = view.findViewById(R.id.linear1B);
         linear1_1 = view.findViewById(R.id.linear1_1);
         linear1_7 = view.findViewById(R.id.linear1_7);
+        linearBuscarDni = view.findViewById(R.id.linearBuscarDni);
+        btn_BuscarDni = view.findViewById(R.id.btn_BuscarDni);
 
         card_ingenier = view.findViewById(R.id.Card_Ingenieria);
 

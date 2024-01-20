@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -71,14 +72,14 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
     Spinner spn_tipoVibracion, spn_tipoDoc, spn_horarioTrabajo, spn_regimen, spn_horarioRefrig, spn_frecuencia;
     RadioGroup radioGroupVerificacion,radioGroupIng, radioGroupAdm, radioGroupSeñal, radioGroupCapac, radioGroupMante;
     RadioButton radio_ingSI, radio_admSI;
-    AppCompatButton btnSubirFotoVibra;
+    AppCompatButton btnSubirFotoVibra, btn_BuscarDni;
     FloatingActionButton btn_guardar;
     ExtendedFloatingActionButton btnCancelar;
     EditText txt_jornada, txt_timeExpo, txt_numDoc, txt_nomTrab, txt_edadTrab, txt_areaTrab, txt_puestoTrab, txt_actRealizada;
     EditText txt_fuenteGenVibra, txt_descFuenteGen, txt_nombreControl, txt_otrosAdmin, txt_resulX, txt_resulY, txt_resulZ;
     CheckBox check_botas, check_guantes, check_casco, check_proteccionAud;
     CardView card_ing, card_admn;
-    LinearLayout linearOtroHorario, linearOtroRegimen, linearOtroRefrigerio;
+    LinearLayout linearOtroHorario, linearOtroRegimen, linearOtroRefrigerio, linearBuscarDni;
     EditText txt_otroHorario, txt_otroRegimen, txt_otroRefrigerio;
     ImageView imgVibra;
     Uri uri;
@@ -117,7 +118,35 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
         config.ConfigPantalla();
         spn_tipoVibracion.setAdapter(config.LlenarSpinner(new String[]{"Cuerpo Completo", "Mano Brazo"}));
         spn_tipoDoc.setAdapter(config.LlenarSpinner(new String[]{"DNI", "CE"}));
-            config.configurarAutoCompleteTextView(spn_equipoutilizado,lista_CodEquipos);
+        config.configurarAutoCompleteTextView(spn_equipoutilizado,lista_CodEquipos);
+
+        spn_tipoDoc.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String itemSelecionado = parent.getItemAtPosition(position).toString();
+                if(itemSelecionado.equals("DNI")){
+                    if(config.isOnline()){
+                        linearBuscarDni.setVisibility(View.VISIBLE);
+                    }
+                }else{
+                    linearBuscarDni.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        btn_BuscarDni.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String dni = txt_numDoc.getText().toString();
+                if(!dni.isEmpty()){
+                    config.buscarTrabajador(dni,txt_nomTrab);
+                }
+            }
+        });
 
         spn_horarioTrabajo.setAdapter(config.LlenarSpinner("horario_trab_fromato_medicion","desc_horario",getActivity()));
         spn_regimen.setAdapter(config.LlenarSpinner("regimen_formato_medicion","nom_regimen",getActivity()));
@@ -192,7 +221,8 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
                     String valorHoraVerif = tv_horaVerificacion.getText().toString();
                     int valorVerificacion = validar.getValor2(radioGroupVerificacion,rootView);
                     //String valorFoto = uri.toString();
-                    String valorFechaMoni = tv_fechaMonitoreo.getText().toString();
+                    String f = tv_fechaMonitoreo.getText().toString();
+                    String valorFechaMoni = config.convertirFecha(f);
                     String valorHoraInicioMoni = tv_horaInicioMoni.getText().toString();
                     String valorHoraFinalMoni = tv_horaFinalMoni.getText().toString();
                     String valorTimeExpo = txt_timeExpo.getText().toString();
@@ -222,9 +252,10 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
                     String valorCheckCasco = String.valueOf(check_casco.isChecked());
                     String valorCheckProtAudi = String.valueOf(check_proteccionAud.isChecked());*/
                     int valorCheckBotas = check_botas.isChecked() ? 1 : 0;
-                    int valorCheckGuantes = check_botas.isChecked() ? 1 : 0;
-                    int valorCheckCasco = check_botas.isChecked() ? 1 : 0;
-                    int valorCheckProtAudi = check_botas.isChecked() ? 1 : 0;
+                    int valorCheckGuantes = check_guantes.isChecked() ? 1 : 0;
+                    int valorCheckCasco = check_casco.isChecked() ? 1 : 0;
+                    int valorCheckProtAudi = check_proteccionAud.isChecked() ? 1 : 0;
+
                     String valorOtroAdm = txt_otrosAdmin.getText().toString();
                     String valorX = txt_resulX.getText().toString();
                     String valorY = txt_resulY.getText().toString();
@@ -244,12 +275,12 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
                             id_formato,
                             id_plan_trabajo,
                             id_pt_trabajo,
-                            equipos1.getCod_equipo(),
+                            equipos1.getCodigo(),
                             equipos1.getNombre(),
                             equipos1.getSerie(),
                             String.valueOf(equipos1.getId_equipo_registro()),
                             id_colaborador,
-                            nuevo.getUsuario_nombres(),
+                            nuevo.getUsuario_nombres()+ " " +nuevo.getUsuario_apater()+" "+nuevo.getUsuario_amater(),
                             valorTipoVibracion,
                             String.valueOf(valorVerificacion),
                             valorHoraVerif,
@@ -427,6 +458,8 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
         txt_otroRegimen = view.findViewById(R.id.txt_otroRegimen);
         linearOtroRefrigerio = view.findViewById(R.id.linearOtroRefrigerio);
         txt_otroRefrigerio = view.findViewById(R.id.txt_otroRefrigerio);
+        linearBuscarDni = view.findViewById(R.id.linearBuscarDni);
+        btn_BuscarDni = view.findViewById(R.id.btn_BuscarDni);
 
     }
 

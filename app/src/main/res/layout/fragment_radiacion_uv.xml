@@ -561,7 +561,6 @@
                                     android:layout_weight="1"
                                     android:background="@drawable/style_input" />
                             </LinearLayout>
-
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -589,6 +588,27 @@
                                     android:inputType="numberSigned"
                                     android:maxLength="8"
                                     android:textSize="12sp"/>
+                            </LinearLayout>
+                            <LinearLayout
+                                android:id="@+id/linearBuscarDni"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:visibility="gone">
+
+                                <androidx.appcompat.widget.AppCompatButton
+                                    android:id="@+id/btn_BuscarDni"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_horizontal"
+                                    android:textAllCaps="false"
+                                    android:text="Buscar"
+                                    android:textSize="19dp"
+                                    android:textColor="@color/white"
+                                    android:layout_marginTop="33dp"
+                                    android:background="@drawable/style_4"/>
                             </LinearLayout>
                         </LinearLayout>
                         <!-- Fin de la primera fila Doble -->

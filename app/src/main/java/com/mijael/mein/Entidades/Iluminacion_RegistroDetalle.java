@@ -3,6 +3,7 @@ package com.mijael.mein.Entidades;
 public class Iluminacion_RegistroDetalle {
     private int id_plan_trabajo_formato_reg;
     private  String tipo_iluminacion;
+    private String id_tipo_medicion_ilu;
     private String tipo_medicion_ilu;
     private String larg_escrit;
     private String anch_escrit;
@@ -28,12 +29,10 @@ public class Iluminacion_RegistroDetalle {
     private String fec_reg;
     private String user_reg;
 
-    public Iluminacion_RegistroDetalle(int id_plan_trabajo_formato_reg, String tipo_iluminacion, String tipo_medicion_ilu, String larg_escrit, String anch_escrit, String num_pmedicion,
-                                       String alt_pltrabajo, String long_salon, String anch_salon, String alt_pltrabajo_ilu, String const_salon, String num_min_pmedic,
-                                       String cant_iluminarias, String puntos_med, String plan_mantenimiento_ilum, String area_trabajo_m2, String altura_p_trabajo, String n_lamparas,
-                                       String altura_p_luminaria, String color_pared, String color_piso, String estado_fisico, String fec_reg, String user_reg) {
+    public Iluminacion_RegistroDetalle(int id_plan_trabajo_formato_reg, String tipo_iluminacion, String id_tipo_medicion_ilu, String tipo_medicion_ilu, String larg_escrit, String anch_escrit, String num_pmedicion, String alt_pltrabajo, String long_salon, String anch_salon, String alt_pltrabajo_ilu, String const_salon, String num_min_pmedic, String cant_iluminarias, String puntos_med, String plan_mantenimiento_ilum, String area_trabajo_m2, String altura_p_trabajo, String n_lamparas, String altura_p_luminaria, String color_pared, String color_piso, String estado_fisico, String fec_reg, String user_reg) {
         this.id_plan_trabajo_formato_reg = id_plan_trabajo_formato_reg;
         this.tipo_iluminacion = tipo_iluminacion;
+        this.id_tipo_medicion_ilu = id_tipo_medicion_ilu;
         this.tipo_medicion_ilu = tipo_medicion_ilu;
         this.larg_escrit = larg_escrit;
         this.anch_escrit = anch_escrit;
@@ -72,6 +71,14 @@ public class Iluminacion_RegistroDetalle {
 
     public void setTipo_iluminacion(String tipo_iluminacion) {
         this.tipo_iluminacion = tipo_iluminacion;
+    }
+
+    public String getId_tipo_medicion_ilu() {
+        return id_tipo_medicion_ilu;
+    }
+
+    public void setId_tipo_medicion_ilu(String id_tipo_medicion_ilu) {
+        this.id_tipo_medicion_ilu = id_tipo_medicion_ilu;
     }
 
     public String getTipo_medicion_ilu() {

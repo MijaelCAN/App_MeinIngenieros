@@ -5,6 +5,8 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +31,10 @@ import com.mijael.mein.Entidades.Usuario;
 import com.mijael.mein.MainActivity;
 import com.mijael.mein.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,6 +43,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class InputDateConfiguration {
     public int hora=0;
@@ -255,5 +267,48 @@ public class InputDateConfiguration {
                 limpiarElementos((ViewGroup) childView);
             }
         }
+    }
+    Handler mainHandler = new Handler(Looper.getMainLooper());
+    public void buscarTrabajador(String dni,EditText tv_nombreUsuario) {
+        OkHttpClient client = new OkHttpClient();
+
+        String url = "https://apiperu.dev/api/dni/" + dni + "?api_token=12c87a5e7047a743a9f8f8df0b9d8b02a53d1df8e23941f746330fa4df675d7a";
+
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    final String myResponse = response.body().string();
+
+                    mainHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                JSONObject json = new JSONObject(myResponse);
+                                boolean success = json.getBoolean("success");
+                                if (success) {
+                                    String nombreCompleto = json.getJSONObject("data").getString("nombre_completo");
+                                    tv_nombreUsuario.setText(nombreCompleto);
+                                } else {
+                                    String message = json.getString("message");
+                                    // Manejar el error
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
+            }
+        });
     }
 }
