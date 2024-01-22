@@ -14,15 +14,17 @@ public class EstresTermico_RegistroDetalle {
     public String vestimenta_personal;
     public String material_prenda;
     public String color_predominante;
-    public String epp_zs;
-    public String epp_casco;
-    public String epp_lentes;
-    public String epp_guantes;
-    public String epp_orejeras;
-    public String epp_tapones;
-    public String epp_cnuca;
+    public int epp_zs;
+    public int epp_casco;
+    public int epp_lentes;
+    public int epp_guantes;
+    public int epp_orejeras;
+    public int epp_tapones;
+    public int epp_cnuca;
     public String otro_epp;
+    public int id_nivel_d;
     public String nom_nivel_d;
+    public int  id_metodo_determ;
     public String metodo_determ;
     public String tipo_trabajo;
     public String ocupacion;
@@ -68,16 +70,7 @@ public class EstresTermico_RegistroDetalle {
     public String fec_reg;
     public String user_reg;
 
-    public EstresTermico_RegistroDetalle(int id_plan_trabajo_formato_reg, String fuente_generadora, String desc_fuente_frio, String zona_sombra, String rotacion_personal,
-                                         String tiempo_recuperacion, String dispensador, String capa_expo_frio, String cat_trabajo, String porc_desca, String vestimenta_personal,
-                                         String material_prenda, String color_predominante, String epp_zs, String epp_casco, String epp_lentes, String epp_guantes, String epp_orejeras,
-                                         String epp_tapones, String epp_cnuca, String otro_epp, String nom_nivel_d, String metodo_determ, String tipo_trabajo, String ocupacion,
-                                         String rango_tasa_metab, String clase, String actividad_deter, String tasa_metab, String tasa_metab_kcal, String frecuencia_deter,
-                                         String genero_deter, String nom_tarea1, String ciclo_trabajo1, String posicion_1, String pcuerpo_1, String intensidad_1, String nom_tarea2,
-                                         String ciclo_trabajo2, String posicion_2, String pcuerpo_2, String intensidad_2, String nom_tarea3, String ciclo_trabajo3, String posicion_3,
-                                         String pcuerpo_3, String intensidad_3, String mtr_subida, String t_bulbo, String t_bulbo2, String t_bulbo3, String t_aire, String t_aire_2,
-                                         String t_aire_3, String t_globo, String t_globo_2, String t_globo_3, String h_relativa, String h_relativa_2, String h_relativa_3, String v_viento,
-                                         String v_viento_2, String v_viento_3, String fec_reg, String user_reg) {
+    public EstresTermico_RegistroDetalle(int id_plan_trabajo_formato_reg, String fuente_generadora, String desc_fuente_frio, String zona_sombra, String rotacion_personal, String tiempo_recuperacion, String dispensador, String capa_expo_frio, String cat_trabajo, String porc_desca, String vestimenta_personal, String material_prenda, String color_predominante, int epp_zs, int epp_casco, int epp_lentes, int epp_guantes, int epp_orejeras, int epp_tapones, int epp_cnuca, String otro_epp, int id_nivel_d, String nom_nivel_d, int id_metodo_determ, String metodo_determ, String tipo_trabajo, String ocupacion, String rango_tasa_metab, String clase, String actividad_deter, String tasa_metab, String tasa_metab_kcal, String frecuencia_deter, String genero_deter, String nom_tarea1, String ciclo_trabajo1, String posicion_1, String pcuerpo_1, String intensidad_1, String nom_tarea2, String ciclo_trabajo2, String posicion_2, String pcuerpo_2, String intensidad_2, String nom_tarea3, String ciclo_trabajo3, String posicion_3, String pcuerpo_3, String intensidad_3, String mtr_subida, String t_bulbo, String t_bulbo2, String t_bulbo3, String t_aire, String t_aire_2, String t_aire_3, String t_globo, String t_globo_2, String t_globo_3, String h_relativa, String h_relativa_2, String h_relativa_3, String v_viento, String v_viento_2, String v_viento_3, String fec_reg, String user_reg) {
         this.id_plan_trabajo_formato_reg = id_plan_trabajo_formato_reg;
         this.fuente_generadora = fuente_generadora;
         this.desc_fuente_frio = desc_fuente_frio;
@@ -99,7 +92,9 @@ public class EstresTermico_RegistroDetalle {
         this.epp_tapones = epp_tapones;
         this.epp_cnuca = epp_cnuca;
         this.otro_epp = otro_epp;
+        this.id_nivel_d = id_nivel_d;
         this.nom_nivel_d = nom_nivel_d;
+        this.id_metodo_determ = id_metodo_determ;
         this.metodo_determ = metodo_determ;
         this.tipo_trabajo = tipo_trabajo;
         this.ocupacion = ocupacion;
@@ -249,59 +244,59 @@ public class EstresTermico_RegistroDetalle {
         this.color_predominante = color_predominante;
     }
 
-    public String getEpp_zs() {
+    public int getEpp_zs() {
         return epp_zs;
     }
 
-    public void setEpp_zs(String epp_zs) {
+    public void setEpp_zs(int epp_zs) {
         this.epp_zs = epp_zs;
     }
 
-    public String getEpp_casco() {
+    public int getEpp_casco() {
         return epp_casco;
     }
 
-    public void setEpp_casco(String epp_casco) {
+    public void setEpp_casco(int epp_casco) {
         this.epp_casco = epp_casco;
     }
 
-    public String getEpp_lentes() {
+    public int getEpp_lentes() {
         return epp_lentes;
     }
 
-    public void setEpp_lentes(String epp_lentes) {
+    public void setEpp_lentes(int epp_lentes) {
         this.epp_lentes = epp_lentes;
     }
 
-    public String getEpp_guantes() {
+    public int getEpp_guantes() {
         return epp_guantes;
     }
 
-    public void setEpp_guantes(String epp_guantes) {
+    public void setEpp_guantes(int epp_guantes) {
         this.epp_guantes = epp_guantes;
     }
 
-    public String getEpp_orejeras() {
+    public int getEpp_orejeras() {
         return epp_orejeras;
     }
 
-    public void setEpp_orejeras(String epp_orejeras) {
+    public void setEpp_orejeras(int epp_orejeras) {
         this.epp_orejeras = epp_orejeras;
     }
 
-    public String getEpp_tapones() {
+    public int getEpp_tapones() {
         return epp_tapones;
     }
 
-    public void setEpp_tapones(String epp_tapones) {
+    public void setEpp_tapones(int epp_tapones) {
         this.epp_tapones = epp_tapones;
     }
 
-    public String getEpp_cnuca() {
+    public int getEpp_cnuca() {
         return epp_cnuca;
     }
 
-    public void setEpp_cnuca(String epp_cnuca) {
+    public void setEpp_cnuca(int epp_cnuca) {
         this.epp_cnuca = epp_cnuca;
     }
 
@@ -313,12 +308,28 @@ public class EstresTermico_RegistroDetalle {
         this.otro_epp = otro_epp;
     }
 
+    public int getId_nivel_d() {
+        return id_nivel_d;
+    }
+
+    public void setId_nivel_d(int id_nivel_d) {
+        this.id_nivel_d = id_nivel_d;
+    }
+
     public String getNom_nivel_d() {
         return nom_nivel_d;
     }
 
     public void setNom_nivel_d(String nom_nivel_d) {
         this.nom_nivel_d = nom_nivel_d;
+    }
+
+    public int getId_metodo_determ() {
+        return id_metodo_determ;
+    }
+
+    public void setId_metodo_determ(int id_metodo_determ) {
+        this.id_metodo_determ = id_metodo_determ;
     }
 
     public String getMetodo_determ() {

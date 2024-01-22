@@ -425,27 +425,27 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                         validar.validarCampoObligatorio(check_orejeras) &&
                         validar.validarCampoObligatorio(check_tapones) &&
                         validar.validarCampoObligatorio(check_cubreNuca) &&
-                        validar.validarCampoObligatorio(txt_otrosEpps) &&
-                        validar.validarCampoObligatorio(txt_nomTarea1) &&
-                        validar.validarCampoObligatorio(txt_cicloTrab1) &&
-                        validar.validarCampoObligatorio(spn_posicion1) &&
-                        validar.validarCampoObligatorio(spn_pCuerpo1) &&
-                        validar.validarCampoObligatorio(spn_intesidad1) &&
-                        validar.validarCampoObligatorio(txt_nomTarea2) &&
-                        validar.validarCampoObligatorio(txt_cicloTrab2) &&
-                        validar.validarCampoObligatorio(spn_posicion2) &&
-                        validar.validarCampoObligatorio(spn_pCuerpo2) &&
-                        validar.validarCampoObligatorio(spn_intesidad2) &&
-                        validar.validarCampoObligatorio(txt_nomTarea3) &&
-                        validar.validarCampoObligatorio(txt_cicloTrab3) &&
-                        validar.validarCampoObligatorio(spn_posicion3) &&
-                        validar.validarCampoObligatorio(spn_pCuerpo3) &&
-                        validar.validarCampoObligatorio(spn_intesidad3) &&
-                        validar.validarCampoObligatorio(txt_wbgt01) &&
-                        validar.validarCampoObligatorio(txt_wbgt11) &&
-                        validar.validarCampoObligatorio(txt_wbgt17) &&
-                        validar.validarCampoObligatorio(txt_t_aire01) &&
-                        validar.validarCampoObligatorio(txt_t_aire11) &&
+                        validar.validarCampoObligatorio(txt_otrosEpps)
+                        //validar.validarCampoObligatorio(txt_nomTarea1) &&
+                        //validar.validarCampoObligatorio(txt_cicloTrab1) &&
+                        //validar.validarCampoObligatorio(spn_posicion1) &&
+                        //validar.validarCampoObligatorio(spn_pCuerpo1) &&
+                        //validar.validarCampoObligatorio(spn_intesidad1) &&
+                        //validar.validarCampoObligatorio(txt_nomTarea2) &&
+                        //validar.validarCampoObligatorio(txt_cicloTrab2) &&
+                        //validar.validarCampoObligatorio(spn_posicion2) &&
+                        //validar.validarCampoObligatorio(spn_pCuerpo2) &&
+                        //validar.validarCampoObligatorio(spn_intesidad2) &&
+                        //validar.validarCampoObligatorio(txt_nomTarea3) &&
+                        //validar.validarCampoObligatorio(txt_cicloTrab3) &&
+                        //validar.validarCampoObligatorio(spn_posicion3) &&
+                        //validar.validarCampoObligatorio(spn_pCuerpo3) &&
+                        //validar.validarCampoObligatorio(spn_intesidad3) &&
+                        //validar.validarCampoObligatorio(txt_wbgt01) &&
+                        //validar.validarCampoObligatorio(txt_wbgt11) &&
+                        //validar.validarCampoObligatorio(txt_wbgt17) &&
+                        //validar.validarCampoObligatorio(txt_t_aire01) &&
+                        /*validar.validarCampoObligatorio(txt_t_aire11) &&
                         validar.validarCampoObligatorio(txt_t_aire17    ) &&
                         validar.validarCampoObligatorio(txt_t_globo01) &&
                         validar.validarCampoObligatorio(txt_t_globo11) &&
@@ -454,7 +454,7 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                         validar.validarCampoObligatorio(txt_h_relativa11) &&
                         validar.validarCampoObligatorio(txt_h_relativa17) &&
                         validar.validarCampoObligatorio(txt_velViento) &&
-                        validar.validarCampoObligatorio(txt_observacion)
+                        validar.validarCampoObligatorio(txt_observacion)*/
                 ){
                     String valorEstresTermico = tv_estresTermico.getText().toString();
                     String valorAnemometro = tv_anemometro.getText().toString();
@@ -474,8 +474,8 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                     String valorNumDoc = txt_numDoc.getText().toString();
                     String valorNombreTra = txt_nomTrabajador.getText().toString();
                     String valorEdad = txt_edad.getText().toString();
-                    String valorPeso = txt_peso.toString().toString();
-                    String valorAreaTra = txt_areaTrabajo.toString().toString();
+                    String valorPeso = txt_peso.getText().toString();
+                    String valorAreaTra = txt_areaTrabajo.getText().toString();
                     String valorPuestoTra = txt_puestoTrabajo.getText().toString();
                     String valorActividades = txt_aRealizada.getText().toString();
                     String valorHorarioTrabajo = spn_horarioTrabajo.getSelectedItem().toString();
@@ -505,18 +505,45 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                     String valorVestimenta = spn_vestimenta.getSelectedItem().toString();
                     String valorMaterial = spn_materialPrenda.getSelectedItem().toString();
                     String valorColor = txt_colorPredominante.getText().toString();
-                    String valorZapatos = String.valueOf(check_zapatos.isChecked());
+
+                    /*String valorZapatos = String.valueOf(check_zapatos.isChecked());
                     String valorCasco = String.valueOf(check_casco.isChecked());
                     String valorLentes = String.valueOf(check_lentes.isChecked());
                     String valorGuantes = String.valueOf(check_guantes.isChecked());
                     String valorOrejeras = String.valueOf(check_orejeras.isChecked());
                     String valorTapones = String.valueOf(check_tapones.isChecked());
-                    String valorCubreNuca = String.valueOf(check_cubreNuca.isChecked());
+                    String valorCubreNuca = String.valueOf(check_cubreNuca.isChecked());*/
+
+                    int valorZapatos = check_zapatos.isChecked() ? 1 : 0;
+                    int valorCasco = check_casco.isChecked() ? 1 : 0;
+                    int valorLentes = check_lentes.isChecked() ? 1 : 0;
+                    int valorGuantes = check_guantes.isChecked() ? 1 : 0;
+                    int valorOrejeras = check_orejeras.isChecked() ? 1 : 0;
+                    int valorTapones = check_tapones.isChecked() ? 1 : 0;
+                    int valorCubreNuca = check_cubreNuca.isChecked() ? 1 : 0;
                     String valorEpps = txt_otrosEpps.getText().toString();
 
-                    String valorTipoMedicion = spn_tipoMedicion.getSelectedItem().toString();
+                    String valorNom_Medicion = spn_tipoMedicion.getSelectedItem().toString();
+                    int valorTipo_medicion = 0;
+                    if(valorNom_Medicion.equals("Medición a una altura")){
+                        valorTipo_medicion=1;
+                    } else if (valorNom_Medicion.equals("Medición a tres alturas")) {
+                        valorTipo_medicion=2;
+                    }
                     String valorNivelDeter = spn_nivelDeterminacion.getSelectedItem().toString();
+                    int valorId_Nivel_d = 0;
+                    if(valorNivelDeter.equals("Observación")){
+                        valorId_Nivel_d = 2;
+                    }
+                    int valorId_metodo_deter=0;
                     String valorMetodoDeter = spn_metodoDeterminacion.getSelectedItem().toString();
+                    if(valorMetodoDeter.equals("1A - Clasificación del tamaño de la ocupación")){
+                        valorId_metodo_deter = 1;
+                    } else if (valorMetodoDeter.equals("1B - Clasificación del tamaño de la actividad")) {
+                        valorId_metodo_deter = 2;
+                    } else if (valorMetodoDeter.equals("Medida del ritmo cardiaco bajo condiciones determi")) {
+                        valorId_metodo_deter = 4;
+                    }
                     String valorTipoTrabajo = spn_tipoTrab.getSelectedItem().toString();
                     String valorOcupacion = spn_ocupacion.getSelectedItem().toString();
                     String valorRangoTasaMeta = tv_tasaMetabolica.getText().toString();
@@ -568,7 +595,6 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                     EstresTermico_Registro cabecera = new EstresTermico_Registro(
                             -1,
                             "ET-001",
-                            "cod_registro",
                             id_formato,
                             id_plan_trabajo,
                             id_pt_trabajo,
@@ -601,7 +627,7 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                             valorHorarioTrabajo,
                             valorRefrigerio,
                             valorRegimen,
-                            valorAreaTra,
+                            valorDesTrabajo,
                             valorDesTrabDetalle,
                             "" +valorGroupIng,
                             valorControlIng,
@@ -610,7 +636,8 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                             valorTimeCargoMeses,
                             valorCondTrabajo,
                             valorObserbaciones,
-                            valorTipoMedicion,
+                            valorTipo_medicion,
+                            valorNom_Medicion,
                             fecha_registro,
                             id_colaborador
                     );
@@ -636,7 +663,9 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                             valorTapones,
                             valorCubreNuca,
                             valorEpps,
+                            valorId_Nivel_d,
                             valorNivelDeter,
+                            valorId_metodo_deter,
                             valorMetodoDeter,
                             valorTipoTrabajo,
                             valorOcupacion,

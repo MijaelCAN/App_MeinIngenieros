@@ -257,7 +257,7 @@ tools:context=".EstresTermicoFragment">
                         android:id="@+id/verf_insitusi"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Si"
+                        android:text="Sí"
                         android:checked="false"
                         android:fontFamily="sans-serif-light"
                         android:buttonTint="@color/teal_200"
@@ -708,7 +708,7 @@ tools:context=".EstresTermicoFragment">
                                 android:layout_marginTop="5dp"
                                 android:textColor="@color/black"
                                 android:textColorHint="@color/black"
-                                android:inputType="numberDecimal|text"
+                                android:inputType="number|numberDecimal"
                                 android:maxLength="3"/>
                         </LinearLayout>
                     </LinearLayout>
@@ -1080,6 +1080,9 @@ tools:context=".EstresTermicoFragment">
                         android:layout_marginTop="10dp"
                         android:layout_weight="1"
                         android:fontFamily="sans-serif-light"
+                        android:text="Prueba"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="8dp"
                         android:inputType="none"
                         android:background="@drawable/style_input"
                         android:textColor="@color/black"
