@@ -69,7 +69,7 @@ public class DAO_RegistroEstreTermico {
         values.put(Util_RegistroFormatos.CAMPO_MES_OCU_CARGO, registro.getMes_ocu_cargo());
         values.put(Util_RegistroFormatos.CAMPO_COND_TRAB, registro.getCond_trab());
         values.put(Util_RegistroFormatos.CAMPO_OBSERVACION, registro.getObservacion());
-        values.put(Util_RegistroFormatos.CAMPO_NOM_TIPO_MEDICION, registro.getNom_tipo_Medicion());
+        values.put(Util_RegistroFormatos.CAMPO_NOM_TIPO_MEDICION, registro.getNom_tipo_medicion());
         values.put(Util_RegistroFormatos.CAMPO_ESTADO, registro.getEstado());
         values.put(Util_RegistroFormatos.CAMPO_FEC_REG, registro.getFec_reg());
         values.put(Util_RegistroFormatos.CAMPO_USER_REG, registro.getUser_reg());

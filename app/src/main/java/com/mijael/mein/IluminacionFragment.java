@@ -84,7 +84,7 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
     CardView Card_Puesto, Card_Area;
     TextView tv_nombreUsuario, tv_nomEmpresa;
     AutoCompleteTextView tv_luxometro;
-    TextView hora_verificacion, fechaMonitoreo, hora_monitoreo;
+    TextView hora_verificacion, fechaMonitoreo, hora_monitoreo, tv_altura;
     EditText ubicacionEquipo, numDoc, nomTrabajador, puestoTrabajador, areaTrabajo, numTrabajadores, nivelMinimo, numLuminarias, tipoArea,
     il1, il2, il3, il4, il5, il6, il7, il8, areaTrabajoM2, txt_altura_pTrabajo, numLamparas, altura_pLuminaria, colorPared, colorPiso, tareasRealizadas, observaciones,
     txt_otroHorario, txt_otroRegimen,
@@ -243,9 +243,11 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                 if(seleccion.equals("Medición por puesto de trabajo")){
                     Card_Puesto.setVisibility(View.VISIBLE);;
                     Card_Area.setVisibility(View.GONE);
+                    tv_altura.setText("Altura de plano a Luminaria(m)");
                 } else if (seleccion.equals("Medición por área de trabajo")) {
                     Card_Puesto.setVisibility(View.GONE);;
                     Card_Area.setVisibility(View.VISIBLE);
+                    tv_altura.setText("Alt. de Plano de Trabajo(m):");
                 }
             }
 
@@ -692,6 +694,9 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
 
         Card_Puesto = view.findViewById(R.id.Card_Puesto);
         Card_Area = view.findViewById(R.id.Card_Area);
+
+        tv_altura = view.findViewById(R.id.altura);
+
 
     }
 

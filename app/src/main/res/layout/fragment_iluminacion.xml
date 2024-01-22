@@ -1619,11 +1619,12 @@
                                 android:orientation="vertical">
 
                                 <TextView
+                                    android:id="@+id/altura"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:fontFamily="sans-serif-light"
-                                    android:text="Altura de planos a Luminaria"
+                                    android:text="Altura de plano a Luminaria(m)"
                                     android:textColor="@color/black"
                                     android:textSize="12sp" />
 
