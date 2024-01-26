@@ -111,6 +111,7 @@ public class DAO_RegistroIluminacion {
 
         values.put(Util_RegistroFormatos_Detalle.CAMPO_NUM_MIN_PMEDIC, registro.getNum_min_pmedic());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_CANT_ILUMINARIAS, registro.getCant_iluminarias());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_PUNTOS_MED, registro.getPuntos_med());//AGREGADO RECIENTEMENTE
 
         /*values.put(Util_RegistroFormatos_Detalle.CAMPO_IL_1, registro.getIl_1());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_IL_2, registro.getIl_2());

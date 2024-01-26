@@ -50,6 +50,16 @@ public class EstresTermico_RegistroDetalle {
     public String posicion_3;
     public String pcuerpo_3;
     public String intensidad_3;
+    public String nom_tarea4;
+    public String ciclo_trabajo4;
+    public String posicion_4;
+    public String pcuerpo_4;
+    public String intensidad_4;
+    public String nom_tarea5;
+    public String ciclo_trabajo5;
+    public String posicion_5;
+    public String pcuerpo_5;
+    public String intensidad_5;
     public String mtr_subida;
     public String t_bulbo;
     public String t_bulbo2;
@@ -70,7 +80,7 @@ public class EstresTermico_RegistroDetalle {
     public String fec_reg;
     public String user_reg;
 
-    public EstresTermico_RegistroDetalle(int id_plan_trabajo_formato_reg, String fuente_generadora, String desc_fuente_frio, String zona_sombra, String rotacion_personal, String tiempo_recuperacion, String dispensador, String capa_expo_frio, String cat_trabajo, String porc_desca, String vestimenta_personal, String material_prenda, String color_predominante, int epp_zs, int epp_casco, int epp_lentes, int epp_guantes, int epp_orejeras, int epp_tapones, int epp_cnuca, String otro_epp, int id_nivel_d, String nom_nivel_d, int id_metodo_determ, String metodo_determ, String tipo_trabajo, String ocupacion, String rango_tasa_metab, String clase, String actividad_deter, String tasa_metab, String tasa_metab_kcal, String frecuencia_deter, String genero_deter, String nom_tarea1, String ciclo_trabajo1, String posicion_1, String pcuerpo_1, String intensidad_1, String nom_tarea2, String ciclo_trabajo2, String posicion_2, String pcuerpo_2, String intensidad_2, String nom_tarea3, String ciclo_trabajo3, String posicion_3, String pcuerpo_3, String intensidad_3, String mtr_subida, String t_bulbo, String t_bulbo2, String t_bulbo3, String t_aire, String t_aire_2, String t_aire_3, String t_globo, String t_globo_2, String t_globo_3, String h_relativa, String h_relativa_2, String h_relativa_3, String v_viento, String v_viento_2, String v_viento_3, String fec_reg, String user_reg) {
+    public EstresTermico_RegistroDetalle(int id_plan_trabajo_formato_reg, String fuente_generadora, String desc_fuente_frio, String zona_sombra, String rotacion_personal, String tiempo_recuperacion, String dispensador, String capa_expo_frio, String cat_trabajo, String porc_desca, String vestimenta_personal, String material_prenda, String color_predominante, int epp_zs, int epp_casco, int epp_lentes, int epp_guantes, int epp_orejeras, int epp_tapones, int epp_cnuca, String otro_epp, int id_nivel_d, String nom_nivel_d, int id_metodo_determ, String metodo_determ, String tipo_trabajo, String ocupacion, String rango_tasa_metab, String clase, String actividad_deter, String tasa_metab, String tasa_metab_kcal, String frecuencia_deter, String genero_deter, String nom_tarea1, String ciclo_trabajo1, String posicion_1, String pcuerpo_1, String intensidad_1, String nom_tarea2, String ciclo_trabajo2, String posicion_2, String pcuerpo_2, String intensidad_2, String nom_tarea3, String ciclo_trabajo3, String posicion_3, String pcuerpo_3, String intensidad_3, String nom_tarea4, String ciclo_trabajo4, String posicion_4, String pcuerpo_4, String intensidad_4, String nom_tarea5, String ciclo_trabajo5, String posicion_5, String pcuerpo_5, String intensidad_5, String mtr_subida, String t_bulbo, String t_bulbo2, String t_bulbo3, String t_aire, String t_aire_2, String t_aire_3, String t_globo, String t_globo_2, String t_globo_3, String h_relativa, String h_relativa_2, String h_relativa_3, String v_viento, String v_viento_2, String v_viento_3, String fec_reg, String user_reg) {
         this.id_plan_trabajo_formato_reg = id_plan_trabajo_formato_reg;
         this.fuente_generadora = fuente_generadora;
         this.desc_fuente_frio = desc_fuente_frio;
@@ -120,6 +130,16 @@ public class EstresTermico_RegistroDetalle {
         this.posicion_3 = posicion_3;
         this.pcuerpo_3 = pcuerpo_3;
         this.intensidad_3 = intensidad_3;
+        this.nom_tarea4 = nom_tarea4;
+        this.ciclo_trabajo4 = ciclo_trabajo4;
+        this.posicion_4 = posicion_4;
+        this.pcuerpo_4 = pcuerpo_4;
+        this.intensidad_4 = intensidad_4;
+        this.nom_tarea5 = nom_tarea5;
+        this.ciclo_trabajo5 = ciclo_trabajo5;
+        this.posicion_5 = posicion_5;
+        this.pcuerpo_5 = pcuerpo_5;
+        this.intensidad_5 = intensidad_5;
         this.mtr_subida = mtr_subida;
         this.t_bulbo = t_bulbo;
         this.t_bulbo2 = t_bulbo2;
@@ -526,6 +546,86 @@ public class EstresTermico_RegistroDetalle {
 
     public String getIntensidad_3() {
         return intensidad_3;
+    }
+
+    public String getNom_tarea4() {
+        return nom_tarea4;
+    }
+
+    public void setNom_tarea4(String nom_tarea4) {
+        this.nom_tarea4 = nom_tarea4;
+    }
+
+    public String getCiclo_trabajo4() {
+        return ciclo_trabajo4;
+    }
+
+    public void setCiclo_trabajo4(String ciclo_trabajo4) {
+        this.ciclo_trabajo4 = ciclo_trabajo4;
+    }
+
+    public String getPosicion_4() {
+        return posicion_4;
+    }
+
+    public void setPosicion_4(String posicion_4) {
+        this.posicion_4 = posicion_4;
+    }
+
+    public String getPcuerpo_4() {
+        return pcuerpo_4;
+    }
+
+    public void setPcuerpo_4(String pcuerpo_4) {
+        this.pcuerpo_4 = pcuerpo_4;
+    }
+
+    public String getIntensidad_4() {
+        return intensidad_4;
+    }
+
+    public void setIntensidad_4(String intensidad_4) {
+        this.intensidad_4 = intensidad_4;
+    }
+
+    public String getNom_tarea5() {
+        return nom_tarea5;
+    }
+
+    public void setNom_tarea5(String nom_tarea5) {
+        this.nom_tarea5 = nom_tarea5;
+    }
+
+    public String getCiclo_trabajo5() {
+        return ciclo_trabajo5;
+    }
+
+    public void setCiclo_trabajo5(String ciclo_trabajo5) {
+        this.ciclo_trabajo5 = ciclo_trabajo5;
+    }
+
+    public String getPosicion_5() {
+        return posicion_5;
+    }
+
+    public void setPosicion_5(String posicion_5) {
+        this.posicion_5 = posicion_5;
+    }
+
+    public String getPcuerpo_5() {
+        return pcuerpo_5;
+    }
+
+    public void setPcuerpo_5(String pcuerpo_5) {
+        this.pcuerpo_5 = pcuerpo_5;
+    }
+
+    public String getIntensidad_5() {
+        return intensidad_5;
+    }
+
+    public void setIntensidad_5(String intensidad_5) {
+        this.intensidad_5 = intensidad_5;
     }
 
     public void setIntensidad_3(String intensidad_3) {

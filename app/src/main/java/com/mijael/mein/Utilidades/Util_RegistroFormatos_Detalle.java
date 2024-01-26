@@ -70,6 +70,8 @@ public class Util_RegistroFormatos_Detalle {
     public static final String CAMPO_EPP_GORRO = "epp_gorro";
     public static final String CAMPO_EPP_BOTAS = "epp_botas";
     public static final String CAMPO_OTRO_EPP = "otro_epp";
+
+
     public static final String CAMPO_EPP_LENTES_BRILLO = "epp_lentes_brillo";
     public static final String CAMPO_PROT_LAT = "prot_lat";
     public static final String CAMPO_EPP_GORRO_2 = "epp_gorro_2";
@@ -83,7 +85,10 @@ public class Util_RegistroFormatos_Detalle {
     public static final String CAMPO_TGRUESA = "tgruesa";
     public static final String CAMPO_UTIL_FPS = "util_fps";
     public static final String CAMPO_FREC_APLIC = "frec_aplic";
-    public static final String CAMPO_CADA_MEDHORA = "cada_medhora";
+    public static final String CAMPO_OTRA_FRECUENCIA = "otra_frecuencia";
+    public static final String CAMPO_CUBRE_NUCA = "cubre_nuca";
+    public static final String CAMPO_LENT_OSCURO = "lent_osc";
+
     public static final String CAMPO_TECNICA_ACONDAIRE = "tecnica_acondaire";
     public static final String CAMPO_DETALLE_TECNICA_ACONDAIRE = "detalle_tecnica_acondaire";
     public static final String CAMPO_DESC_ATUENDO = "desc_atuendo";
@@ -109,6 +114,16 @@ public class Util_RegistroFormatos_Detalle {
     public static final String CAMPO_POSICION_3 = "posicion_3";
     public static final String CAMPO_PCUERPO_3 = "pcuerpo_3";
     public static final String CAMPO_INTENSIDAD_3 = "intensidad_3";
+    public static final String CAMPO_NOM_TAREA4 = "nom_tarea4";
+    public static final String CAMPO_CICLO_TRABAJO4 = "ciclo_trabajo4";
+    public static final String CAMPO_POSICION_4 = "posicion_4";
+    public static final String CAMPO_PCUERPO_4 = "pcuerpo_4";
+    public static final String CAMPO_INTENSIDAD_4 = "intensidad_4";
+    public static final String CAMPO_NOM_TAREA5 = "nom_tarea5";
+    public static final String CAMPO_CICLO_TRABAJO5 = "ciclo_trabajo5";
+    public static final String CAMPO_POSICION_5 = "posicion_5";
+    public static final String CAMPO_PCUERPO_5 = "pcuerpo_5";
+    public static final String CAMPO_INTENSIDAD_5 = "intensidad_5";
     public static final String CAMPO_HORARIO_LV = "horario_lv";
     public static final String CAMPO_HORARIO_S = "horario_s";
     public static final String CAMPO_WBGT = "wbgt";
@@ -316,7 +331,9 @@ public class Util_RegistroFormatos_Detalle {
             + CAMPO_TGRUESA + " TEXT, "
             + CAMPO_UTIL_FPS + " TEXT, "
             + CAMPO_FREC_APLIC + " TEXT, "
-            + CAMPO_CADA_MEDHORA + " TEXT, "
+            + CAMPO_OTRA_FRECUENCIA + " TEXT, "
+            + CAMPO_CUBRE_NUCA + " TEXT, "
+            + CAMPO_LENT_OSCURO + " TEXT, "
             + CAMPO_TECNICA_ACONDAIRE + " TEXT, "
             + CAMPO_DETALLE_TECNICA_ACONDAIRE + " TEXT, "
             + CAMPO_DESC_ATUENDO + " TEXT, "
@@ -342,6 +359,16 @@ public class Util_RegistroFormatos_Detalle {
             + CAMPO_POSICION_3 + " TEXT, "
             + CAMPO_PCUERPO_3 + " TEXT, "
             + CAMPO_INTENSIDAD_3 + " TEXT, "
+            + CAMPO_NOM_TAREA4 + " TEXT, "
+            + CAMPO_CICLO_TRABAJO4 + " TEXT, "
+            + CAMPO_POSICION_4 + " TEXT, "
+            + CAMPO_PCUERPO_4 + " TEXT, "
+            + CAMPO_INTENSIDAD_4 + " TEXT, "
+            + CAMPO_NOM_TAREA5 + " TEXT, "
+            + CAMPO_CICLO_TRABAJO5 + " TEXT, "
+            + CAMPO_POSICION_5 + " TEXT, "
+            + CAMPO_PCUERPO_5 + " TEXT, "
+            + CAMPO_INTENSIDAD_5 + " TEXT, "
             + CAMPO_HORARIO_LV + " TEXT, "
             + CAMPO_HORARIO_S + " TEXT, "
             + CAMPO_WBGT + " TEXT, "

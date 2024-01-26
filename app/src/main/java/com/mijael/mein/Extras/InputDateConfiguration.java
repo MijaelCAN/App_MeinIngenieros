@@ -43,6 +43,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -253,7 +254,7 @@ public class InputDateConfiguration {
             limpiarElementos((ViewGroup) card.getChildAt(0));
         }
     }
-    private void limpiarElementos(ViewGroup viewGroup) {
+    public void limpiarElementos(ViewGroup viewGroup) {
         int childCount = viewGroup.getChildCount();
         for (int i = 0; i < childCount; i++) {
             View childView = viewGroup.getChildAt(i);
@@ -310,5 +311,23 @@ public class InputDateConfiguration {
                 }
             }
         });
+    }
+    public static String calcularTiempoMedicion(String horaInicial, String horaFinal) {
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+            Date fechaInicial = format.parse(horaInicial);
+            Date fechaFinal = format.parse(horaFinal);
+
+            long diferencia = fechaFinal.getTime() - fechaInicial.getTime();
+
+            long minutos = TimeUnit.MILLISECONDS.toMinutes(diferencia) % 60;
+            long horas = TimeUnit.MILLISECONDS.toHours(diferencia);
+
+            String tiempoMedicion = String.format("%02d:%02d", horas, minutos);
+            return tiempoMedicion;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

@@ -36,6 +36,7 @@ public class DAO_RegistroVibracion {
         values.put(Util_RegistroFormatos.CAMPO_ID_ANALISTA, registro.getId_analista());
         values.put(Util_RegistroFormatos.CAMPO_NOM_ANALISTA, registro.getNom_analista());
         values.put(Util_RegistroFormatos.CAMPO_TIPO_VIBRACION, registro.getTipo_vibracion());
+        values.put(Util_RegistroFormatos.CAMPO_LATERALIDAD_MANO, registro.getLateralidad_mano());
         values.put(Util_RegistroFormatos.CAMPO_VERF_INSITU, registro.getVerf_insitu());
         values.put(Util_RegistroFormatos.CAMPO_HORA_SITU, registro.getHora_situ());
         values.put(Util_RegistroFormatos.CAMPO_FEC_MONITOREO, registro.getFec_monitoreo());

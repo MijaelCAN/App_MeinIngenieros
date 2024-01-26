@@ -257,7 +257,7 @@
                             android:id="@+id/verf_insitusi"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Si"
+                            android:text="Sí"
                             android:checked="false"
                             android:fontFamily="sans-serif-light"
                             android:buttonTint="@color/teal_200"
@@ -812,13 +812,13 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="10dp"
                                     android:layout_weight="1"
-                                    android:text="Tipo de piel:"
+                                    android:text="Color de piel:"
                                     android:textSize="12sp"
                                     android:fontFamily="sans-serif-light"
                                     android:textColor="@color/black" />
 
                                 <Spinner
-                                    android:id="@+id/cbx_tipoPiel"
+                                    android:id="@+id/cbx_colorPiel"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="5dp"
@@ -839,13 +839,13 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="10dp"
                                     android:layout_weight="1"
-                                    android:text="Color de piel:"
+                                    android:text="Tipo de piel:"
                                     android:textSize="12sp"
                                     android:fontFamily="sans-serif-light"
                                     android:textColor="@color/black" />
 
                                 <TextView
-                                    android:id="@+id/tv_colorPiel"
+                                    android:id="@+id/tv_tipoPiel"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:background="@drawable/style_input"

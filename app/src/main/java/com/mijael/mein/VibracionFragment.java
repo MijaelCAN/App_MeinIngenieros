@@ -69,7 +69,7 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
     // Ejemplos de variables para vistas
     TextView tv_horaVerificacion, tv_fechaMonitoreo, tv_horaInicioMoni, tv_horaFinalMoni;
     AutoCompleteTextView spn_equipoutilizado;
-    Spinner spn_tipoVibracion, spn_tipoDoc, spn_horarioTrabajo, spn_regimen, spn_horarioRefrig, spn_frecuencia;
+    Spinner spn_tipoVibracion, spn_tipoDoc, spn_horarioTrabajo, spn_regimen, spn_horarioRefrig, spn_frecuencia, spn_lateralidadMano;
     RadioGroup radioGroupVerificacion,radioGroupIng, radioGroupAdm, radioGroupSeñal, radioGroupCapac, radioGroupMante;
     RadioButton radio_ingSI, radio_admSI;
     AppCompatButton btnSubirFotoVibra, btn_BuscarDni;
@@ -79,7 +79,7 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
     EditText txt_fuenteGenVibra, txt_descFuenteGen, txt_nombreControl, txt_otrosAdmin, txt_resulX, txt_resulY, txt_resulZ;
     CheckBox check_botas, check_guantes, check_casco, check_proteccionAud;
     CardView card_ing, card_admn;
-    LinearLayout linearOtroHorario, linearOtroRegimen, linearOtroRefrigerio, linearBuscarDni;
+    LinearLayout linearOtroHorario, linearOtroRegimen, linearOtroRefrigerio, linearBuscarDni, linearLateralidadMano;
     EditText txt_otroHorario, txt_otroRegimen, txt_otroRefrigerio;
     ImageView imgVibra;
     Uri uri;
@@ -116,9 +116,27 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
         Usuario nuevo = usuario.BuscarUsuario(Integer.parseInt(id_colaborador));
 
         config.ConfigPantalla();
-        spn_tipoVibracion.setAdapter(config.LlenarSpinner(new String[]{"Cuerpo Completo", "Mano Brazo"}));
+        spn_tipoVibracion.setAdapter(config.LlenarSpinner(new String[]{"Cuerpo Completo", "Mano - Brazo"}));
+        spn_lateralidadMano.setAdapter(config.LlenarSpinner(new String[]{"Diestro","Zurdo"}));
         spn_tipoDoc.setAdapter(config.LlenarSpinner(new String[]{"DNI", "CE"}));
         config.configurarAutoCompleteTextView(spn_equipoutilizado,lista_CodEquipos);
+
+        spn_tipoVibracion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String itemSelecionado = parent.getItemAtPosition(position).toString();
+                if(itemSelecionado.equals("Mano - Brazo")){
+                    linearLateralidadMano.setVisibility(View.VISIBLE);
+                }else {
+                    linearLateralidadMano.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         spn_tipoDoc.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -217,6 +235,7 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
                         validar.validarCampoObligatorio(txt_resulZ)
                 ){
                     String valorTipoVibracion = spn_tipoVibracion.getSelectedItem().toString();
+                    String valorLaterMano = spn_lateralidadMano.getSelectedItem().toString();
                     String valorEquipoUtil = spn_equipoutilizado.getText().toString();
                     String valorHoraVerif = tv_horaVerificacion.getText().toString();
                     int valorVerificacion = validar.getValor2(radioGroupVerificacion,rootView);
@@ -229,7 +248,7 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
                     String valorJornada = txt_jornada.getText().toString();
                     String valorTipoDoc = spn_tipoDoc.getSelectedItem().toString();
                     String valorNumDoc = txt_numDoc.getText().toString();
-                    String valorNombreTrab = tv_nombreUsuario.getText().toString();
+                    String valorNombreTrab = txt_nomTrab.getText().toString();
                     String valorPuestoTrabaj = txt_puestoTrab.getText().toString();
                     String valorAreaTrabajo = txt_areaTrab.getText().toString();
                     String valorEdad = txt_edadTrab.getText().toString();
@@ -282,6 +301,7 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
                             id_colaborador,
                             nuevo.getUsuario_nombres()+ " " +nuevo.getUsuario_apater()+" "+nuevo.getUsuario_amater(),
                             valorTipoVibracion,
+                            valorLaterMano,
                             String.valueOf(valorVerificacion),
                             valorHoraVerif,
                             valorFechaMoni,
@@ -403,6 +423,7 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
 
         // Asignación de elementos de la interfaz a variables
         spn_tipoVibracion = view.findViewById(R.id.tipo_vibracion);
+        spn_lateralidadMano = view.findViewById(R.id.spn_lateralidadMano);
         spn_equipoutilizado = view.findViewById(R.id.spn_equipoUtilizado);
         tv_horaVerificacion = view.findViewById(R.id.hora_situ);
         radioGroupVerificacion = view.findViewById(R.id.radioGroup_verf_insitu);
@@ -460,6 +481,7 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
         txt_otroRefrigerio = view.findViewById(R.id.txt_otroRefrigerio);
         linearBuscarDni = view.findViewById(R.id.linearBuscarDni);
         btn_BuscarDni = view.findViewById(R.id.btn_BuscarDni);
+        linearLateralidadMano = view.findViewById(R.id.linear_LateralidadMano);
 
     }
 

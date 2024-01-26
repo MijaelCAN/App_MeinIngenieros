@@ -134,6 +134,7 @@ public class RegistroFormatos {
     public String conformidad;
     public String eval_20p;
     public String tipo_vibracion;
+    public String lateralidad_mano;
     public String ubic_equip;
     public String anio_ocu_cargo;
     public String mes_ocu_cargo;
@@ -170,7 +171,7 @@ public class RegistroFormatos {
                             String ch_ruido_generado_por, String ruido_generado_por, String otro_ruido, String area_req_concentr, String lim_max_permis,
                             String tipo_medicion, String nom_tipo_medicion, double lmin, double lmax, double lequi, double lequi_md1, double lequi_md2, double lequi_md3,
                             double lequi_md4, double lequi_md5, double lmax_md1, double lmax_md2, double lmax_md3, double lmax_md4, double lmax_md5, double lmin_md1,
-                            double lmin_md2, double lmin_md3, double lmin_md4, double lmin_md5, double lpico_dba, String conformidad, String eval_20p, String tipo_vibracion,
+                            double lmin_md2, double lmin_md3, double lmin_md4, double lmin_md5, double lpico_dba, String conformidad, String eval_20p, String tipo_vibracion, String lateralidad_mano,
                             String ubic_equip, String anio_ocu_cargo, String mes_ocu_cargo, String cond_trab,String porc_descan, String foto, String resultado, int estado_resultado,
                             int estado, String fec_reg, int user_reg, String fec_act, int user_act, String fec_eli, int user_eli) {
         this.id_plan_trabajo_formato_reg = id_plan_trabajo_formato_reg;
@@ -304,6 +305,7 @@ public class RegistroFormatos {
         this.conformidad = conformidad;
         this.eval_20p = eval_20p;
         this.tipo_vibracion = tipo_vibracion;
+        this.lateralidad_mano = lateralidad_mano;
         this.ubic_equip = ubic_equip;
         this.anio_ocu_cargo = anio_ocu_cargo;
         this.mes_ocu_cargo = mes_ocu_cargo;
@@ -1367,6 +1369,14 @@ public class RegistroFormatos {
 
     public void setTipo_vibracion(String tipo_vibracion) {
         this.tipo_vibracion = tipo_vibracion;
+    }
+
+    public String getLateralidad_mano() {
+        return lateralidad_mano;
+    }
+
+    public void setLateralidad_mano(String lateralidad_mano) {
+        this.lateralidad_mano = lateralidad_mano;
     }
 
     public String getUbic_equip() {

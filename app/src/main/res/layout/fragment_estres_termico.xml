@@ -436,7 +436,6 @@ tools:context=".EstresTermicoFragment">
                             android:layout_marginTop="5dp"
                             android:textColorHint="@color/black"
                             android:background="@drawable/style_input"
-                            android:hint="Ingrese jornada"
                             android:textColor="@color/black"
                             android:inputType="numberSigned"
                             android:maxLength="5"
@@ -468,7 +467,7 @@ tools:context=".EstresTermicoFragment">
                             android:layout_marginTop="5dp"
                             android:textColorHint="@color/black"
                             android:background="@drawable/style_input"
-                            android:hint="Ingrese jornada"
+                            android:hint="Digite"
                             android:textColor="@color/black"
                             android:inputType="numberSigned"
                             android:maxLength="5"
@@ -1844,13 +1843,12 @@ tools:context=".EstresTermicoFragment">
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="2dp"
-                                android:orientation="horizontal"
+                                android:orientation="vertical"
                                 android:visibility="gone">
 
                                 <LinearLayout
-                                    android:layout_width="0dp"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="1"
                                     android:orientation="vertical">
 
                                     <TextView
@@ -1873,30 +1871,27 @@ tools:context=".EstresTermicoFragment">
                                 </LinearLayout>
 
                                 <LinearLayout
-                                    android:layout_width="0dp"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginLeft="15dp"
-                                    android:layout_weight="1"
                                     android:orientation="vertical">
 
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="10dp"
-                                        android:layout_weight="1"
                                         android:fontFamily="sans-serif-light"
                                         android:text="Actividad:"
                                         android:textColor="@color/black"
                                         android:textSize="12sp" />
 
-                                    <TextView
-                                        android:id="@+id/tv_actividad"
+                                    <EditText
+                                        android:id="@+id/txt_actividad"
                                         style="@style/EditTextFocusStyle"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="5dp"
                                         android:fontFamily="sans-serif-light"
-                                        android:inputType="text"
+                                        android:inputType="none"
                                         android:paddingLeft="8dp"
                                         android:textColor="@color/black"
                                         android:textColorHint="@color/black"
@@ -1936,6 +1931,7 @@ tools:context=".EstresTermicoFragment">
                                         android:fontFamily="sans-serif-light"
                                         android:hint="Digite"
                                         android:paddingLeft="8dp"
+                                        android:inputType="number|numberDecimal"
                                         android:textColor="@color/black"
                                         android:textColorHint="@color/black"
                                         android:textSize="15sp" />
@@ -1990,112 +1986,24 @@ tools:context=".EstresTermicoFragment">
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:padding="16dp">
-                            <TextView
+
+                            <LinearLayout
+                                android:id="@+id/linearContenedorTareas"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                            </LinearLayout>
+
+                            <Button
+                                android:id="@+id/btn_agregar_tarea"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="10dp"
-                                android:layout_weight="1"
-                                android:fontFamily="sans-serif-light"
-                                android:text="TAREA 01"
-                                android:textColor="@color/black"
-                                android:textSize="12sp"
                                 android:layout_gravity="center_horizontal"
-                                android:textStyle="bold"/>
-                            <EditText
-                                android:id="@+id/txt_tarea1"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:background="@drawable/style_input"
-                                android:fontFamily="sans-serif-light"
-                                android:hint="Digite"
-                                android:paddingLeft="8dp"
-                                android:textColor="@color/black"
-                                android:textColorHint="@color/black"
-                                android:textSize="15sp" />
+                                android:text="Agregar Tarea"
+                                android:onClick="agregarTarea" />
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="10dp"
-                                android:layout_weight="1"
-                                android:fontFamily="sans-serif-light"
-                                android:text="Ciclo de Trabajo(min)"
-                                android:textColor="@color/black"
-                                android:textSize="12sp" />
-
-                            <!-- HORARIO DE TRABAJO-->
-                            <EditText
-                                android:id="@+id/txt_cicloTrabajo"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:background="@drawable/style_input"
-                                android:fontFamily="sans-serif-light"
-                                android:hint="Digite"
-                                android:paddingLeft="8dp"
-                                android:textColor="@color/black"
-                                android:textColorHint="@color/black"
-                                android:textSize="15sp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="10dp"
-                                android:layout_weight="1"
-                                android:fontFamily="sans-serif-light"
-                                android:text="Posición"
-                                android:textColor="@color/black"
-                                android:textSize="12dp" />
-                            <Spinner
-                                android:id="@+id/cbx_posicion"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:layout_weight="1"
-                                android:background="@drawable/style_spinner"
-                                android:textSize="10sp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="10dp"
-                                android:layout_weight="1"
-                                android:text="Partes del cuerpo"
-                                android:textSize="12sp"
-                                android:fontFamily="sans-serif-light"/>
-                            <Spinner
-                                android:id="@+id/cbx_partesCuerpo"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:layout_weight="1"
-                                android:background="@drawable/style_spinner" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="10dp"
-                                android:layout_weight="1"
-                                android:text="Intensidad"
-                                android:textSize="12sp"
-                                android:fontFamily="sans-serif-light"/>
-                            <Spinner
-                                android:id="@+id/cbx_intensidad"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:layout_weight="1"
-                                android:background="@drawable/style_spinner" />
-
-                            <!-- ESPACIOOOOOOOOOOOOOOOOOOOOOO -->
-                            <View
-                                android:layout_width="match_parent"
-                                android:layout_height="1dp"
-                                android:background="@color/black"
-                                android:layout_marginTop="20dp"/>
-
-                            <TextView
+                            <!--<TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="10dp"
@@ -2129,7 +2037,6 @@ tools:context=".EstresTermicoFragment">
                                 android:textColor="@color/black"
                                 android:textSize="12sp" />
 
-                            <!-- HORARIO DE TRABAJO-->
                             <EditText
                                 android:id="@+id/txt_cicloTrabajo2"
                                 android:layout_width="match_parent"
@@ -2192,7 +2099,6 @@ tools:context=".EstresTermicoFragment">
                                 android:layout_marginTop="5dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/style_spinner" />
-                            <!-- ESPACIOOOOOOOOOOOOOOOOOOOOOO -->
                             <View
                                 android:layout_width="match_parent"
                                 android:layout_height="1dp"
@@ -2233,7 +2139,6 @@ tools:context=".EstresTermicoFragment">
                                 android:textColor="@color/black"
                                 android:textSize="12sp" />
 
-                            <!-- HORARIO DE TRABAJO-->
                             <EditText
                                 android:id="@+id/txt_cicloTrabajo3"
                                 android:layout_width="match_parent"
@@ -2295,7 +2200,7 @@ tools:context=".EstresTermicoFragment">
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:layout_weight="1"
-                                android:background="@drawable/style_spinner" />
+                                android:background="@drawable/style_spinner" />-->
 
                             <TextView
                                 android:layout_width="wrap_content"

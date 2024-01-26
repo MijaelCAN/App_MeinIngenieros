@@ -147,6 +147,8 @@ public class Validaciones {
             return 1;
         } else if (texto.equals("No")) {
             return 2;
+        } else if (texto.equals("Otro")) {
+            return 3;
         }
         return 0;
     }

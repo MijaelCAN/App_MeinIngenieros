@@ -9,12 +9,15 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -31,9 +34,7 @@ import com.google.gson.JsonObject;
 import com.mijael.mein.DAO.DAO_Equipos;
 import com.mijael.mein.DAO.DAO_FormatosTrabajo;
 import com.mijael.mein.DAO.DAO_RegistroEstreTermico;
-import com.mijael.mein.DAO.DAO_RegistroVibracion;
 import com.mijael.mein.DAO.DAO_Usuario;
-import com.mijael.mein.DAO.DAO_VelocidadAire;
 import com.mijael.mein.Entidades.Equipos;
 import com.mijael.mein.Entidades.EstresTermico_Registro;
 import com.mijael.mein.Entidades.EstresTermico_RegistroDetalle;
@@ -42,15 +43,15 @@ import com.mijael.mein.Entidades.Usuario;
 import com.mijael.mein.Extras.FragmentoImagen;
 import com.mijael.mein.Extras.InputDateConfiguration;
 import com.mijael.mein.Extras.Validaciones;
-import com.mijael.mein.HELPER.EquiposSQLiteHelper;
-import com.mijael.mein.HELPER.FormatoTrabajoSQLiteHelper;
 import com.mijael.mein.SERVICIOS.DosimetriaService;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -63,18 +64,20 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class EstresTermicoFragment extends Fragment implements FragmentoImagen.ImagePickerListener{
     private boolean cargarImagen = false;
+    private int contadorTareas = 1;
     View rootView;
     TextView tv_nombreUsuario, tv_nomEmpresa;
     String id_plan_trabajo, id_pt_trabajo, id_formato,id_colaborador, nom_Empresa;
     AutoCompleteTextView tv_estresTermico, tv_anemometro;
-    TextView tv_horaVerificacion, tv_fechaMonitoreo, tv_horaInicioMoni, tv_horaFinalMoni,tv_desTrabajoDetalle, tv_tasaMetabolica, tv_actividad;
+    TextView tv_horaVerificacion, tv_fechaMonitoreo, tv_horaInicioMoni, tv_horaFinalMoni,tv_desTrabajoDetalle, tv_tasaMetabolica;
     EditText txt_colorPredominante, txt_wbgt01, txt_wbgt11, txt_wbgt17, txt_t_aire01, txt_t_aire11, txt_t_aire17, txt_t_globo01, txt_tasaMetabolicaW, txt_tasaMetabolicaK,
             txt_t_globo11, txt_t_globo17, txt_h_relativa01, txt_h_relativa11, txt_h_relativa17, txt_velViento,  txt_observacion, txt_frecuenciaCardiaca,
-            txt_velViento2,txt_velViento3;
+            txt_velViento2,txt_velViento3, txt_actividad;
     CardView card_ingenier, Card_Tanteo, Card_Observacion, Card_Analisis;
-    LinearLayout linear1A, linear1B,linear1_1,linear1_7, linearBuscarDni;
+    LinearLayout linear1A, linear1B,linear1_1,linear1_7, linearBuscarDni, linearContenedorTareas;
     RadioGroup radioGroupVerificacion, radioGroupIng, radioGroupZonaSombra, radioGroupRotacion, radioGroupRecuperacion,radioGroupDispensador, radioGroupCapacitacion;
     RadioButton radio_ingenierSI;
+    Button btnAgregarTareas;
     AppCompatButton btn_subirFotoEstres, btn_BuscarDni;
     FloatingActionButton btn_guardar;
     ExtendedFloatingActionButton btnCancelar;
@@ -95,7 +98,8 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
     }
     Formatos_Trabajo for_Estres;
     Validaciones validar = new Validaciones();
-
+    Map<String, String> valoresTareas = new HashMap<>();
+    String valorTimeMed;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -113,6 +117,7 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_estres_termico, container, false);
         InputDateConfiguration config = new InputDateConfiguration(getActivity(),id_colaborador,nom_Empresa,rootView);
@@ -130,9 +135,56 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
         spn_nivelDeterminacion.setAdapter(config.LlenarSpinner(new String[]{"Tanteo", "Observación","Análisis"}));
         spn_tipoMedicion.setAdapter(config.LlenarSpinner(new String[]{"Medición a una altura","Medición a tres alturas"}));
         spn_genero.setAdapter(config.LlenarSpinner(new String[]{"Hombre","Mujer"}));
-        spn_tipoTrab.setAdapter(config.LlenarSpinner(new String[]{"Oficina","Artesanos","Mineria","Industria","Artes","Agricultura","Transporte","Diversos"}));
+        spn_tipoTrab.setAdapter(config.LlenarSpinner(new String[]{"Oficina","Artesanos","Minería","Industria","Artes","Agricultura","Transporte","Diversos"}));
         spn_ocupacion.setAdapter(config.LlenarSpinner(new String[]{"Ayudante de laboratorio","Profesor","Dependiente de Comercio","Secretario"}));
         spn_clase.setAdapter(config.LlenarSpinner(new String[]{"Descanso","Tasa metabólica baja","Tasa metabólica moderada","Tasa metabólica alta","Tasa metabólica muy alta"}));
+
+        HashMap<String, String[]> ocupacionesPorTipoTrabajo = new HashMap<>();
+        ocupacionesPorTipoTrabajo.put("Oficina", new String[]{"Trabajo de sedentario", "Trabajo administrativo"});
+        ocupacionesPorTipoTrabajo.put("Artesanos", new String[]{"Coserje", "Albañil", "Carpintero", "Cristalero", "Pintor", "Panadero", "Carnicero", "Relojero"});
+        ocupacionesPorTipoTrabajo.put("Minería", new String[]{"Operador de vagoneta", "Picador de carbón", "Operador de horno de coque"});
+        ocupacionesPorTipoTrabajo.put("Industria", new String[]{"Operador de alto horno", "Operador de horno eléctrico", "Moldeo manual", "Moldeo a máquina", "Fundidor", "Herrero", "Soldador", "Tornero", "Fresador", "Mecánico de precisión"});
+        ocupacionesPorTipoTrabajo.put("Artes", new String[]{"Componedor a mano", "Encuadernor"});
+        ocupacionesPorTipoTrabajo.put("Agricultura", new String[]{"Jardinero", "Tractorista"});
+        ocupacionesPorTipoTrabajo.put("Transporte", new String[]{"Conductor de automóvil", "Conductor de autobús", "Conductor de tranvia", "Operador de grúa"});
+        ocupacionesPorTipoTrabajo.put("Diversos", new String[]{"Ayudante de laboratorio", "Profesor", "Dependiente de comercio", "Secretario"});
+
+        HashMap<String, String> rangosPorOcupacion = new HashMap<>();
+        rangosPorOcupacion.put("Trabajo de sedentario", "55 a 70");
+        rangosPorOcupacion.put("Trabajo administrativo", "70 a 100");
+        rangosPorOcupacion.put("Coserje", "80 a 115");
+        rangosPorOcupacion.put("Albañil", "110 a 160");
+        rangosPorOcupacion.put("Carpintero", "110 a 175");
+        rangosPorOcupacion.put("Cristalero", "90 a 125");
+        rangosPorOcupacion.put("Pintor", "100 a 130");
+        rangosPorOcupacion.put("Panadero", "110 a 140");
+        rangosPorOcupacion.put("Carnicero", "105 a 140");
+        rangosPorOcupacion.put("Relojero", "55 a 70");
+        rangosPorOcupacion.put("Operador de vagoneta", "70 a 85");
+        rangosPorOcupacion.put("Picador de carbón", "110");
+        rangosPorOcupacion.put("Operador de horno de coque", "115 a 175");
+        rangosPorOcupacion.put("Operador de alto horno", "170 a 220");
+        rangosPorOcupacion.put("Operador de horno eléctrico", "125 a 145");
+        rangosPorOcupacion.put("Moldeo manual", "140 a 240");
+        rangosPorOcupacion.put("Moldeo a máquina", "105 a 165");
+        rangosPorOcupacion.put("Fundidor", "140 a 240");
+        rangosPorOcupacion.put("Herrero", "90 a 200");
+        rangosPorOcupacion.put("Soldador", "75 a 125");
+        rangosPorOcupacion.put("Tornero", "75 a 125");
+        rangosPorOcupacion.put("Fresador", "80 a 140");
+        rangosPorOcupacion.put("Mecánico de precisión", "70 a 110");
+        rangosPorOcupacion.put("Componedor a mano", "70 a 95");
+        rangosPorOcupacion.put("Encuadernor", "75 a 100");
+        rangosPorOcupacion.put("Jardinero", "115 a 190");
+        rangosPorOcupacion.put("Tractorista", "85 a 110");
+        rangosPorOcupacion.put("Conductor de automóvil", "70 a 100");
+        rangosPorOcupacion.put("Conductor de autobús", "70 a 125");
+        rangosPorOcupacion.put("Conductor de tranvia", "80 a 115");
+        rangosPorOcupacion.put("Operador de grúa", "65 a 145");
+        rangosPorOcupacion.put("Ayudante de laboratorio", "85 a 100");
+        rangosPorOcupacion.put("Profesor", "85 a 100");
+        rangosPorOcupacion.put("Dependiente de comercio", "100 a 120");
+        rangosPorOcupacion.put("Secretario", "70 a 85");
 
 
         spn_tipoDoc.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -147,6 +199,23 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                     linearBuscarDni.setVisibility(View.GONE);
                     txt_nomTrabajador.setText("");
                     txt_numDoc.setText("");
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        spn_tipoTrab.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String itemseleccionado = parent.getItemAtPosition(position).toString();
+                String[] ocupaciones = ocupacionesPorTipoTrabajo.get(itemseleccionado);
+
+                // Si hay ocupaciones correspondientes, llenar el spinner con ellas
+                if (ocupaciones != null) {
+                    spn_ocupacion.setAdapter(config.LlenarSpinner(ocupaciones));
                 }
             }
 
@@ -180,10 +249,18 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
 
             }
         });
+
         spn_nivelDeterminacion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String seleccion = (String) parent.getItemAtPosition(position);
+                Card_Tanteo.setVisibility(View.GONE);
+                Card_Analisis.setVisibility(View.GONE);
+                Card_Observacion.setVisibility(View.GONE);
+                config.limpiarElementos((ViewGroup) Card_Tanteo.getChildAt(0));
+                config.limpiarElementos((ViewGroup) Card_Analisis.getChildAt(0));
+                config.limpiarElementos((ViewGroup) Card_Observacion.getChildAt(0));
+                tv_tasaMetabolica.setText("");
                 if (seleccion.equals("Tanteo")) {
                     spn_metodoDeterminacion.setAdapter(config.LlenarSpinner(new String[]{"1A - Clasificación del tamaño de la ocupación", "1B - Clasificación del tamaño de la actividad"}));
                 } else if (seleccion.equals("Observación")) {
@@ -202,12 +279,18 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String seleccion = (String) parent.getItemAtPosition(position);
+                config.limpiarElementos((ViewGroup) Card_Tanteo.getChildAt(0));
+                config.limpiarElementos((ViewGroup) Card_Analisis.getChildAt(0));
+                config.limpiarElementos((ViewGroup) Card_Observacion.getChildAt(0));
+                txt_actividad.setText("");
                 if(seleccion.equals("1A - Clasificación del tamaño de la ocupación")){
                     Card_Tanteo.setVisibility(View.VISIBLE);
                     Card_Analisis.setVisibility(View.GONE);
                     Card_Observacion.setVisibility(View.GONE);
                     linear1A.setVisibility(View.VISIBLE);
                     linear1B.setVisibility(View.GONE);
+                    txt_tasaMetabolicaW.setText("");
+                    txt_tasaMetabolicaK.setText("");
                 }else if(seleccion.equals("1B - Clasificación del tamaño de la actividad")){
                     Card_Tanteo.setVisibility(View.VISIBLE);
                     Card_Analisis.setVisibility(View.GONE);
@@ -271,6 +354,9 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                     txt_velViento2.setVisibility(View.VISIBLE);
                     txt_velViento3.setVisibility(View.VISIBLE);
                 }
+
+                obtenerValoresTareas();
+                Log.e("vvvvv", String.valueOf(contadorTareas));
             }
 
             @Override
@@ -282,12 +368,11 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedItem = parent.getItemAtPosition(position).toString();
-                if(selectedItem.equals("Ayudante de laboratorio") || selectedItem.equals("Profesor")){
-                    tv_tasaMetabolica.setText("85 a 100");
-                } else if (selectedItem.equals("Dependiente de Comercio")) {
-                    tv_tasaMetabolica.setText("100 a 120");
-                } else if (selectedItem.equals("Secretario")) {
-                    tv_tasaMetabolica.setText("70 a 85");
+
+                String rango = rangosPorOcupacion.get(selectedItem);
+                // Si hay un rango correspondiente, mostrarlo en el TextView
+                if (rango != null) {
+                    tv_tasaMetabolica.setText(rango);
                 }
             }
 
@@ -296,24 +381,46 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
 
             }
         });
+        txt_tasaMetabolicaW.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String valor = txt_tasaMetabolicaW.getText().toString();
+                if(valor!=null && !valor.isEmpty()){
+                    DecimalFormat decimalFormat = new DecimalFormat("#.##");
+                    float resultado = Float.parseFloat(valor) / 0.644f;
+                    String resultadoFormateado = decimalFormat.format(resultado);
+                    txt_tasaMetabolicaK.setText(resultadoFormateado);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         spn_clase.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedItem = parent.getItemAtPosition(position).toString();
                 if(selectedItem.equals("Descanso")){
-                    tv_actividad.setText("Descansando, sentado comodamente");
+                    txt_actividad.setText("Descansando, sentado comodamente");
                     txt_tasaMetabolicaW.setText("65");
                 } else if (selectedItem.equals("Tasa metabólica baja")) {
-                    tv_actividad.setText("Trabajo manual ligero (escribir, teclear, coser); trabajo con brazos y manos (herramientas pequeñas, inspección, montaje); trabajo con pie y piernas (conducción de vehículos en condiciones normales, empleo de pedales de accionamiento). De pie, taladrado;");
+                    txt_actividad.setText("Trabajo manual ligero (escribir, teclear, coser); trabajo con brazos y manos (herramientas pequeñas, inspección, montaje); trabajo con pie y piernas (conducción de vehículos en condiciones normales, empleo de pedales de accionamiento). De pie, taladrado;");
                     txt_tasaMetabolicaW.setText("100");
                 } else if (selectedItem.equals("Tasa metabólica moderada")) {
-                    tv_actividad.setText("Trabajo sostenido con manos y brazos (clavar, limar); trabajo con brazos y piernas (conducción de camiones, tractores o máquinas en obras); trabajo con tronco y brazos (martillos neumáticos, escardar, recoger frutas y verduras, tirar de o empujar carretil");
+                    txt_actividad.setText("Trabajo sostenido con manos y brazos (clavar, limar); trabajo con brazos y piernas (conducción de camiones, tractores o máquinas en obras); trabajo con tronco y brazos (martillos neumáticos, escardar, recoger frutas y verduras, tirar de o empujar carretil");
                     txt_tasaMetabolicaW.setText("165");
                 } else if (selectedItem.equals("Tasa metabólica alta")) {
-                    tv_actividad.setText("Trabajo intenso con brazos y tronco; transporte de materiales pesados; palear, empleo de sierra; cepillado o escopelado de madera dura; corte de hierba o cavado manual; caminar a una velocidad de 5.5 km/h hasta 7 km/h. Empujar o tirar de carretillas o carros de mano muy cargados; desbarbado de fundición; colocación de bloques de hormigón.");
+                    txt_actividad.setText("Trabajo intenso con brazos y tronco; transporte de materiales pesados; palear, empleo de sierra; cepillado o escopelado de madera dura; corte de hierba o cavado manual; caminar a una velocidad de 5.5 km/h hasta 7 km/h. Empujar o tirar de carretillas o carros de mano muy cargados; desbarbado de fundición; colocación de bloques de hormigón.");
                     txt_tasaMetabolicaW.setText("230");
-                } else if (selectedItem.equals("Tasa metabólica nuy alta")) {
-                    tv_actividad.setText("Actividad muy intensa a ritmo de muy rápido a máximo; trabajo con hacha; cavado o paleado intenso; subir escaleras, rampas o escalas; caminar rápidamente a pequeños pasos; correr; caminar a una velocidad superior a los 7 km/h.");
+                } else if (selectedItem.equals("Tasa metabólica muy alta")) {
+                    txt_actividad.setText("Actividad muy intensa a ritmo de muy rápido a máximo; trabajo con hacha; cavado o paleado intenso; subir escaleras, rampas o escalas; caminar rápidamente a pequeños pasos; correr; caminar a una velocidad superior a los 7 km/h.");
                     txt_tasaMetabolicaW.setText("290");
                 }
             }
@@ -337,7 +444,7 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
         spn_porcDescanso.setAdapter(config.LlenarSpinner("actividad_Descanso","nom_act_des",getActivity()));
         spn_vestimenta.setAdapter(config.LlenarSpinner("vestimenta","nom_vestimenta",getActivity()));
         spn_materialPrenda.setAdapter(config.LlenarSpinner("materialVestimenta","nom_material",getActivity()));
-        spn_posicion1.setAdapter(config.LlenarSpinner("posicion","nom_pos",getActivity()));
+        /*spn_posicion1.setAdapter(config.LlenarSpinner("posicion","nom_pos",getActivity()));
         spn_posicion2.setAdapter(config.LlenarSpinner("posicion","nom_pos",getActivity()));
         spn_posicion3.setAdapter(config.LlenarSpinner("posicion","nom_pos",getActivity()));
         spn_pCuerpo1.setAdapter(config.LlenarSpinner("partes_cuerpo","nom_cuerpo",getActivity()));
@@ -345,7 +452,7 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
         spn_pCuerpo3.setAdapter(config.LlenarSpinner("partes_cuerpo","nom_cuerpo",getActivity()));
         spn_intesidad1.setAdapter(config.LlenarSpinner("intensidad","nom_intensidad",getActivity()));
         spn_intesidad2.setAdapter(config.LlenarSpinner("intensidad","nom_intensidad",getActivity()));
-        spn_intesidad3.setAdapter(config.LlenarSpinner("intensidad","nom_intensidad",getActivity()));
+        spn_intesidad3.setAdapter(config.LlenarSpinner("intensidad","nom_intensidad",getActivity()));*/
 
         config.MostrarCampos(linearOtroHorario,spn_horarioTrabajo);
         config.MostrarCampos(linearOtroRegimen,spn_regimen);
@@ -360,6 +467,35 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
         tv_fechaMonitoreo.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {config.showDatePickerDialog(rootView,tv_fechaMonitoreo);}});
         tv_horaInicioMoni.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {config.showTimePickerDialog(rootView,tv_horaInicioMoni);}});
         tv_horaFinalMoni.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {config.showTimePickerDialog(rootView,tv_horaFinalMoni);}});
+
+
+        TextWatcher watcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String texto = s.toString();
+                String horainicial = tv_horaInicioMoni.getText().toString();
+                String horafinal = tv_horaFinalMoni.getText().toString();
+                if(!horainicial.isEmpty() && !horafinal.isEmpty()){
+                    valorTimeMed = InputDateConfiguration.calcularTiempoMedicion(horainicial,horafinal);
+                    txt_timeMedMin.setText(valorTimeMed);
+                }else{
+                    txt_timeMedMin.setText("");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
+        tv_horaInicioMoni.addTextChangedListener(watcher);
+        tv_horaFinalMoni.addTextChangedListener(watcher);
+
 
         btn_subirFotoEstres.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -381,6 +517,20 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                 }
             }
         });
+        btnAgregarTareas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (contadorTareas <= 5) {
+                    if(contadorTareas==5){
+                        btnAgregarTareas.setVisibility(View.GONE);
+                    }
+                    agregarNuevaTarea(config);
+                    contadorTareas++;
+                } else {
+                    btnAgregarTareas.setVisibility(View.GONE);
+                }
+            }
+        });
         btn_guardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -391,7 +541,7 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                         validar.validarImagen(cargarImagen,getActivity()) &&
                         validar.validarCampoObligatorio(tv_fechaMonitoreo) &&
                         validar.validarCampoObligatorio(tv_horaInicioMoni) &&
-                        validar.validarCampoObligatorio(tv_horaFinalMoni) &&
+                        //validar.validarCampoObligatorio(tv_horaFinalMoni) &&
                         validar.validarCampoObligatorio(txt_timeMedMin) &&
                         validar.validarCampoObligatorio(txt_timeExpoHora) &&
                         validar.validarCampoObligatorio(txt_jornadaTrabajo) &&
@@ -467,7 +617,7 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
 
                     String valorHoraInicioMoni = tv_horaInicioMoni.getText().toString();
                     String valorHoraFinalMoni = tv_horaFinalMoni.getText().toString();
-                    String valorTimeMed = txt_timeMedMin.getText().toString();
+                    //iba tiempo de medicion
                     String valorTimeExpo = txt_timeExpoHora.getText().toString();
                     String valorJornada = txt_jornadaTrabajo.getText().toString();
                     String valorTipoDoc = spn_tipoDoc.getSelectedItem().toString();
@@ -548,29 +698,75 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                     String valorOcupacion = spn_ocupacion.getSelectedItem().toString();
                     String valorRangoTasaMeta = tv_tasaMetabolica.getText().toString();
                     String valorClase = spn_clase.getSelectedItem().toString();
-                    String valorActividadDeter = tv_actividad.getText().toString();
+                    String valorActividadDeter = txt_actividad.getText().toString();
                     String valorTasaMetaW = txt_tasaMetabolicaW.getText().toString();
                     String valorTasaMetaK = txt_tasaMetabolicaK.getText().toString();
                     String valorFrecencia = txt_frecuenciaCardiaca.getText().toString();
                     String valorGenero = spn_genero.getSelectedItem().toString();
+                    // Tarea 1
+                    String tarea1 = "";
+                    String cicloTrab1 = "";
+                    String posicion1 = "";
+                    String partesCuerpo1 = "";
+                    String intensidad1 = "";
+                    String tarea2 = "";
+                    String cicloTrab2 = "";
+                    String posicion2 = "";
+                    String partesCuerpo2 = "";
+                    String intensidad2 = "";
+                    String tarea3 = "";
+                    String cicloTrab3 = "";
+                    String posicion3 = "";
+                    String partesCuerpo3 = "";
+                    String intensidad3 = "";
+                    String tarea4 = "";
+                    String cicloTrab4 = "";
+                    String posicion4 = "";
+                    String partesCuerpo4 = "";
+                    String intensidad4 = "";
+                    String tarea5 = "";
+                    String cicloTrab5 = "";
+                    String posicion5 = "";
+                    String partesCuerpo5 = "";
+                    String intensidad5 = "";
+                    String valorMetrosSub = "";
 
-                    String valorTarea1 = txt_nomTarea1.getText().toString();
-                    String valorCicloTrab1 = txt_cicloTrab1.getText().toString();
-                    String valorPosicion1 = spn_posicion1.getSelectedItem().toString();
-                    String valor_pCuerpo1 = spn_pCuerpo1.getSelectedItem().toString();
-                    String valorIntensidad1 = spn_intesidad1.getSelectedItem().toString();
-                    String valorTarea2 = txt_nomTarea2.getText().toString();
-                    String valorCicloTrab2 = txt_cicloTrab2.getText().toString();
-                    String valorPosicion2 = spn_posicion2.getSelectedItem().toString();
-                    String valor_pCuerpo2 = spn_pCuerpo2.getSelectedItem().toString();
-                    String valorIntensidad2 = spn_intesidad2.getSelectedItem().toString();
-                    String valorTarea3 = txt_nomTarea3.getText().toString();
-                    String valorCicloTrab3 = txt_cicloTrab3.getText().toString();
-                    String valorPosicion3 = spn_posicion3.getSelectedItem().toString();
-                    String valor_pCuerpo3 = spn_pCuerpo3.getSelectedItem().toString();
-                    String valorIntensidad3 = spn_intesidad3.getSelectedItem().toString();
-                    String valorMetrosSubida = txt_metroSubida.getText().toString();
-
+                    if(1<contadorTareas){
+                         tarea1 = valoresTareas.get("tarea1");
+                         cicloTrab1 = valoresTareas.get("cicloTrab1");
+                         posicion1 = valoresTareas.get("posicion1");
+                         partesCuerpo1 = valoresTareas.get("partesCuerpo1");
+                         intensidad1 = valoresTareas.get("intensidad1");
+                         valorMetrosSub = txt_metroSubida.getText().toString();
+                    }
+                    if(2<contadorTareas){
+                         tarea2 = valoresTareas.get("tarea2");
+                         cicloTrab2 = valoresTareas.get("cicloTrab2");
+                         posicion2 = valoresTareas.get("posicion2");
+                         partesCuerpo2 = valoresTareas.get("partesCuerpo2");
+                         intensidad2 = valoresTareas.get("intensidad2");
+                    }
+                    if(3<contadorTareas){
+                         tarea3 = valoresTareas.get("tarea3");
+                         cicloTrab3 = valoresTareas.get("cicloTrab3");
+                         posicion3 = valoresTareas.get("posicion3");
+                         partesCuerpo3 = valoresTareas.get("partesCuerpo3");
+                         intensidad3 = valoresTareas.get("intensidad3");
+                    }
+                    if(4<contadorTareas){
+                         tarea4 = valoresTareas.get("tarea4");
+                         cicloTrab4 = valoresTareas.get("cicloTrab4");
+                         posicion4 = valoresTareas.get("posicion4");
+                         partesCuerpo4 = valoresTareas.get("partesCuerpo4");
+                         intensidad4 = valoresTareas.get("intensidad4");
+                    }
+                    if(5<contadorTareas){
+                         tarea5 = valoresTareas.get("tarea5");
+                         cicloTrab5 = valoresTareas.get("cicloTrab5");
+                         posicion5 = valoresTareas.get("posicion5");
+                         partesCuerpo5 = valoresTareas.get("partesCuerpo5");
+                         intensidad5 = valoresTareas.get("intensidad5");
+                    }
                     String valorT_Bulbo = txt_wbgt01.getText().toString();
                     String valorT_Bulbo2 = txt_wbgt11.getText().toString();
                     String valorT_Bulbo3 = txt_wbgt17.getText().toString();
@@ -676,22 +872,32 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                             valorTasaMetaK,
                             valorFrecencia,
                             valorGenero,
-                            valorTarea1,
-                            valorCicloTrab1,
-                            valorPosicion1,
-                            valor_pCuerpo1,
-                            valorIntensidad1,
-                            valorTarea2,
-                            valorCicloTrab2,
-                            valorPosicion2,
-                            valor_pCuerpo2,
-                            valorIntensidad2,
-                            valorTarea3,
-                            valorCicloTrab3,
-                            valorPosicion3,
-                            valor_pCuerpo3,
-                            valorIntensidad3,
-                            valorMetrosSubida,
+                            tarea1,
+                            cicloTrab1,
+                            posicion1,
+                            partesCuerpo1,
+                            intensidad1,
+                            tarea2,
+                            cicloTrab2,
+                            posicion2,
+                            partesCuerpo2,
+                            intensidad2,
+                            tarea3,
+                            cicloTrab3,
+                            posicion3,
+                            partesCuerpo3,
+                            intensidad3,
+                            tarea4,
+                            cicloTrab4,
+                            posicion4,
+                            partesCuerpo4,
+                            intensidad4,
+                            tarea5,
+                            cicloTrab5,
+                            posicion5,
+                            partesCuerpo5,
+                            intensidad5,
+                            valorMetrosSub,
                             valorT_Bulbo,
                             valorT_Bulbo2,
                             valorT_Bulbo3,
@@ -841,21 +1047,21 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
         check_tapones = view.findViewById(R.id.check_tapones);
         check_cubreNuca = view.findViewById(R.id.check_cubreNuca);
         txt_otrosEpps = view.findViewById(R.id.txt_otrosEpps);
-        txt_nomTarea1 = view.findViewById(R.id.txt_tarea1);
+        /*txt_nomTarea1 = view.findViewById(R.id.txt_tarea1);
         txt_cicloTrab1 = view.findViewById(R.id.txt_cicloTrabajo);
         spn_posicion1 = view.findViewById(R.id.cbx_posicion);
         spn_pCuerpo1 = view.findViewById(R.id.cbx_partesCuerpo);
         spn_intesidad1 = view.findViewById(R.id.cbx_intensidad);
-        txt_nomTarea2 = view.findViewById(R.id.txt_tarea2);
-        txt_cicloTrab2 = view.findViewById(R.id.txt_cicloTrabajo2);
-        spn_posicion2 = view.findViewById(R.id.cbx_posicion2);
-        spn_pCuerpo2 = view.findViewById(R.id.cbx_partesCuerpo2);
-        spn_intesidad2 = view.findViewById(R.id.cbx_intensidad2);
-        txt_nomTarea3 = view.findViewById(R.id.txt_tarea3);
-        txt_cicloTrab3 = view.findViewById(R.id.txt_cicloTrabajo3);
-        spn_posicion3 = view.findViewById(R.id.cbx_posicion3);
-        spn_pCuerpo3 = view.findViewById(R.id.cbx_partesCuerpo3);
-        spn_intesidad3 = view.findViewById(R.id.cbx_intensidad3);
+        txt_nomTarea2 = view.findViewById(R.id.txt_tarea1);
+        txt_cicloTrab2 = view.findViewById(R.id.txt_cicloTrabajo);
+        spn_posicion2 = view.findViewById(R.id.cbx_posicion);
+        spn_pCuerpo2 = view.findViewById(R.id.cbx_partesCuerpo);
+        spn_intesidad2 = view.findViewById(R.id.cbx_intensidad);
+        txt_nomTarea3 = view.findViewById(R.id.txt_tarea1);
+        txt_cicloTrab3 = view.findViewById(R.id.txt_cicloTrabajo);
+        spn_posicion3 = view.findViewById(R.id.cbx_posicion);
+        spn_pCuerpo3 = view.findViewById(R.id.cbx_partesCuerpo);
+        spn_intesidad3 = view.findViewById(R.id.cbx_intensidad);*/
         txt_metroSubida = view.findViewById(R.id.txt_metrosSubida);
         txt_wbgt01 = view.findViewById(R.id.txt_wbgt01);
         txt_wbgt11 = view.findViewById(R.id.txt_wbgt11);
@@ -893,7 +1099,7 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
         txt_tasaMetabolicaK = view.findViewById(R.id.txt_tasaMetaK);
 
         spn_clase = view.findViewById(R.id.cbx_clase);
-        tv_actividad = view.findViewById(R.id.tv_actividad);
+        txt_actividad = view.findViewById(R.id.txt_actividad);
         spn_genero = view.findViewById(R.id.cbx_genero);
         txt_frecuenciaCardiaca = view.findViewById(R.id.txt_frecuenciaCardiaca);
 
@@ -908,6 +1114,8 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
         linear1_7 = view.findViewById(R.id.linear1_7);
         linearBuscarDni = view.findViewById(R.id.linearBuscarDni);
         btn_BuscarDni = view.findViewById(R.id.btn_BuscarDni);
+        linearContenedorTareas = view.findViewById(R.id.linearContenedorTareas);
+        btnAgregarTareas = view.findViewById(R.id.btn_agregar_tarea);
 
         card_ingenier = view.findViewById(R.id.Card_Ingenieria);
 
@@ -927,6 +1135,49 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
             card.setVisibility(View.VISIBLE);
         } else {
             card.setVisibility(View.GONE);
+        }
+    }
+    private void agregarNuevaTarea(InputDateConfiguration config) {
+        // Inflar el diseño de la tarea y agregarlo al contenedor
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        View nuevaTarea = inflater.inflate(R.layout.layout_tarea, null);
+        TextView txtNumeroTarea  = nuevaTarea.findViewById(R.id.tv_nomTarea);
+        Spinner spn_posicion = nuevaTarea.findViewById(R.id.cbx_posicion);
+        Spinner spn_partesCuerpo = nuevaTarea.findViewById(R.id.cbx_partesCuerpo);
+        Spinner spn_intensidad = nuevaTarea.findViewById(R.id.cbx_intensidad);
+        spn_posicion.setAdapter(config.LlenarSpinner("posicion","nom_pos",getActivity()));
+        spn_partesCuerpo.setAdapter(config.LlenarSpinner("partes_cuerpo","nom_cuerpo",getActivity()));
+        spn_intensidad.setAdapter(config.LlenarSpinner("intensidad","nom_intensidad",getActivity()));
+
+        txtNumeroTarea.setText("TAREA " + contadorTareas);
+        linearContenedorTareas.addView(nuevaTarea);
+    }
+    private void obtenerValoresTareas() {
+        // Recorrer todas las tareas en el contenedor
+        for (int i = 0; i < linearContenedorTareas.getChildCount(); i++) {
+            View tarea = linearContenedorTareas.getChildAt(i);
+
+            // Obtener valores de elementos dentro de la tarea
+            TextView txt_tarea = tarea.findViewById(R.id.txt_tarea);
+            EditText txt_cicloTrabajo = tarea.findViewById(R.id.txt_cicloTrabajo);
+            Spinner spn_posicion = tarea.findViewById(R.id.cbx_posicion);
+            Spinner spn_partesCuerpo = tarea.findViewById(R.id.cbx_partesCuerpo);
+            Spinner spn_intensidad = tarea.findViewById(R.id.cbx_intensidad);
+
+
+            // Obtener los valores específicos que necesitas
+            String valorNomTarea = txt_tarea.getText().toString();
+            String valorCicloTrabajo = txt_cicloTrabajo.getText().toString();
+            String valorPosicion = spn_posicion.getSelectedItem().toString();
+            String valorPartesCuerpo = spn_partesCuerpo.getSelectedItem().toString();
+            String valorIntensidad = spn_intensidad.getSelectedItem().toString();
+
+            // Hacer algo con los valores (por ejemplo, imprimirlos)
+            valoresTareas.put("tarea"+(i+1) , valorNomTarea);
+            valoresTareas.put("cicloTrab" +""+(i+1) , valorCicloTrabajo);
+            valoresTareas.put("posicion" +""+(i+1) , valorPosicion);
+            valoresTareas.put("partesCuerpo" +""+(i+1) , valorPartesCuerpo);
+            valoresTareas.put("intensidad" +""+(i+1) , valorIntensidad);
         }
     }
 }

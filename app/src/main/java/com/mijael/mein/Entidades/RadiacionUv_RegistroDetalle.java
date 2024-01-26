@@ -11,37 +11,33 @@ public class RadiacionUv_RegistroDetalle {
     public String malla_oscura;
     public String prog_expo_radiacion;
     public String trab_aire_libre;
-    public String mant_fuente;
-    public String epp_casco;
-    public String epp_lentes;
-    public String epp_cnuca;
-    public String epp_gorro;
-    public String otro_vest;
-    public String epp_lentes_brillo;
-    public String prot_lat;
-    public String epp_gorro_2;
-    public String epp_casco_2;
+    public String mant_fuente;//se ha eliminado 5 registros
+
+    public int epp_lentes_brillo;
+    public int prot_lat;
+    public int epp_gorro_2;
+    public int epp_casco_2;
     public String epp_ninguno;
-    public String prot_legion;
-    public String prot_aancha;
-    public String rop_ccerti;
-    public String rop_coscuro;
-    public String rop_mlarga;
-    public String tgruesa;
-    public String util_fps;
-    public String guia_fps;
-    public String frec_aplic;
-    public String cada_medhora;
+    public int prot_legion;
+    public int prot_aancha;
+    public int rop_ccerti;
+    public int rop_coscuro;
+    public int rop_mlarga;
+    public int tgruesa;
+    public int util_fps;
+    public int guia_fps;
+    public int frec_aplic;
+
+    public String otra_frecuencia;
+    public int cubre_nuca;
+    public int lent_osc;
+
     public String otro_epp;
     public int estado;
     public String fec_reg;
     public String user_reg;
 
-    public RadiacionUv_RegistroDetalle(int id_plan_trabajo_formato_reg, String tipo_piel, String color_piel, String fuente_generadora, String tipo_fuente, String sombra_descanso,
-                                       String malla_oscura, String prog_expo_radiacion, String trab_aire_libre, String mant_fuente, String epp_casco, String epp_lentes, String epp_cnuca,
-                                       String epp_gorro, String otro_vest, String epp_lentes_brillo, String prot_lat, String epp_gorro_2, String epp_casco_2, String epp_ninguno,
-                                       String prot_legion, String prot_aancha, String rop_ccerti, String rop_coscuro, String rop_mlarga, String tgruesa, String util_fps, String guia_fps,
-                                       String frec_aplic, String cada_medhora, String otro_epp, String fec_reg, String user_reg) {
+    public RadiacionUv_RegistroDetalle(int id_plan_trabajo_formato_reg, String tipo_piel, String color_piel, String fuente_generadora, String tipo_fuente, String sombra_descanso, String malla_oscura, String prog_expo_radiacion, String trab_aire_libre, String mant_fuente, int epp_lentes_brillo, int prot_lat, int epp_gorro_2, int epp_casco_2, String epp_ninguno, int prot_legion, int prot_aancha, int rop_ccerti, int rop_coscuro, int rop_mlarga, int tgruesa, int util_fps, int guia_fps, int frec_aplic, String otra_frecuencia, int cubre_nuca, int lent_osc, String otro_epp, String fec_reg, String user_reg) {
         this.id_plan_trabajo_formato_reg = id_plan_trabajo_formato_reg;
         this.tipo_piel = tipo_piel;
         this.color_piel = color_piel;
@@ -52,11 +48,6 @@ public class RadiacionUv_RegistroDetalle {
         this.prog_expo_radiacion = prog_expo_radiacion;
         this.trab_aire_libre = trab_aire_libre;
         this.mant_fuente = mant_fuente;
-        this.epp_casco = epp_casco;
-        this.epp_lentes = epp_lentes;
-        this.epp_cnuca = epp_cnuca;
-        this.epp_gorro = epp_gorro;
-        this.otro_vest = otro_vest;
         this.epp_lentes_brillo = epp_lentes_brillo;
         this.prot_lat = prot_lat;
         this.epp_gorro_2 = epp_gorro_2;
@@ -71,7 +62,9 @@ public class RadiacionUv_RegistroDetalle {
         this.util_fps = util_fps;
         this.guia_fps = guia_fps;
         this.frec_aplic = frec_aplic;
-        this.cada_medhora = cada_medhora;
+        this.otra_frecuencia = otra_frecuencia;
+        this.cubre_nuca = cubre_nuca;
+        this.lent_osc = lent_osc;
         this.otro_epp = otro_epp;
         this.fec_reg = fec_reg;
         this.user_reg = user_reg;
@@ -157,75 +150,35 @@ public class RadiacionUv_RegistroDetalle {
         this.mant_fuente = mant_fuente;
     }
 
-    public String getEpp_casco() {
-        return epp_casco;
-    }
-
-    public void setEpp_casco(String epp_casco) {
-        this.epp_casco = epp_casco;
-    }
-
-    public String getEpp_lentes() {
-        return epp_lentes;
-    }
-
-    public void setEpp_lentes(String epp_lentes) {
-        this.epp_lentes = epp_lentes;
-    }
-
-    public String getEpp_cnuca() {
-        return epp_cnuca;
-    }
-
-    public void setEpp_cnuca(String epp_cnuca) {
-        this.epp_cnuca = epp_cnuca;
-    }
-
-    public String getEpp_gorro() {
-        return epp_gorro;
-    }
-
-    public void setEpp_gorro(String epp_gorro) {
-        this.epp_gorro = epp_gorro;
-    }
-
-    public String getOtro_vest() {
-        return otro_vest;
-    }
-
-    public void setOtro_vest(String otro_vest) {
-        this.otro_vest = otro_vest;
-    }
-
-    public String getEpp_lentes_brillo() {
+    public int getEpp_lentes_brillo() {
         return epp_lentes_brillo;
     }
 
-    public void setEpp_lentes_brillo(String epp_lentes_brillo) {
+    public void setEpp_lentes_brillo(int epp_lentes_brillo) {
         this.epp_lentes_brillo = epp_lentes_brillo;
     }
 
-    public String getProt_lat() {
+    public int getProt_lat() {
         return prot_lat;
     }
 
-    public void setProt_lat(String prot_lat) {
+    public void setProt_lat(int prot_lat) {
         this.prot_lat = prot_lat;
     }
 
-    public String getEpp_gorro_2() {
+    public int getEpp_gorro_2() {
         return epp_gorro_2;
     }
 
-    public void setEpp_gorro_2(String epp_gorro_2) {
+    public void setEpp_gorro_2(int epp_gorro_2) {
         this.epp_gorro_2 = epp_gorro_2;
     }
 
-    public String getEpp_casco_2() {
+    public int getEpp_casco_2() {
         return epp_casco_2;
     }
 
-    public void setEpp_casco_2(String epp_casco_2) {
+    public void setEpp_casco_2(int epp_casco_2) {
         this.epp_casco_2 = epp_casco_2;
     }
 
@@ -237,84 +190,100 @@ public class RadiacionUv_RegistroDetalle {
         this.epp_ninguno = epp_ninguno;
     }
 
-    public String getProt_legion() {
+    public int getProt_legion() {
         return prot_legion;
     }
 
-    public void setProt_legion(String prot_legion) {
+    public void setProt_legion(int prot_legion) {
         this.prot_legion = prot_legion;
     }
 
-    public String getProt_aancha() {
+    public int getProt_aancha() {
         return prot_aancha;
     }
 
-    public void setProt_aancha(String prot_aancha) {
+    public void setProt_aancha(int prot_aancha) {
         this.prot_aancha = prot_aancha;
     }
 
-    public String getRop_ccerti() {
+    public int getRop_ccerti() {
         return rop_ccerti;
     }
 
-    public void setRop_ccerti(String rop_ccerti) {
+    public void setRop_ccerti(int rop_ccerti) {
         this.rop_ccerti = rop_ccerti;
     }
 
-    public String getRop_coscuro() {
+    public int getRop_coscuro() {
         return rop_coscuro;
     }
 
-    public void setRop_coscuro(String rop_coscuro) {
+    public void setRop_coscuro(int rop_coscuro) {
         this.rop_coscuro = rop_coscuro;
     }
 
-    public String getRop_mlarga() {
+    public int getRop_mlarga() {
         return rop_mlarga;
     }
 
-    public void setRop_mlarga(String rop_mlarga) {
+    public void setRop_mlarga(int rop_mlarga) {
         this.rop_mlarga = rop_mlarga;
     }
 
-    public String getTgruesa() {
+    public int getTgruesa() {
         return tgruesa;
     }
 
-    public void setTgruesa(String tgruesa) {
+    public void setTgruesa(int tgruesa) {
         this.tgruesa = tgruesa;
     }
 
-    public String getUtil_fps() {
+    public int getUtil_fps() {
         return util_fps;
     }
 
-    public void setUtil_fps(String util_fps) {
+    public void setUtil_fps(int util_fps) {
         this.util_fps = util_fps;
     }
 
-    public String getGuia_fps() {
+    public int getGuia_fps() {
         return guia_fps;
     }
 
-    public void setGuia_fps(String guia_fps) {
+    public void setGuia_fps(int guia_fps) {
         this.guia_fps = guia_fps;
     }
 
-    public String getFrec_aplic() {
+    public int getFrec_aplic() {
         return frec_aplic;
     }
 
-    public void setFrec_aplic(String frec_aplic) {
+    public void setFrec_aplic(int frec_aplic) {
         this.frec_aplic = frec_aplic;
     }
 
-    public String getCada_medhora() {
-        return cada_medhora;
+    public String getOtra_frecuencia() {
+        return otra_frecuencia;
     }
 
-    public void setCada_medhora(String cada_medhora) {
-        this.cada_medhora = cada_medhora;
+    public void setOtra_frecuencia(String otra_frecuencia) {
+        this.otra_frecuencia = otra_frecuencia;
+    }
+
+    public int getCubre_nuca() {
+        return cubre_nuca;
+    }
+
+    public void setCubre_nuca(int cubre_nuca) {
+        this.cubre_nuca = cubre_nuca;
+    }
+
+    public int getLent_osc() {
+        return lent_osc;
+    }
+
+    public void setLent_osc(int lent_osc) {
+        this.lent_osc = lent_osc;
     }
 
     public String getOtro_epp() {

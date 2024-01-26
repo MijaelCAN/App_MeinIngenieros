@@ -74,12 +74,7 @@ public class DAO_RegistroRadiacionUV {
         values.put(Util_RegistroFormatos_Detalle.CAMPO_MALLA_OSCURA, registro.getMalla_oscura());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_PROG_EXPO_RADIACION, registro.getProg_expo_radiacion());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_TRAB_AIRE_LIBRE, registro.getTrab_aire_libre());
-        values.put(Util_RegistroFormatos_Detalle.CAMPO_MANT_FUENTE, registro.getMant_fuente());
-        values.put(Util_RegistroFormatos_Detalle.CAMPO_EPP_CASCO, registro.getEpp_casco());
-        values.put(Util_RegistroFormatos_Detalle.CAMPO_EPP_LENTES, registro.getEpp_lentes());
-        values.put(Util_RegistroFormatos_Detalle.CAMPO_EPP_CNUCA, registro.getEpp_cnuca());
-        values.put(Util_RegistroFormatos_Detalle.CAMPO_EPP_GORRO, registro.getEpp_gorro());
-        values.put(Util_RegistroFormatos_Detalle.CAMPO_OTRO_VEST, registro.getOtro_vest());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_MANT_FUENTE, registro.getMant_fuente());//SE QUITO 5 CAMPOS
         values.put(Util_RegistroFormatos_Detalle.CAMPO_EPP_LENTES_BRILLO, registro.getEpp_lentes_brillo());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_PROT_LAT, registro.getProt_lat());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_EPP_GORRO_2, registro.getEpp_gorro_2());
@@ -94,7 +89,9 @@ public class DAO_RegistroRadiacionUV {
         values.put(Util_RegistroFormatos_Detalle.CAMPO_UTIL_FPS, registro.getUtil_fps());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_GUIA_FPS, registro.getGuia_fps());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_FREC_APLIC, registro.getFrec_aplic());
-        values.put(Util_RegistroFormatos_Detalle.CAMPO_CADA_MEDHORA, registro.getCada_medhora());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_OTRA_FRECUENCIA, registro.getOtra_frecuencia());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_CUBRE_NUCA, registro.getCubre_nuca());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_LENT_OSCURO, registro.getLent_osc());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_OTRO_EPP, registro.getOtro_epp());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_ESTADO, registro.getEstado());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_FEC_REG, registro.getFec_reg());

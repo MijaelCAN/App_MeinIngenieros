@@ -183,6 +183,16 @@ public class DAO_RegistroEstreTermico {
         values.put(Util_RegistroFormatos_Detalle.CAMPO_POSICION_3, registro.getPosicion_3());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_PCUERPO_3, registro.getPcuerpo_3());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_INTENSIDAD_3, registro.getIntensidad_3());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_NOM_TAREA4, registro.getNom_tarea4());//agregado recientemente
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_CICLO_TRABAJO4, registro.getCiclo_trabajo4());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_POSICION_4, registro.getPosicion_4());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_PCUERPO_4, registro.getPcuerpo_4());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_INTENSIDAD_4, registro.getIntensidad_4());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_NOM_TAREA5, registro.getNom_tarea5());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_CICLO_TRABAJO5, registro.getCiclo_trabajo5());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_POSICION_5, registro.getPosicion_5());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_PCUERPO_5, registro.getPcuerpo_5());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_INTENSIDAD_5, registro.getIntensidad_5());//agregado recientemente
         values.put(Util_RegistroFormatos_Detalle.CAMPO_MTR_SUBIDA, registro.getMtr_subida());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_T_BULBO, registro.getT_bulbo());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_T_BULBO2, registro.getT_bulbo2());

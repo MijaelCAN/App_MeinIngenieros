@@ -13,6 +13,7 @@ public class Vibracion_Registro {
     public String id_analista;
     public String nom_analista;
     public String tipo_vibracion;
+    public String lateralidad_mano;//agregado recientemente
     public String verf_insitu;
     public String hora_situ;
     public String fec_monitoreo;
@@ -41,7 +42,7 @@ public class Vibracion_Registro {
     public String user_reg;
 
     public Vibracion_Registro(int id, String cod_formato, String id_formato, String id_plan_trabajo, String id_pt_formato, String cod_equipo1, String nom_equipo1, String serie_eq1,
-                              String id_equipo1, String id_analista, String nom_analista, String tipo_vibracion, String verf_insitu, String hora_situ, String fec_monitoreo,
+                              String id_equipo1, String id_analista, String nom_analista, String tipo_vibracion, String lateralidad_mano,String verf_insitu, String hora_situ, String fec_monitoreo,
                               String hora_inicial, String hora_final, String tiempo_exposicion, String jornada, String tipo_doc_trabajador, String num_doc_trabajador,
                               String nom_trabajador, String puesto_trabajador, String area_trabajo, String actividades_realizadas, String edad_trabajador, String hora_trabajo,
                               String horario_refrigerio, String regimen_laboral, String ctrl_ingenieria, String nom_ctrl_ingenieria, String ctrl_administrativo,
@@ -58,6 +59,7 @@ public class Vibracion_Registro {
         this.id_analista = id_analista;
         this.nom_analista = nom_analista;
         this.tipo_vibracion = tipo_vibracion;
+        this.lateralidad_mano = lateralidad_mano;
         this.verf_insitu = verf_insitu;
         this.hora_situ = hora_situ;
         this.fec_monitoreo = fec_monitoreo;
@@ -180,6 +182,14 @@ public class Vibracion_Registro {
 
     public void setTipo_vibracion(String tipo_vibracion) {
         this.tipo_vibracion = tipo_vibracion;
+    }
+
+    public String getLateralidad_mano() {
+        return lateralidad_mano;
+    }
+
+    public void setLateralidad_mano(String lateralidad_mano) {
+        this.lateralidad_mano = lateralidad_mano;
     }
 
     public String getVerf_insitu() {

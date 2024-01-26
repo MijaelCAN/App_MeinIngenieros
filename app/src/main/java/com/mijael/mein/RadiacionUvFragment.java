@@ -63,11 +63,11 @@ public class RadiacionUvFragment extends Fragment implements FragmentoImagen.Ima
     View rootView;
     String id_plan_trabajo, id_pt_trabajo, id_formato,id_colaborador, nom_Empresa;
     AutoCompleteTextView tv_equipoRadiacion;
-    TextView  tv_horaVerificacion, tv_fechaMonitoreo, tv_horaInicioMoni, tv_horaFinalMoni, tv_colorPiel;
+    TextView  tv_horaVerificacion, tv_fechaMonitoreo, tv_horaInicioMoni, tv_horaFinalMoni, tv_tipoPiel;
     AppCompatButton btn_subirFotoRadiacion,btn_BuscarDni;
     FloatingActionButton btn_guardar;
     ExtendedFloatingActionButton btnCancelar;
-    Spinner spn_tipoDoc, spn_tipoPiel, spn_timeCargoAnyo, spn_timeCargoMes, spn_horarioTrabajo, spn_regimen,
+    Spinner spn_tipoDoc, spn_colorPiel, spn_timeCargoAnyo, spn_timeCargoMes, spn_horarioTrabajo, spn_regimen,
             spn_horarioRefrigerio, spn_descTrabajo;
     EditText txt_numDoc, txt_nomTrabajador, txt_edad, txt_areaTrabajo, txt_puestoTrabajo, txt_aRealizada, txt_timeExpoHora, txt_jornadaTrabajo,
             txt_mantenimientoFuente, txt_OtrosIngenieria, txt_OtrosAdministrativo, txt_otrosVestimenta, txt_otrosEpps, txt_fuenteGen, txt_tipoFuenteRadiacion,
@@ -132,17 +132,17 @@ public class RadiacionUvFragment extends Fragment implements FragmentoImagen.Ima
         });
 
         spn_tipoDoc.setAdapter(config.LlenarSpinner(new String[]{"DNI", "CE"}));
-        spn_tipoPiel    .setAdapter(config.LlenarSpinner(new String[]{"Tipo I", "Tipo II","Tipo III","Tipo IV","Tipo V","Tipo VI"}));
-        spn_tipoPiel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spn_colorPiel    .setAdapter(config.LlenarSpinner(new String[]{"Muy clara", "clara","Morena clara","Morena","Oscura","Muy oscura"}));
+        spn_colorPiel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String seleccion = (String) parent.getItemAtPosition(position);
-                if(seleccion.equals("Tipo I")) tv_colorPiel.setText("Muy clara");
-                else if (seleccion.equals("Tipo II")) tv_colorPiel.setText("clara");
-                else if (seleccion.equals("Tipo III")) tv_colorPiel.setText("Morena clara");
-                else if (seleccion.equals("Tipo IV")) tv_colorPiel.setText("Morena");
-                else if (seleccion.equals("Tipo V")) tv_colorPiel.setText("Oscura");
-                else if (seleccion.equals("Tipo VI")) tv_colorPiel.setText("Muy oscura");
+                if(seleccion.equals("Muy clara")) tv_tipoPiel.setText("Tipo I");
+                else if (seleccion.equals("clara")) tv_tipoPiel.setText("Tipo II");
+                else if (seleccion.equals("Morena clara")) tv_tipoPiel.setText("Tipo III");
+                else if (seleccion.equals("Morena")) tv_tipoPiel.setText("Tipo IV");
+                else if (seleccion.equals("Oscura")) tv_tipoPiel.setText("Tipo V");
+                else if (seleccion.equals("Muy oscura")) tv_tipoPiel.setText("Tipo VI");
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -251,7 +251,7 @@ public class RadiacionUvFragment extends Fragment implements FragmentoImagen.Ima
                         validar.validarCampoObligatorio(txt_areaTrabajo) &&
                         validar.validarCampoObligatorio(txt_puestoTrabajo) &&
                         validar.validarCampoObligatorio(txt_aRealizada )&&
-                        validar.validarCampoObligatorio(spn_tipoPiel) &&
+                        validar.validarCampoObligatorio(spn_colorPiel) &&
                         validar.validarCampoObligatorio(spn_timeCargoAnyo) &&
                         validar.validarCampoObligatorio(spn_timeCargoMes) &&
                         validar.validarCampoObligatorio(spn_horarioTrabajo) &&
@@ -279,13 +279,13 @@ public class RadiacionUvFragment extends Fragment implements FragmentoImagen.Ima
                     String valorNumDoc = txt_numDoc.getText().toString();
                     String valorNombreTra = txt_nomTrabajador.getText().toString();
                     String valorEdad = txt_edad.getText().toString();
-                    String valorAreaTra = txt_areaTrabajo.toString().toString();
+                    String valorAreaTra = txt_areaTrabajo.getText().toString();
                     String valorPuestoTra = txt_puestoTrabajo.getText().toString();
                     String valorActividades = txt_aRealizada.getText().toString();
-                    String valorTipoPiel = spn_tipoPiel.getSelectedItem().toString();
-                    String valorColorPiel = tv_colorPiel.getText().toString();
-                    String valorTimeCargoAnyo = spn_timeCargoAnyo.getSelectedItem().toString();
-                    String valorTimeCargoMeses = spn_timeCargoMes.getSelectedItem().toString();
+                    String valorColorPiel = spn_colorPiel.getSelectedItem().toString();
+                    String valorTipoPiel = tv_tipoPiel.getText().toString();
+                    String valorTimeCargoAnyo = spn_timeCargoAnyo.getSelectedItem().toString() + "año(s)";
+                    String valorTimeCargoMeses = spn_timeCargoMes.getSelectedItem().toString() + "mes(es)";
 
                     String valorHorarioTrabajo = spn_horarioTrabajo.getSelectedItem().toString();
                     String valorRegimen = spn_regimen.getSelectedItem().toString();
@@ -324,6 +324,7 @@ public class RadiacionUvFragment extends Fragment implements FragmentoImagen.Ima
                     int valorUtilFPS = validar.getValor2(radioGroupUtilFPS,rootView);
                     int valorGuiaFPS= validar.getValor2(radioGroupGuiaFPS,rootView);
                     int valorFrecuenciaApli = validar.getValor2(radioGroupFrecuenciaAplicacion,rootView);
+                    String valorOtraFrecuencia = txt_otraFrecuencia.getText().toString();
                     String valorOtrosEpps= txt_otrosEpps.getText().toString();
                     String valorUw_cm2= txt_uW_cm2.getText().toString();
 
@@ -337,7 +338,7 @@ public class RadiacionUvFragment extends Fragment implements FragmentoImagen.Ima
                             id_formato,
                             id_plan_trabajo,
                             id_pt_trabajo,
-                            String.valueOf(equipos1.getCod_equipo()),
+                            equipos1.getCodigo(),
                             equipos1.getNombre(),
                             equipos1.getSerie(),
                             String.valueOf(equipos1.getId_equipo_registro()),
@@ -364,13 +365,13 @@ public class RadiacionUvFragment extends Fragment implements FragmentoImagen.Ima
                             valorRegimen,
                             valorDesTrabajo,
                             valorOtrosAdmin,
-                            "1",
+                            valorUw_cm2,
                             valorOtrosIng,
                             fecha_registro,
                             id_colaborador
                     );
 
-                   /* RadiacionUv_RegistroDetalle detalle = new RadiacionUv_RegistroDetalle(
+                   RadiacionUv_RegistroDetalle detalle = new RadiacionUv_RegistroDetalle(
                             cabecera.getId(),
                             valorTipoPiel,
                             valorColorPiel,
@@ -381,34 +382,31 @@ public class RadiacionUvFragment extends Fragment implements FragmentoImagen.Ima
                             "" +valorGroupProgramaTrab,
                             "" +valorGroupAireLibre,
                             valorMantenFuente,
-                            valorCasco,
-                            valorLentesOscuros,
-                            valorCubreNuca,
-                            valorGorroSombrero,
-                            valorOtrosVestimenta,
-                            ""+valorProteccionBrillo,
-                            ""+valorProteccionLateral,
-                            ""+valorGorro,
-                            valorCascospn,
-                            valorNinguno,
-                            valorProteccionLegionario,
-                            valorProteccionAlaAncho,
-                            valorRopa,
-                            valorColorOscuro,
-                            valorMangaLarga,
-                            valorTramaGruesa,
-                            valorUtilizaEpps,
-                            valorGuiaEpps,
-                            valorFrecuencia2h,
-                            valorFrecuencia30min,
+                            valorProteccionBrillo,
+                            valorProteccionLateral,
+                           valorUtilGorro,
+                           valorUtilCasco,
+                            "2",
+                           valorProtLegionario,
+                           valorAlaAncha,
+                           valorCertificacion,
+                           valorColorOscuro,
+                           valorMangaLarga,
+                           valorTramaGruesa,
+                           valorUtilFPS,
+                           valorGuiaFPS,
+                           valorFrecuenciaApli,
+                            valorOtraFrecuencia,
+                           valorCubreNuca,
+                           valorLentesOscuros,
                             valorOtrosEpps,
                             fecha_registro,
                             id_colaborador
-                    );*/
+                    );
 
-                    Object detalle = new Object();//OPCIONAL INICIO
+                    /*Object detalle = new Object();//OPCIONAL INICIO
                     HashMap<String,Object> elemntos = new HashMap<>();
-                    elemntos.put("nombre", "MEIN");//OPCIONAL FINAL
+                    elemntos.put("nombre", "MEIN");//OPCIONAL FINAL*/
 
                     if(config.isOnline()){
                         Retrofit retrofit = new Retrofit.Builder()
@@ -505,8 +503,8 @@ public class RadiacionUvFragment extends Fragment implements FragmentoImagen.Ima
         txt_areaTrabajo = view.findViewById(R.id.txt_areaTrabajo);
         txt_puestoTrabajo = view.findViewById(R.id.txt_puestoTrabajo);
         txt_aRealizada = view.findViewById(R.id.txt_aRealizada);
-        spn_tipoPiel = view.findViewById(R.id.cbx_tipoPiel);
-        tv_colorPiel = view.findViewById(R.id.tv_colorPiel);
+        spn_colorPiel = view.findViewById(R.id.cbx_colorPiel);
+        tv_tipoPiel = view.findViewById(R.id.tv_tipoPiel);
         spn_timeCargoAnyo = view.findViewById(R.id.cbx_tiempoCargoAnios);
         spn_timeCargoMes = view.findViewById(R.id.cbx_tiempoCargoMeses);
         spn_horarioTrabajo = view.findViewById(R.id.cbx_horarioTrabajo);

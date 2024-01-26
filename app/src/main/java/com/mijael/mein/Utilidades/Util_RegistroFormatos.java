@@ -136,6 +136,7 @@ public class Util_RegistroFormatos {
     public static final String CAMPO_CONFORMIDAD = "conformidad";
     public static final String CAMPO_EVAL_20P = "eval_20p";
     public static final String CAMPO_TIPO_VIBRACION = "tipo_vibracion";
+    public static final String CAMPO_LATERALIDAD_MANO = "lateralidad_mano";
     public static final String CAMPO_UBIC_EQUIP = "ubic_equip";
     public static final String CAMPO_ANIO_OCU_CARGO = "anio_ocu_cargo";
     public static final String CAMPO_MES_OCU_CARGO = "mes_ocu_cargo";
@@ -286,6 +287,7 @@ public class Util_RegistroFormatos {
             + CAMPO_CONFORMIDAD + " TEXT, "
             + CAMPO_EVAL_20P + " TEXT, "
             + CAMPO_TIPO_VIBRACION + " TEXT, "
+            + CAMPO_LATERALIDAD_MANO + " TEXT, "
             + CAMPO_UBIC_EQUIP + " TEXT, "
             + CAMPO_ANIO_OCU_CARGO + " TEXT, "
             + CAMPO_MES_OCU_CARGO + " TEXT, "

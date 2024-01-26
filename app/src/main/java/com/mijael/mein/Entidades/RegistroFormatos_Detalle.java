@@ -69,6 +69,7 @@ public class RegistroFormatos_Detalle {
     public String epp_gorro;
     public String epp_botas;
     public String otro_epp;
+
     public String epp_lentes_brillo;
     public String prot_lat;
     public String epp_gorro_2;
@@ -82,7 +83,10 @@ public class RegistroFormatos_Detalle {
     public String tgruesa;
     public String util_fps;
     public String frec_aplic;
-    public String cada_medhora;
+    public String otra_frecuencia;//Agregado recientemente
+    public String cubre_nuca;//Agregado recientemente
+    public String lent_osc;//Agregado recientemente
+
     public String tecnica_acondaire;
     public String detalle_tecnica_acondaire;
     public String desc_atuendo;
@@ -108,6 +112,16 @@ public class RegistroFormatos_Detalle {
     public String posicion_3;
     public String pcuerpo_3;
     public String intensidad_3;
+    public String nom_tarea4;
+    public String ciclo_trabajo4;
+    public String posicion_4;
+    public String pcuerpo_4;
+    public String intensidad_4;
+    public String nom_tarea5;
+    public String ciclo_trabajo5;
+    public String posicion_5;
+    public String pcuerpo_5;
+    public String intensidad_5;
     public String horario_lv;
     public String horario_s;
     public String wbgt;
@@ -227,7 +241,7 @@ public class RegistroFormatos_Detalle {
     public String fec_eli;
     public int user_eli;
 
-    public RegistroFormatos_Detalle(int id_formato_reg_detalle, int id_plan_trabajo_formato_reg, int orden, String lj_db, String fj, String lj_10, String _10_pot_lj, String multi, String plan_mantenimiento_ilum, String il_1, String il_2, String il_3, String il_4, String il_5, String il_6, String il_7, String il_8, String puntos_med, String tipo_iluminacion, String tipo_iluminacion_art, String tipo_iluminacion_nat, String desc_amb_trabajo, String cant_iluminarias, String area_trabajo_m2, String altura_p_trabajo, String n_lamparas, String altura_p_luminaria, String color_pared, String color_piso, String estado_fisico, String frecuencia, String fuente_generadora, String desc_fuente_frio, String tipo_fuente, String mant_fuente, String ropa_interior, String camisa_blusa, String pantalon, String pullover, String abrigo, String chaqueta, String diversos, String aclimatado, String zona_sombra, String rotacion_personal, String tiempo_recuperacion, String bebida_caliente, String capa_expo_frio, String dispensador, String cat_trabajo, String porc_desca, String vestimenta_personal, String material_prenda, String at_desnudo, String at_ligero, String at_medio, String at_pesado, String color_predominante, String epp_zs, String epp_casco, String epp_lentes, String epp_guantes, String epp_orejeras, String epp_tapones, String epp_cnuca, String epp_gorro, String epp_botas, String otro_epp, String epp_lentes_brillo, String prot_lat, String epp_gorro_2, String epp_casco_2, String epp_ninguno, String prot_legion, String prot_aancha, String rop_ccerti, String rop_coscuro, String rop_mlarga, String tgruesa, String util_fps, String frec_aplic, String cada_medhora, String tecnica_acondaire, String detalle_tecnica_acondaire, String desc_atuendo, String p_aacondicionado, String t_globo, String t_globo_2, String t_globo_3, String t_bulbo, String t_bulbo2, String t_bulbo3, String nom_tarea1, String ciclo_trabajo1, String posicion_1, String pcuerpo_1, String intensidad_1, String nom_tarea2, String ciclo_trabajo2, String posicion_2, String pcuerpo_2, String intensidad_2, String nom_tarea3, String ciclo_trabajo3, String posicion_3, String pcuerpo_3, String intensidad_3, String horario_lv, String horario_s, String wbgt, String wbgt_2, String wbgt_3, String t_aire, String t_aire_2, String t_aire_3, String h_relativa, String h_relativa_2, String h_relativa_3, String v_viento, String v_viento_2, String v_viento_3, String v_vto4, String v_vto5, String v_vto6, String v_vto7, String v_vto8, String v_vto9, String v_vto10, String otro_vest, String tipo_medicion_ilu, String larg_escrit, String anch_escrit, String num_pmedicion, String alt_pltrabajo, String long_salon, String anch_salon, String alt_pltrabajo_ilu, String const_salon, String num_min_pmedic, String temp, String mtr_subida, String tipo_piel, String color_piel, String sombra_descanso, String malla_oscura, String prog_expo_radiacion, String trab_aire_libre, String r_certificacion, String r_oscura, String mangal, String telag, String utiliza, String guia_fps, String frecuencia_aplicacion, String traj_prot_electromagnetica, String b_mafnetico, String x, String y, String z, String ri_calz, String ri_calzl, String ri_camist, String ri_camismc, String ri_camisml, String ri_sujetb, String cb_mangac, String cb_ligeramc, String cb_normalml, String cb_cfranml, String cb_bligmc, String p_cor, String p_lig, String p_norm, String p_fran, String pul_chasm, String pul_lig, String pul_med, String pul_grue, String pa_abri, String pa_chal, String pa_park, String pa_monf, String ch_lig, String ch_chaq, String ch_batat, String ch_monot, String d_zapsd, String d_zapsg, String d_calc, String d_med, String d_calcgc, String d_calcgl, String d_botas, String d_guant, String id_nivel_d, String nom_nivel_d, String id_metodo_determ, String metodo_determ, String id_tipo_trabajo, String tipo_trabajo, String ocupacion, String rango_tasa_metab, String clase, String actividad_deter, String tasa_metab, String tasa_metab_kcal, String frecuencia_deter, String genero_deter, String x2, String y2, String z2, String x3, String y3, String z3, String x4, String y4, String z4, String fec_reg, int user_reg, String fec_act, int user_act, String fec_eli, int user_eli) {
+    public RegistroFormatos_Detalle(int id_formato_reg_detalle, int id_plan_trabajo_formato_reg, int orden, String lj_db, String fj, String lj_10, String _10_pot_lj, String multi, String plan_mantenimiento_ilum, String il_1, String il_2, String il_3, String il_4, String il_5, String il_6, String il_7, String il_8, String puntos_med, String tipo_iluminacion, String tipo_iluminacion_art, String tipo_iluminacion_nat, String desc_amb_trabajo, String cant_iluminarias, String area_trabajo_m2, String altura_p_trabajo, String n_lamparas, String altura_p_luminaria, String color_pared, String color_piso, String estado_fisico, String frecuencia, String fuente_generadora, String desc_fuente_frio, String tipo_fuente, String mant_fuente, String ropa_interior, String camisa_blusa, String pantalon, String pullover, String abrigo, String chaqueta, String diversos, String aclimatado, String zona_sombra, String rotacion_personal, String tiempo_recuperacion, String bebida_caliente, String capa_expo_frio, String dispensador, String cat_trabajo, String porc_desca, String vestimenta_personal, String material_prenda, String at_desnudo, String at_ligero, String at_medio, String at_pesado, String color_predominante, String epp_zs, String epp_casco, String epp_lentes, String epp_guantes, String epp_orejeras, String epp_tapones, String epp_cnuca, String epp_gorro, String epp_botas, String otro_epp, String epp_lentes_brillo, String prot_lat, String epp_gorro_2, String epp_casco_2, String epp_ninguno, String prot_legion, String prot_aancha, String rop_ccerti, String rop_coscuro, String rop_mlarga, String tgruesa, String util_fps, String frec_aplic, String otra_frecuencia, String cubre_nuca, String lent_osc, String tecnica_acondaire, String detalle_tecnica_acondaire, String desc_atuendo, String p_aacondicionado, String t_globo, String t_globo_2, String t_globo_3, String t_bulbo, String t_bulbo2, String t_bulbo3, String nom_tarea1, String ciclo_trabajo1, String posicion_1, String pcuerpo_1, String intensidad_1, String nom_tarea2, String ciclo_trabajo2, String posicion_2, String pcuerpo_2, String intensidad_2, String nom_tarea3, String ciclo_trabajo3, String posicion_3, String pcuerpo_3, String intensidad_3, String nom_tarea4, String ciclo_trabajo4, String posicion_4, String pcuerpo_4, String intensidad_4, String nom_tarea5, String ciclo_trabajo5, String posicion_5, String pcuerpo_5, String intensidad_5, String horario_lv, String horario_s, String wbgt, String wbgt_2, String wbgt_3, String t_aire, String t_aire_2, String t_aire_3, String h_relativa, String h_relativa_2, String h_relativa_3, String v_viento, String v_viento_2, String v_viento_3, String v_vto4, String v_vto5, String v_vto6, String v_vto7, String v_vto8, String v_vto9, String v_vto10, String otro_vest, String tipo_medicion_ilu, String larg_escrit, String anch_escrit, String num_pmedicion, String alt_pltrabajo, String long_salon, String anch_salon, String alt_pltrabajo_ilu, String const_salon, String num_min_pmedic, String temp, String mtr_subida, String tipo_piel, String color_piel, String sombra_descanso, String malla_oscura, String prog_expo_radiacion, String trab_aire_libre, String r_certificacion, String r_oscura, String mangal, String telag, String utiliza, String guia_fps, String frecuencia_aplicacion, String traj_prot_electromagnetica, String b_mafnetico, String x, String y, String z, String ri_calz, String ri_calzl, String ri_camist, String ri_camismc, String ri_camisml, String ri_sujetb, String cb_mangac, String cb_ligeramc, String cb_normalml, String cb_cfranml, String cb_bligmc, String p_cor, String p_lig, String p_norm, String p_fran, String pul_chasm, String pul_lig, String pul_med, String pul_grue, String pa_abri, String pa_chal, String pa_park, String pa_monf, String ch_lig, String ch_chaq, String ch_batat, String ch_monot, String d_zapsd, String d_zapsg, String d_calc, String d_med, String d_calcgc, String d_calcgl, String d_botas, String d_guant, String id_nivel_d, String nom_nivel_d, String id_metodo_determ, String metodo_determ, String id_tipo_trabajo, String tipo_trabajo, String ocupacion, String rango_tasa_metab, String clase, String actividad_deter, String tasa_metab, String tasa_metab_kcal, String frecuencia_deter, String genero_deter, String x2, String y2, String z2, String x3, String y3, String z3, String x4, String y4, String z4, String fec_reg, int user_reg, String fec_act, int user_act, String fec_eli, int user_eli) {
         this.id_formato_reg_detalle = id_formato_reg_detalle;
         this.id_plan_trabajo_formato_reg = id_plan_trabajo_formato_reg;
         this.orden = orden;
@@ -309,7 +323,9 @@ public class RegistroFormatos_Detalle {
         this.tgruesa = tgruesa;
         this.util_fps = util_fps;
         this.frec_aplic = frec_aplic;
-        this.cada_medhora = cada_medhora;
+        this.otra_frecuencia = otra_frecuencia;
+        this.cubre_nuca = cubre_nuca;
+        this.lent_osc = lent_osc;
         this.tecnica_acondaire = tecnica_acondaire;
         this.detalle_tecnica_acondaire = detalle_tecnica_acondaire;
         this.desc_atuendo = desc_atuendo;
@@ -335,6 +351,16 @@ public class RegistroFormatos_Detalle {
         this.posicion_3 = posicion_3;
         this.pcuerpo_3 = pcuerpo_3;
         this.intensidad_3 = intensidad_3;
+        this.nom_tarea4 = nom_tarea4;
+        this.ciclo_trabajo4 = ciclo_trabajo4;
+        this.posicion_4 = posicion_4;
+        this.pcuerpo_4 = pcuerpo_4;
+        this.intensidad_4 = intensidad_4;
+        this.nom_tarea5 = nom_tarea5;
+        this.ciclo_trabajo5 = ciclo_trabajo5;
+        this.posicion_5 = posicion_5;
+        this.pcuerpo_5 = pcuerpo_5;
+        this.intensidad_5 = intensidad_5;
         this.horario_lv = horario_lv;
         this.horario_s = horario_s;
         this.wbgt = wbgt;
@@ -1101,12 +1127,28 @@ public class RegistroFormatos_Detalle {
         this.frec_aplic = frec_aplic;
     }
 
-    public String getCada_medhora() {
-        return cada_medhora;
+    public String getOtra_frecuencia() {
+        return otra_frecuencia;
     }
 
-    public void setCada_medhora(String cada_medhora) {
-        this.cada_medhora = cada_medhora;
+    public void setOtra_frecuencia(String otra_frecuencia) {
+        this.otra_frecuencia = otra_frecuencia;
+    }
+
+    public String getCubre_nuca() {
+        return cubre_nuca;
+    }
+
+    public void setCubre_nuca(String cubre_nuca) {
+        this.cubre_nuca = cubre_nuca;
+    }
+
+    public String getLent_osc() {
+        return lent_osc;
+    }
+
+    public void setLent_osc(String lent_osc) {
+        this.lent_osc = lent_osc;
     }
 
     public String getTecnica_acondaire() {
@@ -1307,6 +1349,86 @@ public class RegistroFormatos_Detalle {
 
     public void setIntensidad_3(String intensidad_3) {
         this.intensidad_3 = intensidad_3;
+    }
+
+    public String getNom_tarea4() {
+        return nom_tarea4;
+    }
+
+    public void setNom_tarea4(String nom_tarea4) {
+        this.nom_tarea4 = nom_tarea4;
+    }
+
+    public String getCiclo_trabajo4() {
+        return ciclo_trabajo4;
+    }
+
+    public void setCiclo_trabajo4(String ciclo_trabajo4) {
+        this.ciclo_trabajo4 = ciclo_trabajo4;
+    }
+
+    public String getPosicion_4() {
+        return posicion_4;
+    }
+
+    public void setPosicion_4(String posicion_4) {
+        this.posicion_4 = posicion_4;
+    }
+
+    public String getPcuerpo_4() {
+        return pcuerpo_4;
+    }
+
+    public void setPcuerpo_4(String pcuerpo_4) {
+        this.pcuerpo_4 = pcuerpo_4;
+    }
+
+    public String getIntensidad_4() {
+        return intensidad_4;
+    }
+
+    public void setIntensidad_4(String intensidad_4) {
+        this.intensidad_4 = intensidad_4;
+    }
+
+    public String getNom_tarea5() {
+        return nom_tarea5;
+    }
+
+    public void setNom_tarea5(String nom_tarea5) {
+        this.nom_tarea5 = nom_tarea5;
+    }
+
+    public String getCiclo_trabajo5() {
+        return ciclo_trabajo5;
+    }
+
+    public void setCiclo_trabajo5(String ciclo_trabajo5) {
+        this.ciclo_trabajo5 = ciclo_trabajo5;
+    }
+
+    public String getPosicion_5() {
+        return posicion_5;
+    }
+
+    public void setPosicion_5(String posicion_5) {
+        this.posicion_5 = posicion_5;
+    }
+
+    public String getPcuerpo_5() {
+        return pcuerpo_5;
+    }
+
+    public void setPcuerpo_5(String pcuerpo_5) {
+        this.pcuerpo_5 = pcuerpo_5;
+    }
+
+    public String getIntensidad_5() {
+        return intensidad_5;
+    }
+
+    public void setIntensidad_5(String intensidad_5) {
+        this.intensidad_5 = intensidad_5;
     }
 
     public String getHorario_lv() {

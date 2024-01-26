@@ -38,6 +38,16 @@ public class Util_EstresTermicoRegistroDetalle {
     public static final String CAMPO_POSICION_3 = "posicion_3";
     public static final String CAMPO_PCUERPO_3 = "pcuerpo_3";
     public static final String CAMPO_INTENSIDAD_3 = "intensidad_3";
+    public static final String CAMPO_NOM_TAREA4 = "nom_tarea4";
+    public static final String CAMPO_CICLO_TRABAJO4 = "ciclo_trabajo4";
+    public static final String CAMPO_POSICION_4 = "posicion_4";
+    public static final String CAMPO_PCUERPO_4 = "pcuerpo_4";
+    public static final String CAMPO_INTENSIDAD_4 = "intensidad_4";
+    public static final String CAMPO_NOM_TAREA5 = "nom_tarea5";
+    public static final String CAMPO_CICLO_TRABAJO5 = "ciclo_trabajo5";
+    public static final String CAMPO_POSICION_5 = "posicion_5";
+    public static final String CAMPO_PCUERPO_5 = "pcuerpo_5";
+    public static final String CAMPO_INTENSIDAD_5 = "intensidad_5";
     public static final String CAMPO_MTR_SUBIDA = "mtr_subida";
     public static final String CAMPO_WBGT = "wbgt";
     public static final String CAMPO_WBGT_2 = "wbgt_2";
@@ -93,6 +103,16 @@ public class Util_EstresTermicoRegistroDetalle {
             + CAMPO_POSICION_3 + " TEXT, "
             + CAMPO_PCUERPO_3 + " TEXT, "
             + CAMPO_INTENSIDAD_3 + " TEXT, "
+            + CAMPO_NOM_TAREA4 + " TEXT, "
+            + CAMPO_CICLO_TRABAJO4 + " TEXT, "
+            + CAMPO_POSICION_4 + " TEXT, "
+            + CAMPO_PCUERPO_4 + " TEXT, "
+            + CAMPO_INTENSIDAD_4 + " TEXT, "
+            + CAMPO_NOM_TAREA5 + " TEXT, "
+            + CAMPO_CICLO_TRABAJO5 + " TEXT, "
+            + CAMPO_POSICION_5 + " TEXT, "
+            + CAMPO_PCUERPO_5 + " TEXT, "
+            + CAMPO_INTENSIDAD_5 + " TEXT, "
             + CAMPO_MTR_SUBIDA + " TEXT, "
             + CAMPO_WBGT + " TEXT, "
             + CAMPO_WBGT_2 + " TEXT, "
