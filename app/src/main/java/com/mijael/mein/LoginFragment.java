@@ -36,9 +36,12 @@ import com.mijael.mein.Entidades.Usuario;
 import com.mijael.mein.Extras.Validaciones;
 
 import com.mijael.mein.HELPER.DatosLocalSQLiteHelper;
+import com.mijael.mein.HELPER.RegistroFormatosSQLiteHelper;
 import com.mijael.mein.SINCRONIZACION.Equipos_SyncWorker;
 import com.mijael.mein.SINCRONIZACION.Formatos_SyncWorker;
 import com.mijael.mein.SINCRONIZACION.Ordenes_SyncWorker;
+import com.mijael.mein.SINCRONIZACION.RegistroFormatosDetalle_SyncWorker;
+import com.mijael.mein.SINCRONIZACION.RegistroFormatos_SyncWorker;
 import com.mijael.mein.SINCRONIZACION.Usuarios_SyncWorker;
 
 
@@ -80,6 +83,10 @@ public class LoginFragment extends Fragment {
         TareasProgramadas(Usuarios_SyncWorker.class, "Usuarios");
         TareasProgramadas(Formatos_SyncWorker.class, "Formatos");
         TareasProgramadas(Equipos_SyncWorker.class, "Equipos");
+        TareasProgramadas(RegistroFormatos_SyncWorker.class, "Registros");
+        TareasProgramadas(RegistroFormatosDetalle_SyncWorker.class,"Registro_Detalle");
+        RegistroFormatosSQLiteHelper helper = new RegistroFormatosSQLiteHelper(getActivity());
+        SQLiteDatabase dbb = helper.getWritableDatabase();
         DatosLocalSQLiteHelper helperdatos = new DatosLocalSQLiteHelper(getActivity(), "TablasLocales",null,1);
         SQLiteDatabase db = helperdatos.getWritableDatabase();
 

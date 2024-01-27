@@ -55,7 +55,7 @@ public class Orden_TrabajoFragment2 extends Fragment {
         }
         fragmentContainer = activity.findViewById(R.id.fragmentContainerView);
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) fragmentContainer.getLayoutParams();
-        params.topMargin = 300;
+        params.topMargin = 400;
         fragmentContainer.setLayoutParams(params);
 
         // Inflate the layout for this fragment

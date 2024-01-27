@@ -8,10 +8,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.mijael.mein.Entidades.Equipos;
-import com.mijael.mein.Entidades.Formatos_Trabajo;
 import com.mijael.mein.HELPER.EquiposSQLiteHelper;
 import com.mijael.mein.Utilidades.Util_Equipos;
-import com.mijael.mein.Utilidades.Util_Formato_pTrabajo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -158,7 +156,7 @@ public class DAO_Equipos {
             }
         }
     }
-    public boolean verificarExistenciaEquipo(int idEquipo) {
+    /*public boolean verificarExistenciaEquipo(int idEquipo) {
         SQLiteDatabase db = dataHelper.getReadableDatabase();
         Cursor cursor = null;
 
@@ -176,7 +174,7 @@ public class DAO_Equipos {
                 cursor.close();
             }
         }
-    }
+    }*/
     public void insertarEquipo(Equipos equipo) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
         ContentValues values = new ContentValues();

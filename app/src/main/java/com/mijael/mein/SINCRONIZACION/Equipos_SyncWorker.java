@@ -44,7 +44,6 @@ public class Equipos_SyncWorker extends Worker {
             @Override
             public void onResponse(Call<List<Equipos>> call, Response<List<Equipos>> response) {
                 if (response.isSuccessful()) {
-                    Log.e("PASO1","ENTRO A ON RESPONSE EQUIPOS");
                     List<Equipos> todoItems = response.body();
 
                     // Obtener la cantidad de registros actualmente en la base de datos local
@@ -59,7 +58,7 @@ public class Equipos_SyncWorker extends Worker {
                         // Si hay registros, actualizar o insertar según corresponda
                         for (Equipos equipo : todoItems) {
                             // Verificar si el cine ya existe en la base de datos local
-                            Equipos existe = dao_equipos.Buscar(String.valueOf(equipo.getCod_equipo()));
+                            Equipos existe = dao_equipos.Buscar(String.valueOf(equipo.getCodigo()));
                             //boolean existe = dao_equipos.verificarExistenciaEquipo(Integer.valueOf(equipo.getId_equipo_registro()));
 
                             if (existe!=null) {

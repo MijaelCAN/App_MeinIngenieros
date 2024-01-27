@@ -52,7 +52,7 @@ public class RegistroFormatos {
     public String peso_trabajador;
     public String regimen_laboral;
     public String horario_refrigerio;
-    public int tiempo_ocupado;
+    public String tiempo_ocupado;
     public String molestia_oido;
     public String enfermedad_oido;
     public String detalle_enf_oido;
@@ -158,7 +158,7 @@ public class RegistroFormatos {
                             String actividades_realizadas, int id_horario, String hora_trabajo, int n_personas, String fec_monitoreo, String hora_inicial,
                             String tiempo_medicion, String hora_final, String v_viento, String h_relativa, String hora_jornada, String min_jornada, String hora_exposicion,
                             String min_exposicion, String jornada, String nom_trabajador, String tipo_doc_trabajador, String num_doc_trabajador, String puesto_trabajador,
-                            int edad_trabajador, String peso_trabajador, String regimen_laboral, String horario_refrigerio, int tiempo_ocupado, String molestia_oido,
+                            int edad_trabajador, String peso_trabajador, String regimen_laboral, String horario_refrigerio, String tiempo_ocupado, String molestia_oido,
                             String enfermedad_oido, String detalle_enf_oido, String fecha_ultimo_examen, String mes_ultimo_examen, String anio_ultimo_examen,
                             String ctrl_ingenieria, String ctrl_administrativo, String nom_epp, String prot_auditivo, String nom_ctrl_ingenieria, String nom_ctrl_admin,
                             String aislamiento, String techos, String cabinas, String orientacion, String cerramiento, String otro_ingenieria, String capacitacion,
@@ -731,11 +731,11 @@ public class RegistroFormatos {
         this.horario_refrigerio = horario_refrigerio;
     }
 
-    public int getTiempo_ocupado() {
+    public String getTiempo_ocupado() {
         return tiempo_ocupado;
     }
 
-    public void setTiempo_ocupado(int tiempo_ocupado) {
+    public void setTiempo_ocupado(String tiempo_ocupado) {
         this.tiempo_ocupado = tiempo_ocupado;
     }
 

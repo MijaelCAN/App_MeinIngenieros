@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.mijael.mein.DAO.DAO_FormatosTrabajo;
@@ -29,7 +30,7 @@ import java.util.List;
 
 public class FormatosFragment extends Fragment {
     TextView tv_total, tv_porRealizar, tv_Realizado, tv_empresa, tv_formato, Num_orden;
-    TextView tv_usu2;
+    TextView tv_usu2, progressText;
     EditText txt_buscar;
     View cardViewLayout, rootView;
     CardView cardView;
@@ -37,6 +38,7 @@ public class FormatosFragment extends Fragment {
     List<Formatos_Trabajo> formatos_trabajoList;
     String idColaborador;
     Bundle bundle;
+    ProgressBar progressBar;
     private FragmentContainerView fragmentContainer;
     private RegistroFormatosSQLiteHelper dataHelper;
     public FormatosFragment(Context context) {
@@ -64,7 +66,7 @@ public class FormatosFragment extends Fragment {
         tv_usu2.setText("");
         fragmentContainer = activity.findViewById(R.id.fragmentContainerView);
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) fragmentContainer.getLayoutParams();
-        params.topMargin = 250;
+        params.topMargin = 400;
         fragmentContainer.setLayoutParams(params);
 
         bundle = new Bundle();
@@ -145,10 +147,12 @@ public class FormatosFragment extends Fragment {
 
     private void init(View view) {
         tv_formato = view.findViewById(R.id.text_view_formato);
-        tv_empresa = view.findViewById(R.id.text_view_empresa);
+        //tv_empresa = view.findViewById(R.id.text_view_empresa);
         tv_total = view.findViewById(R.id.text_view_total);
-        tv_Realizado = view.findViewById(R.id.text_view_realizado);
-        tv_porRealizar = view.findViewById(R.id.text_view_realizar);
+        //tv_Realizado = view.findViewById(R.id.text_view_realizado);
+        //tv_porRealizar = view.findViewById(R.id.text_view_realizar);
+        progressBar = view.findViewById(R.id.progressBar);
+
     }
 
     private void MostrarFOrmatos(Formatos_Trabajo registro, LayoutInflater inflater) {
@@ -156,29 +160,40 @@ public class FormatosFragment extends Fragment {
         cardViewLayout = inflater.inflate(R.layout.vista_card2, null);
         init(cardViewLayout);
         //tv_formato = cardViewLayout.findViewById(R.id.text_view_formato);
-        tv_empresa = cardViewLayout.findViewById(R.id.text_view_empresa);
+        /*tv_empresa = cardViewLayout.findViewById(R.id.text_view_empresa);
         tv_Realizado = cardViewLayout.findViewById(R.id.text_view_realizado);
-        tv_porRealizar = cardViewLayout.findViewById(R.id.text_view_realizar);
+        tv_porRealizar = cardViewLayout.findViewById(R.id.text_view_realizar);*/
         tv_total = cardViewLayout.findViewById(R.id.text_view_total);
+        progressText = cardViewLayout.findViewById(R.id.progressText);
 
         tv_formato.setText(registro.getNom_formato());
-        tv_empresa.setText(registro.getNom_cliente());
+        /*tv_empresa.setText(registro.getNom_cliente());
         tv_Realizado.setText(String.valueOf(registro.getRealizado()));
-        tv_porRealizar.setText(String.valueOf(registro.getPor_realizar()));
+        tv_porRealizar.setText(String.valueOf(registro.getPor_realizar()));*/
         tv_total.setText(String.valueOf(registro.getCantidad()));
+        String texto = String.valueOf(registro.getRealizado())+" / "+String.valueOf(registro.getCantidad());
+        progressBar.setMax(registro.getCantidad());
+        progressBar.setProgress(registro.getRealizado());
+        progressText.setText(texto);
         CardView nuevo;
         nuevo = cardViewLayout.findViewById(R.id.contenerCard_OrdenTrabajo);
         LinearLayout layout = cardViewLayout.findViewById(R.id.idCard);
         if (registro.getRealizado() >= registro.getCantidad()) {
             layout.setBackgroundResource(R.drawable.style_border_1_inhab);
             tv_formato.setTextColor(Color.parseColor("#808080")); // Color gris claro como ejemplo
-            tv_empresa.setTextColor(Color.parseColor("#808080"));
-            tv_total.setBackgroundResource(R.drawable.style_circ_inhab);
+            /*tv_empresa.setTextColor(Color.parseColor("#808080"));
             tv_Realizado.setBackgroundResource(R.drawable.style_circ_inhab);
-            tv_porRealizar.setBackgroundResource(R.drawable.style_circ_inhab);
+            tv_porRealizar.setBackgroundResource(R.drawable.style_circ_inhab);*/
             nuevo.setCardBackgroundColor(Color.parseColor("#D3D3D3"));
         }
 
+        tv_total.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DetalleFormatosFragment Detallefragment = new DetalleFormatosFragment();
+                AbrirFormato(Detallefragment, registro);
+            }
+        });
 
         tv_formato.setOnClickListener(new View.OnClickListener() { //EVENTO DE ONCLICK AL TIPO DE FORMATO
             @Override
@@ -292,6 +307,7 @@ public class FormatosFragment extends Fragment {
     }
 
     private void AbrirFormato(Fragment nuevo, Formatos_Trabajo registro) {
+        bundle.putString("nombre_formato",registro.getNom_formato());
         bundle.putString("id_pt_formato", String.valueOf(registro.getId_pt_formato()));// ENPAQUETAR DE PARAMETROS
         bundle.putString("id_plan_Trabajo", String.valueOf(registro.getId_plan_trabajo()));// ENPAQUETAR DE PARAMETROS
         bundle.putString("id_formato", String.valueOf(registro.getId_formato()));

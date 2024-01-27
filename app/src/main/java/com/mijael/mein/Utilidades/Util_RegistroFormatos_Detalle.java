@@ -268,6 +268,7 @@ public class Util_RegistroFormatos_Detalle {
             + CAMPO_IL_6 + " TEXT, "
             + CAMPO_IL_7 + " TEXT, "
             + CAMPO_IL_8 + " TEXT, "
+            + CAMPO_PUNTOS_MED + " TEXT, "
             + CAMPO_TIPO_ILUMINACION + " TEXT, "
             + CAMPO_TIPO_ILUMINACION_ART + " TEXT, "
             + CAMPO_TIPO_ILUMINACION_NAT + " TEXT, "
