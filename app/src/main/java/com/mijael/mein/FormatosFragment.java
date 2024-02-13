@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
@@ -23,14 +24,14 @@ import android.widget.TextView;
 
 import com.mijael.mein.DAO.DAO_FormatosTrabajo;
 import com.mijael.mein.Entidades.Formatos_Trabajo;
-import com.mijael.mein.HELPER.RegistroFormatosSQLiteHelper;
+import com.mijael.mein.HELPER.MeinSQLiteHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FormatosFragment extends Fragment {
     TextView tv_total, tv_porRealizar, tv_Realizado, tv_empresa, tv_formato, Num_orden;
-    TextView tv_usu2, progressText;
+    TextView tv_usu2, progressText, tv_usu;
     EditText txt_buscar;
     View cardViewLayout, rootView;
     CardView cardView;
@@ -40,9 +41,9 @@ public class FormatosFragment extends Fragment {
     Bundle bundle;
     ProgressBar progressBar;
     private FragmentContainerView fragmentContainer;
-    private RegistroFormatosSQLiteHelper dataHelper;
+    private MeinSQLiteHelper dataHelper;
     public FormatosFragment(Context context) {
-        dataHelper = RegistroFormatosSQLiteHelper.getInstance(context);
+        dataHelper = MeinSQLiteHelper.getInstance(context);
     }
 
 
@@ -59,11 +60,13 @@ public class FormatosFragment extends Fragment {
 
         MainActivity activity = (MainActivity) getActivity();
         assert activity != null;
+        tv_usu = activity.findViewById(R.id.txt_usuario);
         txt_buscar = activity.findViewById(R.id.txt_buscarOrden);
         txt_buscar.setVisibility(View.VISIBLE);
         //txt_buscar.setText("");
         tv_usu2 = activity.findViewById(R.id.txt_usuario2);
         tv_usu2.setText("");
+        tv_usu.setVisibility(View.VISIBLE);
         fragmentContainer = activity.findViewById(R.id.fragmentContainerView);
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) fragmentContainer.getLayoutParams();
         params.topMargin = 400;
@@ -175,6 +178,7 @@ public class FormatosFragment extends Fragment {
         progressBar.setMax(registro.getCantidad());
         progressBar.setProgress(registro.getRealizado());
         progressText.setText(texto);
+
         CardView nuevo;
         nuevo = cardViewLayout.findViewById(R.id.contenerCard_OrdenTrabajo);
         LinearLayout layout = cardViewLayout.findViewById(R.id.idCard);
@@ -190,8 +194,38 @@ public class FormatosFragment extends Fragment {
         tv_total.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DetalleFormatosFragment Detallefragment = new DetalleFormatosFragment();
-                AbrirFormato(Detallefragment, registro);
+                AppCompatButton button = new AppCompatButton(getActivity());//CREANDO UN BOTON NUEVO PARA REDIRIGIR AL FORMATO
+                button.setText("Llenar");
+                button.setBackgroundResource(R.drawable.style_1);
+                button.setTextColor(Color.WHITE);
+                button.setLayoutParams(new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                ));
+                LinearLayout layout = new LinearLayout(getActivity()); //CREANDO UN OCNTENEDOR PARA PONER EL Button
+                layout.setOrientation(LinearLayout.VERTICAL);
+                layout.setPadding(150,0,0,0);
+                layout.addView(button);
+
+                if(registro.getRealizado()>0){
+                    DetalleFormatosFragment Detallefragment = new DetalleFormatosFragment();
+                    AbrirFormato(Detallefragment, registro);
+                }else{
+                    AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+                            .setTitle(registro.getNom_formato())
+                            .setMessage("No hay Registros por visualizar\nRegistre uno")
+                            .setView(layout)
+                            .setPositiveButton(android.R.string.cancel, null)
+                            .show();
+                    button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            NavegarFormato(registro);
+                            alertDialog.dismiss();
+                        }
+                    });
+                }
+
             }
         });
 
@@ -199,100 +233,7 @@ public class FormatosFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 //Log.e("MENSAJE", registro.getNomFormato());
-                switch (registro.getNom_formato()) {
-                    case "DOSIMETRÍA"://PODRIA EVALUARSE CON EL -- idFormato --
-                        // Opción 1 - Navegar a Dosimetria
-                        if (registro.getRealizado() < registro.getCantidad()) {//EVALUAR SI EL TOTAL DE FORMATOS REALIZADOS ES MENOR AL TOTAL ASIGNADO
-                            Fragment dosimetria = new DosimetriaFragment();//INSTANCIA DEL FRAGMENTO A DONDE QUIERO IR
-                            AbrirFormato(dosimetria, registro);
-                        } else {
-                            MensajeAlerta(registro.getNom_formato());
-                        }
-                        break;
-                    case "SONOMETRÍA":
-                        // Opción 2 - Navegar a SONOMETRIA
-                        if (registro.getRealizado() < registro.getCantidad()) {
-                            Fragment sonometria = new SonometriaFragment();
-                            AbrirFormato(sonometria, registro);
-                        } else {
-                            MensajeAlerta(registro.getNom_formato());
-                        }
-                        break;
-                    case "LUXOMETRO":
-                    case "ILUMINACIÓN":
-                        // Opción 3 - Navegar a ILUMINACION
-                        if (registro.getRealizado() < registro.getCantidad()) {
-                            Fragment iluminacion = new IluminacionFragment();
-                            AbrirFormato(iluminacion, registro);
-                        } else {
-                            MensajeAlerta(registro.getNom_formato());
-                        }
-                        break;
-                    case "VIBRACIÓN":
-                        // Opción 3 - Navegar a VIBRACION
-                        if (registro.getRealizado() < registro.getCantidad()) {
-                            Fragment vibracion = new VibracionFragment();
-                            AbrirFormato(vibracion, registro);
-                        } else {
-                            MensajeAlerta(registro.getNom_formato());
-                        }
-                        break;
-                    case "ESTRES POR CALOR":
-                    case "ESTRÉS TÉRMICO":
-                        // Opción 3 - Navegar a ESTRES TERMICO
-                        if (registro.getRealizado() < registro.getCantidad()) {
-                            Fragment estres = new EstresTermicoFragment();
-                            AbrirFormato(estres, registro);
-                        } else {
-                            MensajeAlerta(registro.getNom_formato());
-                        }
-                        break;
-                    case "RADIACION ELECTROMAGNÉTICA":
-                        // Opción 3 - Navegar a RADIACION
-                        if (registro.getRealizado() < registro.getCantidad()) {
-                            Fragment radiacion = new RadiacionElectromagneticaFragment();
-                            AbrirFormato(radiacion, registro);
-                        } else {
-                            MensajeAlerta(registro.getNom_formato());
-                        }
-                        break;
-                    case "ESTRÉS POR FRÍO":
-                        // Opción 3 - Navegar a RADIACION
-                        if (registro.getRealizado() < registro.getCantidad()) {
-                            Fragment estreFrio = new EstresFrioFragment();
-                            AbrirFormato(estreFrio, registro);
-                        } else {
-                            MensajeAlerta(registro.getNom_formato());
-                        }
-                        break;
-                    case "VELOCIDAD DEL AIRE":
-                        // Opción 3 - Navegar a RADIACION
-                        if (registro.getRealizado() < registro.getCantidad()) {
-                            Fragment velocidadAire = new VelocidadAireFragment();
-                            AbrirFormato(velocidadAire, registro);
-                        } else {
-                            MensajeAlerta(registro.getNom_formato());
-                        }
-                        break;
-                    case "HUMEDAD RELATIVA":
-                        // Opción 3 - Navegar a RADIACION
-                        if (registro.getRealizado() < registro.getCantidad()) {
-                            Fragment humedadRelativa = new HumedadRelativaFragment();
-                            AbrirFormato(humedadRelativa, registro);
-                        } else {
-                            MensajeAlerta(registro.getNom_formato());
-                        }
-                        break;
-                    case "RADIACIÓN UV":
-                        // Opción 3 - Navegar a RADIACION
-                        if (registro.getRealizado() < registro.getCantidad()) {
-                            Fragment radiacionUv = new RadiacionUvFragment();
-                            AbrirFormato(radiacionUv, registro);
-                        } else {
-                            MensajeAlerta(registro.getNom_formato());
-                        }
-                        break;
-                }
+                NavegarFormato(registro);
             }
         });
         linearLayout.addView(cardViewLayout); // AÑADIR LA VISTA DE TARJETAS A LA SECCION ITERABLE
@@ -319,6 +260,112 @@ public class FormatosFragment extends Fragment {
                 .replace(R.id.fragmentContainerView, nuevo)
                 .addToBackStack(null) // Si deseas agregar la transacción a la pila de retroceso
                 .commit();
+    }
+
+    public void NavegarFormato(Formatos_Trabajo registro){
+        switch (registro.getNom_formato()) {
+            case "DOSIMETRÍA"://PODRIA EVALUARSE CON EL -- idFormato --
+                // Opción 1 - Navegar a Dosimetria
+                if (registro.getRealizado() < registro.getCantidad()) {//EVALUAR SI EL TOTAL DE FORMATOS REALIZADOS ES MENOR AL TOTAL ASIGNADO
+                    Fragment dosimetria = new DosimetriaFragment();//INSTANCIA DEL FRAGMENTO A DONDE QUIERO IR
+                    AbrirFormato(dosimetria, registro);
+                } else {
+                    MensajeAlerta(registro.getNom_formato());
+                }
+                break;
+            case "SONOMETRÍA":
+                // Opción 2 - Navegar a SONOMETRIA
+                if (registro.getRealizado() < registro.getCantidad()) {
+                    Fragment sonometria = new SonometriaFragment();
+                    AbrirFormato(sonometria, registro);
+                } else {
+                    MensajeAlerta(registro.getNom_formato());
+                }
+                break;
+            case "LUXOMETRO":
+            case "ILUMINACIÓN":
+                // Opción 3 - Navegar a ILUMINACION
+                if (registro.getRealizado() < registro.getCantidad()) {
+                    Fragment iluminacion = new IluminacionFragment();
+                    AbrirFormato(iluminacion, registro);
+                } else {
+                    MensajeAlerta(registro.getNom_formato());
+                }
+                break;
+            case "VIBRACIÓN":
+                // Opción 3 - Navegar a VIBRACION
+                if (registro.getRealizado() < registro.getCantidad()) {
+                    Fragment vibracion = new VibracionFragment();
+                    AbrirFormato(vibracion, registro);
+                } else {
+                    MensajeAlerta(registro.getNom_formato());
+                }
+                break;
+            case "ESTRES POR CALOR":
+            case "ESTRÉS TÉRMICO":
+                // Opción 3 - Navegar a ESTRES TERMICO
+                if (registro.getRealizado() < registro.getCantidad()) {
+                    Fragment estres = new EstresTermicoFragment();
+                    AbrirFormato(estres, registro);
+                } else {
+                    MensajeAlerta(registro.getNom_formato());
+                }
+                break;
+            case "RADIACION ELECTROMAGNÉTICA":
+                // Opción 3 - Navegar a RADIACION
+                if (registro.getRealizado() < registro.getCantidad()) {
+                    Fragment radiacion = new RadiacionElectromagneticaFragment();
+                    AbrirFormato(radiacion, registro);
+                } else {
+                    MensajeAlerta(registro.getNom_formato());
+                }
+                break;
+            case "ESTRÉS POR FRÍO":
+                // Opción 3 - Navegar a RADIACION
+                if (registro.getRealizado() < registro.getCantidad()) {
+                    Fragment estreFrio = new EstresFrioFragment();
+                    AbrirFormato(estreFrio, registro);
+                } else {
+                    MensajeAlerta(registro.getNom_formato());
+                }
+                break;
+            case "VELOCIDAD DEL AIRE":
+                // Opción 3 - Navegar a RADIACION
+                if (registro.getRealizado() < registro.getCantidad()) {
+                    Fragment velocidadAire = new VelocidadAireFragment();
+                    AbrirFormato(velocidadAire, registro);
+                } else {
+                    MensajeAlerta(registro.getNom_formato());
+                }
+                break;
+            case "HUMEDAD RELATIVA":
+                // Opción 3 - Navegar a RADIACION
+                if (registro.getRealizado() < registro.getCantidad()) {
+                    Fragment humedadRelativa = new HumedadRelativaFragment();
+                    AbrirFormato(humedadRelativa, registro);
+                } else {
+                    MensajeAlerta(registro.getNom_formato());
+                }
+                break;
+            case "RADIACIÓN UV":
+                // Opción 3 - Navegar a RADIACION
+                if (registro.getRealizado() < registro.getCantidad()) {
+                    Fragment radiacionUv = new RadiacionUvFragment();
+                    AbrirFormato(radiacionUv, registro);
+                } else {
+                    MensajeAlerta(registro.getNom_formato());
+                }
+                break;
+            case "CONFORT TÉRMICO":
+                // Opción 3 - Navegar a RADIACION
+                if (registro.getRealizado() < registro.getCantidad()) {
+                    Fragment confort = new ConfortTermicoFragment();
+                    AbrirFormato(confort, registro);
+                } else {
+                    MensajeAlerta(registro.getNom_formato());
+                }
+                break;
+        }
     }
 
 }

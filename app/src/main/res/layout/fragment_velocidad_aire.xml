@@ -601,7 +601,7 @@
                             android:layout_marginTop="20dp"
                             android:background="@drawable/style_4"/>
                         <ImageView
-                            android:id="@+id/img_Estres"
+                            android:id="@+id/img_Velo"
                             android:layout_width="match_parent"
                             android:layout_height="200dp"
                             android:layout_marginTop="5dp"

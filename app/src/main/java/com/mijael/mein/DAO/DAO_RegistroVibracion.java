@@ -4,21 +4,16 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-import androidx.annotation.Nullable;
-
 import com.mijael.mein.Entidades.Vibracion_Registro;
 import com.mijael.mein.Entidades.Vibracion_RegistroDetalle;
-import com.mijael.mein.HELPER.RegistroFormatosSQLiteHelper;
-import com.mijael.mein.Utilidades.Util_IluminacionRegistro;
+import com.mijael.mein.HELPER.MeinSQLiteHelper;
 import com.mijael.mein.Utilidades.Util_RegistroFormatos;
 import com.mijael.mein.Utilidades.Util_RegistroFormatos_Detalle;
-import com.mijael.mein.Utilidades.Util_VibracionRegistro;
-import com.mijael.mein.Utilidades.Util_VibracionRegistroDetalle;
 
 public class DAO_RegistroVibracion {
-    public RegistroFormatosSQLiteHelper datHelper;
+    public MeinSQLiteHelper datHelper;
     public DAO_RegistroVibracion(Context context){
-        this.datHelper = RegistroFormatosSQLiteHelper.getInstance(context);
+        this.datHelper = MeinSQLiteHelper.getInstance(context);
     }
 
     public boolean RegistroVibracion(Vibracion_Registro registro){
@@ -26,6 +21,7 @@ public class DAO_RegistroVibracion {
         ContentValues values = new ContentValues();
 
         values.put(Util_RegistroFormatos.CAMPO_COD_FORMATO, registro.getCod_formato());
+        values.put(Util_RegistroFormatos.CAMPO_COD_REGISTRO, registro.getCod_registro());
         values.put(Util_RegistroFormatos.CAMPO_ID_FORMATO, registro.getId_formato());
         values.put(Util_RegistroFormatos.CAMPO_ID_PLAN_TRABAJO, registro.getId_plan_trabajo());
         values.put(Util_RegistroFormatos.CAMPO_ID_PT_FORMATO, registro.getId_pt_formato());
@@ -63,6 +59,7 @@ public class DAO_RegistroVibracion {
         values.put(Util_RegistroFormatos.CAMPO_ESTADO, registro.getEstado());
         values.put(Util_RegistroFormatos.CAMPO_FEC_REG, registro.getFec_reg());
         values.put(Util_RegistroFormatos.CAMPO_USER_REG, registro.getUser_reg());
+        values.put(Util_RegistroFormatos.CAMPO_ESTADO_SINCRO,1);// MARCANDO PARA SABER QUE FALTA SINCRONIZAR
 
 
         /*values.put(Util_VibracionRegistro.CAMPO_COD_FORMATO, registro.getCod_formato());
@@ -128,6 +125,7 @@ public class DAO_RegistroVibracion {
         values.put(Util_RegistroFormatos_Detalle.CAMPO_ESTADO, registro.getEstado());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_FEC_REG, registro.getFec_reg());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_USER_REG, registro.getUser_reg());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_ESTADO_SINCRO,1);// MARCANDO PARA SABER QUE FALTA SINCRONIZAR
 
 
         //values.put(Util_VibracionRegistroDetalle.CAMPO_ID_PLAN_TRABAJO_FORMATO_REG, registro.getId_plan_trabajo_formato_reg());

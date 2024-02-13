@@ -7,10 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentContainerView;
-import androidx.navigation.NavController;
-import androidx.navigation.NavDirections;
-import androidx.navigation.Navigation;
 import androidx.work.Constraints;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.NetworkType;
@@ -36,7 +32,7 @@ import com.mijael.mein.Entidades.Usuario;
 import com.mijael.mein.Extras.Validaciones;
 
 import com.mijael.mein.HELPER.DatosLocalSQLiteHelper;
-import com.mijael.mein.HELPER.RegistroFormatosSQLiteHelper;
+import com.mijael.mein.HELPER.MeinSQLiteHelper;
 import com.mijael.mein.SINCRONIZACION.Equipos_SyncWorker;
 import com.mijael.mein.SINCRONIZACION.Formatos_SyncWorker;
 import com.mijael.mein.SINCRONIZACION.Ordenes_SyncWorker;
@@ -85,7 +81,7 @@ public class LoginFragment extends Fragment {
         TareasProgramadas(Equipos_SyncWorker.class, "Equipos");
         TareasProgramadas(RegistroFormatos_SyncWorker.class, "Registros");
         TareasProgramadas(RegistroFormatosDetalle_SyncWorker.class,"Registro_Detalle");
-        RegistroFormatosSQLiteHelper helper = new RegistroFormatosSQLiteHelper(getActivity());
+        MeinSQLiteHelper helper = new MeinSQLiteHelper(getActivity());
         SQLiteDatabase dbb = helper.getWritableDatabase();
         DatosLocalSQLiteHelper helperdatos = new DatosLocalSQLiteHelper(getActivity(), "TablasLocales",null,1);
         SQLiteDatabase db = helperdatos.getWritableDatabase();

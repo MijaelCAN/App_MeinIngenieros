@@ -6,20 +6,14 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.mijael.mein.Entidades.EstresTermico_Registro;
 import com.mijael.mein.Entidades.EstresTermico_RegistroDetalle;
-import com.mijael.mein.Entidades.Vibracion_Registro;
-import com.mijael.mein.Entidades.Vibracion_RegistroDetalle;
-import com.mijael.mein.HELPER.RegistroFormatosSQLiteHelper;
-import com.mijael.mein.Utilidades.Util_EstresTermicoRegistro;
-import com.mijael.mein.Utilidades.Util_EstresTermicoRegistroDetalle;
+import com.mijael.mein.HELPER.MeinSQLiteHelper;
 import com.mijael.mein.Utilidades.Util_RegistroFormatos;
 import com.mijael.mein.Utilidades.Util_RegistroFormatos_Detalle;
-import com.mijael.mein.Utilidades.Util_VibracionRegistro;
-import com.mijael.mein.Utilidades.Util_VibracionRegistroDetalle;
 
 public class DAO_RegistroEstreTermico {
-    public RegistroFormatosSQLiteHelper datHelper;
+    public MeinSQLiteHelper datHelper;
     public DAO_RegistroEstreTermico(Context context){
-        this.datHelper = RegistroFormatosSQLiteHelper.getInstance(context);
+        this.datHelper = MeinSQLiteHelper.getInstance(context);
     }
 
     public boolean RegistroEstresTermico(EstresTermico_Registro registro){
@@ -28,6 +22,7 @@ public class DAO_RegistroEstreTermico {
 
         //AÑADIR EL CAMPO DE ID DE REGISTRO CUANDO SE HAGA LA SINCRONIZACION
         values.put(Util_RegistroFormatos.CAMPO_COD_FORMATO, registro.getCod_formato());
+        values.put(Util_RegistroFormatos.CAMPO_COD_REGISTRO, registro.getCod_registro());
         values.put(Util_RegistroFormatos.CAMPO_ID_FORMATO, registro.getId_formato());
         values.put(Util_RegistroFormatos.CAMPO_ID_PLAN_TRABAJO, registro.getId_plan_trabajo());
         values.put(Util_RegistroFormatos.CAMPO_ID_PT_FORMATO, registro.getId_pt_formato());
@@ -70,9 +65,11 @@ public class DAO_RegistroEstreTermico {
         values.put(Util_RegistroFormatos.CAMPO_COND_TRAB, registro.getCond_trab());
         values.put(Util_RegistroFormatos.CAMPO_OBSERVACION, registro.getObservacion());
         values.put(Util_RegistroFormatos.CAMPO_NOM_TIPO_MEDICION, registro.getNom_tipo_medicion());
+        values.put(Util_RegistroFormatos.CAMPO_RUTA_FOTO, registro.getRuta_foto());
         values.put(Util_RegistroFormatos.CAMPO_ESTADO, registro.getEstado());
         values.put(Util_RegistroFormatos.CAMPO_FEC_REG, registro.getFec_reg());
         values.put(Util_RegistroFormatos.CAMPO_USER_REG, registro.getUser_reg());
+        values.put(Util_RegistroFormatos.CAMPO_ESTADO_SINCRO,1);// MARCANDO PARA SABER QUE FALTA SINCRONIZAR
 
 
 
@@ -133,7 +130,7 @@ public class DAO_RegistroEstreTermico {
         SQLiteDatabase db = datHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(Util_RegistroFormatos_Detalle.CAMPO_ID_FORMATO_REG_DETALLE,-1); //--------------------> PRUEBA PARA EL REGISTRO EN LA TABLA GENERAL
+        //values.put(Util_RegistroFormatos_Detalle.CAMPO_ID_FORMATO_REG_DETALLE,-1); //--------------------> PRUEBA PARA EL REGISTRO EN LA TABLA GENERAL
         values.put(Util_RegistroFormatos_Detalle.CAMPO_ID_PLAN_TRABAJO_FORMATO_REG, registro.getId_plan_trabajo_formato_reg());//----------------> PRUEBA PARA EL REGISTRO EN LA TABLA GENERAL
         values.put(Util_RegistroFormatos_Detalle.CAMPO_FUENTE_GENERADORA, registro.getFuente_generadora());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_DESC_FUENTE_FRIO, registro.getDesc_fuente_frio());
@@ -168,6 +165,7 @@ public class DAO_RegistroEstreTermico {
         values.put(Util_RegistroFormatos_Detalle.CAMPO_FRECUENCIA_DETER, registro.getFrecuencia_deter());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_GENERO_DETER, registro.getGenero_deter());
 
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_N_TAREAS, registro.getNtareas());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_NOM_TAREA1, registro.getNom_tarea1());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_CICLO_TRABAJO1, registro.getCiclo_trabajo1());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_POSICION_1, registro.getPosicion_1());
@@ -212,6 +210,7 @@ public class DAO_RegistroEstreTermico {
         values.put(Util_RegistroFormatos_Detalle.CAMPO_ESTADO, registro.getEstado());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_FEC_REG, registro.getFec_reg());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_USER_REG, registro.getUser_reg());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_ESTADO_SINCRO,1);// MARCANDO PARA SABER QUE FALTA SINCRONIZAR
 
         //values.put(Util_EstresTermicoDetalle.CAMPO_ID_PLAN_TRABAJO_FORMATO_REG, registro.getIdEstrésReg());
         /*values.put(Util_EstresTermicoRegistroDetalle.CAMPO_FUENTE_GENERADORA, registro.getFuente_generadora());

@@ -7,7 +7,6 @@ import android.os.Bundle;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 
 import android.util.Log;
@@ -31,7 +30,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mijael.mein.DAO.DAO_Equipos;
 import com.mijael.mein.DAO.DAO_FormatosTrabajo;
-import com.mijael.mein.DAO.DAO_RegistroIluminacion;
+import com.mijael.mein.DAO.DAO_RegistroFormatos;
 import com.mijael.mein.DAO.DAO_RegistroVibracion;
 import com.mijael.mein.DAO.DAO_Usuario;
 import com.mijael.mein.Entidades.Equipos;
@@ -42,12 +41,13 @@ import com.mijael.mein.Entidades.Vibracion_RegistroDetalle;
 import com.mijael.mein.Extras.FragmentoImagen;
 import com.mijael.mein.Extras.InputDateConfiguration;
 import com.mijael.mein.Extras.Validaciones;
-import com.mijael.mein.HELPER.EquiposSQLiteHelper;
-import com.mijael.mein.HELPER.FormatoTrabajoSQLiteHelper;
 import com.mijael.mein.SERVICIOS.DosimetriaService;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -83,12 +83,14 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
     EditText txt_otroHorario, txt_otroRegimen, txt_otroRefrigerio;
     ImageView imgVibra;
     Uri uri;
+    DAO_RegistroFormatos dao_registroFormatos;
     public VibracionFragment() {
         // Required empty public constructor
+        dao_registroFormatos = new DAO_RegistroFormatos(getContext());
     }
     Formatos_Trabajo for_Vibracion;
     Validaciones validar = new Validaciones();
-
+    InputDateConfiguration config;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,7 +109,7 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
                              Bundle savedInstanceStance) {
 
         rootView = inflater.inflate(R.layout.fragment_vibracion,container,false);
-        InputDateConfiguration config = new InputDateConfiguration(getActivity(),id_colaborador,nom_Empresa,rootView);
+        config = new InputDateConfiguration(getActivity(),id_colaborador,nom_Empresa,rootView);
         init(rootView);
 
         DAO_Equipos equipos = new DAO_Equipos(getActivity());
@@ -288,9 +290,18 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
                     String fecha_registro = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
                     Equipos equipos1 = equipos.Buscar(valorEquipoUtil);
 
+                    ArrayList<HashMap<String, String>> resultList = dao_registroFormatos.getListCantidadFormatoId(Integer.parseInt(id_pt_trabajo));
+                    int total_registros = dao_registroFormatos.get_cant_formato_medicion();
+                    String cod_formato = config.GenerarCodigoFormato(Integer.parseInt(id_formato),resultList.size());
+                    String cod_registro = config.generarCodigoRegistro(total_registros);
+
+                    String valorRutaFoto = uri.getEncodedPath();
+                    int id_plan_formato_reg = dao_registroFormatos.getRecordIdByPosition();
+
                     Vibracion_Registro registro = new Vibracion_Registro(
                             -1,
-                            "VI-001",
+                            cod_formato,
+                            cod_registro,
                             id_formato,
                             id_plan_trabajo,
                             id_pt_trabajo,
@@ -326,10 +337,11 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
                             String.valueOf(valorGroupCapac),
                             String.valueOf(valorGroupManten),
                             fecha_registro,
-                            id_colaborador
+                            id_colaborador,
+                            valorRutaFoto
                     );
                     Vibracion_RegistroDetalle detalle = new Vibracion_RegistroDetalle(
-                            -1,
+                            (id_plan_formato_reg+1),
                             valorFuenteGenVibra,
                             valorDescripcionFuente,
                             valorFrecuencia,
@@ -373,6 +385,8 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 Log.e("exitoso", "se inserto el registro");
+                                File imageFile = new File(uri.getEncodedPath());
+                                config.uploadImage(imageFile, cod_formato,id_pt_trabajo,cod_registro);
                                 // Mostrar el JSON en el log
                                 Log.e("JSON", cadenaJson);
                                 Log.e("Respuesta",response.toString());
@@ -491,6 +505,8 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
         this.uri = imageUri;
         if (imgVibra != null && imageUri != null) {
             imgVibra.setImageURI(imageUri);
+            /*File imageFile = new File(imageUri.getEncodedPath());
+            config.uploadImage(imageFile);*/
         }
     }
     private void mostrarOpcionesGone(RadioGroup group, int checkedId, CardView card, RadioButton radio) {

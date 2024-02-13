@@ -201,8 +201,6 @@ public class DAO_Equipos {
         db.close();
     }
 
-
-
     public List<String> obtener_CodEquipos(){
         List<String> codigosList = new ArrayList<>();
         SQLiteDatabase db = dataHelper.getReadableDatabase();

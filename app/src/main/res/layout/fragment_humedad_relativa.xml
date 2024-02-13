@@ -601,13 +601,18 @@
                                 android:fontFamily="sans-serif-light"
                                 android:textColor="@color/black"/>
 
-                            <Spinner
-                                android:id="@+id/spn_humedadRelativaMax"
+                            <EditText
+                                android:id="@+id/txt_humedadRelativaMax"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:background="@drawable/style_input"
+                                android:hint="Digite"
+                                android:textSize="15sp"
+                                android:inputType="number|numberDecimal"
+                                android:paddingLeft="8dp"
                                 android:layout_marginTop="5dp"
-                                android:layout_weight="1"
-                                android:background="@drawable/style_input" />
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black"/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -627,13 +632,18 @@
                                 android:fontFamily="sans-serif-light"
                                 android:textColor="@color/black"/>
 
-                            <Spinner
-                                android:id="@+id/spn_humedadRelativaMin"
+                            <EditText
+                                android:id="@+id/txt_humedadRelativaMin"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:background="@drawable/style_input"
+                                android:hint="Digite"
+                                android:textSize="15sp"
+                                android:inputType="number|numberDecimal"
+                                android:paddingLeft="8dp"
                                 android:layout_marginTop="5dp"
-                                android:layout_weight="1"
-                                android:background="@drawable/style_input" />
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black"/>
                         </LinearLayout>
                     </LinearLayout>
 

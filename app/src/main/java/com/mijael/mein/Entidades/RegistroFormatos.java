@@ -139,7 +139,7 @@ public class RegistroFormatos {
     public String anio_ocu_cargo;
     public String mes_ocu_cargo;
     public String cond_trab;
-    public String porc_descan;
+    public String ruta_foto;
     public String foto;
     public String resultado;
     public int estado_resultado;
@@ -150,6 +150,7 @@ public class RegistroFormatos {
     public int user_act;
     public String fec_eli;
     public int user_eli;
+    public boolean estado_sincro;
 
     public RegistroFormatos(int id_plan_trabajo_formato_reg, int id_formato, String cod_registro, String cod_formato, String id_plan_trabajo, String id_pt_formato,
                             int id_analista, String nom_analista, String cod_equipo1, String nom_equipo1, String cod_equipo2, String nom_equipo2, String cod_equipo3,
@@ -172,8 +173,8 @@ public class RegistroFormatos {
                             String tipo_medicion, String nom_tipo_medicion, double lmin, double lmax, double lequi, double lequi_md1, double lequi_md2, double lequi_md3,
                             double lequi_md4, double lequi_md5, double lmax_md1, double lmax_md2, double lmax_md3, double lmax_md4, double lmax_md5, double lmin_md1,
                             double lmin_md2, double lmin_md3, double lmin_md4, double lmin_md5, double lpico_dba, String conformidad, String eval_20p, String tipo_vibracion, String lateralidad_mano,
-                            String ubic_equip, String anio_ocu_cargo, String mes_ocu_cargo, String cond_trab,String porc_descan, String foto, String resultado, int estado_resultado,
-                            int estado, String fec_reg, int user_reg, String fec_act, int user_act, String fec_eli, int user_eli) {
+                            String ubic_equip, String anio_ocu_cargo, String mes_ocu_cargo, String cond_trab,String ruta_foto, String foto, String resultado, int estado_resultado,
+                            int estado, String fec_reg, int user_reg, String fec_act, int user_act, String fec_eli, int user_eli, boolean estado_sincro) {
         this.id_plan_trabajo_formato_reg = id_plan_trabajo_formato_reg;
         this.id_formato = id_formato;
         this.cod_registro = cod_registro;
@@ -310,7 +311,7 @@ public class RegistroFormatos {
         this.anio_ocu_cargo = anio_ocu_cargo;
         this.mes_ocu_cargo = mes_ocu_cargo;
         this.cond_trab = cond_trab;
-        this.porc_descan = porc_descan;
+        this.ruta_foto = ruta_foto;
         this.foto = foto;
         this.resultado = resultado;
         this.estado_resultado = estado_resultado;
@@ -321,6 +322,7 @@ public class RegistroFormatos {
         this.user_act = user_act;
         this.fec_eli = fec_eli;
         this.user_eli = user_eli;
+        this.estado_sincro = estado_sincro;
     }
 
     public int getId_plan_trabajo_formato_reg() {
@@ -1411,12 +1413,12 @@ public class RegistroFormatos {
         this.cond_trab = cond_trab;
     }
 
-    public String getPorc_descan() {
-        return porc_descan;
+    public String getRuta_foto() {
+        return ruta_foto;
     }
 
-    public void setPorc_descan(String porc_descan) {
-        this.porc_descan = porc_descan;
+    public void setRuta_foto(String ruta_foto) {
+        this.ruta_foto = ruta_foto;
     }
 
     public String getFoto() {
@@ -1497,5 +1499,13 @@ public class RegistroFormatos {
 
     public void setUser_eli(int user_eli) {
         this.user_eli = user_eli;
+    }
+
+    public boolean getEstado_sincro() {
+        return estado_sincro;
+    }
+
+    public void setEstado_sincro(boolean estado_sincro) {
+        this.estado_sincro = estado_sincro;
     }
 }

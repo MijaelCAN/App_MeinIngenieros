@@ -6,18 +6,15 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.mijael.mein.Entidades.Iluminacion_Registro;
 import com.mijael.mein.Entidades.Iluminacion_RegistroDetalle;
-import com.mijael.mein.HELPER.RegistroFormatosSQLiteHelper;
-import com.mijael.mein.Utilidades.Util_IluminacionRegistro;
-import com.mijael.mein.Utilidades.Util_IluminacionRegistroDetalle;
+import com.mijael.mein.HELPER.MeinSQLiteHelper;
 import com.mijael.mein.Utilidades.Util_RegistroFormatos;
 import com.mijael.mein.Utilidades.Util_RegistroFormatos_Detalle;
-import com.mijael.mein.Utilidades.Util_SonometriaRegistro;
 
 public class DAO_RegistroIluminacion {
     public int id_plan_trabajo_formato_reg;
-    public RegistroFormatosSQLiteHelper datHelper;
+    public MeinSQLiteHelper datHelper;
     public DAO_RegistroIluminacion(Context context){
-        this.datHelper = RegistroFormatosSQLiteHelper.getInstance(context);
+        this.datHelper = MeinSQLiteHelper.getInstance(context);
     }
      public boolean RegistroIluminacion(Iluminacion_Registro registro){
          SQLiteDatabase db = datHelper.getWritableDatabase();
@@ -25,6 +22,7 @@ public class DAO_RegistroIluminacion {
 
          values.put(Util_RegistroFormatos.CAMPO_COD_FORMATO, registro.getCod_formato());
          values.put(Util_RegistroFormatos.CAMPO_ID_FORMATO, registro.getId_formato());
+         values.put(Util_RegistroFormatos.CAMPO_COD_REGISTRO, registro.getCod_registro());
          values.put(Util_RegistroFormatos.CAMPO_ID_PLAN_TRABAJO, registro.getId_plan_trabajo());
          values.put(Util_RegistroFormatos.CAMPO_ID_PT_FORMATO, registro.getId_pt_formato());
          values.put(Util_RegistroFormatos.CAMPO_ID_ANALISTA, registro.getId_analista());
@@ -51,9 +49,11 @@ public class DAO_RegistroIluminacion {
          values.put(Util_RegistroFormatos.CAMPO_TAREA_VISUAL, registro.getTarea_visual());
          values.put(Util_RegistroFormatos.CAMPO_TIPO_TAREA_VISUAL, registro.getTipo_tarea_visual());
          values.put(Util_RegistroFormatos.CAMPO_NIVEL_MIN_ILU, registro.getNivel_min_ilu());
-         values.put(Util_RegistroFormatos.CAMPO_ESTADO, registro.getEstado());
+         values.put(Util_RegistroFormatos.CAMPO_RUTA_FOTO, registro.getRuta_foto());
+         values.put(Util_RegistroFormatos.CAMPO_ESTADO, 1);
          values.put(Util_RegistroFormatos.CAMPO_FEC_REG, registro.getFec_reg());
          values.put(Util_RegistroFormatos.CAMPO_USER_REG, registro.getUser_reg());
+         values.put(Util_RegistroFormatos.CAMPO_ESTADO_SINCRO,1);// MARCANDO PARA SABER QUE FALTA SINCRONIZAR
 
          /*values.put(Util_IluminacionRegistro.CAMPO_COD_FORMATO, registro.getCod_formato());
          values.put(Util_IluminacionRegistro.CAMPO_ID_FORMATO, registro.getId_formato());
@@ -96,16 +96,17 @@ public class DAO_RegistroIluminacion {
         SQLiteDatabase db = datHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         //values.put(Util_IluminacionRegistroDetalle.CAMPO_ID_PLAN_TRABAJO_FORMATO_REG, registro.getId_plan_trabajo_formato_reg());
-
-        values.put(Util_RegistroFormatos_Detalle.CAMPO_ID_FORMATO_REG_DETALLE, -1); //--------------------> PRUEBA PARA EL REGISTRO EN LA TABLA GENERAL
+        //values.put(Util_RegistroFormatos_Detalle.CAMPO_ID_FORMATO_REG_DETALLE, -1); //--------------------> PRUEBA PARA EL REGISTRO EN LA TABLA GENERAL
         values.put(Util_RegistroFormatos_Detalle.CAMPO_ID_PLAN_TRABAJO_FORMATO_REG, registro.getId_plan_trabajo_formato_reg());//----------------> PRUEBA PARA EL REGISTRO EN LA TABLA GENERAL
         values.put(Util_RegistroFormatos_Detalle.CAMPO_TIPO_ILUMINACION, registro.getTipo_iluminacion());
-        values.put(Util_RegistroFormatos_Detalle.CAMPO_ID_TIPO_MEDICION_IL, registro.getTipo_medicion_ilu());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_ID_TIPO_MEDICION_IL, registro.getId_tipo_medicion_ilu());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_TIPO_MEDICION_ILU, registro.getTipo_medicion_ilu());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_LARG_ESCRIT, registro.getLarg_escrit());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_ANCH_ESCRIT, registro.getAnch_escrit());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_NUM_PMEDICION, registro.getNum_pmedicion());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_ALT_PLTRABAJO, registro.getAlt_pltrabajo());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_ALT_PLTRABAJO_ILU, registro.getAlt_pltrabajo_ilu());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_CONST_SALON, registro.getConst_salon());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_LONG_SALON, registro.getLong_salon());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_ANCH_SALON, registro.getAnch_salon());
 
@@ -131,6 +132,7 @@ public class DAO_RegistroIluminacion {
         values.put(Util_RegistroFormatos_Detalle.CAMPO_ESTADO_FISICO, registro.getEstado_fisico());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_FEC_REG, registro.getFec_reg());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_USER_REG, registro.getUser_reg());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_ESTADO_SINCRO,1);// MARCANDO PARA SABER QUE FALTA SINCRONIZAR
 
 
 

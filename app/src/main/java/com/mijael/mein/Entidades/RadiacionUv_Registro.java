@@ -39,13 +39,13 @@ public class RadiacionUv_Registro {
     public int estado;
     public String fec_reg;
     public String user_reg;
-
+    private String ruta_foto;
     public RadiacionUv_Registro(int id, String cod_formato, String cod_registro, String id_formato, String id_plan_trabajo, String id_pt_formato, String cod_equipo1, String nom_equipo1,
                                 String serie_eq1, String id_equipo1, String id_analista, String nom_analista, String verf_insitu, String hora_situ, String fec_monitoreo,
                                 String hora_inicial, String hora_final, String tiempo_exposicion, String jornada, String tipo_doc_trabajador, String num_doc_trabajador,
                                 String nom_trabajador, String puesto_trabajador, String area_trabajo, String actividades_realizadas, String edad_trabajador, String mes_ocu_cargo,
                                 String anio_ocu_cargo, String hora_trabajo, String horario_refrigerio, String regimen_laboral, String desc_area_trabajo, String otro_administrativo,
-                                String resultado, String otro_ingenieria, String fec_reg, String user_reg) {
+                                String resultado, String otro_ingenieria, String fec_reg, String user_reg, String ruta_foto ) {
         this.id = id;
         this.cod_formato = cod_formato;
         this.cod_registro = cod_registro;
@@ -83,6 +83,7 @@ public class RadiacionUv_Registro {
         this.otro_ingenieria = otro_ingenieria;
         this.fec_reg = fec_reg;
         this.user_reg = user_reg;
+        this.ruta_foto = ruta_foto;
     }
 
     public int getId() {
@@ -387,5 +388,13 @@ public class RadiacionUv_Registro {
 
     public void setUser_reg(String user_reg) {
         this.user_reg = user_reg;
+    }
+
+    public String getRuta_foto() {
+        return ruta_foto;
+    }
+
+    public void setRuta_foto(String ruta_foto) {
+        this.ruta_foto = ruta_foto;
     }
 }

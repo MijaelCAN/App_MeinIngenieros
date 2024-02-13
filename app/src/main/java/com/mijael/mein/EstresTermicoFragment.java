@@ -34,6 +34,7 @@ import com.google.gson.JsonObject;
 import com.mijael.mein.DAO.DAO_Equipos;
 import com.mijael.mein.DAO.DAO_FormatosTrabajo;
 import com.mijael.mein.DAO.DAO_RegistroEstreTermico;
+import com.mijael.mein.DAO.DAO_RegistroFormatos;
 import com.mijael.mein.DAO.DAO_Usuario;
 import com.mijael.mein.Entidades.Equipos;
 import com.mijael.mein.Entidades.EstresTermico_Registro;
@@ -45,8 +46,10 @@ import com.mijael.mein.Extras.InputDateConfiguration;
 import com.mijael.mein.Extras.Validaciones;
 import com.mijael.mein.SERVICIOS.DosimetriaService;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -64,7 +67,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class EstresTermicoFragment extends Fragment implements FragmentoImagen.ImagePickerListener{
     private boolean cargarImagen = false;
-    private int contadorTareas = 1;
+    private int contadorTareas = 0;
     View rootView;
     TextView tv_nombreUsuario, tv_nomEmpresa;
     String id_plan_trabajo, id_pt_trabajo, id_formato,id_colaborador, nom_Empresa;
@@ -93,11 +96,14 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
 
     LinearLayout linearOtroHorario, linearOtroRegimen, linearOtroRefrigerio;
     EditText txt_otroHorario, txt_otroRegimen, txt_otroRefrigerio;
+    DAO_RegistroFormatos dao_registroFormatos;
     public EstresTermicoFragment() {
         // Required empty public constructor
+        dao_registroFormatos = new DAO_RegistroFormatos(getActivity());
     }
     Formatos_Trabajo for_Estres;
     Validaciones validar = new Validaciones();
+    InputDateConfiguration config;
     Map<String, String> valoresTareas = new HashMap<>();
     String valorTimeMed;
 
@@ -120,7 +126,7 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
 
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_estres_termico, container, false);
-        InputDateConfiguration config = new InputDateConfiguration(getActivity(),id_colaborador,nom_Empresa,rootView);
+        config = new InputDateConfiguration(getActivity(),id_colaborador,nom_Empresa,rootView);
         init(rootView);
         config.ConfigPantalla();
         DAO_Equipos equipos = new DAO_Equipos(getActivity());
@@ -136,7 +142,7 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
         spn_tipoMedicion.setAdapter(config.LlenarSpinner(new String[]{"Medición a una altura","Medición a tres alturas"}));
         spn_genero.setAdapter(config.LlenarSpinner(new String[]{"Hombre","Mujer"}));
         spn_tipoTrab.setAdapter(config.LlenarSpinner(new String[]{"Oficina","Artesanos","Minería","Industria","Artes","Agricultura","Transporte","Diversos"}));
-        spn_ocupacion.setAdapter(config.LlenarSpinner(new String[]{"Ayudante de laboratorio","Profesor","Dependiente de Comercio","Secretario"}));
+        //spn_ocupacion.setAdapter(config.LlenarSpinner(new String[]{"Ayudante de laboratorio","Profesor","Dependiente de Comercio","Secretario"}));
         spn_clase.setAdapter(config.LlenarSpinner(new String[]{"Descanso","Tasa metabólica baja","Tasa metabólica moderada","Tasa metabólica alta","Tasa metabólica muy alta"}));
 
         HashMap<String, String[]> ocupacionesPorTipoTrabajo = new HashMap<>();
@@ -520,12 +526,13 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
         btnAgregarTareas.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                contadorTareas++;
                 if (contadorTareas <= 5) {
                     if(contadorTareas==5){
                         btnAgregarTareas.setVisibility(View.GONE);
                     }
                     agregarNuevaTarea(config);
-                    contadorTareas++;
+
                 } else {
                     btnAgregarTareas.setVisibility(View.GONE);
                 }
@@ -686,23 +693,34 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                         valorId_Nivel_d = 2;
                     }
                     int valorId_metodo_deter=0;
+                    String valorTipoTrabajo = "";
+                    String valorOcupacion = "";
+                    String valorRangoTasaMeta = "";
+                    String valorClase = "";
+                    String valorActividadDeter = "";
+                    String valorFrecencia = "";
+                    String valorGenero = "";
+                    String valorTasaMetaW = "";
+                    String valorTasaMetaK = "";
                     String valorMetodoDeter = spn_metodoDeterminacion.getSelectedItem().toString();
                     if(valorMetodoDeter.equals("1A - Clasificación del tamaño de la ocupación")){
                         valorId_metodo_deter = 1;
+                        valorTipoTrabajo = spn_tipoTrab.getSelectedItem().toString();
+                        valorOcupacion = spn_ocupacion.getSelectedItem().toString();
+                        valorRangoTasaMeta = tv_tasaMetabolica.getText().toString();
+                        valorTasaMetaW = txt_tasaMetabolicaW.getText().toString();
+                        valorTasaMetaK = txt_tasaMetabolicaK.getText().toString();
                     } else if (valorMetodoDeter.equals("1B - Clasificación del tamaño de la actividad")) {
                         valorId_metodo_deter = 2;
+                        valorClase = spn_clase.getSelectedItem().toString();
+                        valorActividadDeter = txt_actividad.getText().toString();
+                        valorTasaMetaW = txt_tasaMetabolicaW.getText().toString();
+                        valorTasaMetaK = txt_tasaMetabolicaK.getText().toString();
                     } else if (valorMetodoDeter.equals("Medida del ritmo cardiaco bajo condiciones determi")) {
                         valorId_metodo_deter = 4;
+                        valorFrecencia = txt_frecuenciaCardiaca.getText().toString();
+                        valorGenero = spn_genero.getSelectedItem().toString();
                     }
-                    String valorTipoTrabajo = spn_tipoTrab.getSelectedItem().toString();
-                    String valorOcupacion = spn_ocupacion.getSelectedItem().toString();
-                    String valorRangoTasaMeta = tv_tasaMetabolica.getText().toString();
-                    String valorClase = spn_clase.getSelectedItem().toString();
-                    String valorActividadDeter = txt_actividad.getText().toString();
-                    String valorTasaMetaW = txt_tasaMetabolicaW.getText().toString();
-                    String valorTasaMetaK = txt_tasaMetabolicaK.getText().toString();
-                    String valorFrecencia = txt_frecuenciaCardiaca.getText().toString();
-                    String valorGenero = spn_genero.getSelectedItem().toString();
                     // Tarea 1
                     String tarea1 = "";
                     String cicloTrab1 = "";
@@ -731,7 +749,7 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                     String intensidad5 = "";
                     String valorMetrosSub = "";
 
-                    if(1<contadorTareas){
+                    if(1<=contadorTareas){
                          tarea1 = valoresTareas.get("tarea1");
                          cicloTrab1 = valoresTareas.get("cicloTrab1");
                          posicion1 = valoresTareas.get("posicion1");
@@ -739,28 +757,28 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                          intensidad1 = valoresTareas.get("intensidad1");
                          valorMetrosSub = txt_metroSubida.getText().toString();
                     }
-                    if(2<contadorTareas){
+                    if(2<=contadorTareas){
                          tarea2 = valoresTareas.get("tarea2");
                          cicloTrab2 = valoresTareas.get("cicloTrab2");
                          posicion2 = valoresTareas.get("posicion2");
                          partesCuerpo2 = valoresTareas.get("partesCuerpo2");
                          intensidad2 = valoresTareas.get("intensidad2");
                     }
-                    if(3<contadorTareas){
+                    if(3<=contadorTareas){
                          tarea3 = valoresTareas.get("tarea3");
                          cicloTrab3 = valoresTareas.get("cicloTrab3");
                          posicion3 = valoresTareas.get("posicion3");
                          partesCuerpo3 = valoresTareas.get("partesCuerpo3");
                          intensidad3 = valoresTareas.get("intensidad3");
                     }
-                    if(4<contadorTareas){
+                    if(4<=contadorTareas){
                          tarea4 = valoresTareas.get("tarea4");
                          cicloTrab4 = valoresTareas.get("cicloTrab4");
                          posicion4 = valoresTareas.get("posicion4");
                          partesCuerpo4 = valoresTareas.get("partesCuerpo4");
                          intensidad4 = valoresTareas.get("intensidad4");
                     }
-                    if(5<contadorTareas){
+                    if(5<=contadorTareas){
                          tarea5 = valoresTareas.get("tarea5");
                          cicloTrab5 = valoresTareas.get("cicloTrab5");
                          posicion5 = valoresTareas.get("posicion5");
@@ -788,9 +806,18 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                     Equipos equipos1 = equipos.Buscar(valorEstresTermico);
                     Equipos equipos2 = equipos.Buscar(valorAnemometro);
 
+                    ArrayList<HashMap<String, String>> resultList = dao_registroFormatos.getListCantidadFormatoId(Integer.parseInt(id_pt_trabajo));
+                    int total_registros = dao_registroFormatos.get_cant_formato_medicion();
+                    String cod_formato = config.GenerarCodigoFormato(Integer.parseInt(id_formato),resultList.size());
+                    String cod_registro = config.generarCodigoRegistro(total_registros);
+
+                    String valorRutaFoto = uri.getEncodedPath();
+                    int id_plan_formato_reg = dao_registroFormatos.getRecordIdByPosition();
+
                     EstresTermico_Registro cabecera = new EstresTermico_Registro(
                             -1,
-                            "ET-001",
+                            cod_formato,
+                            cod_registro,
                             id_formato,
                             id_plan_trabajo,
                             id_pt_trabajo,
@@ -835,10 +862,11 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                             valorTipo_medicion,
                             valorNom_Medicion,
                             fecha_registro,
-                            id_colaborador
+                            id_colaborador,
+                            valorRutaFoto
                     );
                     EstresTermico_RegistroDetalle detalle = new EstresTermico_RegistroDetalle(
-                            cabecera.getCodigo(),
+                            (id_plan_formato_reg+1),
                             valorFuenteGen,
                             valorDesFuenteGen,
                             "" +valorGroupZonaSombra,
@@ -872,6 +900,7 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                             valorTasaMetaK,
                             valorFrecencia,
                             valorGenero,
+                            ""+contadorTareas,
                             tarea1,
                             cicloTrab1,
                             posicion1,
@@ -944,6 +973,8 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 Log.e("exitoso", "se inserto el registro");
+                                File imageFile = new File(uri.getEncodedPath());
+                                config.uploadImage(imageFile, cod_formato,id_pt_trabajo,cod_registro);
                                 // Mostrar el JSON en el log
                                 Log.e("JSON", cadenaJson);
                                 Log.e("Respuesta",response.toString());
@@ -1127,6 +1158,8 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
         this.uri = imageUri;
         if (imgE_Termico != null && imageUri != null) {
             imgE_Termico.setImageURI(imageUri);
+            /*File imageFile = new File(imageUri.getEncodedPath());
+            config.uploadImage(imageFile);*/
         }
     }
 
@@ -1145,9 +1178,37 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
         Spinner spn_posicion = nuevaTarea.findViewById(R.id.cbx_posicion);
         Spinner spn_partesCuerpo = nuevaTarea.findViewById(R.id.cbx_partesCuerpo);
         Spinner spn_intensidad = nuevaTarea.findViewById(R.id.cbx_intensidad);
+        AppCompatButton btn_eliminarTarea = nuevaTarea.findViewById(R.id.btn_eliminarTarea);
         spn_posicion.setAdapter(config.LlenarSpinner("posicion","nom_pos",getActivity()));
         spn_partesCuerpo.setAdapter(config.LlenarSpinner("partes_cuerpo","nom_cuerpo",getActivity()));
         spn_intensidad.setAdapter(config.LlenarSpinner("intensidad","nom_intensidad",getActivity()));
+
+        // Hacer todos los botones de eliminar invisibles
+        for (int i = 0; i < linearContenedorTareas.getChildCount(); i++) {
+            View tarea = linearContenedorTareas.getChildAt(i);
+            AppCompatButton btn_eliminar = tarea.findViewById(R.id.btn_eliminarTarea);
+            btn_eliminar.setVisibility(View.GONE);
+        }
+
+        btn_eliminarTarea.setVisibility(View.VISIBLE);
+        btn_eliminarTarea.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                contadorTareas--;
+                // Eliminar la última vista
+                int lastIndex = linearContenedorTareas.getChildCount() - 1;
+                linearContenedorTareas.removeViewAt(lastIndex);
+                if (lastIndex > 0) {
+                    View ultimaTarea = linearContenedorTareas.getChildAt(lastIndex - 1);
+                    AppCompatButton btn_eliminar = ultimaTarea.findViewById(R.id.btn_eliminarTarea);
+                    btn_eliminar.setVisibility(View.VISIBLE);
+                    if (lastIndex<5){
+                        btnAgregarTareas.setVisibility(View.VISIBLE);
+                    }
+                }
+
+            }
+        });
 
         txtNumeroTarea.setText("TAREA " + contadorTareas);
         linearContenedorTareas.addView(nuevaTarea);

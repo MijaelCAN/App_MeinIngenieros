@@ -25,6 +25,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mijael.mein.DAO.DAO_Equipos;
 import com.mijael.mein.DAO.DAO_FormatosTrabajo;
+import com.mijael.mein.DAO.DAO_RegistroFormatos;
 import com.mijael.mein.DAO.DAO_Usuario;
 import com.mijael.mein.DAO.DAO_VelocidadAire;
 import com.mijael.mein.Entidades.Equipos;
@@ -37,8 +38,11 @@ import com.mijael.mein.Extras.InputDateConfiguration;
 import com.mijael.mein.Extras.Validaciones;
 import com.mijael.mein.SERVICIOS.DosimetriaService;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -68,9 +72,12 @@ public class VelocidadAireFragment extends Fragment implements FragmentoImagen.I
     ExtendedFloatingActionButton btnCancelar;
     ImageView imgVelo;
     Uri uri;
+    InputDateConfiguration config;
+    DAO_RegistroFormatos dao_registroFormatos;
 
     public VelocidadAireFragment() {
         // Required empty public constructor
+        dao_registroFormatos = new DAO_RegistroFormatos(getContext());
     }
     Formatos_Trabajo for_Velocidad;
     Validaciones validar = new Validaciones();
@@ -94,7 +101,7 @@ public class VelocidadAireFragment extends Fragment implements FragmentoImagen.I
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_velocidad_aire,container,false);
-        InputDateConfiguration config = new InputDateConfiguration(getActivity(),id_colaborador,nom_Empresa,rootView);
+        config = new InputDateConfiguration(getActivity(),id_colaborador,nom_Empresa,rootView);
         init(rootView);
 
         DAO_Equipos equipos = new DAO_Equipos(getActivity());
@@ -173,7 +180,7 @@ public class VelocidadAireFragment extends Fragment implements FragmentoImagen.I
                     String valorDescAreaTrab = spn_descAreaTrab.getSelectedItem().toString();
                     String valorTecnicaAcon = spn_tecnicaAcon.getSelectedItem().toString();
                     String valorDetalleTecnica ="";
-                    if(valorHorarioTrabajo.equals("SI")){valorDetalleTecnica = txt_otroDetalleTecnica.getText().toString();}
+                    if(valorTecnicaAcon.equals("SI")){valorDetalleTecnica = txt_otroDetalleTecnica.getText().toString();}
 
                     String f = tv_fechaMonitoreo.getText().toString();
                     String valorFechaMoni = config.convertirFecha(f);
@@ -197,33 +204,42 @@ public class VelocidadAireFragment extends Fragment implements FragmentoImagen.I
                     String fecha_registro = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
                     Equipos equipos1 = equipos.Buscar(valorEquipoMedicion);
 
+                    ArrayList<HashMap<String, String>> resultList = dao_registroFormatos.getListCantidadFormatoId(Integer.parseInt(id_pt_trabajo));
+                    int total_registros = dao_registroFormatos.get_cant_formato_medicion();
+                    String cod_formato = config.GenerarCodigoFormato(Integer.parseInt(id_formato),resultList.size());
+                    String cod_registro = config.generarCodigoRegistro(total_registros);
+
+                    String valorRutaFoto = uri.getEncodedPath();
+                    int id_plan_formato_reg = dao_registroFormatos.getRecordIdByPosition();
+
                     VelocidadAire_Registro cabecera = new VelocidadAire_Registro(
                       -1,
-                      "VA-001",
-                      "cod_registro()",
-                            id_formato,
-                            id_plan_trabajo,
-                            id_pt_trabajo,
-                            String.valueOf(equipos1.getId_equipo_registro()),
-                            equipos1.getCodigo(),
-                            equipos1.getNombre(),
-                            equipos1.getSerie(),
-                            id_colaborador,
-                            nuevo.getUsuario_nombres()+ " " +nuevo.getUsuario_apater()+" "+nuevo.getUsuario_amater(),
-                            valorHoraInicioMoni,
-                            valorHoraFinalMoni,
-                            valorAreaTrab,
-                            valorActRealizada,
-                            valorHorarioTrabajo,
-                            valorDescAreaTrab,
-                            valorFechaMoni,
-                            valorObservaciones,
-                            fecha_registro,
-                            id_colaborador
+                      cod_formato,
+                      cod_registro,
+                        id_formato,
+                        id_plan_trabajo,
+                        id_pt_trabajo,
+                        String.valueOf(equipos1.getId_equipo_registro()),
+                        equipos1.getCodigo(),
+                        equipos1.getNombre(),
+                        equipos1.getSerie(),
+                        id_colaborador,
+                        nuevo.getUsuario_nombres()+ " " +nuevo.getUsuario_apater()+" "+nuevo.getUsuario_amater(),
+                        valorHoraInicioMoni,
+                        valorHoraFinalMoni,
+                        valorAreaTrab,
+                        valorActRealizada,
+                        valorHorarioTrabajo,
+                        valorDescAreaTrab,
+                        valorFechaMoni,
+                        valorObservaciones,
+                        fecha_registro,
+                        id_colaborador,
+                        valorRutaFoto
                     );
 
                     VelocidadAire_RegistroDetalle detalle = new VelocidadAire_RegistroDetalle(
-                            cabecera.getId(),
+                            (id_plan_formato_reg+1),
                             valorTecnicaAcon,
                             valorDetalleTecnica,
                             valorVel1,
@@ -242,6 +258,7 @@ public class VelocidadAireFragment extends Fragment implements FragmentoImagen.I
                     );
 
                     if(config.isOnline()){
+
                         Retrofit retrofit = new Retrofit.Builder()
                                 .baseUrl("https://test.meiningenieros.pe/")
                                 .addConverterFactory(GsonConverterFactory.create())
@@ -267,6 +284,9 @@ public class VelocidadAireFragment extends Fragment implements FragmentoImagen.I
                         call1.enqueue(new Callback<ResponseBody>() {
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                //config.uploadImage(imageFile, cod_formato, id_pt_trabajo);
+                                File imageFile = new File(uri.getEncodedPath());
+                                config.uploadImage(imageFile, cod_formato,id_pt_trabajo,cod_registro);
                                 Log.e("exitoso", "se inserto el registro");
                                 // Mostrar el JSON en el log
                                 Log.e("JSON", cadenaJson);
@@ -329,6 +349,7 @@ public class VelocidadAireFragment extends Fragment implements FragmentoImagen.I
         tv_horaInicioMoni = view.findViewById(R.id.tv_horaInicial);
         tv_horaFinalMoni = view.findViewById(R.id.tv_horaFinal);
         btnSubirFotoVel= view.findViewById(R.id.btn_subirFotoVelo);
+        imgVelo = view.findViewById(R.id.img_Velo);
 
         txt_vel1 = view.findViewById(R.id.txt_vel1);
         txt_vel2 = view.findViewById(R.id.txt_vel2);
@@ -353,6 +374,8 @@ public class VelocidadAireFragment extends Fragment implements FragmentoImagen.I
         this.uri = imageUri;
         if (imgVelo != null && imageUri != null) {
             imgVelo.setImageURI(imageUri);
+            /*File imageFile = new File(imageUri.getEncodedPath());
+            config.uploadImage(imageFile, "SO-0001","200");*/
         }
     }
 }

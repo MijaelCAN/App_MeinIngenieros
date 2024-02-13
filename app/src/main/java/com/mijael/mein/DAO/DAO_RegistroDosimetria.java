@@ -5,21 +5,21 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.mijael.mein.Entidades.Dosimetria_Registro;
-import com.mijael.mein.HELPER.RegistroFormatosSQLiteHelper;
-import com.mijael.mein.Utilidades.Util_DosimetriaRegistro;
+import com.mijael.mein.HELPER.MeinSQLiteHelper;
 import com.mijael.mein.Utilidades.Util_RegistroFormatos;
 
 public class DAO_RegistroDosimetria {
-    private RegistroFormatosSQLiteHelper dbHelper;
+    private MeinSQLiteHelper dbHelper;
 
     public DAO_RegistroDosimetria(Context context) {
-        dbHelper = RegistroFormatosSQLiteHelper.getInstance(context);
+        dbHelper = MeinSQLiteHelper.getInstance(context);
     }
     public boolean RegistrarFormato(Dosimetria_Registro registros){//METODO QUE REGISTRA EN SQLITE TODOS LOS DATOS DEL FORMATO DE DOSIMETRIA
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
 
         values.put(Util_RegistroFormatos.CAMPO_COD_FORMATO, registros.getCod_formato());
+        values.put(Util_RegistroFormatos.CAMPO_COD_REGISTRO, registros.getCod_registro());
         values.put(Util_RegistroFormatos.CAMPO_ID_FORMATO, registros.getId_formato());
         values.put(Util_RegistroFormatos.CAMPO_ID_PLAN_TRABAJO, registros.getId_plan_trabajo());
         values.put(Util_RegistroFormatos.CAMPO_ID_PT_FORMATO, registros.getId_pt_formato());
@@ -97,6 +97,8 @@ public class DAO_RegistroDosimetria {
         values.put(Util_RegistroFormatos.CAMPO_ESTADO,registros.getEstado());
         values.put(Util_RegistroFormatos.CAMPO_USER_REG,registros.getNom_analista());
         values.put(Util_RegistroFormatos.CAMPO_FEC_REG,registros.getFec_reg());
+        values.put(Util_RegistroFormatos.CAMPO_ESTADO_SINCRO,1);// MARCANDO PARA SABER QUE FALTA SINCRONIZAR
+
 
 
 

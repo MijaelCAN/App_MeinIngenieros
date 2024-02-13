@@ -7,7 +7,7 @@
     android:background="@color/white"
     android:orientation="vertical"
     android:padding="8dp"
-    tools:context=".EstresFrioFragment">
+    tools:context=".ConfortTermicoFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <!-- Botón flotante -->
@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
                 android:layout_marginTop="20dp"
-                android:text="ESTRÉS POR FRÍO "
+                android:text="CONFORT TÉRMICO"
                 android:paddingLeft="16dp"
                 android:textColor="@color/generic_color"
                 android:textSize="26sp"
@@ -161,7 +161,7 @@
                             android:textSize="12dp"/>
 
                         <AutoCompleteTextView
-                            android:id="@+id/tv_estreFrio"
+                            android:id="@+id/tv_confort"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/style_input"
@@ -288,7 +288,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
                         <androidx.appcompat.widget.AppCompatButton
-                            android:id="@+id/btn_subirFotoEstres"
+                            android:id="@+id/btn_subirFotoConfort"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
@@ -297,8 +297,9 @@
                             android:textColor="@color/white"
                             android:layout_marginTop="20dp"
                             android:background="@drawable/style_4"/>
+
                         <ImageView
-                            android:id="@+id/img_eFrio"
+                            android:id="@+id/img_Confort"
                             android:layout_width="match_parent"
                             android:layout_height="200dp"
                             android:layout_marginTop="5dp"
@@ -1074,494 +1075,9 @@
                             android:layout_marginLeft="12dp"
                             android:layout_marginTop="20dp"
                             android:fontFamily="sans-serif-light"
-                            android:text="VESTIMENTA DEL PERSONAL EVALUADO"
+                            android:text="DESCRIPCION DEL ATUENDO"
                             android:textColor="@color/generic_color"
                             android:textSize="19sp" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:orientation="horizontal">
-
-                            <!--Columna ROPA INTERIOR-->
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="5dp"
-                                    android:layout_weight="1"
-                                    android:fontFamily="sans-serif-light"
-                                    android:text="ROPA INTERIOR"
-                                    android:textStyle="bold"
-                                    android:textColor="@color/black"
-                                    android:textSize="12dp" />
-
-                                <RadioGroup
-                                    android:id="@+id/radioGroup_RopaInterior"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="vertical">
-
-                                    <RadioButton
-                                        android:id="@+id/radio_calz"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:fontFamily="sans-serif-light"
-                                        android:text="Calzoncillos"
-                                        android:buttonTint="@android:color/holo_blue_light"
-                                        android:textColor="@color/black"
-                                        android:textSize="15sp"
-                                        android:checked="false"
-                                        android:tag="1"/>
-
-                                    <RadioButton
-                                        android:id="@+id/radio_calzLargo"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:fontFamily="sans-serif-light"
-                                        android:text="Calzoncillos Largos"
-                                        android:buttonTint="@android:color/holo_green_dark"
-                                        android:textColor="@color/black"
-                                        android:textSize="15sp"
-                                        android:checked="false"
-                                        android:tag="2"/>
-
-                                    <RadioButton
-                                        android:id="@+id/radio_camisaTirantes"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:fontFamily="sans-serif-light"
-                                        android:text="Camiseta de Tirantes"
-                                        android:buttonTint="@android:color/holo_green_light"
-                                        android:textColor="@color/black"
-                                        android:textSize="15sp"
-                                        android:checked="false"
-                                        android:tag="3"/>
-
-                                    <RadioButton
-                                        android:id="@+id/radio_camisaManCorta"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:fontFamily="sans-serif-light"
-                                        android:text="Camiseta de manga corta"
-                                        android:buttonTint="@android:color/holo_orange_dark"
-                                        android:textColor="@color/black"
-                                        android:textSize="15sp"
-                                        android:checked="false"
-                                        android:tag="4"/>
-
-                                    <RadioButton
-                                        android:id="@+id/radio_camisaManLarga"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:fontFamily="sans-serif-light"
-                                        android:text="Camiseta de manga larga"
-                                        android:buttonTint="@android:color/holo_orange_light"
-                                        android:textColor="@color/black"
-                                        android:textSize="15sp"
-                                        android:checked="false"
-                                        android:tag="5"/>
-
-                                    <RadioButton
-                                        android:id="@+id/radio_sujetadorBra"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:fontFamily="sans-serif-light"
-                                        android:text="Sujetadores y bragas"
-                                        android:buttonTint="@android:color/holo_orange_light"
-                                        android:textColor="@color/black"
-                                        android:textSize="15sp"
-                                        android:checked="false"
-                                        android:tag="6"/>
-
-                                </RadioGroup>
-                            </LinearLayout>
-                            <!-- ... Columna CAMISA / BLUSAS ... -->
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="15dp"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:fontFamily="sans-serif-light"
-                                    android:text="CAMISAS / BLUSAS"
-                                    android:textStyle="bold"
-                                    android:textColor="@color/black"
-                                    android:textSize="12sp" />
-
-                                <RadioGroup
-                                    android:id="@+id/radioGroup_CamisasBlusas"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="vertical">
-
-                                    <RadioButton
-                                        android:id="@+id/radio_mangaCorta"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:fontFamily="sans-serif-light"
-                                        android:text="Manga corta"
-                                        android:buttonTint="@android:color/holo_blue_light"
-                                        android:textColor="@color/black"
-                                        android:textSize="15sp"
-                                        android:checked="false"
-                                        android:tag="1"/>
-
-                                    <RadioButton
-                                        android:id="@+id/radio_ligMangasCortas"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:fontFamily="sans-serif-light"
-                                        android:text="Ligera, mangas cortas"
-                                        android:buttonTint="@android:color/holo_green_dark"
-                                        android:textColor="@color/black"
-                                        android:textSize="15sp"
-                                        android:checked="false"
-                                        android:tag="2"/>
-
-                                    <RadioButton
-                                        android:id="@+id/radio_normalMangasLargas"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:fontFamily="sans-serif-light"
-                                        android:text="Normal, mangas largas"
-                                        android:buttonTint="@android:color/holo_green_light"
-                                        android:textColor="@color/black"
-                                        android:textSize="15sp"
-                                        android:checked="false"
-                                        android:tag="3"/>
-
-                                    <RadioButton
-                                        android:id="@+id/radio_franelaMangaLarga"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:fontFamily="sans-serif-light"
-                                        android:text="Camiseta franela manga larga"
-                                        android:buttonTint="@android:color/holo_orange_dark"
-                                        android:textColor="@color/black"
-                                        android:textSize="15sp"
-                                        android:checked="false"
-                                        android:tag="4"/>
-
-                                    <RadioButton
-                                        android:id="@+id/radio_ligMangaLarga"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:fontFamily="sans-serif-light"
-                                        android:text="Blusa ligera manga larga"
-                                        android:buttonTint="@android:color/holo_orange_light"
-                                        android:textColor="@color/black"
-                                        android:textSize="15sp"
-                                        android:checked="false"
-                                        android:tag="5"/>
-
-                                </RadioGroup>
-                            </LinearLayout>
-                            <!--Columna PANTALONES-->
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="15dp"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:fontFamily="sans-serif-light"
-                                    android:text="PANTALONES"
-                                    android:textColor="@color/black"
-                                    android:textStyle="bold"
-                                    android:textSize="12sp" />
-                                <RadioGroup
-                                    android:id="@+id/radioGroup_Pantalones"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="vertical">
-
-                                    <RadioButton
-                                        android:id="@+id/radio_pantCorto"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:buttonTint="@android:color/holo_blue_light"
-                                        android:checked="false"
-                                        android:fontFamily="sans-serif-light"
-                                        android:text="Corto"
-                                        android:textColor="@color/black"
-                                        android:textSize="15sp"
-                                        android:tag="1"/>
-
-                                    <RadioButton
-                                        android:id="@+id/radio_pantLigero"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:buttonTint="@android:color/holo_green_dark"
-                                        android:checked="false"
-                                        android:fontFamily="sans-serif-light"
-                                        android:text="Ligero"
-                                        android:textColor="@color/black"
-                                        android:textSize="15sp"
-                                        android:tag="2"/>
-
-                                    <RadioButton
-                                        android:id="@+id/radio_pantNormal"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:buttonTint="@android:color/holo_green_light"
-                                        android:checked="false"
-                                        android:fontFamily="sans-serif-light"
-                                        android:text="Normal"
-                                        android:textColor="@color/black"
-                                        android:textSize="15sp"
-                                        android:tag="3"/>
-
-                                    <RadioButton
-                                        android:id="@+id/radio_pantFranela"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:buttonTint="@android:color/holo_orange_dark"
-                                        android:checked="false"
-                                        android:fontFamily="sans-serif-light"
-                                        android:text="Franela"
-                                        android:textColor="@color/black"
-                                        android:textSize="15sp"
-                                        android:tag="4"/>
-
-                                </RadioGroup>
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-                        <!--Segunda Fila de Radios-->
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:orientation="horizontal">
-
-                            <!--Columna de PULLOVER-->
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="5dp"
-                                    android:layout_weight="1"
-                                    android:fontFamily="sans-serif-light"
-                                    android:text="PULLOVER"
-                                    android:textStyle="bold"
-                                    android:textColor="@color/black"
-                                    android:textSize="12dp" />
-                                <RadioGroup
-                                    android:id="@+id/radioGroup_Pullover"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="vertical">
-
-                                    <RadioButton
-                                        android:id="@+id/radio_pullSinMangas"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:fontFamily="sans-serif-light"
-                                        android:text="Chaleco sin mangas"
-                                        android:buttonTint="@android:color/holo_blue_light"
-                                        android:textColor="@color/black"
-                                        android:textSize="15sp"
-                                        android:tag="1"/>
-
-                                    <RadioButton
-                                        android:id="@+id/radio_pullLigero"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:fontFamily="sans-serif-light"
-                                        android:text="Pullover ligero"
-                                        android:buttonTint="@android:color/holo_green_dark"
-                                        android:textColor="@color/black"
-                                        android:textSize="15sp"
-                                        android:tag="2"/>
-
-                                    <RadioButton
-                                        android:id="@+id/radio_pullMedio"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:fontFamily="sans-serif-light"
-                                        android:text="Pullover medio"
-                                        android:buttonTint="@android:color/holo_green_light"
-                                        android:textColor="@color/black"
-                                        android:textSize="15sp"
-                                        android:tag="3"/>
-
-                                    <RadioButton
-                                        android:id="@+id/radio_pullGrueso"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:fontFamily="sans-serif-light"
-                                        android:text="Pullover grueso"
-                                        android:buttonTint="@android:color/holo_orange_dark"
-                                        android:textColor="@color/black"
-                                        android:textSize="15sp"
-                                        android:tag="4"/>
-
-                                </RadioGroup>
-                            </LinearLayout>
-                            <!-- ... Columna de PRENDA DE ABRIGO... -->
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="15dp"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:fontFamily="sans-serif-light"
-                                    android:text="PRENDA DE ABRIGO"
-                                    android:textStyle="bold"
-                                    android:textColor="@color/black"
-                                    android:textSize="12sp" />
-                                <RadioGroup
-                                    android:id="@+id/radioGroup_PrendaAbrigo"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="vertical">
-
-                                    <RadioButton
-                                        android:id="@+id/radio_prendaAbrigo"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:fontFamily="sans-serif-light"
-                                        android:text="Abrigo"
-                                        android:buttonTint="@android:color/holo_blue_light"
-                                        android:textColor="@color/black"
-                                        android:textSize="15sp"
-                                        android:checked="false"
-                                        android:tag="1"/>
-
-                                    <RadioButton
-                                        android:id="@+id/radio_prendaChaqLarga"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:fontFamily="sans-serif-light"
-                                        android:text="Chaqueta larga"
-                                        android:buttonTint="@android:color/holo_green_dark"
-                                        android:textColor="@color/black"
-                                        android:textSize="15sp"
-                                        android:checked="false"
-                                        android:tag="2"/>
-
-                                    <RadioButton
-                                        android:id="@+id/radio_prendaParka"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:fontFamily="sans-serif-light"
-                                        android:text="Parka"
-                                        android:buttonTint="@android:color/holo_green_light"
-                                        android:textColor="@color/black"
-                                        android:textSize="15sp"
-                                        android:checked="false"
-                                        android:tag="3"/>
-
-                                    <RadioButton
-                                        android:id="@+id/radio_prendaMono"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:fontFamily="sans-serif-light"
-                                        android:text="Mono forrado"
-                                        android:buttonTint="@android:color/holo_orange_dark"
-                                        android:textColor="@color/black"
-                                        android:textSize="15sp"
-                                        android:checked="false"
-                                        android:tag="4"/>
-
-                                </RadioGroup>
-                            </LinearLayout>
-                            <!--Columna de CHAQUETA-->
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="15dp"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:fontFamily="sans-serif-light"
-                                    android:text="CHAQUETA"
-                                    android:textStyle="bold"
-                                    android:textColor="@color/black"
-                                    android:textSize="12sp" />
-                                <RadioGroup
-                                    android:id="@+id/radioGroup_Chaqueta"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="vertical">
-
-                                    <RadioButton
-                                        android:id="@+id/radio_chaqLigera"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:fontFamily="sans-serif-light"
-                                        android:text="Chaqueta ligera"
-                                        android:buttonTint="@android:color/holo_blue_light"
-                                        android:textColor="@color/black"
-                                        android:textSize="15sp"
-                                        android:checked="false"
-                                        android:tag="1"/>
-
-                                    <RadioButton
-                                        android:id="@+id/radio_chaqNormal"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:fontFamily="sans-serif-light"
-                                        android:text="Chaqueta normal"
-                                        android:buttonTint="@android:color/holo_green_dark"
-                                        android:textColor="@color/black"
-                                        android:textSize="15sp"
-                                        android:checked="false"
-                                        android:tag="2"/>
-
-                                    <RadioButton
-                                        android:id="@+id/radio_chaqBata"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:fontFamily="sans-serif-light"
-                                        android:text="Bata de trabajo"
-                                        android:buttonTint="@android:color/holo_green_light"
-                                        android:textColor="@color/black"
-                                        android:textSize="15sp"
-                                        android:checked="false"
-                                        android:tag="3"/>
-
-                                    <RadioButton
-                                        android:id="@+id/radio_chaqMono"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:fontFamily="sans-serif-light"
-                                        android:text="Mono de trabajo"
-                                        android:buttonTint="@android:color/holo_orange_dark"
-                                        android:textColor="@color/black"
-                                        android:textSize="15sp"
-                                        android:checked="false"
-                                        android:tag="4"/>
-
-                                </RadioGroup>
-
-                            </LinearLayout>
-                        </LinearLayout>
 
                         <!--Opciones Multiples-->
                         <LinearLayout
@@ -1569,14 +1085,12 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
                             android:orientation="horizontal">
-
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:orientation="vertical">
-
-                                <TextView
+                                <!--<TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="5dp"
@@ -1585,207 +1099,117 @@
                                     android:text="DIVERSOS"
                                     android:textStyle="bold"
                                     android:textColor="@color/black"
-                                    android:textSize="12dp" />
-
-                                <CheckBox
-                                    android:id="@+id/check_divZapatodelgado"
+                                    android:textSize="12dp" />-->
+                                <!--<CheckBox
+                                    android:id="@+id/check_desnudo"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:buttonTint="@android:color/holo_blue_light"
                                     android:checked="false"
                                     android:fontFamily="sans-serif-light"
-                                    android:text="Zapato suela delgada"
+                                    android:text="Desnudo"
                                     android:textColor="@color/black"
                                     android:textColorHint="@color/black"
                                     android:textSize="15sp" />
 
                                 <CheckBox
-                                    android:id="@+id/check_divZapatogrueso"
+                                    android:id="@+id/check_ligero"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:buttonTint="@android:color/holo_green_dark"
                                     android:checked="false"
                                     android:fontFamily="sans-serif-light"
-                                    android:text="Zapato suela gruesa"
+                                    android:text="Ligero"
                                     android:textColor="@color/black"
                                     android:textColorHint="@color/black"
                                     android:textSize="15sp" />
 
                                 <CheckBox
-                                    android:id="@+id/check_divCalcetines"
+                                    android:id="@+id/check_medio"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:buttonTint="@android:color/holo_green_light"
                                     android:checked="false"
                                     android:fontFamily="sans-serif-light"
-                                    android:text="Calcetines"
+                                    android:text="Medio"
                                     android:textColor="@color/black"
                                     android:textColorHint="@color/black"
                                     android:textSize="15sp" />
 
                                 <CheckBox
-                                    android:id="@+id/check_divMediasNylon"
+                                    android:id="@+id/check_pesado"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:buttonTint="@android:color/holo_orange_dark"
                                     android:checked="false"
                                     android:fontFamily="sans-serif-light"
-                                    android:text="Medias Nylon"
+                                    android:text="Pesado"
                                     android:textColor="@color/black"
                                     android:textColorHint="@color/black"
-                                    android:textSize="15sp" />
+                                    android:textSize="15sp" />-->
+                                <RadioGroup
+                                    android:id="@+id/radioGroup_Atuendo"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical">
+
+                                    <RadioButton
+                                        android:id="@+id/radio_desnudo"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:buttonTint="@android:color/holo_blue_light"
+                                        android:checked="false"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Desnudo"
+                                        android:tag="1"
+                                        android:textColor="@color/black"
+                                        android:textColorHint="@color/black"
+                                        android:textSize="15sp" />
+
+                                    <RadioButton
+                                        android:id="@+id/radio_ligero"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:buttonTint="@android:color/holo_green_dark"
+                                        android:checked="false"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Ligero"
+                                        android:tag="2"
+                                        android:textColor="@color/black"
+                                        android:textColorHint="@color/black"
+                                        android:textSize="15sp" />
+
+                                    <RadioButton
+                                        android:id="@+id/radio_medio"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:buttonTint="@android:color/holo_green_light"
+                                        android:checked="false"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Medio"
+                                        android:tag="3"
+                                        android:textColor="@color/black"
+                                        android:textColorHint="@color/black"
+                                        android:textSize="15sp" />
+
+                                    <RadioButton
+                                        android:id="@+id/radio_pesado"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:buttonTint="@android:color/holo_orange_dark"
+                                        android:checked="false"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Pesado"
+                                        android:tag="4"
+                                        android:textColor="@color/black"
+                                        android:textColorHint="@color/black"
+                                        android:textSize="15sp" />
+                                </RadioGroup>
+
 
                             </LinearLayout>
-                            <!-- ... Otros elementos similares ... -->
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="15dp"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:fontFamily="sans-serif-light"
-                                    android:text="DIVERSOS"
-                                    android:textStyle="bold"
-                                    android:textColor="@color/black"
-                                    android:textSize="12sp" />
-
-                                <CheckBox
-                                    android:id="@+id/check_divCalcetinesGrueoCorto"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:buttonTint="@android:color/holo_blue_light"
-                                    android:checked="false"
-                                    android:fontFamily="sans-serif-light"
-                                    android:text="Calcetin grueso corto"
-                                    android:textColor="@color/black"
-                                    android:textColorHint="@color/black"
-                                    android:textSize="15sp" />
-
-                                <CheckBox
-                                    android:id="@+id/check_divCalcetinesGrueoLargo"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:buttonTint="@android:color/holo_green_dark"
-                                    android:checked="false"
-                                    android:fontFamily="sans-serif-light"
-                                    android:text="Calcetin grueso largo"
-                                    android:textColor="@color/black"
-                                    android:textColorHint="@color/black"
-                                    android:textSize="15sp" />
-
-                                <CheckBox
-                                    android:id="@+id/check_divBotas"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:buttonTint="@android:color/holo_green_light"
-                                    android:checked="false"
-                                    android:fontFamily="sans-serif-light"
-                                    android:text="Botas"
-                                    android:textColor="@color/black"
-                                    android:textColorHint="@color/black"
-                                    android:textSize="15sp" />
-
-                                <CheckBox
-                                    android:id="@+id/check_divGuantes"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:buttonTint="@android:color/holo_orange_dark"
-                                    android:checked="false"
-                                    android:fontFamily="sans-serif-light"
-                                    android:text="Guantes"
-                                    android:textColor="@color/black"
-                                    android:textColorHint="@color/black"
-                                    android:textSize="15sp" />
-
-                            </LinearLayout>
-
                         </LinearLayout>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:layout_weight="1"
-                            android:fontFamily="sans-serif-light"
-                            android:text="Control de ingenieria"
-                            android:textColor="@color/black"
-                            android:textSize="12dp" />
-
-                        <RadioGroup
-                            android:id="@+id/radioGroupIngenieria"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <RadioButton
-                                android:id="@+id/radioIngenieriaSi"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="sans-serif-light"
-                                android:text="Sí"
-                                android:textColor="@color/black" />
-
-                            <RadioButton
-                                android:id="@+id/radioUngenieriaNo"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="sans-serif-light"
-                                android:text="No"
-                                android:checked="true"
-                                android:textColor="@color/black" />
-                        </RadioGroup>
-
-                        <androidx.cardview.widget.CardView
-                            android:id="@+id/Card_Ingenieria"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="4dp"
-                            android:visibility="gone"
-                            app:cardCornerRadius="4dp"
-                            app:cardElevation="2dp">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:padding="16dp">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:fontFamily="sans-serif-light"
-                                    android:text="Nombre del control"
-                                    android:textColor="@color/black"
-                                    android:textSize="12dp" />
-
-                                <EditText
-                                    android:id="@+id/txt_nomControl"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="5dp"
-                                    android:background="@drawable/style_input"
-                                    android:hint=" Digite"
-                                    android:inputType="text"
-                                    android:paddingLeft="8dp"
-                                    android:textSize="15sp" />
-                            </LinearLayout>
-                        </androidx.cardview.widget.CardView>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_marginLeft="12dp"
-                            android:layout_marginTop="20dp"
-                            android:fontFamily="sans-serif-light"
-                            android:text="Control administrativo"
-                            android:textColor="@color/generic_color"
-                            android:textSize="19sp" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -1847,133 +1271,7 @@
                             </LinearLayout>
                         </LinearLayout>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:layout_weight="1"
-                            android:fontFamily="sans-serif-light"
-                            android:text="Condicion de Trabajo"
-                            android:textColor="@color/black"
-                            android:textSize="12dp" />
 
-                        <Spinner
-                            android:id="@+id/spn_condicionTrab"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/style_spinner"
-                            android:textSize="10sp" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:orientation="horizontal">
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:fontFamily="sans-serif-light"
-                                    android:text="Rotacion de personal:"
-                                    android:textColor="@color/black"
-                                    android:textSize="12sp" />
-
-                                <Spinner
-                                    android:id="@+id/spn_rotacion"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="5dp"
-                                    android:background="@drawable/style_spinner" />
-                                <!--android:onItemSelected="Equipo_Vibracion"-->
-
-                            </LinearLayout>
-                            <!-- ... Otros elementos similares ... -->
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="15dp"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:fontFamily="sans-serif-light"
-                                    android:text="Realiza tiempos de recuperacion"
-                                    android:textColor="@color/black"
-                                    android:textSize="12sp" />
-
-                                <Spinner
-                                    android:id="@+id/spn_tiempoRecuperacion"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="5dp"
-                                    android:background="@drawable/style_spinner" />
-                            </LinearLayout>
-
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:orientation="horizontal">
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:fontFamily="sans-serif-light"
-                                    android:text="Ingesta de bebidas calientes proporcionadas por la empresa:"
-                                    android:textColor="@color/black"
-                                    android:textSize="12sp" />
-
-                                <Spinner
-                                    android:id="@+id/spn_ingestaBebidas"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="5dp"
-                                    android:background="@drawable/style_spinner" />
-                                <!--android:onItemSelected="Equipo_Vibracion"-->
-
-                            </LinearLayout>
-                            <!-- ... Otros elementos similares ... -->
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="15dp"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:fontFamily="sans-serif-light"
-                                    android:text="Capacitación sobre los riesgos a la exposición a fuentes de frio:"
-                                    android:textColor="@color/black"
-                                    android:textSize="12sp" />
-
-                                <Spinner
-                                    android:id="@+id/spn_CapacRiesgosExpo"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="5dp"
-                                    android:background="@drawable/style_spinner" />
-                            </LinearLayout>
-
-                        </LinearLayout>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -2085,7 +1383,6 @@
                                             android:text="Tipo de Trabajo"
                                             android:textColor="@color/black"
                                             android:textSize="12sp" />
-
                                         <Spinner
                                             android:id="@+id/cbx_tipoTrabajo"
                                             android:layout_width="match_parent"
@@ -2093,6 +1390,7 @@
                                             android:layout_marginTop="5dp"
                                             android:layout_weight="1"
                                             android:background="@drawable/style_spinner" />
+
                                     </LinearLayout>
 
                                     <LinearLayout
@@ -2754,7 +2052,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:visibility="gone">
+                        android:visibility="visible">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

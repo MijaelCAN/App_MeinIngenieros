@@ -34,6 +34,7 @@ public class FragmentoImagen extends DialogFragment {
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_IMAGE_GALLERY = 2;
     private String currentPhotoPath;
+
     public interface ImagePickerListener {
         void onImagePicked(Uri imageUri);
     }
@@ -55,8 +56,7 @@ public class FragmentoImagen extends DialogFragment {
         TextView textGallery = dialogView.findViewById(R.id.textGaleria);
 
         PackageManager packageManager = getActivity().getPackageManager();
-
-// Obtener el ícono de la aplicación de la cámara
+        // Obtener el ícono de la aplicación de la cámara
         Intent intentCamara = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         List<ResolveInfo> camaraActivities = packageManager.queryIntentActivities(intentCamara, PackageManager.MATCH_DEFAULT_ONLY);
 
@@ -174,7 +174,6 @@ public class FragmentoImagen extends DialogFragment {
 
         // Guarda la ruta absoluta del archivo para su uso posterior
         currentPhotoPath = imageFile.getAbsolutePath();
-
         return currentPhotoPath;
     }
 }

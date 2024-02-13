@@ -33,16 +33,15 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mijael.mein.DAO.DAO_Equipos;
 import com.mijael.mein.DAO.DAO_FormatosTrabajo;
-import com.mijael.mein.DAO.DAO_RegistroEstreTermico;
+import com.mijael.mein.DAO.DAO_RegistroConfort;
 import com.mijael.mein.DAO.DAO_RegistroEstresFrio;
 import com.mijael.mein.DAO.DAO_RegistroFormatos;
-import com.mijael.mein.DAO.DAO_RegistroVibracion;
 import com.mijael.mein.DAO.DAO_Usuario;
+import com.mijael.mein.Entidades.Confort_Registro;
+import com.mijael.mein.Entidades.Confort_RegistroDetalle;
 import com.mijael.mein.Entidades.Equipos;
 import com.mijael.mein.Entidades.EstresFrio_Registro;
 import com.mijael.mein.Entidades.EstresFrio_RegistroDetalle;
-import com.mijael.mein.Entidades.EstresTermico_Registro;
-import com.mijael.mein.Entidades.EstresTermico_RegistroDetalle;
 import com.mijael.mein.Entidades.Formatos_Trabajo;
 import com.mijael.mein.Entidades.Usuario;
 import com.mijael.mein.Extras.FragmentoImagen;
@@ -51,6 +50,7 @@ import com.mijael.mein.Extras.Validaciones;
 import com.mijael.mein.SERVICIOS.DosimetriaService;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -69,57 +69,52 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class EstresFrioFragment extends Fragment implements FragmentoImagen.ImagePickerListener{
+
+public class ConfortTermicoFragment extends Fragment implements FragmentoImagen.ImagePickerListener {
     private boolean cargarImagen = false;
     private int contadorTareas = 0;
     View rootView;
     TextView tv_nombreUsuario, tv_nomEmpresa;
     String id_plan_trabajo, id_pt_trabajo, id_formato,id_colaborador, nom_Empresa;
-    CardView card_ingenier, Card_Tanteo, Card_Observacion, Card_Analisis;
-    RadioButton radioIngSi;
+    CardView Card_Tanteo, Card_Observacion, Card_Analisis;
 
     // Spinners
-    AutoCompleteTextView spn_equipoEstresFrio, spn_equipoAnemometro;
-    Spinner spn_tipoDoc, spn_horarioTrabajo, spn_horarioRefrig, spn_regimen, spn_fuenteGen, spn_condicionTrab, spn_rotacion,
-            spn_tiempoRecuperacion, spn_ingestaBebidas, spn_CapacRiesgosExpo, spn_tipoTrab, spn_tipoMedicion, spn_clase, spn_genero, spn_ocupacion,
+    AutoCompleteTextView spn_equipoConfort, spn_equipoAnemometro;
+    Spinner spn_tipoDoc, spn_horarioTrabajo, spn_horarioRefrig, spn_regimen, spn_fuenteGen,spn_tipoTrab, spn_clase, spn_genero, spn_ocupacion,
             spn_nivelDeterminacion, spn_metodoDeterminacion, spn_tiempoCargoAnios,
             spn_tiempoCargoMeses;
 
     // TextViews
     TextView tv_horaVerificacion, tv_fechaMonitoreo, tv_horaInicioMoni, tv_horaFinalMoni, tv_tasaMetabolica,
-            txt_t_aire, txt_t_aireNegro, /*txt_bulboHumedo,*/ txt_humedadRelativa, txt_velViento, txt_observaciones,
-            txt_nombreControl, txt_otroHorario, txt_otroRegimen, txt_otroRefrigerio;
+            txt_t_aire, txt_t_aireNegro, txt_bulboHumedo, txt_humedadRelativa, txt_velViento, txt_observaciones,
+            txt_otroHorario, txt_otroRegimen, txt_otroRefrigerio;
 
     // RadioGroup
-    RadioGroup radioGroupVerificacion, radioGroupIng, radioGroup_RopaInterior,radioGroup_CamisasBlusas,radioGroup_Pantalones, radioGroup_Pullover, radioGroup_PrendaAbrigo,
-            radioGroup_Chaqueta;
+    RadioGroup radioGroupVerificacion, radioGroup_Atuendo;
 
     // EditTexts
     EditText txt_timeMed, txt_timeExpo, txt_jornada, txt_numDoc, txt_nomTrab, txt_areaTrab,txt_tasaMetabolicaW, txt_tasaMetabolicaK,txt_frecuenciaCardiaca,
             txt_puestoTrab, txt_actRealizada, txt_pesoTrab, txt_edadTrab, txt_descFuenteGen,txt_actividad, txt_metroSubida;
 
     // CheckBoxes
-    CheckBox check_divZapatodelgado,
-            check_divZapatogrueso, check_divCalcetines, check_divMediasNylon,
-            check_divCalcetinesGrueoCorto, check_divCalcetinesGrueoLargo, check_divBotas,
-            check_divGuantes;
+    CheckBox check_desnudo, check_ligero, check_medio, check_pesado;
 
     // Buttons
     Button btnAgregarTareas;
-    AppCompatButton btnSubirFotoEstres, btn_BuscarDni;
+    AppCompatButton btnSubirFotoConfort, btn_BuscarDni;
     FloatingActionButton btn_guardar;
     ExtendedFloatingActionButton btnCancelar;
 
     // LinearLayouts
     LinearLayout linearOtroHorario, linearOtroRegimen, linearOtroRefrigerio, linearBuscarDni, linear1A, linear1B, linear1_1, linear1_7, linearContenedorTareas;
-    ImageView imgE_Frio;
+    ImageView imgConfort;
     Uri uri;
     DAO_RegistroFormatos dao_registroFormatos;
-    public EstresFrioFragment() {
+    public ConfortTermicoFragment() {
         // Required empty public constructor
         dao_registroFormatos = new DAO_RegistroFormatos(getActivity());
     }
-    Formatos_Trabajo for_estresFrio;
+    Formatos_Trabajo for_confort;
     Validaciones validar = new Validaciones();
     InputDateConfiguration config;
     Map<String, String> valoresTareas = new HashMap<>();
@@ -140,7 +135,7 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        rootView = inflater.inflate(R.layout.fragment_estres_frio,container,false);
+        rootView = inflater.inflate(R.layout.fragment_confort_termico,container,false);
         config = new InputDateConfiguration(getActivity(),id_colaborador,nom_Empresa,rootView);
         init(rootView);
 
@@ -150,16 +145,16 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
         Usuario nuevo = usuario.BuscarUsuario(Integer.parseInt(id_colaborador));
 
         config.ConfigPantalla();
-        config.configurarAutoCompleteTextView(spn_equipoEstresFrio,lista_CodEquipos);
+        config.configurarAutoCompleteTextView(spn_equipoConfort,lista_CodEquipos);
         config.configurarAutoCompleteTextView(spn_equipoAnemometro,lista_CodEquipos);
         tv_horaVerificacion.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {config.showTimePickerDialog(rootView,tv_horaVerificacion);}});
         tv_fechaMonitoreo.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {config.showDatePickerDialog(rootView,tv_fechaMonitoreo);}});
         tv_horaInicioMoni.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {config.showTimePickerDialog(rootView,tv_horaInicioMoni);}});
         tv_horaFinalMoni.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {config.showTimePickerDialog(rootView,tv_horaFinalMoni);}});
-        btnSubirFotoEstres.setOnClickListener(new View.OnClickListener() {
+        btnSubirFotoConfort.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentoImagen fragmentoImagen = new FragmentoImagen(EstresFrioFragment.this);
+                FragmentoImagen fragmentoImagen = new FragmentoImagen(ConfortTermicoFragment.this);
                 fragmentoImagen.show(getActivity().getSupportFragmentManager(), "imagePicker");
                 cargarImagen = true;
             }
@@ -171,11 +166,7 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
         spn_fuenteGen.setAdapter(config.LlenarSpinner(new String[]{"Natural","Artificial","Natural - artificial"}));
         config.llenarSpinnerConNumeros(spn_tiempoCargoAnios,10,getActivity());
         config.llenarSpinnerConNumeros(spn_tiempoCargoMeses,11,getActivity());
-        spn_condicionTrab.setAdapter(config.LlenarSpinner(new String[]{"Aclimatado", "No aclimatado"}));
-        spn_rotacion.setAdapter(config.LlenarSpinner(new String[]{"SI", "NO"}));
-        spn_tiempoRecuperacion.setAdapter(config.LlenarSpinner(new String[]{"SI", "NO"}));
-        spn_ingestaBebidas.setAdapter(config.LlenarSpinner(new String[]{"SI", "NO"}));
-        spn_CapacRiesgosExpo.setAdapter(config.LlenarSpinner(new String[]{"SI", "NO"}));
+
         spn_nivelDeterminacion.setAdapter(config.LlenarSpinner(new String[]{"Tanteo", "Observación", "Análisis"}));
         //spn_metodoDeterminacion.setAdapter(config.LlenarSpinner(new String[]{"Opcion 1", "Opcion 2", "etc"})); //NO SEVISUALIZA CAMPOS EN WEB
         spn_tipoTrab.setAdapter(config.LlenarSpinner(new String[]{"Oficina","Artesanos","Minería","Industria","Artes","Agricultura","Transporte","Diversos"}));
@@ -431,9 +422,6 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
             }
         });
 
-
-
-        radioGroupIng.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {@Override public void onCheckedChanged(RadioGroup group, int checkedId) {config.mostrarOpcionesGone(group,checkedId,card_ingenier,radioIngSi);}});
         btnCancelar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -450,45 +438,40 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
             @Override
             public void onClick(View v) {
                 if(
-                        validar.validarCampoObligatorio(spn_equipoEstresFrio) &&
-                        validar.validarCampoObligatorio(spn_equipoAnemometro) &&
-                        validar.validarCampoObligatorio(tv_horaVerificacion) &&
-                        //validar.validarImagen(cargarImagen,getActivity()) &&
-                        validar.validarCampoObligatorio(tv_fechaMonitoreo) &&
-                        validar.validarCampoObligatorio(tv_horaInicioMoni) &&
-                        //validar.validarCampoObligatorio(tv_horaFinalMoni) &&
-                        validar.validarCampoObligatorio(txt_timeMed) &&
-                        validar.validarCampoObligatorio(txt_timeExpo) &&
-                        validar.validarCampoObligatorio(txt_jornada) &&
-                        validar.validarCampoObligatorio(spn_tipoDoc) &&
-                        validar.validarCampoObligatorio(txt_numDoc) &&
-                        validar.validarCampoObligatorio(txt_nomTrab) &&
-                        validar.validarCampoObligatorio(txt_edadTrab) &&
-                        validar.validarCampoObligatorio(txt_pesoTrab) &&
-                        validar.validarCampoObligatorio(txt_areaTrab) &&
-                        validar.validarCampoObligatorio(txt_puestoTrab) &&
-                        validar.validarCampoObligatorio(txt_actRealizada )&&
-                        validar.validarCampoObligatorio(spn_horarioTrabajo) &&
-                        validar.validarCampoObligatorio(spn_regimen) &&
-                        validar.validarCampoObligatorio(spn_horarioRefrig) &&
-                        validar.validarCampoObligatorio(spn_fuenteGen) &&
-                        validar.validarCampoObligatorio(txt_descFuenteGen) &&
-                        validar.validarCampoObligatorio(spn_tiempoCargoAnios) &&
-                        validar.validarCampoObligatorio(spn_tiempoCargoMeses) &&
-                        validar.validarCampoObligatorio(spn_condicionTrab) &&
-                        validar.validarCampoObligatorio(spn_rotacion) &&
-                        validar.validarCampoObligatorio(spn_tiempoRecuperacion) &&
-                        validar.validarCampoObligatorio(spn_ingestaBebidas) &&
-                        validar.validarCampoObligatorio(spn_CapacRiesgosExpo) &&
-                        validar.validarCampoObligatorio(spn_nivelDeterminacion) &&
-                        validar.validarCampoObligatorio(spn_metodoDeterminacion) &&
-                        validar.validarCampoObligatorio(txt_t_aire) &&
-                        validar.validarCampoObligatorio(txt_t_aireNegro) &&
-                        validar.validarCampoObligatorio(txt_humedadRelativa) &&
-                        validar.validarCampoObligatorio(txt_velViento) &&
-                        validar.validarCampoObligatorio(txt_observaciones)
+                        validar.validarCampoObligatorio(spn_equipoConfort) &&
+                                validar.validarCampoObligatorio(spn_equipoAnemometro) &&
+                                validar.validarCampoObligatorio(tv_horaVerificacion) &&
+                                //validar.validarImagen(cargarImagen,getActivity()) &&
+                                validar.validarCampoObligatorio(tv_fechaMonitoreo) &&
+                                validar.validarCampoObligatorio(tv_horaInicioMoni) &&
+                                //validar.validarCampoObligatorio(tv_horaFinalMoni) &&
+                                validar.validarCampoObligatorio(txt_timeMed) &&
+                                validar.validarCampoObligatorio(txt_timeExpo) &&
+                                validar.validarCampoObligatorio(txt_jornada) &&
+                                validar.validarCampoObligatorio(spn_tipoDoc) &&
+                                validar.validarCampoObligatorio(txt_numDoc) &&
+                                validar.validarCampoObligatorio(txt_nomTrab) &&
+                                validar.validarCampoObligatorio(txt_edadTrab) &&
+                                validar.validarCampoObligatorio(txt_pesoTrab) &&
+                                validar.validarCampoObligatorio(txt_areaTrab) &&
+                                validar.validarCampoObligatorio(txt_puestoTrab) &&
+                                validar.validarCampoObligatorio(txt_actRealizada )&&
+                                validar.validarCampoObligatorio(spn_horarioTrabajo) &&
+                                validar.validarCampoObligatorio(spn_regimen) &&
+                                validar.validarCampoObligatorio(spn_horarioRefrig) &&
+                                validar.validarCampoObligatorio(spn_fuenteGen) &&
+                                validar.validarCampoObligatorio(txt_descFuenteGen) &&
+                                validar.validarCampoObligatorio(spn_tiempoCargoAnios) &&
+                                validar.validarCampoObligatorio(spn_tiempoCargoMeses) &&
+                                validar.validarCampoObligatorio(spn_nivelDeterminacion) &&
+                                validar.validarCampoObligatorio(spn_metodoDeterminacion) &&
+                                validar.validarCampoObligatorio(txt_t_aire) &&
+                                validar.validarCampoObligatorio(txt_t_aireNegro) &&
+                                validar.validarCampoObligatorio(txt_humedadRelativa) &&
+                                validar.validarCampoObligatorio(txt_velViento) &&
+                                validar.validarCampoObligatorio(txt_observaciones)
                 ){
-                    String valorEstresFrio = spn_equipoEstresFrio.getText().toString();
+                    String valorConfort = spn_equipoConfort.getText().toString();
                     String valorAnemometro = spn_equipoAnemometro.getText().toString();
                     String valorHoraVerificacion = tv_horaVerificacion.getText().toString();
                     int valorGroupVerificacion = validar.getValor2(radioGroupVerificacion,rootView);
@@ -519,77 +502,16 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
                     String valorFuenteGen = spn_fuenteGen.getSelectedItem().toString();
                     String valorDesFuenteGen = txt_descFuenteGen.getText().toString();
 
-                    int valorGroup_RopaInterior = validar.getValorTag(radioGroup_RopaInterior);
-                    int valorGroup_CamisasBlusas= validar.getValorTag(radioGroup_CamisasBlusas);
-                    int valorGroup_Pantalones = validar.getValorTag(radioGroup_Pantalones);
-                    int valorGroup_Pullover = validar.getValorTag(radioGroup_Pullover);
-                    int valorGroup_PrendaAbrigo = validar.getValorTag(radioGroup_PrendaAbrigo);
-                    int valorGroup_Chaqueta = validar.getValorTag(radioGroup_Chaqueta);
-                    /*String valorcheck_calz = String.valueOf(check_calz.isChecked());
-                    String valorcheck_calzLargo = String.valueOf(check_calzLargo.isChecked());
-                    String valorcheck_camisaTirantes= String.valueOf(check_camisaTirantes.isChecked());
-                    String valorcheck_camisaManCorta = String.valueOf(check_camisaManCorta.isChecked());
-                    String valorcheck_camisaManLarga = String.valueOf(check_camisaManLarga.isChecked());
-                    String valorcheck_sujetadorBra= String.valueOf(check_sujetadorBra.isChecked());
-
-                    String valorcheck_mangacorta = String.valueOf(check_mangaCorta.isChecked());
-                    String valorcheck_ligMangasCortas = String.valueOf(check_ligMangasCortas.isChecked());
-                    String valorcheck_normalMangasLargas= String.valueOf(check_normalMangasLargas.isChecked());
-                    String valorcheck_franelaMangaLarga = String.valueOf(check_franelaMangaLarga.isChecked());
-                    String valorcheck_ligMangaLarga = String.valueOf(check_ligMangaLarga.isChecked());
-
-                    String valorcheck_pantCorto = String.valueOf(check_pantCorto.isChecked());
-                    String valorcheck_pantLigero = String.valueOf(check_pantLigero.isChecked());
-                    String valorcheck_pantNormal= String.valueOf(check_pantNormal.isChecked());
-                    String valorcheck_pantFranela= String.valueOf(check_pantFranela.isChecked());
-
-                    String valorcheck_pullSinMangas = String.valueOf(check_pullSinMangas.isChecked());
-                    String valorcheck_pullLigero = String.valueOf(check_pullLigero.isChecked());
-                    String valorcheck_pullMedio = String.valueOf(check_pullMedio.isChecked());
-                    String valorcheck_pullGrueso= String.valueOf(check_pullGrueso.isChecked());
-
-                    String valorcheck_prendaAbrigo= String.valueOf(check_prendaAbrigo.isChecked());
-                    String valorcheck_prendaChaqLarga= String.valueOf(check_prendaChaqLarga.isChecked());
-                    String valorcheck_prendaParka = String.valueOf(check_prendaParka.isChecked());
-                    String valorcheck_prendaMono = String.valueOf(check_prendaMono.isChecked());
-
-                    String valorcheck_chaqLigera= String.valueOf(check_chaqLigera.isChecked());
-                    String valorcheck_chaqNormal= String.valueOf(check_chaqNormal.isChecked());
-                    String valorcheck_chaqBata = String.valueOf(check_chaqBata.isChecked());
-                    String valorcheck_chaqMono = String.valueOf(check_chaqMono.isChecked());*/
-
-                    String valorcheck_divZapatodelgado = check_divZapatodelgado.isChecked() ? "1" : "0";
-                    String valorcheck_divZapatogrueso = check_divZapatogrueso.isChecked() ? "1" : "0";
-                    String valorcheck_divCalcetines = check_divCalcetines.isChecked() ? "1" : "0";
-                    String valorcheck_divMediasNylon = check_divMediasNylon.isChecked() ? "1" : "0";
-                    String valorcheck_divCalcetinesGrueoCorto = check_divCalcetinesGrueoCorto.isChecked() ? "1" : "0";
-                    String valorcheck_divCalcetinesGrueoLargo = check_divCalcetinesGrueoLargo.isChecked() ? "1" : "0";
-                    String valorcheck_divBotas = check_divBotas.isChecked() ? "1" : "0";
-                    String valorcheck_divGuantes = check_divGuantes.isChecked() ? "1" : "0";
+                    int valorDesc_atuendo = validar.getValorTag(radioGroup_Atuendo);
 
 
-                    int valorGroupIng = validar.getValor2(radioGroupIng,rootView);
-                    String valorNombreControlIng = txt_nombreControl.getText().toString();
+                    /*String valorcheck_desnudo = String.valueOf(check_desnudo.isChecked());
+                    String valorcheck_ligero = String.valueOf(check_ligero.isChecked());
+                    String valorcheck_medio= String.valueOf(check_medio.isChecked());
+                    String valorcheck_pesado = String.valueOf(check_pesado.isChecked());*/
+
                     String valorTimeCargoAnyo = spn_tiempoCargoAnios.getSelectedItem().toString();
                     String valorTimeCargoMeses = spn_tiempoCargoMeses.getSelectedItem().toString();
-                    String valorCondTrabajo = spn_condicionTrab.getSelectedItem().toString();
-
-                    String valorRotacion = "2";
-                    if(spn_rotacion.getSelectedItem().toString().equals("SI")){
-                        valorRotacion = "1";
-                    }
-                    String valorRecuperacion = "2";
-                    if(spn_tiempoRecuperacion.getSelectedItem().toString().equals("SI")){
-                        valorRecuperacion = "1";
-                    }
-                    String valorIngestaBebida = "2";
-                    if(spn_ingestaBebidas.getSelectedItem().toString().equals("SI")){
-                        valorIngestaBebida = "1";
-                    }
-                    String valorCapacRiesgosExpo = "2";
-                    if(spn_CapacRiesgosExpo.getSelectedItem().toString().equals("SI")){
-                        valorCapacRiesgosExpo = "1";
-                    }
 
                     String valorNivelDeterminacion = spn_nivelDeterminacion.getSelectedItem().toString();
                     int valorId_Nivel_d = 0;
@@ -695,7 +617,7 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
 
                     String valorAire = txt_t_aire.getText().toString();
                     String valorTAireNegro = txt_t_aireNegro.getText().toString();
-                    //String valorBulboHumedo = txt_bulboHumedo.getText().toString();
+                    String valorBulboHumedo = txt_bulboHumedo.getText().toString();
                     String valorHumedadRelativa = txt_humedadRelativa.getText().toString();
                     String valorVelViento = txt_velViento.getText().toString();
                     String valorObserbaciones = txt_observaciones.getText().toString();
@@ -703,7 +625,7 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
                     String estado_resultado = "1";
                     String fecha_registro = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
 
-                    Equipos equipo1 = equipos.Buscar(valorEstresFrio);
+                    Equipos equipo1 = equipos.Buscar(valorConfort);
                     Equipos equipo2 = equipos.Buscar(valorAnemometro);
 
                     ArrayList<HashMap<String, String>> resultList = dao_registroFormatos.getListCantidadFormatoId(Integer.parseInt(id_pt_trabajo));
@@ -714,7 +636,7 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
                     String valorRutaFoto = uri.getEncodedPath();
                     int id_plan_formato_reg = dao_registroFormatos.getRecordIdByPosition();
 
-                    EstresFrio_Registro cabecera = new EstresFrio_Registro(
+                    Confort_Registro cabecera = new Confort_Registro(
                             -1,
                             cod_formato,
                             cod_registro,
@@ -750,39 +672,19 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
                             valorHorarioTrabajo,
                             valorRefrigerio,
                             valorRegimen,
-                            ""+valorGroupIng,
-                            valorNombreControlIng,
                             valorTimeCargoAnyo,
                             valorTimeCargoMeses,
-                            valorCondTrabajo,
                             valorObserbaciones,
                             fecha_registro,
                             id_colaborador,
                             valorRutaFoto
                     );
 
-                    EstresFrio_RegistroDetalle detalle = new EstresFrio_RegistroDetalle(
+                    Confort_RegistroDetalle detalle = new Confort_RegistroDetalle(
                             (id_plan_formato_reg+1),
                             valorFuenteGen,
                             valorDesFuenteGen,
-                            valorGroup_RopaInterior,
-                            valorGroup_CamisasBlusas,
-                            valorGroup_Pantalones,
-                            valorGroup_Pullover,
-                            valorGroup_PrendaAbrigo,
-                            valorGroup_Chaqueta,
-                            valorcheck_divZapatodelgado,
-                            valorcheck_divZapatogrueso,
-                            valorcheck_divCalcetines,
-                            valorcheck_divMediasNylon,
-                            valorcheck_divCalcetinesGrueoCorto,
-                            valorcheck_divCalcetinesGrueoLargo,
-                            valorcheck_divBotas,
-                            valorcheck_divGuantes,
-                            valorRotacion,
-                            valorRecuperacion,
-                            valorIngestaBebida,
-                            valorCapacRiesgosExpo,
+                            ""+valorDesc_atuendo,
                             valorId_Nivel_d,
                             valorNivelDeterminacion,
                             valorId_metodo_deter,
@@ -793,7 +695,7 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
                             valorRangoTasaMeta,
                             valorClase,
                             valorActividadDeter,
-                            valorTasaMetaK,
+                            valorTasaMetaW,
                             valorTasaMetaK,
                             valorFrecencia,
                             valorGenero,
@@ -826,6 +728,7 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
                             valorMetrosSub,
                             valorAire,
                             valorTAireNegro,
+                            valorBulboHumedo,
                             valorHumedadRelativa,
                             valorVelViento,
                             fecha_registro,
@@ -854,7 +757,7 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
                         String cadenaJson = gson.toJson(jsonObject);
                         RequestBody json = RequestBody.create(MediaType.parse("application/json"), cadenaJson);
 
-                        Call<ResponseBody> call1 = service1.insertEstresFrio(json);//INSERT A ESTRES FRIO
+                        Call<ResponseBody> call1 = service1.insertConfort(json);//INSERT A CONFORT TERMICO
                         call1.enqueue(new Callback<ResponseBody>() {
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -863,7 +766,14 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
                                 config.uploadImage(imageFile, cod_formato,id_pt_trabajo,cod_registro);
                                 // Mostrar el JSON en el log
                                 Log.e("JSON", cadenaJson);
-                                Log.e("Respuesta",response.toString());
+                                String responseBody = null;
+                                try {
+                                    responseBody = response.body() != null ? response.body().string(): "No hay contenido en la respuesta";
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                // Muestra el mensaje de respuesta del servidor
+                                Log.i("Upload", "Respuesta del servidor: " + responseBody);
                             }
 
                             @Override
@@ -878,16 +788,16 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
                                 .show();
                         getFragmentManager().popBackStack();
                     }else{
-                        DAO_RegistroEstresFrio nuevoRegistro = new DAO_RegistroEstresFrio(getActivity());
+                        DAO_RegistroConfort nuevoRegistro = new DAO_RegistroConfort(getActivity());
                         nuevoRegistro.InsertCabecera(cabecera);
                         nuevoRegistro.InsertDetalle(detalle);
 
                         DAO_FormatosTrabajo dao_fromatosTrabajo = new DAO_FormatosTrabajo(getActivity());
-                        for_estresFrio = dao_fromatosTrabajo.Buscar(id_plan_trabajo,id_formato);
-                        for_estresFrio.setRealizado(for_estresFrio.getRealizado()+1);
-                        for_estresFrio.setPor_realizar(for_estresFrio.getPor_realizar()-1);
+                        for_confort = dao_fromatosTrabajo.Buscar(id_plan_trabajo,id_formato);
+                        for_confort.setRealizado(for_confort.getRealizado()+1);
+                        for_confort.setPor_realizar(for_confort.getPor_realizar()-1);
 
-                        dao_fromatosTrabajo.actualizarFormatoTrabajo(for_estresFrio);
+                        dao_fromatosTrabajo.actualizarFormatoTrabajo(for_confort);
 
 
                         new AlertDialog.Builder(getActivity())
@@ -904,22 +814,19 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
             }
         });
 
-
-
         return rootView;
     }
-
-    public void init(View view){
+    private void init(View view){
         tv_nombreUsuario = view.findViewById(R.id.tv_nomUsuario);
         tv_nomEmpresa = view.findViewById(R.id.tv_nomEmpresa);
 
         // Asignación de elementos de la interfaz a variables
-        spn_equipoEstresFrio = view.findViewById(R.id.tv_estreFrio);
+        spn_equipoConfort = view.findViewById(R.id.tv_confort);
         spn_equipoAnemometro = view.findViewById(R.id.tv_anemometro);
         tv_horaVerificacion = view.findViewById(R.id.tv_horaVerificacion);
         radioGroupVerificacion = view.findViewById(R.id.radioGroup_verf_insitu);
-        btnSubirFotoEstres = view.findViewById(R.id.btn_subirFotoEstres);
-        imgE_Frio = view.findViewById(R.id.img_eFrio);
+        btnSubirFotoConfort= view.findViewById(R.id.btn_subirFotoConfort);
+        imgConfort = view.findViewById(R.id.img_Confort);
         tv_fechaMonitoreo = view.findViewById(R.id.tv_fechaMonitoreo);
         tv_horaInicioMoni = view.findViewById(R.id.tv_horaInicial);
         tv_horaFinalMoni = view.findViewById(R.id.tv_horaFinal);
@@ -940,63 +847,19 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
         spn_fuenteGen = view.findViewById(R.id.spn_fuenteGen);
         txt_descFuenteGen = view.findViewById(R.id.txt_descFuenteGen);
 
-        radioGroup_RopaInterior = view.findViewById(R.id.radioGroup_RopaInterior);
-        radioGroup_CamisasBlusas = view.findViewById(R.id.radioGroup_CamisasBlusas);
-        radioGroup_Pantalones = view.findViewById(R.id.radioGroup_Pantalones);
-        radioGroup_Pullover = view.findViewById(R.id.radioGroup_Pullover);
-        radioGroup_PrendaAbrigo = view.findViewById(R.id.radioGroup_PrendaAbrigo);
-        radioGroup_Chaqueta = view.findViewById(R.id.radioGroup_Chaqueta);
 
-        /*check_calz = view.findViewById(R.id.check_calz);
-        check_calzLargo = view.findViewById(R.id.check_calzLargo);
-        check_camisaTirantes = view.findViewById(R.id.check_camisaTirantes);
-        check_camisaManCorta = view.findViewById(R.id.check_camisaManCorta);
-        check_camisaManLarga = view.findViewById(R.id.check_camisaManLarga);
-        check_sujetadorBra = view.findViewById(R.id.check_sujetadorBra);
-        check_mangaCorta = view.findViewById(R.id.check_mangaCorta);
-        check_ligMangasCortas = view.findViewById(R.id.check_ligMangasCortas);
-        check_normalMangasLargas = view.findViewById(R.id.check_normalMangasLargas);
-        check_franelaMangaLarga = view.findViewById(R.id.check_franelaMangaLarga);
-        check_ligMangaLarga = view.findViewById(R.id.check_ligMangaLarga);
-        check_pantCorto = view.findViewById(R.id.check_pantCorto);
-        check_pantLigero = view.findViewById(R.id.check_pantLigero);
-        check_pantNormal = view.findViewById(R.id.check_pantNormal);
-        check_pantFranela = view.findViewById(R.id.check_pantFranela);
-        check_pullSinMangas = view.findViewById(R.id.check_pullSinMangas);
-        check_pullLigero = view.findViewById(R.id.check_pullLigero);
-        check_pullMedio = view.findViewById(R.id.check_pullMedio);
-        check_pullGrueso = view.findViewById(R.id.check_pullGrueso);
-        check_prendaAbrigo = view.findViewById(R.id.check_prendaAbrigo);
-        check_prendaChaqLarga = view.findViewById(R.id.check_prendaChaqLarga);
-        check_prendaParka = view.findViewById(R.id.check_prendaParka);
-        check_prendaMono = view.findViewById(R.id.check_prendaMono);
-        check_chaqLigera = view.findViewById(R.id.check_chaqLigera);
-        check_chaqNormal = view.findViewById(R.id.check_chaqNormal);
-        check_chaqBata = view.findViewById(R.id.check_chaqBata);
-        check_chaqMono = view.findViewById(R.id.check_chaqMono);*/
 
-        check_divZapatodelgado = view.findViewById(R.id.check_divZapatodelgado);
-        check_divZapatogrueso = view.findViewById(R.id.check_divZapatogrueso);
-        check_divCalcetines = view.findViewById(R.id.check_divCalcetines);
-        check_divMediasNylon = view.findViewById(R.id.check_divMediasNylon);
-        check_divCalcetinesGrueoCorto = view.findViewById(R.id.check_divCalcetinesGrueoCorto);
-        check_divCalcetinesGrueoLargo = view.findViewById(R.id.check_divCalcetinesGrueoLargo);
-        check_divBotas = view.findViewById(R.id.check_divBotas);
-        check_divGuantes = view.findViewById(R.id.check_divGuantes);
-        radioGroupIng = view.findViewById(R.id.radioGroupIngenieria);
-        txt_nombreControl = view.findViewById(R.id.txt_nomControl);
+        radioGroup_Atuendo = view.findViewById(R.id.radioGroup_Atuendo);
+
         spn_tiempoCargoAnios = view.findViewById(R.id.cbx_tiempoCargoAnios);
         spn_tiempoCargoMeses = view.findViewById(R.id.cbx_tiempoCargoMeses);
-        spn_condicionTrab = view.findViewById(R.id.spn_condicionTrab);
-        spn_rotacion = view.findViewById(R.id.spn_rotacion);
-        spn_tiempoRecuperacion = view.findViewById(R.id.spn_tiempoRecuperacion);
-        spn_ingestaBebidas = view.findViewById(R.id.spn_ingestaBebidas);
-        spn_CapacRiesgosExpo = view.findViewById(R.id.spn_CapacRiesgosExpo);
+        //spn_condicionTrab = view.findViewById(R.id.spn_condicionTrab);
+
         spn_nivelDeterminacion = view.findViewById(R.id.spn_nivelDeterminacion);
         spn_metodoDeterminacion = view.findViewById(R.id.spn_metodoDeterminacion);
         txt_t_aire = view.findViewById(R.id.txt_t_aire);
         txt_t_aireNegro = view.findViewById(R.id.txt_t_aireNegro);
-        //txt_bulboHumedo = view.findViewById(R.id.txt_t_bulboHumedo);
+        txt_bulboHumedo = view.findViewById(R.id.txt_t_bulboHumedo);
         txt_humedadRelativa = view.findViewById(R.id.txt_humedadRelativa);
         txt_velViento = view.findViewById(R.id.txt_velViento);
         txt_observaciones = view.findViewById(R.id.txt_observaciones);
@@ -1011,8 +874,6 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
         txt_actividad = view.findViewById(R.id.txt_actividad);
         spn_genero = view.findViewById(R.id.cbx_genero);
         txt_frecuenciaCardiaca = view.findViewById(R.id.txt_frecuenciaCardiaca);
-
-        spn_tipoMedicion = view.findViewById(R.id.spn_tipoMedicion);
 
         btn_guardar = view.findViewById(R.id.fabGuardar);
         btnCancelar = view.findViewById(R.id.fabCancelar);
@@ -1037,17 +898,13 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
         btnAgregarTareas = view.findViewById(R.id.btn_agregar_tarea);
         txt_metroSubida = view.findViewById(R.id.txt_metrosSubida);
 
-        card_ingenier = view.findViewById(R.id.Card_Ingenieria);
-        radioIngSi = view.findViewById(R.id.radioIngenieriaSi);
-
-
     }
 
     @Override
     public void onImagePicked(Uri imageUri) {
         this.uri = imageUri;
-        if (imgE_Frio != null && imageUri != null) {
-            imgE_Frio.setImageURI(imageUri);
+        if (imgConfort != null && imageUri != null) {
+            imgConfort.setImageURI(imageUri);
             /*File imageFile = new File(imageUri.getEncodedPath());
             config.uploadImage(imageFile);*/
         }

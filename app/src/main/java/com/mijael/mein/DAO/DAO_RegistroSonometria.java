@@ -5,16 +5,14 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.mijael.mein.Entidades.Sonometria_Registro;
-import com.mijael.mein.HELPER.RegistroFormatosSQLiteHelper;
-import com.mijael.mein.Utilidades.Util_DosimetriaRegistro;
+import com.mijael.mein.HELPER.MeinSQLiteHelper;
 import com.mijael.mein.Utilidades.Util_RegistroFormatos;
-import com.mijael.mein.Utilidades.Util_SonometriaRegistro;
 
 public class DAO_RegistroSonometria {
-    private RegistroFormatosSQLiteHelper dbHelper;
+    private MeinSQLiteHelper dbHelper;
 
     public DAO_RegistroSonometria(Context context) {
-        this.dbHelper = RegistroFormatosSQLiteHelper.getInstance(context);
+        this.dbHelper = MeinSQLiteHelper.getInstance(context);
     }
 
     public boolean RegistroSonometria(Sonometria_Registro registro){
@@ -22,6 +20,7 @@ public class DAO_RegistroSonometria {
         ContentValues values = new ContentValues();
 
         values.put(Util_RegistroFormatos.CAMPO_COD_FORMATO, registro.getCod_formato());
+        values.put(Util_RegistroFormatos.CAMPO_COD_REGISTRO, registro.getCod_registro());
         values.put(Util_RegistroFormatos.CAMPO_ID_FORMATO, registro.getId_formato());
         values.put(Util_RegistroFormatos.CAMPO_ID_PLAN_TRABAJO, registro.getId_plan_trabajo());
         values.put(Util_RegistroFormatos.CAMPO_ID_PT_FORMATO, registro.getId_pt_formato());
@@ -100,6 +99,7 @@ public class DAO_RegistroSonometria {
         values.put(Util_RegistroFormatos.CAMPO_ESTADO, registro.getEstado());
         values.put(Util_RegistroFormatos.CAMPO_FEC_REG, registro.getFec_reg());
         values.put(Util_RegistroFormatos.CAMPO_USER_REG, registro.getUser_reg());
+        values.put(Util_RegistroFormatos.CAMPO_ESTADO_SINCRO,1);// MARCANDO PARA SABER QUE FALTA SINCRONIZAR
 
 
 

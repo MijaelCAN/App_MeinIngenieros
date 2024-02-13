@@ -141,7 +141,7 @@ public class Util_RegistroFormatos {
     public static final String CAMPO_ANIO_OCU_CARGO = "anio_ocu_cargo";
     public static final String CAMPO_MES_OCU_CARGO = "mes_ocu_cargo";
     public static final String CAMPO_COND_TRAB = "cond_trab";
-    public static final String CAMPO_PORC_DESCAN = "porc_descan";//agregado Recientemente
+    public static final String CAMPO_RUTA_FOTO = "ruta_foto";//agregado Recientemente
     public static final String CAMPO_FOTO = "foto";
     public static final String CAMPO_RESULTADO = "resultado";
     public static final String CAMPO_ESTADO_RESULTADO = "estado_resultado";
@@ -152,6 +152,7 @@ public class Util_RegistroFormatos {
     public static final String CAMPO_USER_ACT = "user_act";
     public static final String CAMPO_FEC_ELI = "fec_eli";
     public static final String CAMPO_USER_ELI = "user_eli";
+    public static final String CAMPO_ESTADO_SINCRO = "estado_sincro";
 
     public static final String CrearTablaRegistroFormato = "CREATE TABLE " + TABLA_REGISTRO_FORMATOS + "("
             + CAMPO_ID_PLAN_TRABAJO_FORMATO_REG + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -293,7 +294,7 @@ public class Util_RegistroFormatos {
             + CAMPO_MES_OCU_CARGO + " TEXT, "
             + CAMPO_COND_TRAB + " TEXT, "
 
-            + CAMPO_PORC_DESCAN + " TEXT," //agregado recientemente
+            + CAMPO_RUTA_FOTO + " TEXT DEFAULT ''," //agregado recientemente
 
             + CAMPO_FOTO + " TEXT, "
             + CAMPO_RESULTADO + " TEXT, "
@@ -304,6 +305,7 @@ public class Util_RegistroFormatos {
             + CAMPO_FEC_ACT + " TEXT, "
             + CAMPO_USER_ACT + " TEXT, "
             + CAMPO_FEC_ELI + " TEXT, "
-            + CAMPO_USER_ELI + " TEXT"
+            + CAMPO_USER_ELI + " TEXT, "
+            + CAMPO_ESTADO_SINCRO + " BOOLEAN"
             + ")";
 }

@@ -7,7 +7,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
@@ -31,7 +30,6 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -41,30 +39,26 @@ import com.mijael.mein.DAO.DAO_DatosLocal;
 import com.mijael.mein.DAO.DAO_Equipos;
 import com.mijael.mein.DAO.DAO_FormatosTrabajo;
 import com.mijael.mein.DAO.DAO_RegistroDosimetria;
+import com.mijael.mein.DAO.DAO_RegistroFormatos;
 import com.mijael.mein.DAO.DAO_Usuario;
 import com.mijael.mein.Entidades.Dosimetria_Registro;
 import com.mijael.mein.Entidades.Equipos;
 import com.mijael.mein.Entidades.Formatos_Trabajo;
-import com.mijael.mein.Entidades.Prueba;
 import com.mijael.mein.Entidades.Usuario;
 import com.mijael.mein.Extras.FragmentoImagen;
 import com.mijael.mein.Extras.InputDateConfiguration;
-import com.mijael.mein.Extras.OnBackPressedListener;
 import com.mijael.mein.Extras.Validaciones;
-import com.mijael.mein.HELPER.EquiposSQLiteHelper;
-import com.mijael.mein.HELPER.FormatoTrabajoSQLiteHelper;
 import com.mijael.mein.SERVICIOS.DosimetriaService;
 
-import java.text.ParseException;
+import java.io.File;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
+
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -100,11 +94,13 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
     LinearLayout linearOtroHorario, linearOtroRegimen, linearOtroRefrigerio, linearOtroMarcaOrej, linearOtroMarcaTapones, linearOtroModeloOrej, linearOtroModeloTapones, linearBuscarDni;
     EditText txt_otroHorario, txt_otroRegimen, txt_otroRefrigerio, txt_otroMarcaOrej, txt_otroMarcaTapones, txt_otroModeloOrej, txt_otroModeloTapones;
     Formatos_Trabajo for_Dosimetria;
+    DAO_RegistroFormatos dao_registroFormatos;
     public DosimetriaFragment() {
         // Required empty public constructor
+        dao_registroFormatos = new DAO_RegistroFormatos(getActivity());
     }
     Validaciones validar = new Validaciones();
-
+    InputDateConfiguration config;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -125,7 +121,7 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_dosimetria, container, false);
         init(rootView);
-        InputDateConfiguration config = new InputDateConfiguration(getActivity(),id_colaborador,nom_Empresa,rootView);
+        config = new InputDateConfiguration(getActivity(),id_colaborador,nom_Empresa,rootView);
 
         ConfigPantalla();
 
@@ -372,9 +368,18 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
                         Equipos equipo1 = nuevoequipo.Buscar(valorTvDosimetro);
                         Equipos equipo2 = nuevoequipo.Buscar(valorTvCalibrador);
 
+                        ArrayList<HashMap<String, String>> resultList = dao_registroFormatos.getListCantidadFormatoId(Integer.parseInt(id_pt_trabajo));
+                        int total_registros = dao_registroFormatos.get_cant_formato_medicion();
+                        String cod_formato = config.GenerarCodigoFormato(Integer.parseInt(id_formato),resultList.size());
+                        String cod_registro = config.generarCodigoRegistro(total_registros);
+
+                        String valorRutaFoto = uri.getEncodedPath();
+                        int id_plan_formato_reg = dao_registroFormatos.getRecordIdByPosition();
+
                         Dosimetria_Registro cabecera = new Dosimetria_Registro( //AGREGANDO LOS VALORES A LA ENTIDAD DEL FORMATO DE DOSIMETRIA
                                 -1,
-                                "DO-001",
+                                cod_formato,
+                                cod_registro,
                                 id_formato,
                                 id_plan_trabajo,
                                 id_pt_trabajo,
@@ -449,7 +454,8 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
                                 estado_resultado,
                                 id_colaborador,
                                 fecha_registro,
-                                "var1"
+                                "var1",
+                                valorRutaFoto
                         );
 
                         if(config.isOnline()){
@@ -479,6 +485,8 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
                                 @Override
                                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                     Log.e("exitoso", "se inserto el registro");
+                                    File imageFile = new File(uri.getEncodedPath());
+                                    config.uploadImage(imageFile, cod_formato,id_pt_trabajo,cod_registro);
                                     // Mostrar el JSON en el log
                                     Log.e("JSON", cadenaJson);
                                     Log.e("Respuesta",response.toString());
@@ -533,6 +541,8 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
         this.uri = imageUri;
         if (image != null && imageUri != null) {
             image.setImageURI(imageUri);
+            /*File imageFile = new File(imageUri.getEncodedPath());
+            config.uploadImage(imageFile);*/
         }
     }
 
@@ -760,6 +770,7 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
         TextView tv_usu = activity.findViewById(R.id.txt_usuario);
         txt_buscar.setVisibility(View.GONE);
         tv_usu2.setText(tv_usu.getText());
+        tv_usu.setVisibility(View.VISIBLE);
         FragmentContainerView fragmentContainer = activity.findViewById(R.id.fragmentContainerView);
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) fragmentContainer.getLayoutParams();
         params.topMargin = 120;

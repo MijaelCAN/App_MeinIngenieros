@@ -26,6 +26,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mijael.mein.DAO.DAO_Equipos;
 import com.mijael.mein.DAO.DAO_FormatosTrabajo;
+import com.mijael.mein.DAO.DAO_RegistroFormatos;
 import com.mijael.mein.DAO.DAO_RegistroHumedadRelativa;
 import com.mijael.mein.DAO.DAO_Usuario;
 import com.mijael.mein.Entidades.Equipos;
@@ -38,8 +39,11 @@ import com.mijael.mein.Extras.InputDateConfiguration;
 import com.mijael.mein.Extras.Validaciones;
 import com.mijael.mein.SERVICIOS.DosimetriaService;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -58,8 +62,8 @@ public class HumedadRelativaFragment extends Fragment implements FragmentoImagen
     TextView tv_nombreUsuario, tv_nomEmpresa;
     String id_plan_trabajo, id_pt_trabajo, id_formato,id_colaborador, nom_Empresa;
     AutoCompleteTextView spn_equipoMedicion;
-    Spinner spn_horarioTrabajo,spn_descAreaTrab, spn_tecnicaAcon,spn_humedadRelativaMax,spn_humedadRelativaMin;
-    EditText txt_areaTrab,txt_actRealizada, txt_otroHorario,txt_otroDetalleTecnica,txt_observaciones;
+    Spinner spn_horarioTrabajo,spn_descAreaTrab, spn_tecnicaAcon;
+    EditText txt_areaTrab,txt_actRealizada, txt_otroHorario,txt_otroDetalleTecnica,txt_observaciones, txt_humedadRelativaMax, txt_humedadRelativaMin;
     LinearLayout linearOtroHorario, linearOtroDetalle;
     TextView tv_fechaMonitoreo,tv_horaInicioMoni, tv_horaFinalMoni;
     AppCompatButton btnSubirFotoHumedad;
@@ -67,12 +71,14 @@ public class HumedadRelativaFragment extends Fragment implements FragmentoImagen
     ExtendedFloatingActionButton btnCancelar;
     ImageView imgHumedad;
     Uri uri;
+    DAO_RegistroFormatos dao_registroFormatos;
     public HumedadRelativaFragment() {
         // Required empty public constructor
+        dao_registroFormatos = new DAO_RegistroFormatos(getContext());
     }
     Formatos_Trabajo for_Humedad;
     Validaciones validar = new Validaciones();
-
+    InputDateConfiguration config;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -92,7 +98,7 @@ public class HumedadRelativaFragment extends Fragment implements FragmentoImagen
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_humedad_relativa,container,false);
-        InputDateConfiguration config = new InputDateConfiguration(getActivity(),id_colaborador,nom_Empresa,rootView);
+        config = new InputDateConfiguration(getActivity(),id_colaborador,nom_Empresa,rootView);
         init(rootView);
 
         DAO_Equipos equipos = new DAO_Equipos(getActivity());
@@ -105,8 +111,8 @@ public class HumedadRelativaFragment extends Fragment implements FragmentoImagen
         config.configurarAutoCompleteTextView(spn_equipoMedicion,lista_CodEquipos);
         spn_horarioTrabajo.setAdapter(config.LlenarSpinner("horario_trab_fromato_medicion","desc_horario",getActivity()));
         spn_descAreaTrab.setAdapter(config.LlenarSpinner(new String[]{"Trabajo al aire libre sin carga solar o bajo techo", "Trabajo al aire libre con carga solar"}));
-        spn_humedadRelativaMax.setAdapter(config.LlenarSpinner("humedad_rel_formato_medicion","valor_humedad",getActivity()));
-        spn_humedadRelativaMin.setAdapter(config.LlenarSpinner("humedad_rel_formato_medicion","valor_humedad",getActivity()));
+        //spn_humedadRelativaMax.setAdapter(config.LlenarSpinner("humedad_rel_formato_medicion","valor_humedad",getActivity()));
+        //spn_humedadRelativaMin.setAdapter(config.LlenarSpinner("humedad_rel_formato_medicion","valor_humedad",getActivity()));
         spn_tecnicaAcon.setAdapter(config.LlenarSpinner(new String[]{"SI", "NO"}));
         tv_fechaMonitoreo.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {config.showDatePickerDialog(rootView,tv_fechaMonitoreo);}});
         tv_horaInicioMoni.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {config.showTimePickerDialog(rootView,tv_horaInicioMoni);}});
@@ -152,8 +158,8 @@ public class HumedadRelativaFragment extends Fragment implements FragmentoImagen
                         validar.validarCampoObligatorio(tv_horaInicioMoni) &&
                         validar.validarCampoObligatorio(tv_horaFinalMoni) &&
 
-                        validar.validarCampoObligatorio(spn_humedadRelativaMax) &&
-                        validar.validarCampoObligatorio(spn_humedadRelativaMin) &&
+                        validar.validarCampoObligatorio(txt_humedadRelativaMax) &&
+                        validar.validarCampoObligatorio(txt_humedadRelativaMin) &&
                         validar.validarCampoObligatorio(txt_observaciones)
                 ){
                     String valorEquipoMedicion = spn_equipoMedicion.getText().toString();
@@ -164,7 +170,7 @@ public class HumedadRelativaFragment extends Fragment implements FragmentoImagen
                     String valorDescAreaTrab = spn_descAreaTrab.getSelectedItem().toString();
                     String valorTecnicaAcon = spn_tecnicaAcon.getSelectedItem().toString();
                     String valorDetalleTecnica ="";
-                    if(valorHorarioTrabajo.equals("SI")){valorDetalleTecnica = txt_otroDetalleTecnica.getText().toString();}
+                    if(valorTecnicaAcon.equals("SI")){valorDetalleTecnica = txt_otroDetalleTecnica.getText().toString();}
 
                     String f = tv_fechaMonitoreo.getText().toString();
                     String valorFechaMoni = config.convertirFecha(f);
@@ -172,17 +178,25 @@ public class HumedadRelativaFragment extends Fragment implements FragmentoImagen
 
                     String valorHoraInicioMoni = tv_horaInicioMoni.getText().toString();
                     String valorHoraFinalMoni = tv_horaFinalMoni.getText().toString();
-                    String valorHumedadMax= spn_humedadRelativaMax.getSelectedItem().toString();
-                    String valorHumedadMin = spn_humedadRelativaMin.getSelectedItem().toString();
+                    String valorHumedadMax= txt_humedadRelativaMax.getText().toString();
+                    String valorHumedadMin = txt_humedadRelativaMin.getText().toString();
                     String valorObservaciones = txt_observaciones.getText().toString();
 
                     String fecha_registro = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
                     Equipos equipos1 = equipos.Buscar(valorEquipoMedicion);
 
+                    ArrayList<HashMap<String, String>> resultList = dao_registroFormatos.getListCantidadFormatoId(Integer.parseInt(id_pt_trabajo));
+                    int total_registros = dao_registroFormatos.get_cant_formato_medicion();
+                    String cod_formato = config.GenerarCodigoFormato(Integer.parseInt(id_formato),resultList.size());
+                    String cod_registro = config.generarCodigoRegistro(total_registros);
+
+                    String valorRutaFoto = uri.getEncodedPath();
+                    int id_plan_formato_reg = dao_registroFormatos.getRecordIdByPosition();
+
                     HumedadRelativa_Registro cabecera = new HumedadRelativa_Registro(
                             -1,
-                            "HR-0001",
-                            "cod-registro",
+                            cod_formato,
+                            cod_registro,
                             id_formato,
                             id_plan_trabajo,
                             id_pt_trabajo,
@@ -201,11 +215,12 @@ public class HumedadRelativaFragment extends Fragment implements FragmentoImagen
                             valorFechaMoni,
                             valorObservaciones,
                             fecha_registro,
-                            id_colaborador
+                            id_colaborador,
+                            valorRutaFoto
                     );
 
                     HumedadRelativa_RegistroDetalle detalle = new HumedadRelativa_RegistroDetalle(
-                            cabecera.getId(),
+                            (id_plan_formato_reg+1),
                             valorTecnicaAcon,
                             valorDetalleTecnica,
                             valorHumedadMax,
@@ -242,6 +257,8 @@ public class HumedadRelativaFragment extends Fragment implements FragmentoImagen
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 Log.e("exitoso", "se inserto el registro");
+                                File imageFile = new File(uri.getEncodedPath());
+                                config.uploadImage(imageFile, cod_formato,id_pt_trabajo,cod_registro);
                                 // Mostrar el JSON en el log
                                 Log.e("JSON", cadenaJson);
                                 Log.e("Respuesta",response.toString());
@@ -307,8 +324,8 @@ public class HumedadRelativaFragment extends Fragment implements FragmentoImagen
         tv_fechaMonitoreo = view.findViewById(R.id.tv_fechaMonitoreo);
         tv_horaInicioMoni = view.findViewById(R.id.tv_horaInicial);
         tv_horaFinalMoni = view.findViewById(R.id.tv_horaFinal);
-        spn_humedadRelativaMax = view.findViewById(R.id.spn_humedadRelativaMax);
-        spn_humedadRelativaMin = view.findViewById(R.id.spn_humedadRelativaMin);
+        txt_humedadRelativaMax = view.findViewById(R.id.txt_humedadRelativaMax);
+        txt_humedadRelativaMin = view.findViewById(R.id.txt_humedadRelativaMin);
         btnSubirFotoHumedad= view.findViewById(R.id.btn_subirFotoHumedad);
         txt_observaciones = view.findViewById(R.id.txt_observaciones);
 
@@ -323,6 +340,8 @@ public class HumedadRelativaFragment extends Fragment implements FragmentoImagen
         this.uri = imageUri;
         if (imgHumedad != null && imageUri != null) {
             imgHumedad.setImageURI(imageUri);
+            /*File imageFile = new File(imageUri.getEncodedPath());
+            config.uploadImage(imageFile);*/
         }
     }
 }

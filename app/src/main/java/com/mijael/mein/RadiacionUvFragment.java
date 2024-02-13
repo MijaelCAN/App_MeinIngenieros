@@ -29,6 +29,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mijael.mein.DAO.DAO_Equipos;
 import com.mijael.mein.DAO.DAO_FormatosTrabajo;
+import com.mijael.mein.DAO.DAO_RegistroFormatos;
 import com.mijael.mein.DAO.DAO_RegistroRadiacion;
 import com.mijael.mein.DAO.DAO_RegistroRadiacionUV;
 import com.mijael.mein.DAO.DAO_Usuario;
@@ -42,7 +43,9 @@ import com.mijael.mein.Extras.InputDateConfiguration;
 import com.mijael.mein.Extras.Validaciones;
 import com.mijael.mein.SERVICIOS.DosimetriaService;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -81,14 +84,15 @@ public class RadiacionUvFragment extends Fragment implements FragmentoImagen.Ima
     LinearLayout linearOtroHorario, linearOtroRegimen, linearOtroRefrigerio,linearBuscarDni;
     ImageView imgRadiacion;
     Uri uri;
-
+    DAO_RegistroFormatos dao_registroFormatos;
 
     public RadiacionUvFragment() {
         // Required empty public constructor
+        dao_registroFormatos = new DAO_RegistroFormatos(getContext());
     }
     Formatos_Trabajo for_RadiacionUv;
     Validaciones validar = new Validaciones();
-
+    InputDateConfiguration config;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -108,7 +112,7 @@ public class RadiacionUvFragment extends Fragment implements FragmentoImagen.Ima
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_radiacion_uv, container, false);
-        InputDateConfiguration config = new InputDateConfiguration(getActivity(),id_colaborador,nom_Empresa,rootView);
+        config = new InputDateConfiguration(getActivity(),id_colaborador,nom_Empresa,rootView);
         init(rootView);
         config.ConfigPantalla();
         DAO_Equipos equipos = new DAO_Equipos(getActivity());
@@ -331,10 +335,18 @@ public class RadiacionUvFragment extends Fragment implements FragmentoImagen.Ima
                     String fecha_registro = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
                     Equipos equipos1 = equipos.Buscar(valorEquipoRadUv);
 
+                    ArrayList<HashMap<String, String>> resultList = dao_registroFormatos.getListCantidadFormatoId(Integer.parseInt(id_pt_trabajo));
+                    int total_registros = dao_registroFormatos.get_cant_formato_medicion();
+                    String cod_formato = config.GenerarCodigoFormato(Integer.parseInt(id_formato),resultList.size());
+                    String cod_registro = config.generarCodigoRegistro(total_registros);
+
+                    String valorRutaFoto = uri.getEncodedPath();
+                    int id_plan_formato_reg = dao_registroFormatos.getRecordIdByPosition();
+
                     RadiacionUv_Registro cabecera = new RadiacionUv_Registro(
                             -1,
-                            "RV-0001",
-                            "cod_registro",
+                            cod_formato,
+                            cod_registro,
                             id_formato,
                             id_plan_trabajo,
                             id_pt_trabajo,
@@ -368,11 +380,12 @@ public class RadiacionUvFragment extends Fragment implements FragmentoImagen.Ima
                             valorUw_cm2,
                             valorOtrosIng,
                             fecha_registro,
-                            id_colaborador
+                            id_colaborador,
+                            valorRutaFoto
                     );
 
                    RadiacionUv_RegistroDetalle detalle = new RadiacionUv_RegistroDetalle(
-                            cabecera.getId(),
+                           (id_plan_formato_reg+1),
                             valorTipoPiel,
                             valorColorPiel,
                             valorFuenteGen,
@@ -436,6 +449,8 @@ public class RadiacionUvFragment extends Fragment implements FragmentoImagen.Ima
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 Log.e("exitoso", "se inserto el registro");
+                                File imageFile = new File(uri.getEncodedPath());
+                                config.uploadImage(imageFile, cod_formato,id_pt_trabajo,cod_registro);
                                 // Mostrar el JSON en el log
                                 Log.e("JSON", cadenaJson);
                                 Log.e("Respuesta",response.toString());
@@ -563,6 +578,8 @@ public class RadiacionUvFragment extends Fragment implements FragmentoImagen.Ima
         this.uri = imageUri;
         if (imgRadiacion != null && imageUri != null) {
             imgRadiacion.setImageURI(imageUri);
+            /*File imageFile = new File(imageUri.getEncodedPath());
+            config.uploadImage(imageFile);*/
         }
     }
 }

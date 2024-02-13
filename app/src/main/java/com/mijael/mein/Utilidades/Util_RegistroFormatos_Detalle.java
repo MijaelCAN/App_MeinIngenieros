@@ -2,8 +2,8 @@ package com.mijael.mein.Utilidades;
 
 public class Util_RegistroFormatos_Detalle {
     public static final String TABLA_REGISTRO_DETALLE = "plan_trabajo_formato_reg_detalle ";
-    public static final String CAMPO_ID_FORMATO_REG_DETALLE = "id_formato_reg_detalle ";
-    public static final String CAMPO_ID_PLAN_TRABAJO_FORMATO_REG = "id_plan_trabajo_formato_reg ";
+    public static final String CAMPO_ID_FORMATO_REG_DETALLE = "id_formato_reg_detalle";
+    public static final String CAMPO_ID_PLAN_TRABAJO_FORMATO_REG = "id_plan_trabajo_formato_reg";
     public static final String CAMPO_ORDEN = "orden";
     public static final String CAMPO_LJ_DB = "lj_db";
     public static final String CAMPO_FJ = "fj";
@@ -99,6 +99,7 @@ public class Util_RegistroFormatos_Detalle {
     public static final String CAMPO_T_BULBO = "t_bulbo";
     public static final String CAMPO_T_BULBO2 = "t_bulbo2";
     public static final String CAMPO_T_BULBO3 = "t_bulbo3";
+    public static final String CAMPO_N_TAREAS = "ntareas";
     public static final String CAMPO_NOM_TAREA1 = "nom_tarea1";
     public static final String CAMPO_CICLO_TRABAJO1 = "ciclo_trabajo1";
     public static final String CAMPO_POSICION_1 = "posicion_1";
@@ -249,6 +250,7 @@ public class Util_RegistroFormatos_Detalle {
     public static final String CAMPO_USER_ACT = "user_act";
     public static final String CAMPO_FEC_ELI = "fec_eli";
     public static final String CAMPO_USER_ELI = "user_eli";
+    public static final String CAMPO_ESTADO_SINCRO = "estado_sincro";
 
     public static final String CrearTablaRegistroDetalle = "CREATE TABLE " + TABLA_REGISTRO_DETALLE + "("
             + CAMPO_ID_FORMATO_REG_DETALLE + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -345,6 +347,7 @@ public class Util_RegistroFormatos_Detalle {
             + CAMPO_T_BULBO + " TEXT, "
             + CAMPO_T_BULBO2 + " TEXT, "
             + CAMPO_T_BULBO3 + " TEXT, "
+            + CAMPO_N_TAREAS + " TEXT, "
             + CAMPO_NOM_TAREA1 + " TEXT, "
             + CAMPO_CICLO_TRABAJO1 + " TEXT, "
             + CAMPO_POSICION_1 + " TEXT, "
@@ -487,7 +490,8 @@ public class Util_RegistroFormatos_Detalle {
             + CAMPO_FEC_ACT + " TEXT, "
             + CAMPO_USER_ACT + " INTEGER, "
             + CAMPO_FEC_ELI + " TEXT, "
-            + CAMPO_USER_ELI + " INTEGER"
+            + CAMPO_USER_ELI + " INTEGER, "
+            + CAMPO_ESTADO_SINCRO + " BOOLEAN"
             + ")";
 
 }

@@ -23,6 +23,11 @@ public interface DosimetriaService {
 
     @POST("index.php?/ApkI/Insert_Estres_Termico")
     Call<ResponseBody> insertEstresTermico(@Body RequestBody json);
+    @POST("index.php?/ApkI/Insert_Estres_Frio")
+    Call<ResponseBody> insertEstresFrio(@Body RequestBody json);
+
+    @POST("index.php?/ApkI/Insert_Confort")
+    Call<ResponseBody> insertConfort(@Body RequestBody json);
 
     @POST("index.php?/ApkI/Insert_Radiacion_Uv")
     Call<ResponseBody> insertRadiacionUV(@Body RequestBody json);

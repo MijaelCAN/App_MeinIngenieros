@@ -6,14 +6,14 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.mijael.mein.Entidades.HumedadRelativa_Registro;
 import com.mijael.mein.Entidades.HumedadRelativa_RegistroDetalle;
-import com.mijael.mein.HELPER.RegistroFormatosSQLiteHelper;
+import com.mijael.mein.HELPER.MeinSQLiteHelper;
 import com.mijael.mein.Utilidades.Util_RegistroFormatos;
 import com.mijael.mein.Utilidades.Util_RegistroFormatos_Detalle;
 
 public class DAO_RegistroHumedadRelativa {
-    public RegistroFormatosSQLiteHelper helper;
+    public MeinSQLiteHelper helper;
     public DAO_RegistroHumedadRelativa(Context context){
-        this.helper = RegistroFormatosSQLiteHelper.getInstance(context);
+        this.helper = MeinSQLiteHelper.getInstance(context);
     }
     public boolean RegistroHumedad(HumedadRelativa_Registro registro){
         SQLiteDatabase db = helper.getWritableDatabase();
@@ -42,6 +42,7 @@ public class DAO_RegistroHumedadRelativa {
         values.put(Util_RegistroFormatos.CAMPO_ESTADO, registro.getEstado());
         values.put(Util_RegistroFormatos.CAMPO_FEC_REG, registro.getFec_reg());
         values.put(Util_RegistroFormatos.CAMPO_USER_REG, registro.getId_analista());
+        values.put(Util_RegistroFormatos.CAMPO_ESTADO_SINCRO,1);// MARCANDO PARA SABER QUE FALTA SINCRONIZAR
 
         db.insert(Util_RegistroFormatos.TABLA_REGISTRO_FORMATOS, null ,values);
         return true;
@@ -60,6 +61,7 @@ public class DAO_RegistroHumedadRelativa {
         values.put(Util_RegistroFormatos_Detalle.CAMPO_ESTADO, registro.getEstado());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_FEC_REG, registro.getFec_reg());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_USER_REG, registro.getUser_reg());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_ESTADO_SINCRO,1);// MARCANDO PARA SABER QUE FALTA SINCRONIZAR
 
         db.insert(Util_RegistroFormatos_Detalle.TABLA_REGISTRO_DETALLE, null, values);
         return true;

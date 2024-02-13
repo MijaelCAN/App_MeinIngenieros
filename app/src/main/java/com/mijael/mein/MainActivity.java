@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements OnBackPressedList
         nombres = intent.getStringExtra("nombres");
         //Log.e("SOL",id);
         tv_usuario.setText("Hi , " + nombres +" "+ apater);
+        tv_usuario.setVisibility(View.VISIBLE);
 
         txt_buscarOrden.addTextChangedListener(new TextWatcher() {
             @Override

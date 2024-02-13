@@ -42,6 +42,7 @@ import com.google.gson.JsonObject;
 import com.mijael.mein.DAO.DAO_DatosLocal;
 import com.mijael.mein.DAO.DAO_Equipos;
 import com.mijael.mein.DAO.DAO_FormatosTrabajo;
+import com.mijael.mein.DAO.DAO_RegistroFormatos;
 import com.mijael.mein.DAO.DAO_RegistroIluminacion;
 import com.mijael.mein.DAO.DAO_RegistroRadiacion;
 import com.mijael.mein.DAO.DAO_Usuario;
@@ -57,6 +58,7 @@ import com.mijael.mein.HELPER.EquiposSQLiteHelper;
 import com.mijael.mein.HELPER.FormatoTrabajoSQLiteHelper;
 import com.mijael.mein.SERVICIOS.DosimetriaService;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -98,13 +100,16 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
     LinearLayout linearOtroHorario, linearOtroRegimen, linearPuntosMedicion, linearBuscarDni;
     ImageView imgIliminacion;
     Uri uri;
+    DAO_RegistroFormatos dao_registroFormatos;
     public IluminacionFragment() {
         // Required empty public constructor
+        dao_registroFormatos = new DAO_RegistroFormatos(getContext());
     }
     Formatos_Trabajo for_Iluminacion;
     Validaciones validar = new Validaciones();
-    String valorLargoEscri;
-    String valorAnchoEscri;
+    InputDateConfiguration config;
+    String valorLargoEscri, valorAnchoEscri;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -125,7 +130,7 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
         List<EditText> editTextList = new ArrayList<>();
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_iluminacion,container,false);
-        InputDateConfiguration config = new InputDateConfiguration(getActivity(),id_colaborador,nom_Empresa,rootView);
+        config = new InputDateConfiguration(getActivity(),id_colaborador,nom_Empresa,rootView);
         init(rootView);
 
         config.ConfigPantalla();
@@ -489,9 +494,18 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                     String fecha_registro = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
                     Equipos equipos1 = equipos.Buscar(valorTvLuxometro);
 
+                    ArrayList<HashMap<String, String>> resultList = dao_registroFormatos.getListCantidadFormatoId(Integer.parseInt(id_pt_trabajo));
+                    int total_registros = dao_registroFormatos.get_cant_formato_medicion();
+                    String cod_formato = config.GenerarCodigoFormato(Integer.parseInt(id_formato),resultList.size());// CODIGO DE FORMATO
+                    String cod_registro = config.generarCodigoRegistro(total_registros);// CODIGO DE REGISTRO
+
+                    String valorRutaFoto = uri.getEncodedPath();
+                    int id_plan_formato_reg = dao_registroFormatos.getRecordIdByPosition();
+
                     Iluminacion_Registro cabecera = new Iluminacion_Registro(
                             -1,
-                            "IL-001",
+                            cod_formato,
+                            cod_registro,
                             id_formato,
                             id_plan_trabajo,
                             id_pt_trabajo,
@@ -519,13 +533,13 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                             valorTareaVisual,
                             valor_tipoAreaTrabajo,
                             valorNivelIluminacion,
-                            valorEstadoLuminarias,
                             fecha_registro,
-                            id_colaborador
+                            id_colaborador,
+                            valorRutaFoto //solo para tema local. se envia a web pero no lo recibe
                     );
 
                     Iluminacion_RegistroDetalle detalle = new Iluminacion_RegistroDetalle(
-                            -1,
+                            (id_plan_formato_reg+1),
                             valorTipoIluminacion,
                             valorIdTipoMedicion,
                             valorTipoMedicion,
@@ -579,6 +593,8 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 Log.e("exitoso", "se inserto el registro");
                                 // Mostrar el JSON en el log
+                                File imageFile = new File(uri.getEncodedPath());
+                                config.uploadImage(imageFile, cod_formato,id_pt_trabajo,cod_registro);
                                 Log.e("JSON", cadenaJson);
                                 Log.e("Respuesta",response.toString());
                             }
@@ -599,12 +615,12 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                         nuevoRegistro.RegistroIluminacion(cabecera);
                         nuevoRegistro.RegistroIluminacionDetalle(detalle);
 
-                        DAO_FormatosTrabajo dao_fromatosTrabajo = new DAO_FormatosTrabajo(getActivity());
-                        for_Iluminacion = dao_fromatosTrabajo.Buscar(id_plan_trabajo,id_formato);
+                        DAO_FormatosTrabajo dao_formatosTrabajo = new DAO_FormatosTrabajo(getActivity());
+                        for_Iluminacion = dao_formatosTrabajo.Buscar(id_plan_trabajo,id_formato);
                         for_Iluminacion.setRealizado(for_Iluminacion.getRealizado()+1);
                         for_Iluminacion.setPor_realizar(for_Iluminacion.getPor_realizar()-1);
 
-                        dao_fromatosTrabajo.actualizarFormatoTrabajo(for_Iluminacion);
+                        dao_formatosTrabajo.actualizarFormatoTrabajo(for_Iluminacion);
 
 
                         new AlertDialog.Builder(getActivity())

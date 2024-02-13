@@ -28,6 +28,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mijael.mein.DAO.DAO_Equipos;
 import com.mijael.mein.DAO.DAO_FormatosTrabajo;
+import com.mijael.mein.DAO.DAO_RegistroFormatos;
 import com.mijael.mein.DAO.DAO_RegistroRadiacion;
 import com.mijael.mein.DAO.DAO_RegistroVibracion;
 import com.mijael.mein.DAO.DAO_Usuario;
@@ -44,8 +45,11 @@ import com.mijael.mein.HELPER.EquiposSQLiteHelper;
 import com.mijael.mein.HELPER.FormatoTrabajoSQLiteHelper;
 import com.mijael.mein.SERVICIOS.DosimetriaService;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -82,9 +86,12 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
     EditText txt_otroHorario, txt_otroRegimen, txt_otroRefrigerio;
     Formatos_Trabajo for_Electro;
     Validaciones validar = new Validaciones();
+    InputDateConfiguration config;
+    DAO_RegistroFormatos dao_registroFormatos;
 
     public RadiacionElectromagneticaFragment() {
         // Required empty public constructor
+        dao_registroFormatos = new DAO_RegistroFormatos(getActivity());
     }
 
 
@@ -106,7 +113,7 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_radiacion_electromagnetica, container, false);
-        InputDateConfiguration config = new InputDateConfiguration(getActivity(),id_colaborador,nom_Empresa,rootView);
+        config = new InputDateConfiguration(getActivity(),id_colaborador,nom_Empresa,rootView);
         init(rootView);
         config.ConfigPantalla();
 
@@ -276,9 +283,18 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
                     String fecha_registro = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
                     Equipos equipos1 = equipos.Buscar(valorEquipoMed);
 
+                    ArrayList<HashMap<String, String>> resultList = dao_registroFormatos.getListCantidadFormatoId(Integer.parseInt(id_pt_trabajo));
+                    int total_registros = dao_registroFormatos.get_cant_formato_medicion();
+                    String cod_formato = config.GenerarCodigoFormato(Integer.parseInt(id_formato),resultList.size());
+                    String cod_registro = config.generarCodigoRegistro(total_registros);
+
+                    String valorRutaFoto = uri.getEncodedPath();
+                    int id_plan_formato_reg = dao_registroFormatos.getRecordIdByPosition();
+
                     RadiacionElec_Registro cabecera = new RadiacionElec_Registro(
                             -1,
-                            "RE-001",
+                            cod_formato,
+                            cod_registro,
                             id_formato,
                             id_plan_trabajo,
                             id_pt_trabajo,
@@ -304,17 +320,18 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
                             valorRefrigerio,
                             valorRegimen,
                             valorJornada,
+                            valorTimeMedi,
                             valorTimeExpo,
-                            valorTimeExpo,
-                            valorAreaTrab,
-                            valorControlAdm,
+                            valorDescTrabaj,
+                            valorControlIng,
                             valorControlAdm,
                             valorEpps,
                             fecha_registro,
-                            id_colaborador
+                            id_colaborador,
+                            valorRutaFoto
                     );
                     RadiacionElect_RegistroDetalle detalle = new RadiacionElect_RegistroDetalle(
-                            -1,
+                            (id_plan_formato_reg+1),
                             valorFuenteGen,
                             valorVestimenta,
                             valor_x0,
@@ -360,6 +377,8 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 Log.e("exitoso", "se inserto el registro");
+                                File imageFile = new File(uri.getEncodedPath());
+                                config.uploadImage(imageFile, cod_formato,id_pt_trabajo,cod_registro);
                                 // Mostrar el JSON en el log
                                 Log.e("JSON", cadenaJson);
                                 Log.e("Respuesta",response.toString());
@@ -471,6 +490,8 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
         this.uri = imageUri;
         if (imgRadiacion != null && imageUri != null) {
             imgRadiacion.setImageURI(imageUri);
+            /*File imageFile = new File(imageUri.getEncodedPath());
+            config.uploadImage(imageFile);*/
         }
     }
 }

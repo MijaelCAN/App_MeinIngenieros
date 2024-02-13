@@ -152,4 +152,13 @@ public class Validaciones {
         }
         return 0;
     }
+    public int getValorTag(RadioGroup radioGroup){
+        int radioButtonId = radioGroup.getCheckedRadioButtonId();
+        if(radioButtonId!=-1){
+            RadioButton radioButton = radioGroup.findViewById(radioButtonId);
+            String valorTag = radioButton.getTag().toString();
+            return Integer.parseInt(valorTag);
+        }
+        return 0;
+    }
 }

@@ -21,6 +21,7 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.FragmentContainerView;
@@ -34,7 +35,15 @@ import com.mijael.mein.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,12 +52,16 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class InputDateConfiguration {
@@ -59,6 +72,9 @@ public class InputDateConfiguration {
     public String nom_Empresa;
     public View view;
 
+    public InputDateConfiguration(){
+
+    }
     public InputDateConfiguration(Context context, String id_colaborador, String nom_Empresa, View view) {
         this.context = context;
         this.id_colaborador = id_colaborador;
@@ -82,6 +98,7 @@ public class InputDateConfiguration {
         tv_nomEmpresa.setText(nom_Empresa);
         txt_buscar.setVisibility(View.GONE);
         tv_usu2.setText(tv_usu.getText());
+        tv_usu.setVisibility(View.VISIBLE);
         FragmentContainerView fragmentContainer = activity.findViewById(R.id.fragmentContainerView);
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) fragmentContainer.getLayoutParams();
         params.topMargin = 120;
@@ -318,6 +335,10 @@ public class InputDateConfiguration {
             Date fechaInicial = format.parse(horaInicial);
             Date fechaFinal = format.parse(horaFinal);
 
+            if (fechaFinal.before(fechaInicial)) {
+                return "Hora inválida";
+            }
+
             long diferencia = fechaFinal.getTime() - fechaInicial.getTime();
 
             long minutos = TimeUnit.MILLISECONDS.toMinutes(diferencia) % 60;
@@ -330,4 +351,154 @@ public class InputDateConfiguration {
         }
         return null;
     }
+
+    /*public void uploadImage(File file, String cod_formato, String id_pt_trabajo) {
+        OkHttpClient client = new OkHttpClient().newBuilder().build();
+       MediaType mediaType = MediaType.parse("image/jpeg");
+
+       // Crea un cuerpo de solicitud con el archivo y el tipo de contenido
+       RequestBody body = RequestBody.create(MediaType.parse("image/*"), file);
+       MultipartBody.Part imagePart = MultipartBody.Part.createFormData("image", file.getName(), body);
+
+       RequestBody requestBody = new MultipartBody.Builder()
+               .setType(MultipartBody.FORM)
+               .addPart(imagePart)
+               .build();
+       // Crea la solicitud
+       Request request = new Request.Builder()
+               .url("https://test.meiningenieros.pe/index.php?/ApkI/uploadImage") // URL del servidor
+               .post(requestBody)
+               .addHeader("Content-Type", "image/jpeg")
+               .build();
+
+       // Realiza la solicitud
+       client.newCall(request).enqueue(new Callback() {
+           @Override
+           public void onFailure(Call call, IOException e) {
+               e.printStackTrace();
+           }
+
+           @Override
+           public void onResponse(Call call, Response response) throws IOException {
+               if (response.isSuccessful()) {
+                   Log.i("Upload", "Imagen subida con éxito");
+                   String responseBody = response.body() != null ? response.body().string() : "No hay contenido en la respuesta";
+                   // Muestra el mensaje de respuesta del servidor
+                   Log.i("Upload", "Respuesta del servidor: " + responseBody);
+
+               } else {
+                   Log.e("Upload", "Error al subir la imagen: " + response.message());
+               }
+           }
+       });
+    }*/
+    public void uploadImage(File file, String cod_formato, String id_pt_trabajo, String cod_registro) {
+        OkHttpClient client = new OkHttpClient().newBuilder().build();
+        MediaType mediaType = MediaType.parse("image/jpeg");
+
+        // Crea un cuerpo de solicitud con el archivo y el tipo de contenido
+        RequestBody body = RequestBody.create(MediaType.parse("image/*"), file);
+        MultipartBody.Part imagePart = MultipartBody.Part.createFormData("image", file.getName(), body);
+
+        // Crea un cuerpo de solicitud con los strings adicionales
+        RequestBody codFormatoBody = RequestBody.create(MediaType.parse("text/plain"), cod_formato);
+        RequestBody idPtTrabajoBody = RequestBody.create(MediaType.parse("text/plain"), id_pt_trabajo);
+        RequestBody codRegistroBody = RequestBody.create(MediaType.parse("text/plain"), cod_registro);
+
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addPart(imagePart)
+                .addPart(MultipartBody.Part.createFormData("cod_formato", null, codFormatoBody))
+                .addPart(MultipartBody.Part.createFormData("id_pt_trabajo", null, idPtTrabajoBody))
+                .addPart(MultipartBody.Part.createFormData("cod_registro", null, codRegistroBody))
+                .build();
+
+        // Crea la solicitud
+        Request request = new Request.Builder()
+                .url("https://test.meiningenieros.pe/index.php?/ApkI/uploadImage") // URL del servidor
+                .post(requestBody)
+                .addHeader("Content-Type", "image/jpeg")
+                .build();
+
+        // Realiza la solicitud
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    Log.i("Upload", "Imagen subida con éxito");
+                    String responseBody = response.body() != null ? response.body().string() : "No hay contenido en la respuesta";
+                    // Muestra el mensaje de respuesta del servidor
+                    Log.i("Upload", "Respuesta del servidor: " + responseBody);
+
+                } else {
+                    Log.e("Upload", "Error al subir la imagen: " + response.message());
+                }
+            }
+        });
+    }
+    public String GenerarCodigoFormato(int id_formato, int totalRows_t) {
+        String cod = "";
+        if (id_formato == 1) {
+            cod = "DR-";
+        } else if (id_formato == 2) {
+            cod = "SO-";
+        } else if (id_formato == 3) {
+            cod = "ILU-";
+        } else if (id_formato == 4) {
+            cod = "EF-";
+        } else if (id_formato == 5) {
+            cod = "ET-";
+        } else if (id_formato == 6) {
+            cod = "CT-";
+        } else if (id_formato == 7) {
+            cod = "UV-";
+        } else if (id_formato == 8) {
+            cod = "MV-";
+        } else if (id_formato == 9) {
+            cod = "MRUV-";
+        } else if (id_formato == 31) {
+            cod = "VA-";
+        } else if (id_formato == 29) {
+            cod = "HR-";
+        }
+
+        String codigo = "";
+        if (totalRows_t < 9) {
+            codigo = cod + "0" + (totalRows_t + 1);
+        } else {
+            codigo = cod + (totalRows_t + 1);
+        }
+
+        return codigo;
+    }
+    public String generarCodigoRegistro(int total) {
+        // Obtiene el año actual
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+
+        // Obtiene los últimos dos dígitos del año
+        String yearLastTwoDigits = new SimpleDateFormat("yy", Locale.getDefault()).format(calendar.getTime());
+
+        // Genera el código de registro según las condiciones
+        String codigo;
+        if (total < 9) {
+            codigo = "F" + yearLastTwoDigits + "0000" + (total + 1);
+        } else if (total > 8 && total < 99) {
+            codigo = "F" + yearLastTwoDigits + "000" + (total + 1);
+        } else if (total > 98 && total < 999) {
+            codigo = "F" + yearLastTwoDigits + "00" + (total + 1);
+        } else if (total > 998 && total < 9999) {
+            codigo = "F" + yearLastTwoDigits + "0" + (total + 1);
+        } else {
+            // Manejar otros casos si es necesario
+            codigo = "OtroCaso";
+        }
+        return codigo;
+    }
+
 }

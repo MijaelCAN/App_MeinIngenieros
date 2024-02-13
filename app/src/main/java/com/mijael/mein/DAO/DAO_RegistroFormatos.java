@@ -8,16 +8,19 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.mijael.mein.Entidades.RegistroFormatos;
-import com.mijael.mein.HELPER.RegistroFormatosSQLiteHelper;
+import com.mijael.mein.HELPER.FormatoTrabajoSQLiteHelper;
+import com.mijael.mein.HELPER.MeinSQLiteHelper;
+import com.mijael.mein.Utilidades.Util_Formato_pTrabajo;
 import com.mijael.mein.Utilidades.Util_RegistroFormatos;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DAO_RegistroFormatos {
-    private RegistroFormatosSQLiteHelper dataHelper;
-    public DAO_RegistroFormatos(Context context){dataHelper = RegistroFormatosSQLiteHelper.getInstance(context);}
-
+    private MeinSQLiteHelper dataHelper;
+    public DAO_RegistroFormatos(Context context){dataHelper = MeinSQLiteHelper.getInstance(context);}
     public List<RegistroFormatos> listarRegistros(){
         List<RegistroFormatos> registrosList = new ArrayList<>();
         SQLiteDatabase db = dataHelper.getReadableDatabase();
@@ -163,7 +166,7 @@ public class DAO_RegistroFormatos {
                         cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_ANIO_OCU_CARGO)),
                         cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_MES_OCU_CARGO)),
                         cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_COND_TRAB)),
-                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_PORC_DESCAN)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_RUTA_FOTO)),
                         cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_FOTO)),
                         cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_RESULTADO)),
                         cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_ESTADO_RESULTADO)),
@@ -173,7 +176,8 @@ public class DAO_RegistroFormatos {
                         cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_FEC_ACT)),
                         cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_USER_ACT)),
                         cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_FEC_ELI)),
-                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_USER_ELI))
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_USER_ELI)),
+                        Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_ESTADO_SINCRO)))
 
                 );
                 registrosList.add(registros);
@@ -183,7 +187,172 @@ public class DAO_RegistroFormatos {
         db.close();
         return registrosList;
     }
+    public List<RegistroFormatos> listarRegistrosConEstadoSincro(int estado_sinc){
+        List<RegistroFormatos> registrosList = new ArrayList<>();
+        SQLiteDatabase db = dataHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + Util_RegistroFormatos.TABLA_REGISTRO_FORMATOS + " WHERE estado_sincro = ?", new String[]{String.valueOf(estado_sinc)});
+        if(cursor.moveToFirst()){
+            do{
+                RegistroFormatos registros = new RegistroFormatos(
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_ID_PLAN_TRABAJO_FORMATO_REG)),
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_ID_FORMATO)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_COD_REGISTRO)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_COD_FORMATO)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_ID_PLAN_TRABAJO)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_ID_PT_FORMATO)),
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_ID_ANALISTA)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_NOM_ANALISTA)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_COD_EQUIPO1)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_NOM_EQUIPO1)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_COD_EQUIPO2)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_NOM_EQUIPO2)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_COD_EQUIPO3)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_NOM_EQUIPO3)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_SERIE_EQ1)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_SERIE_EQ2)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_SERIE_EQ3)),
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_ID_EQUIPO1)),
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_ID_EQUIPO2)),
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_ID_EQUIPO3)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_VERF_INSITU)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_HORA_SITU)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_NIVEL)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_VARIACION)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_LUZ)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_AREA_TRABAJO)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_DESC_AREA_TRABAJO)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_AREA_TRAB_DETA)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_ACTIVIDADES_REALIZADAS)),
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_ID_HORARIO)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_HORA_TRABAJO)),
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_N_PERSONAS)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_FEC_MONITOREO)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_HORA_INICIAL)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_TIEMPO_MEDICION)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_HORA_FINAL)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_V_VIENTO)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_H_RELATIVA)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_HORA_JORNADA)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_MIN_JORNADA)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_HORA_EXPOSICION)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_MIN_EXPOSICION)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_JORNADA)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_NOM_TRABAJADOR)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_TIPO_DOC_TRABAJADOR)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_NUM_DOC_TRABAJADOR)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_PUESTO_TRABAJADOR)),
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_EDAD_TRABAJADOR)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_PESO_TRABAJADOR)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_REGIMEN_LABORAL)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_HORARIO_REFRIGERIO)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_TIEMPO_OCUPADO)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_MOLESTIA_OIDO)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_ENFERMEDAD_OIDO)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_DETALLE_ENF_OIDO)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_FECHA_ULTIMO_EXAMEN)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_MES_ULTIMO_EXAMEN)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_ANIO_ULTIMO_EXAMEN)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_CTRL_INGENIERIA)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_CTRL_ADMINISTRATIVO)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_NOM_EPP)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_PROT_AUDITIVO)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_NOM_CTRL_INGENIERIA)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_NOM_CTRL_ADMIN)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_AISLAMIENTO)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_TECHOS)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_CABINAS)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_ORIENTACION)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_CERRAMIENTO)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_OTRO_INGENIERIA)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_CAPACITACION)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_SENIALIZACION_PRECION)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_SENIALIZACION_EPP)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_SENIALIZACION_VIBRACION)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_SENIALIZACION_AREA)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_MANTENIMIENTO_VIBRACION)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_ROTACION)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_AISLANTE_DETALLE)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_CABINA_DETALLE)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_CAPACITACION_DETALLE)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_SENIALIZACION_NIVEL_DETALLE)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_SENIALIZACION_EPP_DETALLE)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_ROTACION_DETALLE)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_TIEMPO_EXPOSICION_DETALLE)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_TAPONES_AU)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_MARCA_TAPONES_AUDI)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_MODELO_TAPONES_AUDI)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_OREJERAS)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_MARCA_OREJERAS)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_MODELO_OREJERAS)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_NRR_OREJERAS)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_NRR_TAPONES_AUDI)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_ADM_TIEMPO_EXPO)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_TIEMPO_EXPOSICION)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_OTRO_ADMINISTRATIVO)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_TAREAS_MEDICION)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_TAREA_VISUAL)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_TIPO_TAREA_VISUAL)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_NIVEL_MIN_ILU)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_OBSERVACION)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_CH_RUIDO_EXTERNO)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_CH_RUIDO_ANTIGUO)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_CH_RUIDO_GENERADO_POR)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_RUIDO_GENERADO_POR)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_OTRO_RUIDO)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_AREA_REQ_CONCENTR)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_LIM_MAX_PERMIS)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_TIPO_MEDICION)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_NOM_TIPO_MEDICION)),
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_LMIN)),
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_LMAX)),
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_LEQUI)),
+// ... campos adicionales ...
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_LEQUI_MD1)),
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_LEQUI_MD2)),
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_LEQUI_MD3)),
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_LEQUI_MD4)),
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_LEQUI_MD5)),
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_LMAX_MD1)),
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_LMAX_MD2)),
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_LMAX_MD3)),
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_LMAX_MD4)),
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_LMAX_MD5)),
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_LMIN_MD1)),
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_LMIN_MD2)),
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_LMIN_MD3)),
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_LMIN_MD4)),
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_LMIN_MD5)),
 
+                        cursor.getDouble(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_LPICO_DBA)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_CONFORMIDAD)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_EVAL_20P)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_TIPO_VIBRACION)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_LATERALIDAD_MANO)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_UBIC_EQUIP)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_ANIO_OCU_CARGO)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_MES_OCU_CARGO)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_COND_TRAB)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_RUTA_FOTO)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_FOTO)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_RESULTADO)),
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_ESTADO_RESULTADO)),
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_ESTADO)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_FEC_REG)),
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_USER_REG)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_FEC_ACT)),
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_USER_ACT)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_FEC_ELI)),
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_USER_ELI)),
+                        Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_ESTADO_SINCRO)))
+
+                );
+                registrosList.add(registros);
+            }while(cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return registrosList;
+    }
     public void actualizarRegistro(RegistroFormatos registro) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -326,7 +495,7 @@ public class DAO_RegistroFormatos {
         values.put(Util_RegistroFormatos.CAMPO_ANIO_OCU_CARGO, registro.getAnio_ocu_cargo());
         values.put(Util_RegistroFormatos.CAMPO_MES_OCU_CARGO, registro.getMes_ocu_cargo());
         values.put(Util_RegistroFormatos.CAMPO_COND_TRAB, registro.getCond_trab());
-        values.put(Util_RegistroFormatos.CAMPO_PORC_DESCAN, registro.getPorc_descan());
+        values.put(Util_RegistroFormatos.CAMPO_RUTA_FOTO, registro.getRuta_foto());
         values.put(Util_RegistroFormatos.CAMPO_FOTO, registro.getFoto());
         values.put(Util_RegistroFormatos.CAMPO_RESULTADO, registro.getResultado());
         values.put(Util_RegistroFormatos.CAMPO_ESTADO_RESULTADO, registro.getEstado_resultado());
@@ -337,6 +506,7 @@ public class DAO_RegistroFormatos {
         values.put(Util_RegistroFormatos.CAMPO_USER_ACT, registro.getUser_act());
         values.put(Util_RegistroFormatos.CAMPO_FEC_ELI, registro.getFec_eli());
         values.put(Util_RegistroFormatos.CAMPO_USER_ELI, registro.getUser_eli());
+        values.put(Util_RegistroFormatos.CAMPO_ESTADO_SINCRO, registro.getEstado_sincro());
 
 
         String whereClause = Util_RegistroFormatos.CAMPO_ID_PLAN_TRABAJO_FORMATO_REG + "= ?"; // suponiendo que el identificador sea 'id'
@@ -350,7 +520,6 @@ public class DAO_RegistroFormatos {
         }
         db.close();
     }
-
     public int contarRegistros() {
         SQLiteDatabase db = dataHelper.getReadableDatabase();
         Cursor cursor = null;
@@ -521,7 +690,7 @@ public class DAO_RegistroFormatos {
                 values.put(Util_RegistroFormatos.CAMPO_ANIO_OCU_CARGO, registro.getAnio_ocu_cargo());
                 values.put(Util_RegistroFormatos.CAMPO_MES_OCU_CARGO, registro.getMes_ocu_cargo());
                 values.put(Util_RegistroFormatos.CAMPO_COND_TRAB, registro.getCond_trab());
-                values.put(Util_RegistroFormatos.CAMPO_PORC_DESCAN, registro.getPorc_descan());
+                values.put(Util_RegistroFormatos.CAMPO_RUTA_FOTO, ""); //llenando como vacio para que no este null
                 values.put(Util_RegistroFormatos.CAMPO_FOTO, registro.getFoto());
                 values.put(Util_RegistroFormatos.CAMPO_RESULTADO, registro.getResultado());
                 values.put(Util_RegistroFormatos.CAMPO_ESTADO_RESULTADO, registro.getEstado_resultado());
@@ -532,6 +701,8 @@ public class DAO_RegistroFormatos {
                 values.put(Util_RegistroFormatos.CAMPO_USER_ACT, registro.getUser_act());
                 values.put(Util_RegistroFormatos.CAMPO_FEC_ELI, registro.getFec_eli());
                 values.put(Util_RegistroFormatos.CAMPO_USER_ELI, registro.getUser_eli());
+                values.put(Util_RegistroFormatos.CAMPO_ESTADO_SINCRO, registro.getEstado_sincro());
+
 
                 // Insertar el cine en la base de datos
                 long resultado = db.insert(Util_RegistroFormatos.TABLA_REGISTRO_FORMATOS, null, values);
@@ -711,7 +882,7 @@ public class DAO_RegistroFormatos {
         values.put(Util_RegistroFormatos.CAMPO_ANIO_OCU_CARGO, registro.getAnio_ocu_cargo());
         values.put(Util_RegistroFormatos.CAMPO_MES_OCU_CARGO, registro.getMes_ocu_cargo());
         values.put(Util_RegistroFormatos.CAMPO_COND_TRAB, registro.getCond_trab());
-        values.put(Util_RegistroFormatos.CAMPO_PORC_DESCAN, registro.getPorc_descan());
+        values.put(Util_RegistroFormatos.CAMPO_RUTA_FOTO, registro.getRuta_foto());
         values.put(Util_RegistroFormatos.CAMPO_FOTO, registro.getFoto());
         values.put(Util_RegistroFormatos.CAMPO_RESULTADO, registro.getResultado());
         values.put(Util_RegistroFormatos.CAMPO_ESTADO_RESULTADO, registro.getEstado_resultado());
@@ -722,14 +893,12 @@ public class DAO_RegistroFormatos {
         values.put(Util_RegistroFormatos.CAMPO_USER_ACT, registro.getUser_act());
         values.put(Util_RegistroFormatos.CAMPO_FEC_ELI, registro.getFec_eli());
         values.put(Util_RegistroFormatos.CAMPO_USER_ELI, registro.getUser_eli());
+        values.put(Util_RegistroFormatos.CAMPO_ESTADO_SINCRO, registro.getEstado_sincro());
 
         Long idResultante = db.insert(Util_RegistroFormatos.TABLA_REGISTRO_FORMATOS, Util_RegistroFormatos.CAMPO_ID_PLAN_TRABAJO_FORMATO_REG,values);
 
         db.close();
     }
-
-
-
     /*public List<String> obtener_CodEquipos(){
         List<String> codigosList = new ArrayList<>();
         SQLiteDatabase db = dataHelper.getReadableDatabase();
@@ -744,7 +913,6 @@ public class DAO_RegistroFormatos {
         db.close();
         return codigosList;
     }*/
-
     public RegistroFormatos Buscar(String id_formato_reg){
         RegistroFormatos registro = null;
         SQLiteDatabase db = dataHelper.getReadableDatabase();
@@ -891,7 +1059,7 @@ public class DAO_RegistroFormatos {
                         cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_ANIO_OCU_CARGO)),
                         cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_MES_OCU_CARGO)),
                         cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_COND_TRAB)),
-                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_PORC_DESCAN)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_RUTA_FOTO)),
                         cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_FOTO)),
                         cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_RESULTADO)),
                         cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_ESTADO_RESULTADO)),
@@ -901,7 +1069,8 @@ public class DAO_RegistroFormatos {
                         cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_FEC_ACT)),
                         cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_USER_ACT)),
                         cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_FEC_ELI)),
-                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_USER_ELI))
+                        cursor.getInt(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_USER_ELI)),
+                        Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos.CAMPO_ESTADO_SINCRO)))
 
                 );
             }while (cursor.moveToNext());
@@ -910,4 +1079,102 @@ public class DAO_RegistroFormatos {
         db.close();
         return registro;
     }
+    public ArrayList<HashMap<String, String>> getListCantidadFormatoId(int idPtFormato) {
+        ArrayList<HashMap<String, String>> resultList = new ArrayList<>();
+
+        SQLiteDatabase db = dataHelper.getReadableDatabase();
+        /*String consulta = "SELECT d.*, p.id_formato, strftime('%H:%M', d.hora_inicial) AS hora_inicial, strftime('%H:%M', d.hora_final) AS hora_final, "+
+                "CASE " +
+                "WHEN d.estado_resultado = 1 THEN 'Completo' " +
+                "WHEN d.estado_resultado = 2 THEN 'Sin Completar' " +
+                "END AS desc_estado_resultado " +
+                "FROM plan_trabajo_formato_reg d " +
+                "LEFT JOIN formato_trabajo p ON d.id_pt_formato = p.id_pt_formato " +
+                "WHERE d.id_pt_formato = ?";*/
+        String selectQuery = "SELECT d.*, p.id_formato, strftime('%H:%M', d.hora_inicial) AS hora_inicial, strftime('%H:%M', d.hora_final) AS hora_final " +
+                "FROM "+Util_RegistroFormatos.TABLA_REGISTRO_FORMATOS+" d " +
+                "LEFT JOIN "+ Util_Formato_pTrabajo.TABLA_FORMATO_TRABAJO +" p ON d.id_pt_formato = p.id_pt_formato " +
+                "WHERE d.id_pt_formato = ? ";
+
+        Cursor cursor = db.rawQuery(selectQuery, new String[]{String.valueOf(idPtFormato)});
+
+        if (cursor.moveToFirst()) {
+            do {
+                HashMap<String, String> map = new HashMap<>();
+                for(int i=0; i<cursor.getColumnCount(); i++) {
+                    map.put(cursor.getColumnName(i), cursor.getString(i));
+                }
+                resultList.add(map);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return resultList;
+    }
+    public void actualizarRegistro(int idRegistro, Map<String, Object> camposAActualizar) {
+        SQLiteDatabase db = dataHelper.getWritableDatabase();
+        ContentValues valores = new ContentValues();
+
+        for (Map.Entry<String, Object> entry : camposAActualizar.entrySet()) {
+            String nombreCampo = entry.getKey();
+            Object valorCampo = entry.getValue();
+
+            if (valorCampo instanceof String) {
+                valores.put(nombreCampo, (String) valorCampo);
+            } else if (valorCampo instanceof Integer) {
+                valores.put(nombreCampo, (Integer) valorCampo);
+            }
+            // Añade más conversiones según sea necesario para otros tipos de datos
+        }
+        cambiarEstadoSincronizacion(idRegistro,false);
+        db.update(Util_RegistroFormatos.TABLA_REGISTRO_FORMATOS, valores, Util_RegistroFormatos.CAMPO_ID_PLAN_TRABAJO_FORMATO_REG + "=?", new String[]{String.valueOf(idRegistro)});
+        db.close();
+    }
+    public void cambiarEstadoSincronizacion(int idRegistro, Boolean estadoSincronizacion) {
+        SQLiteDatabase db = dataHelper.getWritableDatabase();
+        ContentValues valores = new ContentValues();
+
+        valores.put("estado_sincro", !estadoSincronizacion);
+        db.update(Util_RegistroFormatos.TABLA_REGISTRO_FORMATOS, valores, Util_RegistroFormatos.CAMPO_ID_PLAN_TRABAJO_FORMATO_REG + "=?", new String[]{String.valueOf(idRegistro)});
+    }
+
+    public int ultimo_cod_formato_medicion(int id_pt_formato, int id_plan_trabajo, int id_formato) {
+        String sql = "SELECT count(1) as cantidad from plan_trabajo_formato_reg where id_pt_formato='" + id_pt_formato + "' and estado=1 and id_plan_trabajo='" + id_plan_trabajo + "' and id_formato='" + id_formato + "'";
+        SQLiteDatabase db = dataHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery(sql, null);
+        int cantidad = 0;
+        if (cursor.moveToFirst()) {
+            cantidad = cursor.getInt(cursor.getColumnIndex("cantidad"));
+        }
+        cursor.close();
+        return cantidad;
+    }
+    public int get_cant_formato_medicion(){
+        String sql = "SELECT count(1) as total from plan_trabajo_formato_reg";
+        SQLiteDatabase db = dataHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery(sql, null);
+        int total = 0;
+        if (cursor.moveToFirst()) {
+            total = cursor.getInt(cursor.getColumnIndex("total"));
+        }
+        cursor.close();
+        return total;
+    }
+    public int getRecordIdByPosition( ){
+        String sql = "SELECT "+Util_RegistroFormatos.CAMPO_ID_PLAN_TRABAJO_FORMATO_REG+" AS id FROM plan_trabajo_formato_reg ORDER BY id_plan_trabajo_formato_reg DESC LIMIT 1";
+        SQLiteDatabase db = dataHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery(sql, null);
+        int recordId = -1;
+
+        if (cursor.moveToFirst()) {
+            recordId = cursor.getInt(cursor.getColumnIndex("id"));
+        }
+
+        cursor.close();
+        db.close();
+        return recordId;
+    }
+
 }

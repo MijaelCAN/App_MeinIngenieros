@@ -1,54 +1,13 @@
 package com.mijael.mein.Entidades;
 
-public class EstresFrio_RegistroDetalle {
+public class Confort_RegistroDetalle {
     public int id_plan_trabajo_formato_reg;
     public String fuente_generadora;
-    public String desc_fuente_frio;
-    public int ropa_interior;
-    public int camisa_blusa;
-    public int pantalon;
-    public int pullover;
-    public int abrigo;
-    public int chaqueta;
-    /*public String ri_calz;
-    public String ri_calzl;
-    public String ri_camist;
-    public String ri_camismc;
-    public String ri_camisml;
-    public String ri_sujetb;
-    public String cb_mangac;
-    public String cb_ligeramc;
-    public String cb_normalml;
-    public String cb_cfranml;
-    public String cb_bligmc;
-    public String p_cor;
-    public String p_lig;
-    public String p_norm;
-    public String p_fran;
-    public String pul_chasm;
-    public String pul_lig;
-    public String pul_med;
-    public String pul_grue;
-    public String pa_abri;
-    public String pa_chal;
-    public String pa_park;
-    public String pa_monf;
-    public String ch_lig;
-    public String ch_chaq;
-    public String ch_batat;
-    public String ch_monot;*/
-    public String d_zapsd;
-    public String d_zapsg;
-    public String d_calc;
-    public String d_med;
-    public String d_calcgc;
-    public String d_calcgl;
-    public String d_botas;
-    public String d_guant;
-    public String rotacion_personal;
-    public String tiempo_recuperacion;
-    public String dispensador;// NO ESTA EN EL FORMULARIO
-    public String capa_expo_frio;
+    public String desc_fuente_gen;
+    public String desc_atuendo;
+    /*public String ligero;
+    public String medio;
+    public String pesado;*/
     public int id_nivel_d;
     public String nom_nivel_d;
     public int id_metodo_determ;
@@ -92,34 +51,18 @@ public class EstresFrio_RegistroDetalle {
     public String mtr_subida;
     public String t_aire;
     public String t_globo;
+    public String t_bulbo;
     public String h_relativa;
     public String v_viento;
     public int estado;
     public String fec_reg;
     public String user_reg;
 
-    public EstresFrio_RegistroDetalle(int id_plan_trabajo_formato_reg, String fuente_generadora, String desc_fuente_frio, int ropa_interior, int camisa_blusa, int pantalon, int pullover, int abrigo, int chaqueta, String d_zapsd, String d_zapsg, String d_calc, String d_med, String d_calcgc, String d_calcgl, String d_botas, String d_guant, String rotacion_personal, String tiempo_recuperacion, String dispensador, String capa_expo_frio, int id_nivel_d, String nom_nivel_d, int id_metodo_determ, String metodo_determ, int id_tipo_trabajo, String tipo_trabajo, String ocupacion, String rango_tasa_metab, String clase, String actividad_deter, String tasa_metab, String tasa_metab_kcal, String frecuencia_deter, String genero_deter, String ntareas, String nom_tarea1, String ciclo_trabajo1, String posicion_1, String pcuerpo_1, String intensidad_1, String nom_tarea2, String ciclo_trabajo2, String posicion_2, String pcuerpo_2, String intensidad_2, String nom_tarea3, String ciclo_trabajo3, String posicion_3, String pcuerpo_3, String intensidad_3, String nom_tarea4, String ciclo_trabajo4, String posicion_4, String pcuerpo_4, String intensidad_4, String nom_tarea5, String ciclo_trabajo5, String posicion_5, String pcuerpo_5, String intensidad_5, String mtr_subida, String t_aire, String t_globo, String h_relativa, String v_viento, String fec_reg, String user_reg) {
+    public Confort_RegistroDetalle(int id_plan_trabajo_formato_reg, String fuente_generadora, String desc_fuente_gen, String desc_atuendo, int id_nivel_d, String nom_nivel_d, int id_metodo_determ, String metodo_determ, int id_tipo_trabajo, String tipo_trabajo, String ocupacion, String rango_tasa_metab, String clase, String actividad_deter, String tasa_metab, String tasa_metab_kcal, String frecuencia_deter, String genero_deter, String ntareas, String nom_tarea1, String ciclo_trabajo1, String posicion_1, String pcuerpo_1, String intensidad_1, String nom_tarea2, String ciclo_trabajo2, String posicion_2, String pcuerpo_2, String intensidad_2, String nom_tarea3, String ciclo_trabajo3, String posicion_3, String pcuerpo_3, String intensidad_3, String nom_tarea4, String ciclo_trabajo4, String posicion_4, String pcuerpo_4, String intensidad_4, String nom_tarea5, String ciclo_trabajo5, String posicion_5, String pcuerpo_5, String intensidad_5, String mtr_subida, String t_aire, String t_globo, String t_bulbo, String h_relativa, String v_viento, String fec_reg, String user_reg) {
         this.id_plan_trabajo_formato_reg = id_plan_trabajo_formato_reg;
         this.fuente_generadora = fuente_generadora;
-        this.desc_fuente_frio = desc_fuente_frio;
-        this.ropa_interior = ropa_interior;
-        this.camisa_blusa = camisa_blusa;
-        this.pantalon = pantalon;
-        this.pullover = pullover;
-        this.abrigo = abrigo;
-        this.chaqueta = chaqueta;
-        this.d_zapsd = d_zapsd;
-        this.d_zapsg = d_zapsg;
-        this.d_calc = d_calc;
-        this.d_med = d_med;
-        this.d_calcgc = d_calcgc;
-        this.d_calcgl = d_calcgl;
-        this.d_botas = d_botas;
-        this.d_guant = d_guant;
-        this.rotacion_personal = rotacion_personal;
-        this.tiempo_recuperacion = tiempo_recuperacion;
-        this.dispensador = dispensador;
-        this.capa_expo_frio = capa_expo_frio;
+        this.desc_fuente_gen = desc_fuente_gen;
+        this.desc_atuendo = desc_atuendo;
         this.id_nivel_d = id_nivel_d;
         this.nom_nivel_d = nom_nivel_d;
         this.id_metodo_determ = id_metodo_determ;
@@ -163,6 +106,7 @@ public class EstresFrio_RegistroDetalle {
         this.mtr_subida = mtr_subida;
         this.t_aire = t_aire;
         this.t_globo = t_globo;
+        this.t_bulbo = t_bulbo;
         this.h_relativa = h_relativa;
         this.v_viento = v_viento;
         this.fec_reg = fec_reg;
@@ -185,156 +129,20 @@ public class EstresFrio_RegistroDetalle {
         this.fuente_generadora = fuente_generadora;
     }
 
-    public String getDesc_fuente_frio() {
-        return desc_fuente_frio;
+    public String getDesc_fuente_gen() {
+        return desc_fuente_gen;
     }
 
-    public void setDesc_fuente_frio(String desc_fuente_frio) {
-        this.desc_fuente_frio = desc_fuente_frio;
+    public void setDesc_fuente_gen(String desc_fuente_gen) {
+        this.desc_fuente_gen = desc_fuente_gen;
     }
 
-    public int getRopa_interior() {
-        return ropa_interior;
+    public String getDesc_atuendo() {
+        return desc_atuendo;
     }
 
-    public void setRopa_interior(int ropa_interior) {
-        this.ropa_interior = ropa_interior;
-    }
-
-    public int getCamisa_blusa() {
-        return camisa_blusa;
-    }
-
-    public void setCamisa_blusa(int camisa_blusa) {
-        this.camisa_blusa = camisa_blusa;
-    }
-
-    public int getPantalon() {
-        return pantalon;
-    }
-
-    public void setPantalon(int pantalon) {
-        this.pantalon = pantalon;
-    }
-
-    public int getPullover() {
-        return pullover;
-    }
-
-    public void setPullover(int pullover) {
-        this.pullover = pullover;
-    }
-
-    public int getAbrigo() {
-        return abrigo;
-    }
-
-    public void setAbrigo(int abrigo) {
-        this.abrigo = abrigo;
-    }
-
-    public int getChaqueta() {
-        return chaqueta;
-    }
-
-    public void setChaqueta(int chaqueta) {
-        this.chaqueta = chaqueta;
-    }
-
-    public String getD_zapsd() {
-        return d_zapsd;
-    }
-
-    public void setD_zapsd(String d_zapsd) {
-        this.d_zapsd = d_zapsd;
-    }
-
-    public String getD_zapsg() {
-        return d_zapsg;
-    }
-
-    public void setD_zapsg(String d_zapsg) {
-        this.d_zapsg = d_zapsg;
-    }
-
-    public String getD_calc() {
-        return d_calc;
-    }
-
-    public void setD_calc(String d_calc) {
-        this.d_calc = d_calc;
-    }
-
-    public String getD_med() {
-        return d_med;
-    }
-
-    public void setD_med(String d_med) {
-        this.d_med = d_med;
-    }
-
-    public String getD_calcgc() {
-        return d_calcgc;
-    }
-
-    public void setD_calcgc(String d_calcgc) {
-        this.d_calcgc = d_calcgc;
-    }
-
-    public String getD_calcgl() {
-        return d_calcgl;
-    }
-
-    public void setD_calcgl(String d_calcgl) {
-        this.d_calcgl = d_calcgl;
-    }
-
-    public String getD_botas() {
-        return d_botas;
-    }
-
-    public void setD_botas(String d_botas) {
-        this.d_botas = d_botas;
-    }
-
-    public String getD_guant() {
-        return d_guant;
-    }
-
-    public void setD_guant(String d_guant) {
-        this.d_guant = d_guant;
-    }
-
-    public String getRotacion_personal() {
-        return rotacion_personal;
-    }
-
-    public void setRotacion_personal(String rotacion_personal) {
-        this.rotacion_personal = rotacion_personal;
-    }
-
-    public String getTiempo_recuperacion() {
-        return tiempo_recuperacion;
-    }
-
-    public void setTiempo_recuperacion(String tiempo_recuperacion) {
-        this.tiempo_recuperacion = tiempo_recuperacion;
-    }
-
-    public String getDispensador() {
-        return dispensador;
-    }
-
-    public void setDispensador(String dispensador) {
-        this.dispensador = dispensador;
-    }
-
-    public String getCapa_expo_frio() {
-        return capa_expo_frio;
-    }
-
-    public void setCapa_expo_frio(String capa_expo_frio) {
-        this.capa_expo_frio = capa_expo_frio;
+    public void setDesc_atuendo(String desc_atuendo) {
+        this.desc_atuendo = desc_atuendo;
     }
 
     public int getId_nivel_d() {
@@ -679,6 +487,14 @@ public class EstresFrio_RegistroDetalle {
 
     public void setT_globo(String t_globo) {
         this.t_globo = t_globo;
+    }
+
+    public String getT_bulbo() {
+        return t_bulbo;
+    }
+
+    public void setT_bulbo(String t_bulbo) {
+        this.t_bulbo = t_bulbo;
     }
 
     public String getH_relativa() {

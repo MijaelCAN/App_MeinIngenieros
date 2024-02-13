@@ -3,6 +3,7 @@ package com.mijael.mein.Entidades;
 public class Vibracion_Registro {
     public int id;
     public String cod_formato;
+    public String cod_registro;
     public String id_formato;
     public String id_plan_trabajo;
     public String id_pt_formato;
@@ -40,15 +41,17 @@ public class Vibracion_Registro {
     public int estado;
     public String fec_reg;
     public String user_reg;
+    private String ruta_foto;
 
-    public Vibracion_Registro(int id, String cod_formato, String id_formato, String id_plan_trabajo, String id_pt_formato, String cod_equipo1, String nom_equipo1, String serie_eq1,
+    public Vibracion_Registro(int id, String cod_formato, String cod_registro, String id_formato, String id_plan_trabajo, String id_pt_formato, String cod_equipo1, String nom_equipo1, String serie_eq1,
                               String id_equipo1, String id_analista, String nom_analista, String tipo_vibracion, String lateralidad_mano,String verf_insitu, String hora_situ, String fec_monitoreo,
                               String hora_inicial, String hora_final, String tiempo_exposicion, String jornada, String tipo_doc_trabajador, String num_doc_trabajador,
                               String nom_trabajador, String puesto_trabajador, String area_trabajo, String actividades_realizadas, String edad_trabajador, String hora_trabajo,
                               String horario_refrigerio, String regimen_laboral, String ctrl_ingenieria, String nom_ctrl_ingenieria, String ctrl_administrativo,
-                              String senializacion_vibracion, String capacitacion, String mantenimiento_vibracion, String fec_reg, String user_reg) {
+                              String senializacion_vibracion, String capacitacion, String mantenimiento_vibracion, String fec_reg, String user_reg, String ruta_foto) {
         this.id = id;
         this.cod_formato = cod_formato;
+        this.cod_registro = cod_registro;
         this.id_formato = id_formato;
         this.id_plan_trabajo = id_plan_trabajo;
         this.id_pt_formato = id_pt_formato;
@@ -86,6 +89,7 @@ public class Vibracion_Registro {
         this.estado = 1;
         this.fec_reg = fec_reg;
         this.user_reg = user_reg;
+        this.ruta_foto = ruta_foto;
     }
 
     public int getId() {
@@ -102,6 +106,14 @@ public class Vibracion_Registro {
 
     public void setCod_formato(String cod_formato) {
         this.cod_formato = cod_formato;
+    }
+
+    public String getCod_registro() {
+        return cod_registro;
+    }
+
+    public void setCod_registro(String cod_registro) {
+        this.cod_registro = cod_registro;
     }
 
     public String getId_formato() {
@@ -398,5 +410,13 @@ public class Vibracion_Registro {
 
     public void setUser_reg(String user_reg) {
         this.user_reg = user_reg;
+    }
+
+    public String getRuta_foto() {
+        return ruta_foto;
+    }
+
+    public void setRuta_foto(String ruta_foto) {
+        this.ruta_foto = ruta_foto;
     }
 }

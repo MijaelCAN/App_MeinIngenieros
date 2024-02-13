@@ -4,11 +4,10 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import androidx.annotation.Nullable;
-
 import com.mijael.mein.Utilidades.Util_DosimetriaRegistro;
 import com.mijael.mein.Utilidades.Util_EstresTermicoRegistro;
 import com.mijael.mein.Utilidades.Util_EstresTermicoRegistroDetalle;
+import com.mijael.mein.Utilidades.Util_Formato_pTrabajo;
 import com.mijael.mein.Utilidades.Util_IluminacionRegistro;
 import com.mijael.mein.Utilidades.Util_IluminacionRegistroDetalle;
 import com.mijael.mein.Utilidades.Util_RadiacionElectRegistro;
@@ -19,24 +18,24 @@ import com.mijael.mein.Utilidades.Util_SonometriaRegistro;
 import com.mijael.mein.Utilidades.Util_VibracionRegistro;
 import com.mijael.mein.Utilidades.Util_VibracionRegistroDetalle;
 
-public class RegistroFormatosSQLiteHelper extends SQLiteOpenHelper {
+public class MeinSQLiteHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "DB_RegistrosFormatos";
     private static final int DATABASE_VERSION = 1;
-    private static RegistroFormatosSQLiteHelper instance;
-    public RegistroFormatosSQLiteHelper(Context context){
+    private static MeinSQLiteHelper instance;
+    public MeinSQLiteHelper(Context context){
         super(context,DATABASE_NAME,null,DATABASE_VERSION);
 
     }
-    public static RegistroFormatosSQLiteHelper getInstance(Context context) {
+    public static MeinSQLiteHelper getInstance(Context context) {
         if (instance == null) {
-            instance = new RegistroFormatosSQLiteHelper(context);
+            instance = new MeinSQLiteHelper(context);
         }
         return instance;
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(Util_DosimetriaRegistro.CrearTablaRegistroDosimetria);
+        /*db.execSQL(Util_DosimetriaRegistro.CrearTablaRegistroDosimetria);
         db.execSQL(Util_SonometriaRegistro.CrearTablaRegistroSonometria);
         db.execSQL(Util_IluminacionRegistro.CrearTablaIluminacion);
         db.execSQL(Util_IluminacionRegistroDetalle.CrearTablaIluminacionDetalle);
@@ -45,9 +44,12 @@ public class RegistroFormatosSQLiteHelper extends SQLiteOpenHelper {
         db.execSQL(Util_EstresTermicoRegistro.CrearTablaEstres);
         db.execSQL(Util_EstresTermicoRegistroDetalle.CrearTablaEstresDetalle);
         db.execSQL(Util_RadiacionElectRegistro.CrearTablaRadiacion);
-        db.execSQL(Util_RadiacionElectRegistroDetalle.CrearTablaRadiacionDetalle);
+        db.execSQL(Util_RadiacionElectRegistroDetalle.CrearTablaRadiacionDetalle);*/
         db.execSQL(Util_RegistroFormatos.CrearTablaRegistroFormato);
         db.execSQL(Util_RegistroFormatos_Detalle.CrearTablaRegistroDetalle);
+        db.execSQL(Util_Formato_pTrabajo.CrearTablaformatoTrabajo);
+        //db.execSQL("ALTER TABLE " + Util_RegistroFormatos.TABLA_REGISTRO_FORMATOS + " ADD COLUMN pendiente_sincronizacion INTEGER DEFAULT 0");
+
     }
 
     @Override

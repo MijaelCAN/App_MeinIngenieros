@@ -37,10 +37,9 @@ import com.google.gson.JsonObject;
 import com.mijael.mein.DAO.DAO_DatosLocal;
 import com.mijael.mein.DAO.DAO_Equipos;
 import com.mijael.mein.DAO.DAO_FormatosTrabajo;
-import com.mijael.mein.DAO.DAO_RegistroDosimetria;
+import com.mijael.mein.DAO.DAO_RegistroFormatos;
 import com.mijael.mein.DAO.DAO_RegistroSonometria;
 import com.mijael.mein.DAO.DAO_Usuario;
-import com.mijael.mein.Entidades.Dosimetria_Registro;
 import com.mijael.mein.Entidades.Equipos;
 import com.mijael.mein.Entidades.Formatos_Trabajo;
 import com.mijael.mein.Entidades.Sonometria_Registro;
@@ -48,13 +47,9 @@ import com.mijael.mein.Entidades.Usuario;
 import com.mijael.mein.Extras.FragmentoImagen;
 import com.mijael.mein.Extras.InputDateConfiguration;
 import com.mijael.mein.Extras.Validaciones;
-import com.mijael.mein.HELPER.EquiposSQLiteHelper;
-import com.mijael.mein.HELPER.FormatoTrabajoSQLiteHelper;
 import com.mijael.mein.SERVICIOS.DosimetriaService;
 
-import org.w3c.dom.Text;
-
-import java.text.ParseException;
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -103,13 +98,15 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
     Uri uri;
     private View rootView;
     Formatos_Trabajo for_Sonometria;
-
+    DAO_RegistroFormatos dao_registroFormatos;
 
     public SonometriaFragment() {
         // Required empty public constructor
+        dao_registroFormatos = new DAO_RegistroFormatos(getActivity());
     }
 
     Validaciones validar = new Validaciones();
+    InputDateConfiguration config;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -129,7 +126,7 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_sonometria,container,false);
         init(rootView);
-        InputDateConfiguration config = new InputDateConfiguration(getActivity(),id_colaborador,nom_Empresa,rootView);
+        config = new InputDateConfiguration(getActivity(),id_colaborador,nom_Empresa,rootView);
 
         ConfigPantalla();
 
@@ -345,9 +342,18 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
                         Equipos equipo2 = equipos.Buscar(valorTvCalibrador);
                         Equipos equipo3 = equipos.Buscar(valorTvAnemometro);
 
+                        ArrayList<HashMap<String, String>> resultList = dao_registroFormatos.getListCantidadFormatoId(Integer.parseInt(id_pt_trabajo));
+                        int total_registros = dao_registroFormatos.get_cant_formato_medicion();
+                        String cod_formato = config.GenerarCodigoFormato(Integer.parseInt(id_formato),resultList.size());
+                        String cod_registro = config.generarCodigoRegistro(total_registros);
+
+                        String valorRutaFoto = uri.getEncodedPath();
+                        int id_plan_formato_reg = dao_registroFormatos.getRecordIdByPosition();
+
                         Sonometria_Registro cabecera = new Sonometria_Registro(
                                 -1,
-                                "SO-0001",// irrelevante por ahira
+                                cod_formato,
+                                cod_registro,
                                 id_formato,
                                 id_plan_trabajo,
                                 id_pt_trabajo,
@@ -422,7 +428,8 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
                                 nrrOrej,
                                 jornadaTrabajo,
                                 fecha_registro,
-                                id_colaborador
+                                id_colaborador,
+                                valorRutaFoto
                         );
 
                         if(config.isOnline()){
@@ -455,6 +462,8 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
                                 @Override
                                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                     Log.e("exitoso", "se inserto el registro");
+                                    File imageFile = new File(uri.getEncodedPath());
+                                    config.uploadImage(imageFile, cod_formato,id_pt_trabajo,cod_registro);
                                     // Mostrar el JSON en el log
                                     Log.e("JSON", cadenaJson);
                                     Log.e("Respuesta",response.toString());
@@ -629,6 +638,7 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
         TextView tv_usu = activity.findViewById(R.id.txt_usuario);
         txt_buscar.setVisibility(View.GONE);
         tv_usu2.setText(tv_usu.getText());
+        tv_usu.setVisibility(View.VISIBLE);
         FragmentContainerView fragmentContainer = activity.findViewById(R.id.fragmentContainerView);
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) fragmentContainer.getLayoutParams();
         params.topMargin = 120;
@@ -715,6 +725,8 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
         this.uri = imageUri;
         if (imagen_sono != null && imageUri != null) {
             imagen_sono.setImageURI(imageUri);
+            /*File imageFile = new File(imageUri.getEncodedPath());
+            config.uploadImage(imageFile);*/
         }
     }
     private void sumarTiempo() {
@@ -769,28 +781,59 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
         });
     }
     private void calcularMedicion(){
-        String med1 = txt_leq1.getText().toString();
-        String med2 = txt_leq2.getText().toString();
-        String med3 = txt_leq3.getText().toString();
-        String med4 = txt_leq4.getText().toString();
-        String med5 = txt_leq5.getText().toString();
-        String med6 = txt_lmin1.getText().toString();
-        String med7 = txt_lmin2.getText().toString();
-        String med8 = txt_lmin3.getText().toString();
-        String med9 = txt_lmin4.getText().toString();
-        String med10 = txt_lmin5.getText().toString();
-        String med11 =txt_lmax1.getText().toString();
-        String med12 = txt_lmax2.getText().toString();
-        String med13 = txt_lmax3.getText().toString();
-        String med14 = txt_lmax4.getText().toString();
-        String med15 = txt_lmax5.getText().toString();
+        double med1 = Double.parseDouble(txt_leq1.getText().toString());
+        double med2 = Double.parseDouble(txt_leq2.getText().toString());
+        double med3 = Double.parseDouble(txt_leq3.getText().toString());
+        double med4;
+        double med5;
+        double med6 = Double.parseDouble(txt_lmin1.getText().toString());
+        double med7 = Double.parseDouble(txt_lmin2.getText().toString());
+        double med8 = Double.parseDouble(txt_lmin3.getText().toString());
+        double med9;
+        double med10;
+        double med11 =Double.parseDouble(txt_lmax1.getText().toString());
+        double med12 = Double.parseDouble(txt_lmax2.getText().toString());
+        double med13 = Double.parseDouble(txt_lmax3.getText().toString());
+        double med14;
+        double med15;
+
+        try {
+            String txtMed4 = txt_leq4.getText().toString();
+            String txtMed5 = txt_leq5.getText().toString();
+            String txtMed9 = txt_lmin4.getText().toString();
+            String txtMed10 = txt_lmin5.getText().toString();
+            String txtMed14 = txt_lmax4.getText().toString();
+            String txtMed15 = txt_lmax5.getText().toString();
+            med4 = txtMed4.isEmpty() ? 0.0 : Double.parseDouble(txtMed4);
+            med5 = txtMed5.isEmpty() ? 0.0 : Double.parseDouble(txtMed5);
+            med9 = txtMed9.isEmpty() ? 0.0 : Double.parseDouble(txtMed9);
+            med10 = txtMed10.isEmpty() ? 0.0 : Double.parseDouble(txtMed10);
+            med14 = txtMed14.isEmpty() ? 0.0 : Double.parseDouble(txtMed14);
+            med15 = txtMed15.isEmpty() ? 0.0 : Double.parseDouble(txtMed15);
+        } catch (NumberFormatException e) {
+            // En caso de que la conversión a double falle (campo vacío o no numérico)
+            med4 = 0.0;  // Puedes establecer cualquier valor predeterminado
+            med5 = 0.0;  // Puedes establecer cualquier valor predeterminado
+            med9 = 0.0;  // Puedes establecer cualquier valor predeterminado
+            med10 = 0.0;  // Puedes establecer cualquier valor predeterminado
+            med14 = 0.0;  // Puedes establecer cualquier valor predeterminado
+            med15 = 0.0;  // Puedes establecer cualquier valor predeterminado
+            e.printStackTrace();  // Puedes imprimir o registrar la excepción si es necesario
+        }
 
         //double fj = 60.0 / 600.0;
         double fj = 5;
-        double fj_final = 15.0 / 600.0;
+        double fj_final = 15.0;
 
+        double[] matriz = { med1, med2, med3, med6, med7, med8, med11, med12, med13, med4, med5, med9, med10, med14, med15 };
 
-            String cadena = med1 + "," + med2 + "," + med3 + "," + med6 + "," + med7 + "," + med8 + "," + med11 + "," + med12 + "," + med13 +
+        double maximo = Arrays.stream(matriz).max().orElse(0.0);
+        double minimo = Arrays.stream(matriz)
+                .filter(val -> val != 0.0) // Filtrar los valores que no son 0.0
+                .min()
+                .orElse(0.0);
+
+       /* String cadena = med1 + "," + med2 + "," + med3 + "," + med6 + "," + med7 + "," + med8 + "," + med11 + "," + med12 + "," + med13 +
                 (med4 != null ? "," + med4 : "") +
                 (med5 != null ? "," + med5 : "") +
                 (med9 != null ? "," + med5 : "") +
@@ -801,50 +844,50 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
 
                 String[] matriz = cadena.split(",");
         double maximo = Arrays.stream(matriz).mapToDouble(Double::parseDouble).max().getAsDouble();
-        double minimo = Arrays.stream(matriz).mapToDouble(Double::parseDouble).min().getAsDouble();
+        double minimo = Arrays.stream(matriz).mapToDouble(Double::parseDouble).min().getAsDouble();*/
 
         // Lj/10
-        double lj1 = (double) Integer.parseInt(med1) / 10;
-        double lj2 = (double) Integer.parseInt(med2) / 10;
-        double lj3 = (double) (Integer.parseInt(med3) / 10.0);
-        double lj4 = !med4.isEmpty() ? (double) (Integer.parseInt(med4) / 10.0) : 0.0;
-        double lj5 = !med5.isEmpty() ? (double) (Integer.parseInt(med5) / 10.0) : 0.0;
-        double lj6 = (double) (Integer.parseInt(med6) / 10.0);
-        double lj7 = (double) (Integer.parseInt(med7) / 10.0);
-        double lj8 = (double) (Integer.parseInt(med8) / 10.0);
-        double lj9 = !med9.isEmpty() ? (double) (Integer.parseInt(med9) / 10.0) : 0.0;
-        double lj10 = !med10.isEmpty() ? (double) (Integer.parseInt(med10) / 10.0) : 0.0;
-        double lj11= (double) (Integer.parseInt(med11) / 10.0);
-        double lj12 = (double) (Integer.parseInt(med12) / 10.0);
-        double lj13 = (double) (Integer.parseInt(med13) / 10.0);
-        double lj14 = !med14.isEmpty() ? (double) (Integer.parseInt(med14) / 10.0) : 0.0;
-        double lj15 = !med15.isEmpty() ? (double) (Integer.parseInt(med15) / 10.0) : 0.0;
+        double lj1 = med1 / 10;
+        double lj2 = med2 / 10;
+        double lj3 = med3 / 10.0;
+        double lj4 = med4 != 0.0 ? med4 / 10.0 : 0.0;
+        double lj5 = med5 != 0.0 ? med5 / 10.0 : 0.0;
+        double lj6 = med6 / 10.0;
+        double lj7 = med7 / 10.0;
+        double lj8 = med8 / 10.0;
+        double lj9 = med9 != 0.0 ? med9 / 10.0 : 0.0;
+        double lj10 = med10 != 0.0 ? med10 / 10.0 : 0.0;
+        double lj11= med11 / 10.0;
+        double lj12 = med12/ 10.0;
+        double lj13 = med13 / 10.0;
+        double lj14 = med14 != 0.0 ? med14 / 10.0 : 0.0;
+        double lj15 = med15 != 0.0 ? med15 / 10.0 : 0.0;
 
 
         // 10^(Lj/10)
         double pot_lj1 = (Math.pow(10, lj1));
         double pot_lj2 = (Math.pow(10, lj2));
         double pot_lj3 = (Math.pow(10, lj3));
-        double pot_lj4 = !med4.isEmpty() ? (Math.pow(10, lj4)) : 0.0;
-        double pot_lj5 = !med5.isEmpty() ? (Math.pow(10, lj5)) : 0.0;
+        double pot_lj4 = med4 != 0.0 ? (Math.pow(10, lj4)) : 0.0;
+        double pot_lj5 = med5 != 0.0 ? (Math.pow(10, lj5)) : 0.0;
         double pot_lj6 = (Math.pow(10, lj6));
         double pot_lj7 = (Math.pow(10, lj7));
         double pot_lj8 = (Math.pow(10, lj8));
-        double pot_lj9 = !med9.isEmpty() ? Math.pow(10, lj9) : 0.0;
-        double pot_lj10 = !med10.isEmpty() ? (Math.pow(10, lj10)) : 0.0;
+        double pot_lj9 = med9 != 0.0 ? Math.pow(10, lj9) : 0.0;
+        double pot_lj10 = med10 != 0.0 ? (Math.pow(10, lj10)) : 0.0;
         double pot_lj11 = (Math.pow(10, lj11));
         double pot_lj12 = (Math.pow(10, lj12));
         double pot_lj13 = (Math.pow(10, lj13));
-        double pot_lj14 = !med11.isEmpty() ? (Math.pow(10, lj14)) : 0.0;
-        double pot_lj15 = !med12.isEmpty() ? (Math.pow(10, lj15)) : 0.0;
+        double pot_lj14 = med14 != 0.0 ? (Math.pow(10, lj14)) : 0.0;
+        double pot_lj15 = med15 != 0.0 ? (Math.pow(10, lj15)) : 0.0;
 
         // N°Repeticiones*Fj x 10^(Lj/10)
         double multi1 = (1 * fj * pot_lj1);
         double multi2 = (1 * fj * pot_lj2);
         double multi3 = (1 * fj * pot_lj3);
-        double multi4 = !med4.isEmpty() ? (1 * fj * pot_lj4) : 0.0;
-        double multi5 = !med5.isEmpty() ? (1 * fj * pot_lj5) : 0.0;
-        double multi6 = (1 * fj * pot_lj6);
+        double multi4 = med4 != 0.0 ? (1 * fj * pot_lj4) : 0.0;
+        double multi5 = med5 != 0.0 ? (1 * fj * pot_lj5) : 0.0;
+        /*double multi6 = (1 * fj * pot_lj6);
         double multi7 = (1 * fj * pot_lj7);
         double multi8 = (1 * fj * pot_lj8);
         double multi9 = !med9.isEmpty() ? (1 * fj * pot_lj9) : 0.0;
@@ -853,11 +896,19 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
         double multi12 = (1 * fj * pot_lj12);
         double multi13 = (1 * fj * pot_lj13);
         double multi14 = !med14.isEmpty() ? (1 * fj * pot_lj14) : 0.0;
-        double multi15 = !med15.isEmpty() ? (1 * fj * pot_lj15) : 0.0;
+        double multi15 = !med15.isEmpty() ? (1 * fj * pot_lj15) : 0.0;*/
         //double multi15 = !med15.isEmpty() ? (1 * fj_final * pot_lj15) : 0.0;
 
-        double suma = (multi1 + multi2 + multi3)/15;
+        if(med4!=0.0){
+            fj_final +=5;
+        }
+        if(med5!=0.0){
+            fj_final +=5;
+        }
+
+        double suma = (multi1 + multi2 + multi3 + multi4 + multi5)/fj_final;
         //double suma = (multi1 + multi2 + multi3 + multi4 + multi5 + multi6 + multi7 + multi8 + multi9 + multi10 + multi11 + multi12 + multi13 + multi14 + multi15)/15;
+
         double Leq_dBA = Math.round(10 * Math.log10(suma) * 100) / 100.0;
         tv_resLmin.setText(String.valueOf(minimo));
         tv_resLmax.setText(String.valueOf(maximo));
