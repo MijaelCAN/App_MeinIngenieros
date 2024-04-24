@@ -51,6 +51,7 @@
             android:background="@drawable/style_input"
             android:fontFamily="sans-serif-light"
             android:hint="Digite"
+            android:inputType="number|numberDecimal"
             android:paddingLeft="8dp"
             android:textColor="@color/black"
             android:textColorHint="@color/black"

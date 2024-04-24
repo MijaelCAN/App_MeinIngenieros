@@ -565,8 +565,10 @@ tools:context=".VibracionFragment">
                                 android:background="@drawable/style_input"
                                 android:layout_marginTop="5dp"
                                 android:hint="Digite"
+                                android:inputType="number"
                                 android:paddingLeft="8dp"
-                                android:textSize="16sp"/>
+                                android:textSize="16sp"
+                                android:maxLength="8"/>
                         </LinearLayout>
                         <LinearLayout
                             android:id="@+id/linearBuscarDni"
@@ -641,6 +643,8 @@ tools:context=".VibracionFragment">
                                 android:layout_weight="1"
                                 android:text="Edad"
                                 android:textSize="12sp"
+                                android:inputType="number"
+                                android:maxLength="2"
                                 android:fontFamily="sans-serif-light"
                                 android:textColor="@color/black" />
 

@@ -2,18 +2,18 @@ package com.mijael.mein.Extras;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.cardview.widget.CardView;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class Validaciones {
     public  boolean validarCampoObligatorio(EditText editText) {
@@ -161,4 +161,28 @@ public class Validaciones {
         }
         return 0;
     }
+    /*public void dispplayPDF(String pdfURL, Context context, PdfViewerPreferences pdfView){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    URL url = new URL(pdfURL);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.connect();
+                    InputStream inputStream = connection.getInputStream();
+                    BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
+
+                    pdfView.fromStream(bufferedInputStream)
+                            .defaultPage(0)
+                            .onLoad(context)
+                            .scrollHandle(new DefaultScrollHandle(context))
+                            .spacing(10) // Espacio entre las páginas
+                            .pageFitPolicy(FitPolicy.BOTH) // Ajustar la página tanto en ancho como en alto
+                            .load();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }*/
 }

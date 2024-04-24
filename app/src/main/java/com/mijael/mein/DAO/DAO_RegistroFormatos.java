@@ -1167,8 +1167,7 @@ public class DAO_RegistroFormatos {
         SQLiteDatabase db = dataHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(sql, null);
         int recordId = -1;
-
-        if (cursor.moveToFirst()) {
+        if(cursor.moveToFirst()) {
             recordId = cursor.getInt(cursor.getColumnIndex("id"));
         }
 

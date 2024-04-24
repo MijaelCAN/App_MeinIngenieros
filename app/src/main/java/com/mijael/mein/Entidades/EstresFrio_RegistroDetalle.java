@@ -10,6 +10,7 @@ public class EstresFrio_RegistroDetalle {
     public int pullover;
     public int abrigo;
     public int chaqueta;
+    public int forrada;
     /*public String ri_calz;
     public String ri_calzl;
     public String ri_camist;
@@ -98,7 +99,7 @@ public class EstresFrio_RegistroDetalle {
     public String fec_reg;
     public String user_reg;
 
-    public EstresFrio_RegistroDetalle(int id_plan_trabajo_formato_reg, String fuente_generadora, String desc_fuente_frio, int ropa_interior, int camisa_blusa, int pantalon, int pullover, int abrigo, int chaqueta, String d_zapsd, String d_zapsg, String d_calc, String d_med, String d_calcgc, String d_calcgl, String d_botas, String d_guant, String rotacion_personal, String tiempo_recuperacion, String dispensador, String capa_expo_frio, int id_nivel_d, String nom_nivel_d, int id_metodo_determ, String metodo_determ, int id_tipo_trabajo, String tipo_trabajo, String ocupacion, String rango_tasa_metab, String clase, String actividad_deter, String tasa_metab, String tasa_metab_kcal, String frecuencia_deter, String genero_deter, String ntareas, String nom_tarea1, String ciclo_trabajo1, String posicion_1, String pcuerpo_1, String intensidad_1, String nom_tarea2, String ciclo_trabajo2, String posicion_2, String pcuerpo_2, String intensidad_2, String nom_tarea3, String ciclo_trabajo3, String posicion_3, String pcuerpo_3, String intensidad_3, String nom_tarea4, String ciclo_trabajo4, String posicion_4, String pcuerpo_4, String intensidad_4, String nom_tarea5, String ciclo_trabajo5, String posicion_5, String pcuerpo_5, String intensidad_5, String mtr_subida, String t_aire, String t_globo, String h_relativa, String v_viento, String fec_reg, String user_reg) {
+    public EstresFrio_RegistroDetalle(int id_plan_trabajo_formato_reg, String fuente_generadora, String desc_fuente_frio, int ropa_interior, int camisa_blusa, int pantalon, int pullover, int abrigo, int chaqueta,int forrada, String d_zapsd, String d_zapsg, String d_calc, String d_med, String d_calcgc, String d_calcgl, String d_botas, String d_guant, String rotacion_personal, String tiempo_recuperacion, String dispensador, String capa_expo_frio, int id_nivel_d, String nom_nivel_d, int id_metodo_determ, String metodo_determ, int id_tipo_trabajo, String tipo_trabajo, String ocupacion, String rango_tasa_metab, String clase, String actividad_deter, String tasa_metab, String tasa_metab_kcal, String frecuencia_deter, String genero_deter, String ntareas, String nom_tarea1, String ciclo_trabajo1, String posicion_1, String pcuerpo_1, String intensidad_1, String nom_tarea2, String ciclo_trabajo2, String posicion_2, String pcuerpo_2, String intensidad_2, String nom_tarea3, String ciclo_trabajo3, String posicion_3, String pcuerpo_3, String intensidad_3, String nom_tarea4, String ciclo_trabajo4, String posicion_4, String pcuerpo_4, String intensidad_4, String nom_tarea5, String ciclo_trabajo5, String posicion_5, String pcuerpo_5, String intensidad_5, String mtr_subida, String t_aire, String t_globo, String h_relativa, String v_viento, String fec_reg, String user_reg) {
         this.id_plan_trabajo_formato_reg = id_plan_trabajo_formato_reg;
         this.fuente_generadora = fuente_generadora;
         this.desc_fuente_frio = desc_fuente_frio;
@@ -108,6 +109,7 @@ public class EstresFrio_RegistroDetalle {
         this.pullover = pullover;
         this.abrigo = abrigo;
         this.chaqueta = chaqueta;
+        this.forrada = forrada;
         this.d_zapsd = d_zapsd;
         this.d_zapsg = d_zapsg;
         this.d_calc = d_calc;
@@ -239,6 +241,14 @@ public class EstresFrio_RegistroDetalle {
 
     public void setChaqueta(int chaqueta) {
         this.chaqueta = chaqueta;
+    }
+
+    public int getForrada() {
+        return forrada;
+    }
+
+    public void setForrada(int forrada) {
+        this.forrada = forrada;
     }
 
     public String getD_zapsd() {

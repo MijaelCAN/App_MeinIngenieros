@@ -2,7 +2,11 @@ package com.mijael.mein;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.AppCompatButton;
@@ -10,15 +14,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.work.Constraints;
 import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.ExistingWorkPolicy;
 import androidx.work.NetworkType;
-import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 import androidx.work.Worker;
 
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,25 +26,43 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.github.barteksc.pdfviewer.PDFView;
+import com.itextpdf.io.image.ImageData;
+import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.kernel.colors.DeviceRgb;
+import com.itextpdf.kernel.geom.PageSize;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Image;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.property.TextAlignment;
+import com.itextpdf.layout.property.UnitValue;
+import com.itextpdf.layout.property.VerticalAlignment;
+import com.mijael.mein.DAO.DAO_FormatosTrabajo;
 import com.mijael.mein.DAO.DAO_RegistroFormatos;
 import com.mijael.mein.DAO.DAO_RegistroFormatosDetalle;
+import com.mijael.mein.Entidades.Formatos_Trabajo;
 import com.mijael.mein.Entidades.RegistroFormatos;
+import com.mijael.mein.Entidades.RegistroFormatos_Detalle;
 import com.mijael.mein.Extras.InputDateConfiguration;
 import com.mijael.mein.Extras.Validaciones;
-import com.mijael.mein.SINCRONIZACION.RegistroFormatosDetalle_SyncWorker;
-import com.mijael.mein.SINCRONIZACION.RegistroFormatos_SyncWorker;
-import com.mijael.mein.Utilidades.Util_RegistroFormatos;
-import com.mijael.mein.Utilidades.Util_RegistroFormatos_Detalle;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class DetalleFormatosFragment extends Fragment {
+
+    private static final String FILENAME = "formulario.pdf";
     private boolean calculoRealizado = false;
     String id_plan_trabajo, id_pt_trabajo, id_formato, id_colaborador, nom_Empresa, nom_formato;
     TextView tv_fechaDetalle,tv_horaDetalle, tv_analistaDetalle, tv_areaTrabDetalle, tv_horarioDetalle, tv_pdf, tv_editar, tv_eliminar,tv_idRegistro,
@@ -53,20 +71,22 @@ public class DetalleFormatosFragment extends Fragment {
             txt_t_globo11, txt_t_globo17, txt_h_relativa01, txt_h_relativa11, txt_h_relativa17, txt_velViento, txt_velViento2, txt_velViento3, txt_x, txt_y, txt_z,
             txt_t_aire, txt_t_aireNegro, txt_bulboHumedo, txt_humedadRelativa, txt_velVientoCF,txt_x0, txt_x2, txt_x4, txt_x6, txt_y0, txt_y2, txt_y4, txt_y6, txt_z0, txt_z2, txt_z4, txt_z6,
             txt_leq1, txt_lmax1, txt_lmin1, txt_leq2, txt_lmax2, txt_lmin2, txt_leq3, txt_lmax3, txt_lmin3, txt_leq4, txt_lmax4, txt_lmin4, txt_leq5, txt_lmax5, txt_lmin5;
-    View ViewDetalle, view_colorDetalle;
+    View ViewDetalle, view_colorDetalle,ViewPdf;
     AppCompatButton btn_subirDatos, btn_subirDatosReg,btn_calcularMedicion;
     LinearLayout linearLayout, linearAdvertencia,linearDosimetria, linearSonometria, linearHoraFinal, linearEstresTermico, linearVibracion, linearEstresFrio_Confort,
     linearBulbo, linearRadElectro;
     DAO_RegistroFormatos dao_registroFormatos;
     DAO_RegistroFormatosDetalle dao_registroDetalle;
     private static final int SYNC_INTERVAL_MIN = 15;
+    Bundle bundle;
     public DetalleFormatosFragment() {
         // Required empty public constructor
         dao_registroFormatos = new DAO_RegistroFormatos(getActivity());
         dao_registroDetalle = new DAO_RegistroFormatosDetalle(getActivity());
+        bundle = new Bundle();
     }
     Validaciones validar = new Validaciones();
-
+    Paint paint = new Paint();
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,6 +106,7 @@ public class DetalleFormatosFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_detalle_formatos, container, false);
+
         InputDateConfiguration config = new InputDateConfiguration(getActivity(),id_colaborador,nom_Empresa,rootView);
         linearLayout = rootView.findViewById(R.id.contenedor_Card);
         btn_subirDatos = rootView.findViewById(R.id.btn_subirDatosDet);
@@ -108,23 +129,14 @@ public class DetalleFormatosFragment extends Fragment {
     }
 
     private void MostrarFOrmatos(ArrayList<HashMap<String, String>> resultList, LayoutInflater inflater, int i) {
+
         ViewDetalle = inflater.inflate(R.layout.vista_detalle,null);
+        ViewPdf = inflater.inflate(R.layout.vista_pdf, null);
         init(ViewDetalle);
         InputDateConfiguration config = new InputDateConfiguration(getActivity(),id_colaborador,nom_Empresa,ViewDetalle);
 
         HashMap<String, String> primerRegistro = resultList.get(i);
-        /*for (HashMap<String, String> map : resultList) {
-            for (Map.Entry<String, String> entry : map.entrySet()) {
-                String key = entry.getKey();
-                String value = entry.getValue();
 
-                if (key.equals("nom_analista")) nomAnalista += value + "\n";
-                if (key.equals("area_trabajo")) areaTrabajo += value + "\n";
-                if (key.equals("hora_trabajo")) horaTrabajo += value + "\n";
-                if (key.equals("hora_inicial")) horaInicial += value + "\n";
-                if (key.equals("fec_reg")) fechaRegistro += value + "\n";
-            }
-        }*/
         int colorAleatorio = generarColorAleatorio();
         String idregistro = primerRegistro.get("id_plan_trabajo_formato_reg");
         String nomAnalista = primerRegistro.get("nom_analista");
@@ -140,10 +152,94 @@ public class DetalleFormatosFragment extends Fragment {
         tv_horarioDetalle.setText(horaTrabajo);
         tv_horaDetalle.setText(horaInicial);
         tv_fechaDetalle.setText(fechaRegistro);
+
+
+        PDFView pdfView = ViewPdf.findViewById(R.id.pdfView);
+        tv_pdf.setOnClickListener(new View.OnClickListener() {
+            RegistroFormatos reg = dao_registroFormatos.Buscar(idregistro);
+            RegistroFormatos_Detalle reg_detalle = dao_registroDetalle.Buscar_Id_Registro(String.valueOf(reg.id_plan_trabajo_formato_reg));
+            @Override
+            public void onClick(View v) {
+                String pdfFileName = reg.getCod_registro() + ".pdf";
+                File pdfFile = new File(requireActivity().getExternalFilesDir(null), pdfFileName);
+                String pdfFilePath = pdfFile.getAbsolutePath();
+
+                // Verificar si el archivo existente debe ser eliminado
+                if (pdfFile.exists()) {
+                    // Eliminar el archivo existente
+                    if (pdfFile.delete()) {
+                        Log.d("PDF", "Archivo existente eliminado");
+                    } else {
+                        Log.d("PDF", "No se pudo eliminar el archivo existente");
+                    }
+                }
+                AlertDialog.Builder builder;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    builder = new AlertDialog.Builder(getContext(), android.R.style.Theme_Material_Dialog_Alert);
+                } else {
+                    builder = new AlertDialog.Builder(getContext());
+                }
+                // Crear el archivo PDF
+                if(reg.getId_formato()==1){ // Dosimetria
+                    generarPdf_Dosimetria(pdfFile,pdfFilePath,reg,reg_detalle);
+                } else if (reg.getId_formato()==2) { // Sonometria
+                    generarPdf_Sonometria(pdfFile,pdfFilePath,reg,reg_detalle);
+                }else if (reg.getId_formato()==3) { // Iluminacion
+                    generarPdf_Iluminacion(pdfFile,pdfFilePath,reg,reg_detalle);
+                }else if (reg.getId_formato()==4) { //ESTRES POR FRIO
+                    generarPdf_EstresFrio(pdfFile,pdfFilePath,reg,reg_detalle);
+                }else if (reg.getId_formato()==5) { // ESTRES TERMICO
+                    generarPdf_EstresTermico(pdfFile,pdfFilePath,reg,reg_detalle);
+                }else if (reg.getId_formato()==6) { // CONFORT TERMICO
+                    generarPdf_ConfortTermico(pdfFile,pdfFilePath,reg,reg_detalle);
+                }else if (reg.getId_formato()==7) { // Radiacion UV
+                    generarPdf_RadiacionUV(pdfFile,pdfFilePath,reg,reg_detalle);
+                }else if (reg.getId_formato()==8) { // Vibracion
+                    generarPdf_Vibracion(pdfFile,pdfFilePath,reg,reg_detalle);
+                }else if (reg.getId_formato()==9) {// Radiacion Electromanetico
+                    generarPdf_RadiacionElectro(pdfFile,pdfFilePath,reg,reg_detalle);
+                }else if (reg.getId_formato()==29) {// Humedad Relativa
+                    generarPdf_HumedadRelativa(pdfFile,pdfFilePath,reg,reg_detalle);
+                }else if (reg.getId_formato()==31) {// Velocidad del Aire
+                    generarPdf_VelocidadAire(pdfFile,pdfFilePath,reg,reg_detalle);
+                }
+            }
+        });
         tv_editar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 RegistroFormatos reg = dao_registroFormatos.Buscar(idregistro);
+                RegistroFormatos_Detalle detalle = dao_registroDetalle.Buscar_Id_Registro(String.valueOf(reg.id_plan_trabajo_formato_reg));
+                if(reg.id_formato==1){
+                    Fragment dosimetria = new DosimetriaFragment();//INSTANCIA DEL FRAGMENTO A DONDE QUIERO IR
+                    AbrirFormato(dosimetria, reg,detalle);
+                } else if (reg.id_formato==2) {
+                    Fragment sonometria = new SonometriaFragment();
+                    AbrirFormato(sonometria,reg,detalle);
+                } else if (reg.id_formato==3) {
+                    Fragment iluminacion = new IluminacionFragment();
+                    AbrirFormato(iluminacion,reg,detalle);
+                } else if (reg.id_formato==5) {
+                    Fragment estresTermico = new EstresTermicoFragment();
+                    AbrirFormato(estresTermico,reg,detalle);
+                } else if (reg.id_formato == 7) {
+                    Fragment radiacionUV = new RadiacionUvFragment();
+                    AbrirFormato(radiacionUV,reg,detalle);
+                } else if (reg.id_formato == 8) {
+                    Fragment vibracion = new VibracionFragment();
+                    AbrirFormato(vibracion,reg,detalle);
+                } else if (reg.id_formato == 9) {
+                    Fragment rad_electro = new RadiacionElectromagneticaFragment();
+                    AbrirFormato(rad_electro,reg,detalle);
+                } else if (reg.id_formato==29) {
+                    Fragment humedad = new HumedadRelativaFragment();
+                    AbrirFormato(humedad,reg,detalle);
+                } else if (reg.id_formato ==31) {
+                    Fragment velocidad = new VelocidadAireFragment();
+                    AbrirFormato(velocidad, reg,detalle);
+                }
+
+                /*RegistroFormatos reg = dao_registroFormatos.Buscar(idregistro);
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("Editar");
                 //builder.setMessage("Aquí puedes poner el contenido de tu modal para editar");
@@ -466,10 +562,9 @@ public class DetalleFormatosFragment extends Fragment {
                     }
                 });
                 AlertDialog dialog = builder.create();
-                dialog.show();
+                dialog.show();*/
             }
         });
-
         tv_eliminar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -479,6 +574,8 @@ public class DetalleFormatosFragment extends Fragment {
                 builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // Aquí puedes poner el código para eliminar
+
+
                     }
                 });
                 builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -491,21 +588,13 @@ public class DetalleFormatosFragment extends Fragment {
                 dialog.show();
             }
         });
-        /*btn_subirDatos.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TareasProgramadas(RegistroFormatosDetalle_SyncWorker.class,"Registro_Detalle");
-            }
-        });
-        btn_subirDatosReg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TareasProgramadas(RegistroFormatos_SyncWorker.class,"Registro");
-            }
-        });*/
-
         linearLayout.addView(ViewDetalle);
     }
+    /*
+    * builder.setTitle("EN PROCESO") MOSTRAR MENSAJE DE ALERTA ______________________________-----_____-__--_--__--_-____-_
+                            .setMessage("El procesamiento está en progreso.")
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();*/
 
     public void init(View rootView){
         //texto = rootView.findViewById(R.id.tv_texto);
@@ -779,4 +868,2657 @@ public class DetalleFormatosFragment extends Fragment {
         tv_resLeq.setText(String.valueOf(Leq_dBA));
         calculoRealizado = true;
     }
+
+    private void generarPdf_EstresFrio(File pdfFile, String pdfFilePath, RegistroFormatos reg, RegistroFormatos_Detalle reg_detalle){
+        try {
+            DAO_FormatosTrabajo daoFormato = new DAO_FormatosTrabajo(getContext());
+            Formatos_Trabajo formato = daoFormato.Buscar(reg.getId_plan_trabajo(), String.valueOf(reg.getId_formato()));
+
+            PdfWriter writer = new PdfWriter(pdfFile);
+            PdfDocument pdfDocument = new PdfDocument(writer);
+            Document document = new Document(pdfDocument, PageSize.A4);
+
+            float[] columnWidths = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}; // Definir anchos de columna
+            Table table = new Table(UnitValue.createPercentArray(columnWidths));
+            // Configurar la tabla para ocupar todo el ancho de la página
+            table.setWidth(UnitValue.createPercentValue(100));
+
+            Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.logo);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            byte[] bitmapData = stream.toByteArray();
+            ImageData imageData = ImageDataFactory.create(bitmapData);
+            /*String imagePath = "logo.jpg";
+            ImageData imageData = ImageDataFactory.create(getContext().getAssets().open(imagePath));*/
+            Image image = new Image(imageData);
+            float maxWidthSize = 80f; // Tamaño máximo en píxeles
+            float maxHeightSize = 50f; // Tamaño máximo en píxeles
+            image.scaleToFit(maxWidthSize, maxHeightSize);
+
+            // Primera fila con diferentes anchos de columna
+            table.addCell(new Cell(4,2).add(image).setVerticalAlignment(VerticalAlignment.MIDDLE).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(2,6).add(new Paragraph("FORMATO DE CAMPO PARA MEDICIÓN\n" + "DE ESTRÉS POR FRÍO")).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Código")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("MEIN-FORMATO-MVA-01")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            // Segunda fila con diferentes anchos de columna
+            table.addCell(new Cell(1,1).add(new Paragraph("Versión")).setWidth(2).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("1")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(2,6).add(new Paragraph("SISTEMA INTEGRADO DE GESTIÓN")).setFontSize(10).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,1).add(new Paragraph("Fecha")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("02/01/2024")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Página")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("1")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Empresa")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(formato.getNom_cliente())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Analista de campo:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,6).add(new Paragraph(reg.getNom_analista())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Foto")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(!reg.getRuta_foto().equals("") || reg.getFoto()!=null?"X":"")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Equipo utilizado:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Equipo de EF: ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getCod_equipo1())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Número de serie: ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getSerie_eq1())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Equipo utilizado:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Anemómetro: ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getCod_equipo2())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Número de serie: ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getSerie_eq2())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,3).add(new Paragraph("Hora de verificación:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getHora_situ())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Verificación In Situ:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            String contenido = reg.getVerf_insitu().equals("1") ? "SI" : "NO";
+            table.addCell(new Cell(1,3).add(new Paragraph(contenido).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("HORA DE MONITOREO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Fecha:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Hora inicial")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Hora final")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Tiempo exposición (h)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Jornada (h)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getFec_monitoreo())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getHora_inicial())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getHora_final())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getTiempo_exposicion())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getJornada())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("DATOS PERSONALES DEL TRABAJADOR")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Nombres y\n"+"apellidos")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph(reg.getNom_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Doc. identidad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph(reg.getTipo_doc_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getNum_doc_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Puesto:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getPuesto_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Área de Trabajo:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getArea_trabajo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Actividades\n" +
+                    "Realizadas:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getActividades_realizadas())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Peso (Kg)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph(reg.getPeso_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Edad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(String.valueOf(reg.getEdad_trabajador()))).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("HORARIO DE TRABAJO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(2,2).add(new Paragraph("Horario de Trabajo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(2,5).add(new Paragraph(reg.getHora_trabajo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Horario de Refrigerio: ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getHorario_refrigerio())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Régimen laboral")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getRegimen_laboral())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("CONDICIONES DE TRABAJO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Fuente Generadora")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg_detalle.getFuente_generadora())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Descripción de la\n" +
+                    "fuente de frío:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg_detalle.getDesc_fuente_frio())).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+
+            table.addCell(new Cell(11,2).add(new Paragraph("Vestimenta del\n" +
+                    "Personal Evaluado")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER).setBackgroundColor(new DeviceRgb(221, 235, 247)));
+            table.addCell(new Cell(1,2).add(new Paragraph("ROPA INTERIOR")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER).setBackgroundColor(new DeviceRgb(238,236,225)));
+            table.addCell(new Cell(1,2).add(new Paragraph("CAMISAS / BLUSAS")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER).setBackgroundColor(new DeviceRgb(238,236,225)));
+            table.addCell(new Cell(1,2).add(new Paragraph("PANTALONES")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER).setBackgroundColor(new DeviceRgb(238,236,225)));
+            table.addCell(new Cell(1,2).add(new Paragraph("PULLOVER")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER).setBackgroundColor(new DeviceRgb(238,236,225)));
+            table.addCell(new Cell(1,2).add(new Paragraph("PRENDA DE ABRIGO")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER).setBackgroundColor(new DeviceRgb(238,236,225)));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("(" + (reg_detalle.getRopa_interior().equals("1") ? "X":"\u00A0") + ") Calzoncillos")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,2).add(new Paragraph("(" + (reg_detalle.getCamisa_blusa().equals("1") ? "X":"\u00A0") + ") Manga Corta")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,2).add(new Paragraph("(" + (reg_detalle.getPantalon().equals("1") ? "X":"\u00A0") + ") Corto")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,2).add(new Paragraph("(" + (reg_detalle.getPullover().equals("1") ? "X":"\u00A0") + ") Chaleco Sin\n" + "Mangas")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,2).add(new Paragraph("(" + (reg_detalle.getAbrigo().equals("1") ? "X":"\u00A0") + ") Abrigo")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("(" + (reg_detalle.getRopa_interior().equals("2") ? "X":"\u00A0") +") Calzoncillos\n" + "largos")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,2).add(new Paragraph("(" + (reg_detalle.getCamisa_blusa().equals("2") ? "X":"\u00A0") + ") Ligera, Mangas\n" + "Cortas")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,2).add(new Paragraph("(" + (reg_detalle.getPantalon().equals("2") ? "X":"\u00A0") + ") Ligero")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,2).add(new Paragraph("(" + (reg_detalle.getPullover().equals("2") ? "X":"\u00A0") + ") Pullover\n" + "Ligero")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,2).add(new Paragraph("(" + (reg_detalle.getAbrigo().equals("2") ? "X":"\u00A0") + ") Chaqueta Larga")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("(" + (reg_detalle.getRopa_interior().equals("3") ? "X":"\u00A0") + ") Camiseta de\n" + "tirantes\n")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,2).add(new Paragraph("(" + (reg_detalle.getCamisa_blusa().equals("3") ? "X":"\u00A0") +") Normal Mangas\n" + "Largas")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(2,2).add(new Paragraph("(" + (reg_detalle.getPantalon().equals("3") ? "X":"\u00A0") + ") Normal")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(2,2).add(new Paragraph("(" + (reg_detalle.getPullover().equals("3") ? "X":"\u00A0") + ") Pullover\n" + "Medio")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(2,2).add(new Paragraph("(" + (reg_detalle.getAbrigo().equals("3") ? "X":"\u00A0")  + ") Parka")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("(" + (reg_detalle.getRopa_interior().equals("4") ? "X":"\u00A0") + ") Camiseta de\n" + "manga corta ")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(2,2).add(new Paragraph("(" + (reg_detalle.getCamisa_blusa().equals("4") ? "X":"\u00A0") + ") Camiseta franela\n" + "Manga Larga ")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("(" + (reg_detalle.getRopa_interior().equals("5") ? "X":"\u00A0") + ") Camiseta de\n" + "maga larga")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(2,2).add(new Paragraph("(" + (reg_detalle.getPantalon().equals("4") ? "X":"\u00A0") + ") Franela")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(2,2).add(new Paragraph("(" + (reg_detalle.getPullover().equals("4") ? "X":"\u00A0") + ") Pullover\n" + "Grueso")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(2,2).add(new Paragraph("(" + (reg_detalle.getAbrigo().equals("4") ? "X":"\u00A0") + ") Mono forrado")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("(" + (reg_detalle.getRopa_interior().equals("6") ? "X":"\u00A0") + ") Sujetadores y\n" + "bragas")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,2).add(new Paragraph("(" + (reg_detalle.getCamisa_blusa().equals("5") ? "X":"\u00A0") + ") Blusa Ligera Manga\n" + "Larga\n")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("FORRADAS")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT).setBackgroundColor(new DeviceRgb(238,236,225)));
+            table.addCell(new Cell(1,2).add(new Paragraph("(" + (reg_detalle.getForrada() != null && reg_detalle.getForrada().equals("1") ? "X":"\u00A0") + ") Mono de trabajo")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,2).add(new Paragraph("(" + (reg_detalle.getForrada() != null && reg_detalle.getForrada().equals("2") ? "X":"\u00A0") + ") Pantalón")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,2).add(new Paragraph("(" + (reg_detalle.getForrada() != null && reg_detalle.getForrada().equals("3") ? "X":"\u00A0") + ") Chaqueta")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,2).add(new Paragraph("(" + (reg_detalle.getForrada() != null && reg_detalle.getForrada().equals("4") ? "X":"\u00A0") + ") Chaleco")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("CHAQUETA")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT).setBackgroundColor(new DeviceRgb(238,236,225)));
+            table.addCell(new Cell(1,2).add(new Paragraph("(" + (reg_detalle.getChaqueta() != null && reg_detalle.getChaqueta().equals("1") ? "X":"\u00A0") + ") Chaqueta Ligera")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,2).add(new Paragraph("(" + (reg_detalle.getChaqueta() != null && reg_detalle.getChaqueta().equals("2") ? "X":"\u00A0") + ") Chaqueta\n" + "Normal")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,2).add(new Paragraph("(" + (reg_detalle.getChaqueta() != null && reg_detalle.getChaqueta().equals("3") ? "X":"\u00A0") + ") Bata de\n" + "trabajo")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,2).add(new Paragraph("(" + (reg_detalle.getChaqueta() != null && reg_detalle.getChaqueta().equals("4") ? "X":"\u00A0") + ") Mono de Trabajo")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+
+            table.addCell(new Cell(2,2).add(new Paragraph("DIVERSOS")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT).setBackgroundColor(new DeviceRgb(238,236,225)));
+            table.addCell(new Cell(1,2).add(new Paragraph("(" + (reg_detalle.getD_zapsd().equals("1") ? "X":"\u00A0") + ") Zapato Suela\n" + "Delgada")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,2).add(new Paragraph("(" + (reg_detalle.getD_calc().equals("1") ? "X":"\u00A0") + ") Calcetines")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,2).add(new Paragraph("(" + (reg_detalle.getD_calcgc().equals("1") ? "X":"\u00A0") + ") Calcetín Grueso\n" + " Corto")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,2).add(new Paragraph("(" + (reg_detalle.getD_botas().equals("1") ? "X":"\u00A0") + ") Botas")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("(" + (reg_detalle.getD_zapsg().equals("1") ? "X":"\u00A0") + ") Zapato Suela\n" + "Gruesa\n")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,2).add(new Paragraph("(" + (reg_detalle.getD_med().equals("1") ? "X":"\u00A0") + ") Medias\n" + "Nylon\n")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,2).add(new Paragraph("(" + (reg_detalle.getD_calcgl().equals("1") ? "X":"\u00A0") + ") Calcetín\n" + "Grueso Largo")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,2).add(new Paragraph("(" + (reg_detalle.getD_guant().equals("1") ? "X":"\u00A0") + ") Guantes")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+
+            table.addCell(new Cell(6,2).add(new Paragraph("Control de\n" + "Ingeniería ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph(reg.getCtrl_ingenieria().equals("1") ? "SI":"NO")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Nombre del control")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,6).add(new Paragraph(reg.getCtrl_ingenieria().equals("1") ? reg.getNom_ctrl_ingenieria():"No tiene")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,4).add(new Paragraph("Tiempo ocupando el cargo:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph(reg.getAnio_ocu_cargo() + " año(s)")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph(reg.getMes_ocu_cargo() + "mes(es)")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Condición del\n" + "trabajador: ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getCond_trab())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,7).add(new Paragraph("Rotación de personal ")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,3).add(new Paragraph("Si (" + (reg_detalle.getRotacion_personal().equals("1") ? "X":" ") + ") No (" + (reg_detalle.getRotacion_personal().equals("2") ? "X": " ") + ")")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+
+            table.addCell(new Cell(1,7).add(new Paragraph("Realiza tiempos de recuperación")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,3).add(new Paragraph("Si (" + (reg_detalle.getTiempo_recuperacion().equals("1") ? "X":" ") + ") No (" + (reg_detalle.getTiempo_recuperacion().equals("2") ? "X": " ") + ")")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+
+            table.addCell(new Cell(1,7).add(new Paragraph("Ingesta de bebidas calientes proporcionadas por la empresa ")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,3).add(new Paragraph("Si (" + (reg_detalle.getDispensador().equals("1") ? "X":" ") + ") No (" + (reg_detalle.getDispensador().equals("2") ? "X": " ") + ")")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+
+            table.addCell(new Cell(1,7).add(new Paragraph("Capacitación sobre los riesgos a la exposición a fuentes de frío ")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,3).add(new Paragraph("Si (" + (reg_detalle.getCapa_expo_frio().equals("1") ? "X":" ") + ") No (" + (reg_detalle.getCapa_expo_frio().equals("2") ? "X": " ") + ")")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("DETERMINACIÓN DE LA TASA METABÓLICA\n" + "(ISO 8996 - Ergonomía del ambiente térmico)\n")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Nivel de\n" + "Determinación:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg_detalle.getNom_nivel_d())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Método de\n" + "Determinación")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg_detalle.getMetodo_determ())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            if(reg_detalle.getId_metodo_determ().equals("1")){
+                table.addCell(new Cell(1,2).add(new Paragraph("Tipo de trabajo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,4).add(new Paragraph("Ocupación")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph("Rango de la tasa metabólica (W/m2)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph("Tasa metabólica media (W/m2)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+                table.addCell(new Cell(1,2).add(new Paragraph(reg_detalle.getTipo_trabajo())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,4).add(new Paragraph(reg_detalle.getOcupacion())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getRango_tasa_metab())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getTasa_metab())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            }
+            if(reg_detalle.getId_metodo_determ().equals("2")){
+                table.addCell(new Cell(1,2).add(new Paragraph("Clase")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,7).add(new Paragraph("Actividad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph("Tasa metabólica media (W/m2")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+                table.addCell(new Cell(1,2).add(new Paragraph(reg_detalle.getClase())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+                table.addCell(new Cell(1,7).add(new Paragraph(reg_detalle.getActividad_deter())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+                table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getTasa_metab())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            }
+            if(reg_detalle.getId_metodo_determ().equals("4")){
+                table.addCell(new Cell(1,4).add(new Paragraph("Frecuencia cardiaca (ppm)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getFrecuencia_deter())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+                table.addCell(new Cell(1,2).add(new Paragraph("Género")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getGenero_deter())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            }
+            if(reg_detalle.getId_nivel_d().equals("2")){
+                if(Integer.parseInt(reg_detalle.getNtareas())>0){
+                    table.addCell(new Cell(1,3).add(new Paragraph("Tarea 01:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Posición")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Parte del cuerpo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Intensidad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+                    table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getNom_tarea1())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getPosicion_1())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getPcuerpo_1())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getIntensidad_1())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+                    table.addCell(new Cell(1,2).add(new Paragraph("Ciclo Trab. (min):")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,1).add(new Paragraph(reg_detalle.getCiclo_trabajo1())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                }
+                if(Integer.parseInt(reg_detalle.getNtareas())>1){
+                    table.addCell(new Cell(1,3).add(new Paragraph("Tarea 02:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Posición")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Parte del cuerpo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Intensidad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+                    table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getNom_tarea2())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getPosicion_2())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getPcuerpo_2())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getIntensidad_2())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+                    table.addCell(new Cell(1,2).add(new Paragraph("Ciclo Trab. (min):")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,1).add(new Paragraph(reg_detalle.getCiclo_trabajo2())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                }
+                if(Integer.parseInt(reg_detalle.getNtareas())>2){
+                    table.addCell(new Cell(1,3).add(new Paragraph("Tarea 03:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Posición")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Parte del cuerpo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Intensidad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+                    table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getNom_tarea3())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getPosicion_3())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getPcuerpo_3())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getIntensidad_3())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+                    table.addCell(new Cell(1,2).add(new Paragraph("Ciclo Trab. (min):")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,1).add(new Paragraph(reg_detalle.getCiclo_trabajo3())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                }
+                if(Integer.parseInt(reg_detalle.getNtareas())>3){
+                    table.addCell(new Cell(1,3).add(new Paragraph("Tarea 04:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Posición")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Parte del cuerpo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Intensidad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+                    table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getNom_tarea4())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getPosicion_4())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getPcuerpo_4())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getIntensidad_4())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+                    table.addCell(new Cell(1,2).add(new Paragraph("Ciclo Trab. (min):")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,1).add(new Paragraph(reg_detalle.getCiclo_trabajo4())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                }
+                if(Integer.parseInt(reg_detalle.getNtareas())>4){
+                    table.addCell(new Cell(1,3).add(new Paragraph("Tarea 05:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Posición")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Parte del cuerpo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Intensidad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+                    table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getNom_tarea5())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getPosicion_5())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getPcuerpo_5())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getIntensidad_5())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+                    table.addCell(new Cell(1,2).add(new Paragraph("Ciclo Trab. (min):")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,1).add(new Paragraph(reg_detalle.getCiclo_trabajo5())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                }
+
+                table.addCell(new Cell(1,7).add(new Paragraph("Nota: En caso la POSICIÓN sea \"SUBIDA DE UNA PENDIENTE ANDANDO\"")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+                table.addCell(new Cell(1,2).add(new Paragraph("Metros de\n" + "subida:")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+                table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getMtr_subida())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            }
+
+
+            table.addCell(new Cell(1,12).add(new Paragraph("RESULTADOS DEL MONITOREO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(4,2).add(new Paragraph("Resultados")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,6).add(new Paragraph("TA (T° aire)")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg_detalle.getT_aire())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,6).add(new Paragraph("Temperatura del globo negro (TG) - (°C))")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg_detalle.getT_globo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,6).add(new Paragraph("HR % (Humedad Relativa)")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg_detalle.getH_relativa())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,6).add(new Paragraph("Velocidad del Viento (m/s) ")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg_detalle.getV_viento())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("OBSERVACIONES")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(4,2).add(new Paragraph("Supervisor del\n" + "Servicio\n")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph("Nombre:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,10).add(new Paragraph("DNI:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(2,10).add(new Paragraph("Firma:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+
+            document.add(table);
+
+            // Cerrar el documento y guardar el archivo
+            document.close();
+
+            // Notificar al usuario que el archivo PDF se ha guardado exitosamente
+            Toast.makeText(requireActivity(), "Archivo PDF guardado en " + pdfFilePath, Toast.LENGTH_SHORT).show();
+
+            Bundle bundle = new Bundle();
+            bundle.putString("rutaPdf",pdfFilePath);
+            Pdf pdfFragment = new Pdf();
+            pdfFragment.setArguments(bundle);
+
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentContainerView, pdfFragment)
+                    .addToBackStack(null) // Si deseas agregar la transacción a la pila de retroceso
+                    .commit();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Notificar al usuario si ocurre algún error al guardar el archivo PDF
+            Toast.makeText(requireActivity(), "Error al guardar el archivo PDF", Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void generarPdf_VelocidadAire(File pdfFile, String pdfFilePath, RegistroFormatos reg, RegistroFormatos_Detalle reg_detalle){
+        try {
+            DAO_FormatosTrabajo daoFormato = new DAO_FormatosTrabajo(getContext());
+            Formatos_Trabajo formato = daoFormato.Buscar(reg.getId_plan_trabajo(), String.valueOf(reg.getId_formato()));
+
+            PdfWriter writer = new PdfWriter(pdfFile);
+            PdfDocument pdfDocument = new PdfDocument(writer);
+            Document document = new Document(pdfDocument, PageSize.A4);
+
+            float[] columnWidths = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}; // Definir anchos de columna
+            Table table = new Table(UnitValue.createPercentArray(columnWidths));
+            // Configurar la tabla para ocupar todo el ancho de la página
+            table.setWidth(UnitValue.createPercentValue(100));
+
+            Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.logo);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            byte[] bitmapData = stream.toByteArray();
+            ImageData imageData = ImageDataFactory.create(bitmapData);
+            /*String imagePath = "logo.jpg";
+            ImageData imageData = ImageDataFactory.create(getContext().getAssets().open(imagePath));*/
+            Image image = new Image(imageData);
+            float maxWidthSize = 80f; // Tamaño máximo en píxeles
+            float maxHeightSize = 50f; // Tamaño máximo en píxeles
+            image.scaleToFit(maxWidthSize, maxHeightSize);
+
+            // Primera fila con diferentes anchos de columna
+            table.addCell(new Cell(4,2).add(image).setVerticalAlignment(VerticalAlignment.MIDDLE).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(2,6).add(new Paragraph("FORMATO DE CAMPO PARA\n" +
+                    "MEDICIÓN DE\n" +
+                    "VELOCIDAD DEL AIRE\n")).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Código")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("MEIN-FORMATO-MVA-01")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            // Segunda fila con diferentes anchos de columna
+            table.addCell(new Cell(1,1).add(new Paragraph("Versión")).setWidth(2).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("1")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(2,6).add(new Paragraph("SISTEMA INTEGRADO DE GESTIÓN")).setFontSize(10).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,1).add(new Paragraph("Fecha")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("02/01/2024")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Página")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("1")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Empresa")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(formato.getNom_cliente())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Analista de campo:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getNom_analista())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Equipo utilizado:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Equipo de EF: ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getCod_equipo1())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Número de serie: ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getSerie_eq1())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("LUGAR DE TRABAJO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Área de Trabajo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getArea_trabajo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Actividades Realizadas")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getActividades_realizadas())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Horario de Trabajo:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getHora_trabajo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Técnica de\n" + "acondicionamiento de aire ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getTecnica_acondaire())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Detalle de técnica de\n" + "acondicionamiento de\n" + "aire\n")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg_detalle.getDetalle_tecnica_acondaire()).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Descripción del área de\n" + "trabajo: ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getDesc_area_trabajo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("RESULTADOS DEL MONITOREO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(2,2).add(new Paragraph("Fecha de Monitoreo:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(2,3).add(new Paragraph(reg.getFec_monitoreo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Hora inicial ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getHora_inicial())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Foto")).setFontSize(8).setTextAlignment(TextAlignment.CENTER).setBackgroundColor(new DeviceRgb(221, 235, 247)));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Hora Final ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getHora_final())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(!reg.getRuta_foto().equals("") || reg.getFoto()!=null?"X":"")).setFontSize(8).setTextAlignment(TextAlignment.CENTER).setBackgroundColor(new DeviceRgb(221, 235, 247)));
+
+            table.addCell(new Cell(5,2).add(new Paragraph("Velocidad del viento (m/s)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph(reg_detalle.getV_viento())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph(reg_detalle.getV_viento_2())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,5).add(new Paragraph(reg_detalle.getV_viento_3())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph(reg_detalle.getV_vto4())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,5).add(new Paragraph(reg_detalle.getV_vto5())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph(reg_detalle.getV_vto6())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,5).add(new Paragraph(reg_detalle.getV_vto7())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph(reg_detalle.getV_vto8())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,5).add(new Paragraph(reg_detalle.getV_vto9())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph(reg_detalle.getV_vto10())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Temperatura (°C)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg_detalle.getTemp())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Observación")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getObservacion())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+
+            table.addCell(new Cell(4,2).add(new Paragraph("Supervisor del\n" + "Servicio\n")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph("Nombre:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,10).add(new Paragraph("DNI:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(2,10).add(new Paragraph("Firma:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+
+            document.add(table);
+
+            // Cerrar el documento y guardar el archivo
+            document.close();
+
+            // Notificar al usuario que el archivo PDF se ha guardado exitosamente
+            Toast.makeText(requireActivity(), "Archivo PDF guardado en " + pdfFilePath, Toast.LENGTH_SHORT).show();
+
+            Bundle bundle = new Bundle();
+            bundle.putString("rutaPdf",pdfFilePath);
+            Pdf pdfFragment = new Pdf();
+            pdfFragment.setArguments(bundle);
+
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentContainerView, pdfFragment)
+                    .addToBackStack(null) // Si deseas agregar la transacción a la pila de retroceso
+                    .commit();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Notificar al usuario si ocurre algún error al guardar el archivo PDF
+            Toast.makeText(requireActivity(), "Error al guardar el archivo PDF", Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void generarPdf_HumedadRelativa(File pdfFile, String pdfFilePath, RegistroFormatos reg, RegistroFormatos_Detalle reg_detalle){
+        try {
+            DAO_FormatosTrabajo daoFormato = new DAO_FormatosTrabajo(getContext());
+            Formatos_Trabajo formato = daoFormato.Buscar(reg.getId_plan_trabajo(), String.valueOf(reg.getId_formato()));
+
+            PdfWriter writer = new PdfWriter(pdfFile);
+            PdfDocument pdfDocument = new PdfDocument(writer);
+            Document document = new Document(pdfDocument, PageSize.A4);
+
+            float[] columnWidths = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}; // Definir anchos de columna
+            Table table = new Table(UnitValue.createPercentArray(columnWidths));
+            // Configurar la tabla para ocupar todo el ancho de la página
+            table.setWidth(UnitValue.createPercentValue(100));
+
+            Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.logo);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            byte[] bitmapData = stream.toByteArray();
+            ImageData imageData = ImageDataFactory.create(bitmapData);
+            /*String imagePath = "logo.jpg";
+            ImageData imageData = ImageDataFactory.create(getContext().getAssets().open(imagePath));*/
+            Image image = new Image(imageData);
+            float maxWidthSize = 80f; // Tamaño máximo en píxeles
+            float maxHeightSize = 50f; // Tamaño máximo en píxeles
+            image.scaleToFit(maxWidthSize, maxHeightSize);
+
+            // Primera fila con diferentes anchos de columna
+            table.addCell(new Cell(4,2).add(image).setVerticalAlignment(VerticalAlignment.MIDDLE).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(2,6).add(new Paragraph("FORMATO DE CAMPO\n" +
+                    "HUMEDAD RELATIVA\n")).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Código")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("MEIN-FORMATO-MHR-01")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            // Segunda fila con diferentes anchos de columna
+            table.addCell(new Cell(1,1).add(new Paragraph("Versión")).setWidth(2).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("1")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(2,6).add(new Paragraph("SISTEMA INTEGRADO DE GESTIÓN")).setFontSize(10).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,1).add(new Paragraph("Fecha")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("02/01/2024")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Página")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("1")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Empresa")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(formato.getNom_cliente())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Analista de campo:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getNom_analista())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Equipo utilizado:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Anemómetro")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getCod_equipo1())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Número de serie: ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getSerie_eq1())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("LUGAR DE TRABAJO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Área de Trabajo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getArea_trabajo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Actividades Realizadas")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getActividades_realizadas())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Horario de Trabajo:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getHora_trabajo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Técnica de\n" + "acondicionamiento de aire ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getTecnica_acondaire())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Detalle de técnica de\n" + "acondicionamiento de\n" + "aire\n")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg_detalle.getDetalle_tecnica_acondaire()).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Descripción del área de\n" + "trabajo: ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getDesc_area_trabajo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("RESULTADOS DEL MONITOREO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(2,2).add(new Paragraph("Fecha de Monitoreo:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(2,3).add(new Paragraph(reg.getFec_monitoreo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Hora inicial ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getHora_inicial())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Foto")).setFontSize(8).setTextAlignment(TextAlignment.CENTER).setBackgroundColor(new DeviceRgb(221, 235, 247)));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Hora Final ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getHora_final())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(!reg.getRuta_foto().equals("") || reg.getFoto()!=null?"X":"")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Humedad Relativa Máxima\n" + "(%)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getH_relativa())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Humedad Relativa Mínima\n" + "(%)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg_detalle.getH_relativa_2()).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Observación")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getObservacion())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(4,2).add(new Paragraph("Supervisor del\n" + "Servicio\n")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph("Nombre:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,10).add(new Paragraph("DNI:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(2,10).add(new Paragraph("Firma:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+
+            document.add(table);
+
+            // Cerrar el documento y guardar el archivo
+            document.close();
+
+            // Notificar al usuario que el archivo PDF se ha guardado exitosamente
+            Toast.makeText(requireActivity(), "Archivo PDF guardado en " + pdfFilePath, Toast.LENGTH_SHORT).show();
+
+            Bundle bundle = new Bundle();
+            bundle.putString("rutaPdf",pdfFilePath);
+            Pdf pdfFragment = new Pdf();
+            pdfFragment.setArguments(bundle);
+
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentContainerView, pdfFragment)
+                    .addToBackStack(null) // Si deseas agregar la transacción a la pila de retroceso
+                    .commit();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Notificar al usuario si ocurre algún error al guardar el archivo PDF
+            Toast.makeText(requireActivity(), "Error al guardar el archivo PDF", Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void generarPdf_RadiacionElectro(File pdfFile, String pdfFilePath, RegistroFormatos reg, RegistroFormatos_Detalle reg_detalle){
+        try {
+            DAO_FormatosTrabajo daoFormato = new DAO_FormatosTrabajo(getContext());
+            Formatos_Trabajo formato = daoFormato.Buscar(reg.getId_plan_trabajo(), String.valueOf(reg.getId_formato()));
+
+            PdfWriter writer = new PdfWriter(pdfFile);
+            PdfDocument pdfDocument = new PdfDocument(writer);
+            Document document = new Document(pdfDocument, PageSize.A4);
+
+            float[] columnWidths = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}; // Definir anchos de columna
+            Table table = new Table(UnitValue.createPercentArray(columnWidths));
+            // Configurar la tabla para ocupar todo el ancho de la página
+            table.setWidth(UnitValue.createPercentValue(100));
+
+            //-------------------------------------- CABECERA -----------------------------------------------------------------------------------------------
+            Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.logo);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            byte[] bitmapData = stream.toByteArray();
+            ImageData imageData = ImageDataFactory.create(bitmapData);
+            /*String imagePath = "logo.jpg";
+            ImageData imageData = ImageDataFactory.create(getContext().getAssets().open(imagePath));*/
+            Image image = new Image(imageData);
+            float maxWidthSize = 80f; // Tamaño máximo en píxeles
+            float maxHeightSize = 50f; // Tamaño máximo en píxeles
+            image.scaleToFit(maxWidthSize, maxHeightSize);
+
+            // Primera fila con diferentes anchos de columna
+            table.addCell(new Cell(4,2).add(image).setVerticalAlignment(VerticalAlignment.MIDDLE).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(2,6).add(new Paragraph("FORMATO DE CAMPO PARA\n" +
+                    "MEDICIÓN DE\n" + "RADIACION ELECTROMAGNÉTICA\n")).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Código")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("MEIN-FORMATO-MRE-01")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            // Segunda fila con diferentes anchos de columna
+            table.addCell(new Cell(1,1).add(new Paragraph("Versión")).setWidth(2).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("1")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(2,6).add(new Paragraph("SISTEMA INTEGRADO DE GESTIÓN")).setFontSize(10).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,1).add(new Paragraph("Fecha")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("02/01/2024")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Página")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("1")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            //-------------------------------------------------------------------------------------------------------------------------------------------------
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Empresa")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(formato.getNom_cliente())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Analista de campo:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,6).add(new Paragraph(reg.getNom_analista())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Foto")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(!reg.getRuta_foto().equals("") || reg.getFoto()!=null?"X":"")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Equipo utilizado:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg.getCod_equipo1())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Número de serie: ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getSerie_eq1())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,3).add(new Paragraph("Hora")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getHora_situ())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Verificación In Situ:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            String contenido = reg.getVerf_insitu().equals("1") ? "SI" : "NO";
+            table.addCell(new Cell(1,3).add(new Paragraph(contenido).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("HORA DE MONITOREO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Fecha:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Hora inicial")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Hora final")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph("Tiempo medición (min)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            //table.addCell(new Cell(1,3).add(new Paragraph("Jornada (h)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getFec_monitoreo())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getHora_inicial())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getHora_final())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg.getTiempo_medicion())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            //table.addCell(new Cell(1,3).add(new Paragraph(reg.getJornada())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("DATOS DEL TRABAJADOR")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Nombres y\n"+"apellidos")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph(reg.getNom_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Doc. identidad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph(reg.getTipo_doc_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getNum_doc_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Puesto:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getPuesto_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Área de Trabajo:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getArea_trabajo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Función/Actividad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getActividades_realizadas())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Edad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(String.valueOf(reg.getEdad_trabajador()))).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("HORARIO DE TRABAJO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Horario de Trabajo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getHora_trabajo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph("Régimen laboral")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getRegimen_laboral())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Horario de Refrigerio: ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getHorario_refrigerio())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph("Jornada (horas) ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getJornada())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("CONDICIONES DE TRABAJO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Fuente Generadora")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg_detalle.getFuente_generadora())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Tiempo de Exposición (h)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getTiempo_exposicion())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Descripción del ambiente de\n" + "trabajo ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getDesc_area_trabajo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Vestimenta o Indumentaria\n" + "del personal evaluado")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg_detalle.getVestimenta_personal())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Control de Ingeniería")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getNom_ctrl_ingenieria())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Control Administrativo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getNom_ctrl_admin())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("EPPs")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getNom_epp())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("RESULTADOS")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,12).add(new Paragraph("Nivel de Radiación (A/m)")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("")).setFontSize(8).setBackgroundColor(new DeviceRgb(221, 235, 247)).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("0 m")).setFontSize(8).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("2 m")).setFontSize(8).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("4 m")).setFontSize(8).setBackgroundColor(new DeviceRgb(221, 235, 247)).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("6 m")).setFontSize(8).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("X")).setFontSize(8).setBackgroundColor(new DeviceRgb(221, 235, 247)).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg_detalle.getX())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg_detalle.getX2())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getX3())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getX4())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Y")).setFontSize(8).setBackgroundColor(new DeviceRgb(221, 235, 247)).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg_detalle.getY())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg_detalle.getY2())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getY3())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getY4())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Z")).setFontSize(8).setBackgroundColor(new DeviceRgb(221, 235, 247)).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg_detalle.getZ())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg_detalle.getZ2())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getZ3())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getZ4())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(4,2).add(new Paragraph("Supervisor del\n" + "Servicio\n")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph("Nombre:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,10).add(new Paragraph("DNI:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(2,10).add(new Paragraph("Firma:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+
+            document.add(table);
+
+            // Cerrar el documento y guardar el archivo
+            document.close();
+
+            // Notificar al usuario que el archivo PDF se ha guardado exitosamente
+            Toast.makeText(requireActivity(), "Archivo PDF guardado en " + pdfFilePath, Toast.LENGTH_SHORT).show();
+
+            Bundle bundle = new Bundle();
+            bundle.putString("rutaPdf",pdfFilePath);
+            Pdf pdfFragment = new Pdf();
+            pdfFragment.setArguments(bundle);
+
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentContainerView, pdfFragment)
+                    .addToBackStack(null) // Si deseas agregar la transacción a la pila de retroceso
+                    .commit();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Notificar al usuario si ocurre algún error al guardar el archivo PDF
+            Toast.makeText(requireActivity(), "Error al guardar el archivo PDF", Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void generarPdf_RadiacionUV(File pdfFile, String pdfFilePath, RegistroFormatos reg, RegistroFormatos_Detalle reg_detalle){
+        try {
+            DAO_FormatosTrabajo daoFormato = new DAO_FormatosTrabajo(getContext());
+            Formatos_Trabajo formato = daoFormato.Buscar(reg.getId_plan_trabajo(), String.valueOf(reg.getId_formato()));
+
+            PdfWriter writer = new PdfWriter(pdfFile);
+            PdfDocument pdfDocument = new PdfDocument(writer);
+            Document document = new Document(pdfDocument, PageSize.A4);
+
+            float[] columnWidths = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}; // Definir anchos de columna
+            Table table = new Table(UnitValue.createPercentArray(columnWidths));
+            // Configurar la tabla para ocupar todo el ancho de la página
+            table.setWidth(UnitValue.createPercentValue(100));
+
+            //-------------------------------------- CABECERA -----------------------------------------------------------------------------------------------
+            Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.logo);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            byte[] bitmapData = stream.toByteArray();
+            ImageData imageData = ImageDataFactory.create(bitmapData);
+            /*String imagePath = "logo.jpg";
+            ImageData imageData = ImageDataFactory.create(getContext().getAssets().open(imagePath));*/
+            Image image = new Image(imageData);
+            float maxWidthSize = 80f; // Tamaño máximo en píxeles
+            float maxHeightSize = 50f; // Tamaño máximo en píxeles
+            image.scaleToFit(maxWidthSize, maxHeightSize);
+
+            // Primera fila con diferentes anchos de columna
+            table.addCell(new Cell(4,2).add(image).setVerticalAlignment(VerticalAlignment.MIDDLE).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(2,6).add(new Paragraph("FORMATO DE CAMPO PARA\n" +
+                    "MEDICIÓN DE RADIACIÓN UV\n")).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Código")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("MEIN-FORMATO-MRUV-01")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            // Segunda fila con diferentes anchos de columna
+            table.addCell(new Cell(1,1).add(new Paragraph("Versión")).setWidth(2).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("1")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(2,6).add(new Paragraph("SISTEMA INTEGRADO DE GESTIÓN")).setFontSize(10).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,1).add(new Paragraph("Fecha")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("02/01/2024")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Página")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("1")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            //-------------------------------------------------------------------------------------------------------------------------------------------------
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Empresa")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(formato.getNom_cliente())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Analista de campo:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,6).add(new Paragraph(reg.getNom_analista())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Foto")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(!reg.getRuta_foto().equals("") || reg.getFoto()!=null?"X":"")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Equipo utilizado:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg.getCod_equipo1())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Número de serie: ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getSerie_eq1())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,3).add(new Paragraph("Hora de verificación:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getHora_situ())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Verificación In Situ:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            String contenido = reg.getVerf_insitu().equals("1") ? "SI" : "NO";
+            table.addCell(new Cell(1,3).add(new Paragraph(contenido).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("HORA DE MONITOREO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Fecha:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Hora inicial")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Hora final")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Tiempo Exposición (h)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Jornada")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getFec_monitoreo())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getHora_inicial())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getHora_final())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getTiempo_exposicion())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getJornada())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("DATOS DEL TRABAJADOR")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Nombres y\n"+"apellidos")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph(reg.getNom_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Doc. identidad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph(reg.getTipo_doc_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getNum_doc_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Puesto:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getPuesto_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Área de Trabajo:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getArea_trabajo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Actividades Realizadas")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getActividades_realizadas())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Edad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(String.valueOf(reg.getEdad_trabajador()))).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(2,2).add(new Paragraph("Fototipo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Color de piel")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg_detalle.getColor_piel())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(2,3).add(new Paragraph("Tiempo ocupando el\n" + "cargo (en la empresa)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(2,1).add(new Paragraph(reg.getAnio_ocu_cargo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(2,2).add(new Paragraph(reg.getMes_ocu_cargo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Tipo de piel")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg_detalle.getTipo_piel())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+
+            table.addCell(new Cell(1,12).add(new Paragraph("HORARIO DE TRABAJO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(2,2).add(new Paragraph("Horario de Trabajo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(2,4).add(new Paragraph(reg.getHora_trabajo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Horario de Refrigerio: ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getHorario_refrigerio())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Régimen laboral")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getRegimen_laboral())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("CONDICIONES DE TRABAJO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Fuente de radiación")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg_detalle.getFuente_generadora())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Descripción del ambiente de\n" + "trabajo ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getDesc_area_trabajo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+
+            table.addCell(new Cell(3,2).add(new Paragraph("Control de Ingeniería")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,7).add(new Paragraph("Espacios con sombra para el descanso: ")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Si (" + (reg_detalle.getSombra_descanso().equals("1") ? "X":" ") + ") No (" + (reg_detalle.getSombra_descanso().equals("2") ? "X": " ") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,7).add(new Paragraph("Existe en el ambiente mallas oscuras y tramo tupido:")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Si (" + (reg_detalle.getMalla_oscura().equals("1") ? "X":" ") + ") No (" + (reg_detalle.getMalla_oscura().equals("2") ? "X": " ") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph("Otros: " + reg.getOtro_ingenieria())).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+
+            table.addCell(new Cell(3,2).add(new Paragraph("Control Administrativo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,7).add(new Paragraph("Existe un programa de trabajos, faenas y tareas según el riesgo y\n" + "exposición a la radiación UV: ")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Si (" + (reg_detalle.getProg_expo_radiacion().equals("1") ? "X":" ") + ") No (" + (reg_detalle.getProg_expo_radiacion().equals("2") ? "X": " ") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,7).add(new Paragraph("Entre las 13:00 - 15:00 horas el trabajo es al aire libre:")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Si (" + (reg_detalle.getTrab_aire_libre().equals("1") ? "X":" ") + ") No (" + (reg_detalle.getTrab_aire_libre().equals("2") ? "X": " ") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph("Otros: " + reg.getOtro_administrativo())).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+
+
+
+
+
+            table.addCell(new Cell(13,2).add(new Paragraph("EPPs")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph("Lentes")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph("Ropa")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph("Con protector de brillo: SI (" + (reg_detalle.getEpp_lentes_brillo().equals("1")?"X":"") + ") NO (" + (reg_detalle.getEpp_lentes_brillo().equals("2")?"X":"") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph("Cuenta con certificación: SI (" + (reg_detalle.getRop_ccerti().equals("1")?"X":"") + ") NO (" + (reg_detalle.getRop_ccerti().equals("2")?"X":"") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph("Con protector lateral: SI (" + (reg_detalle.getProt_lat().equals("1")?"X":"") + ") NO (" + (reg_detalle.getProt_lat().equals("2")?"X":"") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph("Color oscuro: SI (" + (reg_detalle.getRop_coscuro().equals("1")?"X":"") + ") NO (" + (reg_detalle.getRop_coscuro().equals("2")?"X":"") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph("Lentes oscuros: SI (" + (reg_detalle.getLent_osc().equals("1")?"X":"") + ") NO (" + (reg_detalle.getLent_osc().equals("2")?"X":"") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph("Manga larga: SI (" + (reg_detalle.getRop_mlarga().equals("1")?"X":"") + ") NO (" + (reg_detalle.getRop_mlarga().equals("2")?"X":"") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,5).add(new Paragraph("Gorro")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph("Trama gruesa:  SI (" + (reg_detalle.getTgruesa().equals("1")?"X":"") + ") NO (" + (reg_detalle.getTgruesa().equals("2")?"X":"") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph("Utiliza gorro: SI (" + (reg_detalle.getEpp_gorro_2().equals("1")?"X":"") + ") NO (" + (reg_detalle.getEpp_gorro_2().equals("2")?"X":"") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph("Casco")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph("Protección tipo legionario: SI (" + (reg_detalle.getProt_legion().equals("1")?"X":"") + ") NO (" + (reg_detalle.getProt_legion().equals("2")?"X":"") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph("Utiliza casco: SI (" + (reg_detalle.getEpp_casco_2().equals("1")?"X":"") + ") NO (" + (reg_detalle.getEpp_casco_2().equals("2")?"X":"") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph("Protección con ala ancha: SI (" + (reg_detalle.getProt_aancha().equals("1")?"X":"") + ") NO (" + (reg_detalle.getProt_aancha().equals("2")?"X":"") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph("Cubre nuca: SI (" + (reg_detalle.getCubre_nuca().equals("1")?"X":"") + ") NO (" + (reg_detalle.getCubre_nuca().equals("2")?"X":"") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,10).add(new Paragraph("FPS")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,5).add(new Paragraph("Utiliza FPS: SI (" + (reg_detalle.getUtil_fps().equals("1")?"X":"") + ") NO (" + (reg_detalle.getUtil_fps().equals("2")?"X":"") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph("Cuentan con una guía de uso del FPS: SI (" + (reg_detalle.getGuia_fps().equals("1")?"X":"") + ") NO (" + (reg_detalle.getGuia_fps().equals("2")?"X":"") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph("Frecuencia de aplicación: cada 2-3 horas: (" + (reg_detalle.getFrec_aplic().equals("1")?"X":"") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph("Cada 30 minutos - 1 hora: (" + (reg_detalle.getFrec_aplic().equals("2")?"X":"") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph("Otra frecuencia: (" + (reg_detalle.getFrec_aplic().equals("3")?"X":"") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph(reg_detalle.getOtra_frecuencia())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,10).add(new Paragraph("Otros: " + reg_detalle.getOtro_epp())).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("RESULTADOS DE MONITOREO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Resultados")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,8).add(new Paragraph(reg.getResultado())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("uW/cm2")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(3,2).add(new Paragraph("Supervisor del\n" + "Servicio\n")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph("Nombre:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,10).add(new Paragraph("DNI:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(2,10).add(new Paragraph("Firma:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+
+            document.add(table);
+
+            // Cerrar el documento y guardar el archivo
+            document.close();
+
+            // Notificar al usuario que el archivo PDF se ha guardado exitosamente
+            Toast.makeText(requireActivity(), "Archivo PDF guardado en " + pdfFilePath, Toast.LENGTH_SHORT).show();
+
+            Bundle bundle = new Bundle();
+            bundle.putString("rutaPdf",pdfFilePath);
+            Pdf pdfFragment = new Pdf();
+            pdfFragment.setArguments(bundle);
+
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentContainerView, pdfFragment)
+                    .addToBackStack(null) // Si deseas agregar la transacción a la pila de retroceso
+                    .commit();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Notificar al usuario si ocurre algún error al guardar el archivo PDF
+            Toast.makeText(requireActivity(), "Error al guardar el archivo PDF", Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void generarPdf_EstresTermico(File pdfFile, String pdfFilePath, RegistroFormatos reg, RegistroFormatos_Detalle reg_detalle){
+        try {
+            DAO_FormatosTrabajo daoFormato = new DAO_FormatosTrabajo(getContext());
+            Formatos_Trabajo formato = daoFormato.Buscar(reg.getId_plan_trabajo(), String.valueOf(reg.getId_formato()));
+
+            PdfWriter writer = new PdfWriter(pdfFile);
+            PdfDocument pdfDocument = new PdfDocument(writer);
+            Document document = new Document(pdfDocument, PageSize.A4);
+
+            float[] columnWidths = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}; // Definir anchos de columna
+            Table table = new Table(UnitValue.createPercentArray(columnWidths));
+            // Configurar la tabla para ocupar todo el ancho de la página
+            table.setWidth(UnitValue.createPercentValue(100));
+
+            Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.logo);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            byte[] bitmapData = stream.toByteArray();
+            ImageData imageData = ImageDataFactory.create(bitmapData);
+            /*String imagePath = "logo.jpg";
+            ImageData imageData = ImageDataFactory.create(getContext().getAssets().open(imagePath));*/
+            Image image = new Image(imageData);
+            float maxWidthSize = 80f; // Tamaño máximo en píxeles
+            float maxHeightSize = 50f; // Tamaño máximo en píxeles
+            image.scaleToFit(maxWidthSize, maxHeightSize);
+
+            // Primera fila con diferentes anchos de columna
+            table.addCell(new Cell(4,2).add(image).setVerticalAlignment(VerticalAlignment.MIDDLE).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(2,6).add(new Paragraph("FORMATO DE CAMPO PARA MEDICIÓN DE\n" + "ESTRÉS POR CALOR\n")).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Código")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("MEIN-FORMATO-MEC-01")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            // Segunda fila con diferentes anchos de columna
+            table.addCell(new Cell(1,1).add(new Paragraph("Versión")).setWidth(2).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("1")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(2,6).add(new Paragraph("SISTEMA INTEGRADO DE GESTIÓN")).setFontSize(10).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,1).add(new Paragraph("Fecha")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("02/01/2024")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Página")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("1")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            //------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Empresa")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(formato.getNom_cliente())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Analista de campo:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,6).add(new Paragraph(reg.getNom_analista())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Foto")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(!reg.getRuta_foto().equals("") || reg.getFoto()!=null?"X":"")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Equipo utilizado:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Equipo de ET: ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getCod_equipo1())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Número de serie: ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getSerie_eq1())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Equipo utilizado:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Anemómetro: ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getCod_equipo2())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Número de serie: ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getSerie_eq2())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,3).add(new Paragraph("Hora de verificación:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getHora_situ())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Verificación In Situ:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            String contenido = reg.getVerf_insitu().equals("1") ? "SI" : "NO";
+            table.addCell(new Cell(1,3).add(new Paragraph(contenido).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("HORA DE MONITOREO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Fecha:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Hora inicial")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Hora final")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Tiempo exposición (h)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Jornada (h)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getFec_monitoreo())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getHora_inicial())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getHora_final())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getTiempo_exposicion())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getJornada())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("DATOS PERSONALES DEL TRABAJADOR")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Nombres y\n"+"apellidos")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph(reg.getNom_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Doc. identidad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph(reg.getTipo_doc_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getNum_doc_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Puesto:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getPuesto_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Área de Trabajo:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getArea_trabajo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Actividades\n" + "Realizadas:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getActividades_realizadas())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Peso (Kg)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph(reg.getPeso_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Edad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(String.valueOf(reg.getEdad_trabajador()))).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("HORARIO DE TRABAJO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(2,2).add(new Paragraph("Horario de Trabajo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(2,5).add(new Paragraph(reg.getHora_trabajo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Horario de Refrigerio: ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getHorario_refrigerio())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Régimen laboral")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getRegimen_laboral())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("CONDICIONES DE TRABAJO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Fuente Generadora")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg_detalle.getFuente_generadora())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Descripción de la\n" + "fuente de calor")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg_detalle.getDesc_fuente_frio())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Descripción del\n" + "Ambiente de\n" + "Trabajo\n")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,5).add(new Paragraph(reg.getDesc_area_trabajo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph(reg.getArea_trab_deta())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Control de\n" + "Ingeniería")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getCtrl_ingenieria().equals("1")?"SI":"NO")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Nombre del control")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph(reg.getCtrl_ingenieria().equals("1")?reg.getNom_ctrl_ingenieria():"No Presenta")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(6,2).add(new Paragraph("Control\n" + "Administrativo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Tiempo ocupando el cargo: ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph(reg.getAnio_ocu_cargo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getMes_ocu_cargo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Condición\n" + "del trabajo:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getCond_trab())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,7).add(new Paragraph("Si la actividad realizada es al aire libre sin techo: Existe zonas de sombra")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,3).add(new Paragraph("Si (" + (reg_detalle.getZona_sombra().equals("1") ? "X":" ") + ") No (" + (reg_detalle.getZona_sombra().equals("2") ? "X": " ") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,7).add(new Paragraph("Rotación de personal")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,3).add(new Paragraph("Si (" + (reg_detalle.getRotacion_personal().equals("1") ? "X":" ") + ") No (" + (reg_detalle.getRotacion_personal().equals("2") ? "X": " ") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,7).add(new Paragraph("Realiza tiempos de recuperación")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,3).add(new Paragraph("Si (" + (reg_detalle.getTiempo_recuperacion().equals("1") ? "X":" ") + ") No (" + (reg_detalle.getTiempo_recuperacion().equals("2") ? "X": " ") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,7).add(new Paragraph("Existe dispensador de agua cercanas al área")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,3).add(new Paragraph("Si (" + (reg_detalle.getDispensador().equals("1") ? "X":" ") + ") No (" + (reg_detalle.getDispensador().equals("2") ? "X": " ") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,7).add(new Paragraph("Capacitación sobre los riesgos a la exposición a fuentes de calor")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,3).add(new Paragraph("Si (" + (reg_detalle.getCapa_expo_frio().equals("1") ? "X":" ") + ") No (" + (reg_detalle.getCapa_expo_frio().equals("2") ? "X": " ") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Categoría de\n" + "trabajo ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("% Trabajo en actividad ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg_detalle.getCat_trabajo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("% Descanso")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getPorc_desca())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(2,2).add(new Paragraph("Vestimenta o\n" + "Indumentaria del\n" + "personal evaluado")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(2,5).add(new Paragraph(reg_detalle.getVestimenta_personal())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Material de prenda ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getMaterial_prenda())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Color predominante")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getColor_predominante())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(2,2).add(new Paragraph("EPPs")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Zapatos de seguridad  (" + (reg_detalle.getEpp_zs().equals("1") ? "X":" ") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Casco (" + (reg_detalle.getEpp_casco().equals("1") ? "X":" ") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Lentes (" + (reg_detalle.getEpp_lentes().equals("1") ? "X":" ") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Guantes (" + (reg_detalle.getEpp_guantes().equals("1") ? "X":" ") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Orejeras (" + (reg_detalle.getEpp_orejeras().equals("1") ? "X":" ") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Tapones (" + (reg_detalle.getEpp_tapones().equals("1") ? "X":" ") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Cubre nuca (" + (reg_detalle.getEpp_cnuca().equals("1") ? "X":" ") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph("Otros: " + reg_detalle.getOtro_epp())).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("DETERMINACIÓN DE LA TASA METABÓLICA\n" + "(ISO 8996 - Ergonomía del ambiente térmico)\n")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Nivel de\n" + "Determinación:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg_detalle.getNom_nivel_d())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Método de\n" + "Determinación")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg_detalle.getMetodo_determ())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            if(reg_detalle.getId_metodo_determ().equals("1")){
+                table.addCell(new Cell(1,2).add(new Paragraph("Tipo de trabajo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph("Ocupación")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph("Rango de la tasa metabólica (W/m2)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,2).add(new Paragraph("Tasa metabólica media (W/m2)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,2).add(new Paragraph("Tasa metabólica media (KCAL/h)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+                table.addCell(new Cell(1,2).add(new Paragraph(reg_detalle.getTipo_trabajo())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getOcupacion())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getRango_tasa_metab())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,2).add(new Paragraph(reg_detalle.getTasa_metab())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,2).add(new Paragraph(reg_detalle.getTasa_metab_kcal())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            }
+            if(reg_detalle.getId_metodo_determ().equals("2")){
+                table.addCell(new Cell(1,2).add(new Paragraph("Clase")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,5).add(new Paragraph("Actividad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,2).add(new Paragraph("Tasa metabólica media (W/m2)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph("Tasa metabólica media (Kcal/h)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+                table.addCell(new Cell(1,2).add(new Paragraph(reg_detalle.getClase())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+                table.addCell(new Cell(1,5).add(new Paragraph(reg_detalle.getActividad_deter())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+                table.addCell(new Cell(1,2).add(new Paragraph(reg_detalle.getTasa_metab())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+                table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getTasa_metab_kcal())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            }
+            if(reg_detalle.getId_metodo_determ().equals("4")){
+                table.addCell(new Cell(1,4).add(new Paragraph("Frecuencia cardiaca (ppm)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getFrecuencia_deter())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,2).add(new Paragraph("Género")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getGenero_deter())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            }
+            if(reg_detalle.getId_nivel_d().equals("2")){
+                if(Integer.parseInt(reg_detalle.getNtareas())>0){
+                    table.addCell(new Cell(1,3).add(new Paragraph("Tarea 01:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Posición")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Parte del cuerpo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Intensidad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+                    table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getNom_tarea1())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getPosicion_1())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getPcuerpo_1())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getIntensidad_1())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+                    table.addCell(new Cell(1,2).add(new Paragraph("Ciclo Trab. (min):")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,1).add(new Paragraph(reg_detalle.getCiclo_trabajo1())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                }
+                if(Integer.parseInt(reg_detalle.getNtareas())>1){
+                    table.addCell(new Cell(1,3).add(new Paragraph("Tarea 02:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Posición")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Parte del cuerpo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Intensidad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+                    table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getNom_tarea2())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getPosicion_2())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getPcuerpo_2())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getIntensidad_2())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+                    table.addCell(new Cell(1,2).add(new Paragraph("Ciclo Trab. (min):")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,1).add(new Paragraph(reg_detalle.getCiclo_trabajo2())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                }
+                if(Integer.parseInt(reg_detalle.getNtareas())>2){
+                    table.addCell(new Cell(1,3).add(new Paragraph("Tarea 03:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Posición")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Parte del cuerpo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Intensidad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+                    table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getNom_tarea3())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getPosicion_3())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getPcuerpo_3())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getIntensidad_3())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+                    table.addCell(new Cell(1,2).add(new Paragraph("Ciclo Trab. (min):")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,1).add(new Paragraph(reg_detalle.getCiclo_trabajo3())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                }
+                if(Integer.parseInt(reg_detalle.getNtareas())>3){
+                    table.addCell(new Cell(1,3).add(new Paragraph("Tarea 04:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Posición")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Parte del cuerpo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Intensidad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+                    table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getNom_tarea4())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getPosicion_4())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getPcuerpo_4())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getIntensidad_4())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+                    table.addCell(new Cell(1,2).add(new Paragraph("Ciclo Trab. (min):")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,1).add(new Paragraph(reg_detalle.getCiclo_trabajo4())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                }
+                if(Integer.parseInt(reg_detalle.getNtareas())>4){
+                    table.addCell(new Cell(1,3).add(new Paragraph("Tarea 05:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Posición")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Parte del cuerpo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Intensidad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+                    table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getNom_tarea5())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getPosicion_5())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getPcuerpo_5())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getIntensidad_5())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+                    table.addCell(new Cell(1,2).add(new Paragraph("Ciclo Trab. (min):")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,1).add(new Paragraph(reg_detalle.getCiclo_trabajo5())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                }
+
+                table.addCell(new Cell(1,7).add(new Paragraph("Nota: En caso la POSICIÓN sea \"SUBIDA DE UNA PENDIENTE ANDANDO\"")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+                table.addCell(new Cell(1,2).add(new Paragraph("Metros de\n" + "subida:")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+                table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getMtr_subida())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            }
+
+
+            table.addCell(new Cell(1,12).add(new Paragraph("RESULTADOS DEL MONITOREO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Tipo de medición ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getNom_tipo_medicion())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+
+            if(reg.getTipo_medicion().equals("1")){
+                table.addCell(new Cell(6,2).add(new Paragraph("Resultados")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,7).add(new Paragraph("Parámetros")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph("1.1 m")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,7).add(new Paragraph("Temperatura del bulbo húmedo (WBT) (WET) (Tbh) - (°C) ")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getT_bulbo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,7).add(new Paragraph("Temperatura del aire (TA)/Temperatura del bulbo seco (Tbs) - (°C)")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getT_aire())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,7).add(new Paragraph("Temperatura del globo negro (TG) - (°C)")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getT_globo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,7).add(new Paragraph("HR % (Humedad Relativa) ")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getH_relativa())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,7).add(new Paragraph("Velocidad del Viento (m/s)")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getV_viento())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            }
+
+            if(reg.getTipo_medicion().equals("2")){
+                table.addCell(new Cell(6,2).add(new Paragraph("Resultados")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,7).add(new Paragraph("Parámetros")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,1).add(new Paragraph("0.1 m")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,1).add(new Paragraph("1.1 m")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,1).add(new Paragraph("1.7 m")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+                table.addCell(new Cell(1,7).add(new Paragraph("Temperatura del bulbo húmedo (WBT) (WET) (Tbh) - (°C) ")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,1).add(new Paragraph(reg_detalle.getT_bulbo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,1).add(new Paragraph(reg_detalle.getT_bulbo2())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,1).add(new Paragraph(reg_detalle.getT_bulbo3())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+                table.addCell(new Cell(1,7).add(new Paragraph("Temperatura del aire (TA)/Temperatura del bulbo seco (Tbs) - (°C) ")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,1).add(new Paragraph(reg_detalle.getT_aire())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,1).add(new Paragraph(reg_detalle.getT_aire_2())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,1).add(new Paragraph(reg_detalle.getT_aire_3())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+                table.addCell(new Cell(1,7).add(new Paragraph("Temperatura del globo negro (TG) - (°C)")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,1).add(new Paragraph(reg_detalle.getT_globo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,1).add(new Paragraph(reg_detalle.getT_globo_2())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,1).add(new Paragraph(reg_detalle.getT_globo_3())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+                table.addCell(new Cell(1,7).add(new Paragraph("HR % (Humedad Relativa)")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,1).add(new Paragraph(reg_detalle.getH_relativa())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,1).add(new Paragraph(reg_detalle.getH_relativa_2())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,1).add(new Paragraph(reg_detalle.getH_relativa_3())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+                table.addCell(new Cell(1,7).add(new Paragraph("Velocidad del Viento (m/s) ")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,1).add(new Paragraph(reg_detalle.getV_viento())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,1).add(new Paragraph(reg_detalle.getV_viento_2())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,1).add(new Paragraph(reg_detalle.getV_viento_3())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            }
+
+
+
+            table.addCell(new Cell(1,12).add(new Paragraph("OBSERVACIONES")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,12).add(new Paragraph(reg.getObservacion())).setFontSize(9).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+
+            table.addCell(new Cell(4,2).add(new Paragraph("Supervisor del\n" + "Servicio\n")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph("Nombre:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,10).add(new Paragraph("DNI:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(2,10).add(new Paragraph("Firma:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+
+            document.add(table);
+
+            // Cerrar el documento y guardar el archivo
+            document.close();
+
+            // Notificar al usuario que el archivo PDF se ha guardado exitosamente
+            Toast.makeText(requireActivity(), "Archivo PDF guardado en " + pdfFilePath, Toast.LENGTH_SHORT).show();
+
+            Bundle bundle = new Bundle();
+            bundle.putString("rutaPdf",pdfFilePath);
+            Pdf pdfFragment = new Pdf();
+            pdfFragment.setArguments(bundle);
+
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentContainerView, pdfFragment)
+                    .addToBackStack(null) // Si deseas agregar la transacción a la pila de retroceso
+                    .commit();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Notificar al usuario si ocurre algún error al guardar el archivo PDF
+            Toast.makeText(requireActivity(), "Error al guardar el archivo PDF", Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void generarPdf_ConfortTermico(File pdfFile, String pdfFilePath, RegistroFormatos reg, RegistroFormatos_Detalle reg_detalle){
+        try {
+            DAO_FormatosTrabajo daoFormato = new DAO_FormatosTrabajo(getContext());
+            Formatos_Trabajo formato = daoFormato.Buscar(reg.getId_plan_trabajo(), String.valueOf(reg.getId_formato()));
+
+            PdfWriter writer = new PdfWriter(pdfFile);
+            PdfDocument pdfDocument = new PdfDocument(writer);
+            Document document = new Document(pdfDocument, PageSize.A4);
+
+            float[] columnWidths = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}; // Definir anchos de columna
+            Table table = new Table(UnitValue.createPercentArray(columnWidths));
+            // Configurar la tabla para ocupar todo el ancho de la página
+            table.setWidth(UnitValue.createPercentValue(100));
+
+            // -------------------------------------------- C A B E C E R A ------------------------------------------------------------------------------
+            Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.logo);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            byte[] bitmapData = stream.toByteArray();
+            ImageData imageData = ImageDataFactory.create(bitmapData);
+            /*String imagePath = "logo.jpg";
+            ImageData imageData = ImageDataFactory.create(getContext().getAssets().open(imagePath));*/
+            Image image = new Image(imageData);
+            float maxWidthSize = 80f; // Tamaño máximo en píxeles
+            float maxHeightSize = 50f; // Tamaño máximo en píxeles
+            image.scaleToFit(maxWidthSize, maxHeightSize);
+
+            // Primera fila con diferentes anchos de columna
+            table.addCell(new Cell(4,2).add(image).setVerticalAlignment(VerticalAlignment.MIDDLE).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(2,6).add(new Paragraph("FORMATO DE CAMPO PARA\n" + "MEDICIÓN DE CONFORT TÉRMICO")).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Código")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("MEIN-FORMATO-MAF-01")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            // Segunda fila con diferentes anchos de columna
+            table.addCell(new Cell(1,1).add(new Paragraph("Versión")).setWidth(2).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("1")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(2,6).add(new Paragraph("SISTEMA INTEGRADO DE GESTIÓN")).setFontSize(10).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,1).add(new Paragraph("Fecha")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("13/12/2023")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Página")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("1")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            // -------------------------------------------------------------------------------------------------------------------------------------------
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Empresa")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(formato.getNom_cliente())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Analista de campo:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,6).add(new Paragraph(reg.getNom_analista())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Foto")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(!reg.getRuta_foto().equals("") || reg.getFoto()!=null?"X":"")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Equipo utilizado:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Equipo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getCod_equipo1())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Número de serie: ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getSerie_eq1())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Equipo utilizado:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Anemómetro: ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getCod_equipo2())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Número de serie: ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getSerie_eq2())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,3).add(new Paragraph("Hora de verificación:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getHora_situ())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Verificación In Situ:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            String contenido = reg.getVerf_insitu().equals("1") ? "SI" : "NO";
+            table.addCell(new Cell(1,3).add(new Paragraph(contenido).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("HORA DE MONITOREO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Fecha:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Hora inicial")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Hora final")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Tiempo exposición (h)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Jornada (h)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getFec_monitoreo())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getHora_inicial())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getHora_final())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getTiempo_exposicion())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getJornada())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("DATOS PERSONALES DEL TRABAJADOR")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Nombres y\n"+"apellidos")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph(reg.getNom_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Doc. identidad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph(reg.getTipo_doc_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getNum_doc_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Puesto:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getPuesto_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Área de Trabajo:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getArea_trabajo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Actividades\n" + "Realizadas:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getActividades_realizadas())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Peso (Kg)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph(reg.getPeso_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Edad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(String.valueOf(reg.getEdad_trabajador()))).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("HORARIO DE TRABAJO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Horario de Trabajo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getHora_trabajo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph("Régimen laboral")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getRegimen_laboral())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Horario de Refrigerio: ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getHorario_refrigerio())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Tiempo ocupando el\n" + "cargo\n")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getAnio_ocu_cargo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getMes_ocu_cargo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("CONDICIONES DE TRABAJO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Fuente Generadora")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg_detalle.getFuente_generadora())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Descripción de la\n" + "fuente de frío:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg_detalle.getDesc_fuente_frio())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("DESCRIPCIÓN DEL ATUENDO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Desnudo (" + (reg_detalle.getDesc_atuendo().equals("1") ? "X":" ") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Ligero (" + (reg_detalle.getDesc_atuendo().equals("2") ? "X":" ") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Medio (" + (reg_detalle.getDesc_atuendo().equals("3") ? "X":" ") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Pesado (" + (reg_detalle.getDesc_atuendo().equals("4") ? "X":" ") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("DETERMINACIÓN DE LA TASA METABÓLICA\n" + "(ISO 8996 - Ergonomía del ambiente térmico)\n")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Nivel de\n" + "Determinación:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg_detalle.getNom_nivel_d())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Método de\n" + "Determinación")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg_detalle.getMetodo_determ())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            if(reg_detalle.getId_metodo_determ().equals("1")){
+                table.addCell(new Cell(1,2).add(new Paragraph("Tipo de trabajo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,4).add(new Paragraph("Ocupación")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph("Rango de la tasa metabólica (W/m2)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph("Tasa metabólica media (W/m2)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+                table.addCell(new Cell(1,2).add(new Paragraph(reg_detalle.getTipo_trabajo())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,4).add(new Paragraph(reg_detalle.getOcupacion())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getRango_tasa_metab())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getTasa_metab())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            }
+            if(reg_detalle.getId_metodo_determ().equals("2")){
+                table.addCell(new Cell(1,2).add(new Paragraph("Clase")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,7).add(new Paragraph("Actividad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph("Tasa metabólica media (W/m2")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+                table.addCell(new Cell(1,2).add(new Paragraph(reg_detalle.getClase())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+                table.addCell(new Cell(1,7).add(new Paragraph(reg_detalle.getActividad_deter())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+                table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getTasa_metab())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            }
+            if(reg_detalle.getId_metodo_determ().equals("4")){
+                table.addCell(new Cell(1,4).add(new Paragraph("Frecuencia cardiaca (ppm)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getFrecuencia_deter())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,2).add(new Paragraph("Género")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getGenero_deter())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            }
+            if(reg_detalle.getId_nivel_d().equals("2")){
+                if(Integer.parseInt(reg_detalle.getNtareas())>0){
+                    table.addCell(new Cell(1,3).add(new Paragraph("Tarea 01:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Posición")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Parte del cuerpo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Intensidad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+                    table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getNom_tarea1())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getPosicion_1())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getPcuerpo_1())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getIntensidad_1())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+                    table.addCell(new Cell(1,2).add(new Paragraph("Ciclo Trab. (min):")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,1).add(new Paragraph(reg_detalle.getCiclo_trabajo1())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                }
+                if(Integer.parseInt(reg_detalle.getNtareas())>1){
+                    table.addCell(new Cell(1,3).add(new Paragraph("Tarea 02:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Posición")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Parte del cuerpo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Intensidad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+                    table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getNom_tarea2())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getPosicion_2())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getPcuerpo_2())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getIntensidad_2())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+                    table.addCell(new Cell(1,2).add(new Paragraph("Ciclo Trab. (min):")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,1).add(new Paragraph(reg_detalle.getCiclo_trabajo2())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                }
+                if(Integer.parseInt(reg_detalle.getNtareas())>2){
+                    table.addCell(new Cell(1,3).add(new Paragraph("Tarea 03:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Posición")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Parte del cuerpo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Intensidad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+                    table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getNom_tarea3())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getPosicion_3())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getPcuerpo_3())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getIntensidad_3())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+                    table.addCell(new Cell(1,2).add(new Paragraph("Ciclo Trab. (min):")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,1).add(new Paragraph(reg_detalle.getCiclo_trabajo3())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                }
+                if(Integer.parseInt(reg_detalle.getNtareas())>3){
+                    table.addCell(new Cell(1,3).add(new Paragraph("Tarea 04:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Posición")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Parte del cuerpo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Intensidad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+                    table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getNom_tarea4())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getPosicion_4())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getPcuerpo_4())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getIntensidad_4())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+                    table.addCell(new Cell(1,2).add(new Paragraph("Ciclo Trab. (min):")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,1).add(new Paragraph(reg_detalle.getCiclo_trabajo4())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                }
+                if(Integer.parseInt(reg_detalle.getNtareas())>4){
+                    table.addCell(new Cell(1,3).add(new Paragraph("Tarea 05:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Posición")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Parte del cuerpo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,3).add(new Paragraph("Intensidad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+                    table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getNom_tarea5())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getPosicion_5())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getPcuerpo_5())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(2,3).add(new Paragraph(reg_detalle.getIntensidad_5())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+                    table.addCell(new Cell(1,2).add(new Paragraph("Ciclo Trab. (min):")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell(1,1).add(new Paragraph(reg_detalle.getCiclo_trabajo5())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                }
+
+                table.addCell(new Cell(1,7).add(new Paragraph("Nota: En caso la POSICIÓN sea \"SUBIDA DE UNA PENDIENTE ANDANDO\"")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+                table.addCell(new Cell(1,2).add(new Paragraph("Metros de\n" + "subida:")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+                table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getMtr_subida())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.LEFT));
+            }
+
+
+            table.addCell(new Cell(1,12).add(new Paragraph("RESULTADOS DEL MONITOREO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(4,2).add(new Paragraph("Resultados")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,6).add(new Paragraph("TA (T° aire)")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg_detalle.getT_aire())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,6).add(new Paragraph("Temperatura del globo negro (TG) - (°C))")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg_detalle.getT_globo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,6).add(new Paragraph("HR % (Humedad Relativa)")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg_detalle.getH_relativa())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,6).add(new Paragraph("Velocidad del Viento (m/s) ")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg_detalle.getV_viento())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("OBSERVACIONES")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,12).add(new Paragraph(reg.getObservacion())).setFontSize(9).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+
+            table.addCell(new Cell(4,2).add(new Paragraph("Supervisor del\n" + "Servicio\n")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph("Nombre:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,10).add(new Paragraph("DNI:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(2,10).add(new Paragraph("Firma:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+
+            document.add(table);
+
+            // Cerrar el documento y guardar el archivo
+            document.close();
+
+            // Notificar al usuario que el archivo PDF se ha guardado exitosamente
+            Toast.makeText(requireActivity(), "Archivo PDF guardado en " + pdfFilePath, Toast.LENGTH_SHORT).show();
+
+            Bundle bundle = new Bundle();
+            bundle.putString("rutaPdf",pdfFilePath);
+            Pdf pdfFragment = new Pdf();
+            pdfFragment.setArguments(bundle);
+
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentContainerView, pdfFragment)
+                    .addToBackStack(null) // Si deseas agregar la transacción a la pila de retroceso
+                    .commit();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Notificar al usuario si ocurre algún error al guardar el archivo PDF
+            Toast.makeText(requireActivity(), "Error al guardar el archivo PDF", Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void generarPdf_Dosimetria(File pdfFile, String pdfFilePath, RegistroFormatos reg, RegistroFormatos_Detalle reg_detalle){
+        try {
+            DAO_FormatosTrabajo daoFormato = new DAO_FormatosTrabajo(getContext());
+            Formatos_Trabajo formato = daoFormato.Buscar(reg.getId_plan_trabajo(), String.valueOf(reg.getId_formato()));
+
+            PdfWriter writer = new PdfWriter(pdfFile);
+            PdfDocument pdfDocument = new PdfDocument(writer);
+            Document document = new Document(pdfDocument, PageSize.A4);
+
+            float[] columnWidths = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}; // Definir anchos de columna
+            Table table = new Table(UnitValue.createPercentArray(columnWidths));
+            // Configurar la tabla para ocupar todo el ancho de la página
+            table.setWidth(UnitValue.createPercentValue(100));
+
+            Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.logo);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            byte[] bitmapData = stream.toByteArray();
+            ImageData imageData = ImageDataFactory.create(bitmapData);
+            /*String imagePath = "logo.jpg";
+            ImageData imageData = ImageDataFactory.create(getContext().getAssets().open(imagePath));*/
+            Image image = new Image(imageData);
+            float maxWidthSize = 80f; // Tamaño máximo en píxeles
+            float maxHeightSize = 50f; // Tamaño máximo en píxeles
+            image.scaleToFit(maxWidthSize, maxHeightSize);
+
+            // Primera fila con diferentes anchos de columna
+            table.addCell(new Cell(4,2).add(image).setVerticalAlignment(VerticalAlignment.MIDDLE).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(2,6).add(new Paragraph("FORMATO DE CAMPO PARA MEDICIÓN DE\n" + "DOSIMETRÍA\n" +
+                    "METODOLOGÍA: GUIA N° 1 - MEDICION DE RUIDO \\ D.S. N°024-20146-EM")).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Código")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("MEIN-FORMATO-MAF-01")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            // Segunda fila con diferentes anchos de columna
+            table.addCell(new Cell(1,1).add(new Paragraph("Versión")).setWidth(2).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("3")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(2,6).add(new Paragraph("SISTEMA INTEGRADO DE GESTIÓN")).setFontSize(10).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,1).add(new Paragraph("Fecha")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("26/10/2023")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Página")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("1")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,3).add(new Paragraph("NOMBRE DE LA EMPRESA: ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(formato.getNom_cliente())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Analista de campo:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getNom_analista())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,9).add(new Paragraph("DOSIMETRIA")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("MV-01")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("EQUIPO UTILIZADO PARA LA MEDICIÓN")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("DOSÍMETRO:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph(reg.getCod_equipo1())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Número de serie: ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getSerie_eq1())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("CALIBRADOR")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph(reg.getCod_equipo2())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Número de serie: ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getSerie_eq2())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("CALIBRACIÓN IN SITU DEL DOSÍMETRO")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Hora")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg.getHora_situ())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Nivel")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getNivel())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Variación")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph(reg.getVariacion())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("PARÁMETROS DE TIEMPO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Fecha")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph("Hora Inicial ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Hora Final ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Tiempo de exposición (h) ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Jornada (h)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Foto")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(0,32,96)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getFec_monitoreo())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg.getHora_inicial())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph(reg.getHora_final())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getTiempo_exposicion())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getJornada())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph(!reg.getRuta_foto().equals("") || reg.getFoto()!=null?"X":"")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Nombre de Trabajador")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph(reg.getNom_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Doc. identidad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph(reg.getTipo_doc_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getNum_doc_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Puesto de Trabajador:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getPuesto_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Área de Trabajo:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getArea_trabajo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Actividades Realizadas:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getActividades_realizadas())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Edad (años)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(String.valueOf(reg.getEdad_trabajador()))).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(4,2).add(new Paragraph("Fuente generadora de\n" + "Ruido")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph( "Ruido externo (fuera de instalaciones) " + (reg.getCh_ruido_externo().equals("1")?"SI":"NO"))).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,10).add(new Paragraph( "Ruido proveniendnte de áreas contiguas " + (reg.getCh_ruido_antiguo().equals("1")?"SI":"NO"))).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,10).add(new Paragraph( "Rudio generado por el funcionamiento de:  " + (reg.getCh_ruido_generado_por().equals("1")?reg.getRuido_generado_por():" - "))).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,10).add(new Paragraph("Otros: " + reg.getOtro_ruido())).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("HORARIO DE TRABAJO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Horario de Trabajo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph(reg.getHora_trabajo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Régimen laboral")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getRegimen_laboral())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Horario de Refrigerio: ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph(reg.getHorario_refrigerio())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Tiempo ocupando el\n" + "cargo (en la empresa) ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph(reg.getAnio_ocu_cargo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getMes_ocu_cargo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("ANTECEDENTES MEDICOS")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Molestias al oído")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph("Si (" + (reg.getMolestia_oido().equals("1") ? "X":" ") + ") No (" + (reg.getMolestia_oido().equals("2") ? "X": " ") + ")")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Presenta alguna\n" + "enfermedad al oído")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Si (" + (reg.getEnfermedad_oido().equals("1") ? "X":" ") + ") No (" + (reg.getMolestia_oido().equals("2") ? "X": " ") + ")" + (reg.getEnfermedad_oido().equals("1")?reg.getDetalle_enf_oido():""))).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Fecha de último\n" + "examen médico ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph(reg.getMes_ultimo_examen())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph(reg.getAnio_ultimo_examen())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(12,2).add(new Paragraph("CONTROLES\n" + "EXISTENTES PARA EL\n" + "RUIDO")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(6,2).add(new Paragraph("Control de\n" + "Ingeniería")).setBackgroundColor(new DeviceRgb(237,237,237)).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(5,2).add(new Paragraph("SI (" +(reg.getCtrl_ingenieria().equals("1")?"X":"")+ ")")).setBackgroundColor(new DeviceRgb(237,237,237)).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,6).add(new Paragraph("Aislantes de sonido: SÍ ( " +(reg.getAislamiento() != null && reg.getAislamiento().equals("1")?"X":"")+ " ) NO ( " + (!reg.getAislamiento().equals("1")?"X":"") +" )")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,6).add(new Paragraph("Techos Altos/Techos Asorbentes: SÍ ( " +(reg.getTechos() != null && reg.getTechos().equals("1")?"X":"")+ " ) NO ( " + (!reg.getTechos().equals("1")?"X":"") +" )")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,6).add(new Paragraph("Cabinas de Aislamiento: SÍ ( " +(reg.getCabinas() != null && reg.getCabinas().equals("1")?"X":"")+ " ) NO ( " + (!reg.getCabinas().equals("1")?"X":"") +" )")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,6).add(new Paragraph("Orientación de Fachadas: SÍ ( " +(reg.getOrientacion() != null && reg.getOrientacion().equals("1")?"X":"")+ " ) NO ( " + (!reg.getOrientacion().equals("1")?"X":"") +" )")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,6).add(new Paragraph("Cerramientos: SÍ ( " +(reg.getCerramiento() != null && reg.getCerramiento().equals("1")?"X":"")+ " ) NO ( " + (!reg.getCerramiento().equals("1")?"X":"") +" )")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("NO (" +(reg.getCtrl_ingenieria().equals("2")?"X":"")+ ")")).setBackgroundColor(new DeviceRgb(237,237,237)).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,6).add(new Paragraph("Otros: " + reg.getOtro_ingenieria())).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+
+            table.addCell(new Cell(6,2).add(new Paragraph("Control de\n" + "Administrativo")).setBackgroundColor(new DeviceRgb(237,237,237)).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(5,2).add(new Paragraph("SI (" +(reg.getCtrl_administrativo().equals("1")?"X":"")+ ")")).setBackgroundColor(new DeviceRgb(237,237,237)).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,6).add(new Paragraph("Capacitación sobre riesgos /uso correcto de EPP´s: SÍ ( " +(reg.getCapacitacion() != null && reg.getCapacitacion().equals("1")?"X":"")+ " ) NO ( " + (!reg.getCapacitacion().equals("1")?"X":"") +" )")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,6).add(new Paragraph("Señalización de Niveles de Presión Sonora: SÍ ( " +(reg.getSenializacion_precion() != null && reg.getSenializacion_precion().equals("1")?"X":"")+ " ) NO ( " + (!reg.getSenializacion_precion().equals("1")?"X":"") +" )")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,6).add(new Paragraph("Señalización de Uso Obligatorio de EPP's: SÍ ( " +(reg.getSenializacion_epp() != null && reg.getSenializacion_epp().equals("1")?"X":"")+ " ) NO ( " + (!reg.getSenializacion_epp().equals("1")?"X":"") +" )")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,6).add(new Paragraph("Rotación de Personal: SÍ ( " +(reg.getRotacion() != null && reg.getRotacion().equals("1")?"X":"")+ " ) NO ( " + (!reg.getRotacion().equals("1")?"X":"") +" )")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,6).add(new Paragraph("Administración de Tiempo de Exposición: SÍ ( " +(reg.getAdm_tiempo_expo() != null && reg.getAdm_tiempo_expo().equals("1")?"X":"")+ " ) NO ( " + (!reg.getAdm_tiempo_expo().equals("1")?"X":"") +" )")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("NO (" +(reg.getCtrl_administrativo().equals("2")?"X":"")+ ")")).setBackgroundColor(new DeviceRgb(237,237,237)).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,6).add(new Paragraph("Otros: " + reg.getOtro_administrativo())).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("PROTECTORES AUDITÍVOS")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("TAPONES AUDITIVOS")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph("Si (" + (reg.getTapones_au().equals("1") ? "X":" ") + ") No (" + (reg.getTapones_au().equals("2") ? "X": " ") + ")")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("OREJERAS")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph("Si (" + (reg.getOrejereas().equals("1") ? "X":" ") + ") No (" + (reg.getOrejereas().equals("2") ? "X": " ") + ")")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Marca")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg.getMarca_tapones_audi())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Marca")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg.getMarca_orejeras())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Modelo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg.getModelo_tapones_audi())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Modelo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg.getModelo_orejeras())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("NRR")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg.getNrr_tapones_audi())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("NRR")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg.getNrr_orejeras())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("RESULTADOS DEL MONITOREO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Leq dB(A)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph(reg.getLequi()!=0.0? String.valueOf(reg.getLequi()):"")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Lpico dB(A)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph(reg.getLpico_dba()!=0.0? String.valueOf(reg.getLpico_dba()):"")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Lmax dB(A)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph(reg.getLmax()!=0.0? String.valueOf(reg.getLmax()):"")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Lmin\n" + "dB(A)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph(reg.getLmin()!=0.0? String.valueOf(reg.getLmin()):"")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("OBSERVACIONES")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,12).add(new Paragraph(reg.getObservacion())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(4,2).add(new Paragraph("Supervisor del\n" + "Servicio\n")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph("Nombre:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,10).add(new Paragraph("DNI:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(2,10).add(new Paragraph("Firma:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+
+            document.add(table);
+
+            // Cerrar el documento y guardar el archivo
+            document.close();
+
+            // Notificar al usuario que el archivo PDF se ha guardado exitosamente
+            Toast.makeText(requireActivity(), "Archivo PDF guardado en " + pdfFilePath, Toast.LENGTH_SHORT).show();
+
+            Bundle bundle = new Bundle();
+            bundle.putString("rutaPdf",pdfFilePath);
+            Pdf pdfFragment = new Pdf();
+            pdfFragment.setArguments(bundle);
+
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentContainerView, pdfFragment)
+                    .addToBackStack(null) // Si deseas agregar la transacción a la pila de retroceso
+                    .commit();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Notificar al usuario si ocurre algún error al guardar el archivo PDF
+            Toast.makeText(requireActivity(), "Error al guardar el archivo PDF", Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void generarPdf_Sonometria(File pdfFile, String pdfFilePath, RegistroFormatos reg, RegistroFormatos_Detalle reg_detalle){
+        try {
+            DAO_FormatosTrabajo daoFormato = new DAO_FormatosTrabajo(getContext());
+            Formatos_Trabajo formato = daoFormato.Buscar(reg.getId_plan_trabajo(), String.valueOf(reg.getId_formato()));
+
+            PdfWriter writer = new PdfWriter(pdfFile);
+            PdfDocument pdfDocument = new PdfDocument(writer);
+            Document document = new Document(pdfDocument, PageSize.A4);
+
+            float[] columnWidths = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}; // Definir anchos de columna
+            Table table = new Table(UnitValue.createPercentArray(columnWidths));
+            // Configurar la tabla para ocupar todo el ancho de la página
+            table.setWidth(UnitValue.createPercentValue(100));
+
+            Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.logo);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            byte[] bitmapData = stream.toByteArray();
+            ImageData imageData = ImageDataFactory.create(bitmapData);
+            /*String imagePath = "logo.jpg";
+            ImageData imageData = ImageDataFactory.create(getContext().getAssets().open(imagePath));*/
+            Image image = new Image(imageData);
+            float maxWidthSize = 80f; // Tamaño máximo en píxeles
+            float maxHeightSize = 50f; // Tamaño máximo en píxeles
+            image.scaleToFit(maxWidthSize, maxHeightSize);
+
+            // Primera fila con diferentes anchos de columna
+            table.addCell(new Cell(4,2).add(image).setVerticalAlignment(VerticalAlignment.MIDDLE).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(2,6).add(new Paragraph("FORMATO DE CAMPO PARA MEDICIÓN DE SONOMETRÍA\n" +
+                    "METODOLOGIA: NTP-ISO 9612-2010 - ESTRATEGIA 1")).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Código")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("MEIN-FORMATO-MAF-01")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            // Segunda fila con diferentes anchos de columna
+            table.addCell(new Cell(1,1).add(new Paragraph("Versión")).setWidth(2).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("4")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(2,6).add(new Paragraph("SISTEMA INTEGRADO DE GESTIÓN")).setFontSize(10).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,1).add(new Paragraph("Fecha")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("24/10/2023")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Página")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("1")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,3).add(new Paragraph("NOMBRE DE LA EMPRESA: ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(formato.getNom_cliente())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Analista de campo:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getNom_analista())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(3,4).add(new Paragraph("EQUIPO UTILIZADO PARA LA MEDICIÓN")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Sonómetro:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getCod_equipo1())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("N° Serie")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getSerie_eq1())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Calibrador Acústico:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getCod_equipo2())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("N° Serie")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getSerie_eq2())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Anemómetro")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getCod_equipo3())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("N° Serie")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getSerie_eq3())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,3).add(new Paragraph("CALIBRACIÓN IN SITU DEL SONÓMETRO")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Hora")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph(reg.getHora_situ())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Nivel")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getNivel())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Variación")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getVariacion())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,9).add(new Paragraph("SONOMETRÍA")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("SO-01")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Área de Trabajo:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getArea_trabajo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Actividades Realizadas:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getActividades_realizadas())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Horario de Trabajo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getHora_trabajo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Jornada de trabajo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getJornada())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("N° de personas\n" + "Trabajando ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(String.valueOf(reg.getN_personas()))).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Fuente generadora de\n" + "Ruido")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getRuido_generado_por())).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+
+            table.addCell(new Cell(1,4).add(new Paragraph("Área que requiere concentración")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getArea_req_concentr())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Límite Máximo Permisible\n" + "(dB) ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getLim_max_permis())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("RESULTADOS DEL MONITOREO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Fecha")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg.getFec_monitoreo())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Hora Inicial ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getHora_inicial())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Foto")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(0,32,96)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Tiempo de Medición")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg.getTiempo_medicion())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Hora Final ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getHora_final())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(2,1).add(new Paragraph(!reg.getRuta_foto().equals("") || reg.getFoto()!=null?"X":"")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Velocidad del Viento (m/s) ")).setBackgroundColor(new DeviceRgb(221, 235, 247)).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg.getV_viento())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Humedad Relativa (%)")).setBackgroundColor(new DeviceRgb(221, 235, 247)).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getH_relativa())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(4,2).add(new Paragraph("Registro (db)\n" + "por 5 Minutos\n")).setBackgroundColor(new DeviceRgb(221, 235, 247)).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("MEDICIÓN")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("MEDICIÓN 1 ")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("MEDICIÓN 2 ")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("MEDICIÓN 3 ")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("MEDICIÓN 4 ")).setBackgroundColor(new DeviceRgb(231,230,230)).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("MEDICIÓN 5 ")).setBackgroundColor(new DeviceRgb(231,230,230)).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,1).add(new Paragraph("LEQ")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(String.valueOf(reg.getLequi_md1()))).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(String.valueOf(reg.getLequi_md2()))).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(String.valueOf(reg.getLequi_md3()))).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(String.valueOf(reg.getLequi_md4()))).setBackgroundColor(new DeviceRgb(231,230,230)).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph(String.valueOf(reg.getLequi_md5()))).setBackgroundColor(new DeviceRgb(231,230,230)).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,1).add(new Paragraph("Lmáx.")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(String.valueOf(reg.getLmax_md1()))).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(String.valueOf(reg.getLmax_md2()))).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(String.valueOf(reg.getLmax_md3()))).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(String.valueOf(reg.getLmax_md4()))).setBackgroundColor(new DeviceRgb(231,230,230)).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph(String.valueOf(reg.getLmax_md5()))).setBackgroundColor(new DeviceRgb(231,230,230)).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,1).add(new Paragraph("Lmín.")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(String.valueOf(reg.getLmin_md1()))).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(String.valueOf(reg.getLmin_md2()))).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(String.valueOf(reg.getLmin_md3()))).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(String.valueOf(reg.getLmin_md4()))).setBackgroundColor(new DeviceRgb(231,230,230)).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph(String.valueOf(reg.getLmin_md5()))).setBackgroundColor(new DeviceRgb(231,230,230)).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("NOTA: Se realizarán 2 mediciones adicionales en caso los resultados de las tres primeras mediciones del LEQ difieran en más de 3 dB")).setBackgroundColor(new DeviceRgb(231,230,230)).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(9,2).add(new Paragraph("Controles")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(3,2).add(new Paragraph("Control de\n" + "Ingeniería")).setBackgroundColor(new DeviceRgb(237,237,237)).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("SI (" +(reg.getCtrl_ingenieria().equals("1")?"X":"")+ ")")).setBackgroundColor(new DeviceRgb(237,237,237)).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,6).add(new Paragraph("Aislantes de sonido: SÍ ( " +(reg.getAislamiento() != null && reg.getAislamiento().equals("1")?"X":"")+ " ) NO ( " + (!reg.getAislamiento().equals("1")?"X":"") +" )")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(2,2).add(new Paragraph("NO (" +(reg.getCtrl_ingenieria().equals("2")?"X":"")+ ")")).setBackgroundColor(new DeviceRgb(237,237,237)).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,6).add(new Paragraph("Cabinas de Aislamiento: SÍ ( " +(reg.getCabinas() != null && reg.getCabinas().equals("1")?"X":"")+ " ) NO ( " + (!reg.getCabinas().equals("1")?"X":"") +" )")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,6).add(new Paragraph("Otros: " + reg.getOtro_ingenieria())).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+
+            table.addCell(new Cell(6,2).add(new Paragraph("Control de\n" + "Administrativo")).setBackgroundColor(new DeviceRgb(237,237,237)).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(3,2).add(new Paragraph("SI (" +(reg.getCtrl_administrativo().equals("1")?"X":"")+ ")")).setBackgroundColor(new DeviceRgb(237,237,237)).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,6).add(new Paragraph("Capacitación sobre riesgos asociados a la exposición al ruido y uso de EPP´s: SÍ ( " +(reg.getCapacitacion() != null && reg.getCapacitacion().equals("1")?"X":"")+ " ) NO ( " + (!reg.getCapacitacion().equals("1")?"X":"") +" )")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,6).add(new Paragraph("Señalización de Niveles de Presión Sonora: SÍ ( " +(reg.getSenializacion_precion() != null && reg.getSenializacion_precion().equals("1")?"X":"")+ " ) NO ( " + (!reg.getSenializacion_precion().equals("1")?"X":"") +" )")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,6).add(new Paragraph("Señalización de Uso Obligatorio de EPP's: SÍ ( " +(reg.getSenializacion_epp() != null && reg.getSenializacion_epp().equals("1")?"X":"")+ " ) NO ( " + (!reg.getSenializacion_epp().equals("1")?"X":"") +" )")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(3,2).add(new Paragraph("NO (" +(reg.getCtrl_administrativo().equals("2")?"X":"")+ ")")).setBackgroundColor(new DeviceRgb(237,237,237)).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,6).add(new Paragraph("Rotación de Personal: SÍ ( " +(reg.getRotacion() != null && reg.getRotacion().equals("1")?"X":"")+ " ) NO ( " + (!reg.getRotacion().equals("1")?"X":"") +" )")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,6).add(new Paragraph("Administración de Tiempo de Exposición: SÍ ( " +(reg.getTiempo_exposicion() != null && reg.getTiempo_exposicion().equals("1")?"X":"")+ " ) NO ( " + (!reg.getTiempo_exposicion().equals("1")?"X":"") +" )")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,6).add(new Paragraph("Otros: " + reg.getOtro_administrativo())).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("PROTECTORES AUDITÍVOS")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("TAPONES AUDITIVOS")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph("Si (" + (reg.getTapones_au().equals("1") ? "X":" ") + ") No (" + (reg.getTapones_au().equals("2") ? "X": " ") + ")")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("OREJERAS")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph("Si (" + (reg.getOrejereas().equals("1") ? "X":" ") + ") No (" + (reg.getOrejereas().equals("2") ? "X": " ") + ")")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Marca")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg.getMarca_tapones_audi())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Marca")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg.getMarca_orejeras())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Modelo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg.getModelo_tapones_audi())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Modelo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg.getModelo_orejeras())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("NRR")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg.getNrr_tapones_audi())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("NRR")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg.getNrr_orejeras())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+
+            table.addCell(new Cell(1,2).add(new Paragraph("OBSERVACIONES")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getObservacion())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(4,2).add(new Paragraph("Supervisor del\n" + "Servicio\n")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph("Nombre:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,10).add(new Paragraph("DNI:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(2,10).add(new Paragraph("Firma:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+
+            document.add(table);
+
+            // Cerrar el documento y guardar el archivo
+            document.close();
+
+            // Notificar al usuario que el archivo PDF se ha guardado exitosamente
+            Toast.makeText(requireActivity(), "Archivo PDF guardado en " + pdfFilePath, Toast.LENGTH_SHORT).show();
+
+            Bundle bundle = new Bundle();
+            bundle.putString("rutaPdf",pdfFilePath);
+            Pdf pdfFragment = new Pdf();
+            pdfFragment.setArguments(bundle);
+
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentContainerView, pdfFragment)
+                    .addToBackStack(null) // Si deseas agregar la transacción a la pila de retroceso
+                    .commit();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Notificar al usuario si ocurre algún error al guardar el archivo PDF
+            Toast.makeText(requireActivity(), "Error al guardar el archivo PDF", Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void generarPdf_Iluminacion(File pdfFile, String pdfFilePath, RegistroFormatos reg, RegistroFormatos_Detalle reg_detalle){
+        try {
+            DAO_FormatosTrabajo daoFormato = new DAO_FormatosTrabajo(getContext());
+            Formatos_Trabajo formato = daoFormato.Buscar(reg.getId_plan_trabajo(), String.valueOf(reg.getId_formato()));
+
+            PdfWriter writer = new PdfWriter(pdfFile);
+            PdfDocument pdfDocument = new PdfDocument(writer);
+            Document document = new Document(pdfDocument, PageSize.A4);
+
+            float[] columnWidths = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}; // Definir anchos de columna
+            Table table = new Table(UnitValue.createPercentArray(columnWidths));
+            // Configurar la tabla para ocupar todo el ancho de la página
+            table.setWidth(UnitValue.createPercentValue(100));
+
+            //-------------------------------------- CABECERA -----------------------------------------------------------------------------------------------
+            Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.logo);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            byte[] bitmapData = stream.toByteArray();
+            ImageData imageData = ImageDataFactory.create(bitmapData);
+            /*String imagePath = "logo.jpg";
+            ImageData imageData = ImageDataFactory.create(getContext().getAssets().open(imagePath));*/
+            Image image = new Image(imageData);
+            float maxWidthSize = 80f; // Tamaño máximo en píxeles
+            float maxHeightSize = 50f; // Tamaño máximo en píxeles
+            image.scaleToFit(maxWidthSize, maxHeightSize);
+
+            // Primera fila con diferentes anchos de columna
+            table.addCell(new Cell(4,2).add(image).setVerticalAlignment(VerticalAlignment.MIDDLE).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(2,6).add(new Paragraph("FORMATO DE CAMPO PARA MEDICIÓN DE\n" + "ILUMINACIÓN")).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Código")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("MEIN-FORMATO-MI-01")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            // Segunda fila con diferentes anchos de columna
+            table.addCell(new Cell(1,1).add(new Paragraph("Versión")).setWidth(2).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("1")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(2,6).add(new Paragraph("SISTEMA INTEGRADO DE GESTIÓN")).setFontSize(10).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,1).add(new Paragraph("Fecha")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("02/01/2024")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Página")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("1")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            //-------------------------------------------------------------------------------------------------------------------------------------------------
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Nombre de la Empresa:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph(formato.getNom_cliente())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(2,3).add(new Paragraph("PLAN DE\n" + "MANTENIMIENTO DE\n" + "LUMINARIAS")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("SI")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("NO")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Analista de campo:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph(reg.getNom_analista())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("(" + (reg_detalle.getPlan_mantenimiento_ilum().equals("1")?"X":" ") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("(" + (reg_detalle.getPlan_mantenimiento_ilum().equals("2")?"X":" ") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("EQUIPO UTILIZADO PARA LA MEDICIÓN")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Luxómetro")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getCod_equipo1())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("N° Serie")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getSerie_eq1())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Ubicación de equipo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getUbic_equip())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("VERIFICACIÓN IN SITU DEL LUXÓMETRO")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Hora de verificación:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getHora_situ())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph("Lux")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg.getLuz()).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+
+            table.addCell(new Cell(1,9).add(new Paragraph("ILUMINACIÓN")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("ILU-01")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Foto: " + (!reg.getRuta_foto().equals("") || reg.getFoto()!=null?"X":""))).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Nombre de trabajador")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph(reg.getNom_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Doc. identidad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph(reg.getTipo_doc_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getNum_doc_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Puesto:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getPuesto_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Área de Trabajo:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph(reg.getArea_trabajo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("N° de personas en la\n" + "estación de trabajo ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(String.valueOf(reg.getN_personas()))).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Horario de Trabajo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph(reg.getHora_trabajo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Régimen laboral")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getRegimen_laboral())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Tarea visual del puesto\n" + "de trabajo ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getTarea_visual())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Tipo de área de trabajo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph(reg.getTipo_tarea_visual())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Nivel Mínimo de\n" + "Iluminación (Lux)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getNivel_min_ilu())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+
+            table.addCell(new Cell(1,12).add(new Paragraph("RESULTADOS DEL MONITOREO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,3).add(new Paragraph("Fecha de Monitoreo:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Hora de Monitoreo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Tipo de iluminación")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Tipo de medición")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getFec_monitoreo())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getHora_inicial())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getTipo_iluminacion())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getTipo_medicion_ilu())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+
+            if(reg_detalle.getId_tipo_medicion_ilu()!= null && reg_detalle.getId_tipo_medicion_ilu().equals("1")){
+                table.addCell(new Cell(1,3).add(new Paragraph("Largo de escritorio (m)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph("Ancho de escritorio (m)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph("Número de puntos de medición")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph("Altura de plano de\n" + "trabajo (m)\n")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+                table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getLarg_escrit())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getAnch_escrit())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getNum_pmedicion())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getAlt_pltrabajo())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            }
+            if(reg_detalle.getId_tipo_medicion_ilu()!= null && reg_detalle.getId_tipo_medicion_ilu().equals("2")){
+                table.addCell(new Cell(1,2).add(new Paragraph("Longitud de salón (m)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,2).add(new Paragraph("Ancho de salón (m)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph("Altura desde el plano de trabajo a luminarias (m)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,2).add(new Paragraph("Constante de salón (k)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph("Número mínimo de puntos de medición")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+                table.addCell(new Cell(1,2).add(new Paragraph(reg_detalle.getLong_salon())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,2).add(new Paragraph(reg_detalle.getAnch_salon())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getAlt_pltrabajo_ilu())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,2).add(new Paragraph(reg_detalle.getConst_salon())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(reg_detalle.getNum_min_pmedic())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            }
+
+            int n_puntos = 0;
+            if(reg_detalle.getId_tipo_medicion_ilu()!= null && reg_detalle.getId_tipo_medicion_ilu().equals("1")){
+                n_puntos = Integer.parseInt(reg_detalle.getNum_pmedicion());
+            } else if (reg_detalle.getId_tipo_medicion_ilu()!= null && reg_detalle.getId_tipo_medicion_ilu().equals("2")) {
+                n_puntos = Integer.parseInt(reg_detalle.getNum_min_pmedic());
+            }
+
+            String[] array = reg_detalle.getPuntos_med().split("\\*");
+
+            if(n_puntos>0){
+                table.addCell(new Cell(1,3).add(new Paragraph("IL-01 (Lux)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(array[0])).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            }
+            if(n_puntos>1){
+                table.addCell(new Cell(1,3).add(new Paragraph("IL-02 (Lux)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(array[1])).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            }
+            if(n_puntos>2){
+                table.addCell(new Cell(1,3).add(new Paragraph("IL-03 (Lux)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(array[2])).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            }
+            if(n_puntos>3){
+                table.addCell(new Cell(1,3).add(new Paragraph("IL-04 (Lux)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(array[3])).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            }
+            if(n_puntos>4){
+                table.addCell(new Cell(1,3).add(new Paragraph("IL-05 (Lux)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(array[4])).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            }
+            if(n_puntos>5){
+                table.addCell(new Cell(1,3).add(new Paragraph("IL-06 (Lux)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(array[5])).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            }
+            if(n_puntos>6){
+                table.addCell(new Cell(1,3).add(new Paragraph("IL-07 (Lux)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(array[6])).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            }
+            if(n_puntos>7){
+                table.addCell(new Cell(1,3).add(new Paragraph("IL-08 (Lux)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(array[7])).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            }
+            if(n_puntos>8){
+                table.addCell(new Cell(1,3).add(new Paragraph("IL-09 (Lux)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(array[8])).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            }
+            if(n_puntos>9){
+                table.addCell(new Cell(1,3).add(new Paragraph("IL-10 (Lux)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(array[9])).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            }
+            if(n_puntos>10){
+                table.addCell(new Cell(1,3).add(new Paragraph("IL-11 (Lux)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(array[10])).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            }
+            if(n_puntos>11){
+                table.addCell(new Cell(1,3).add(new Paragraph("IL-12 (Lux)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(array[11])).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            }
+            if(n_puntos>12){
+                table.addCell(new Cell(1,3).add(new Paragraph("IL-13 (Lux)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(array[12])).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            }
+            if(n_puntos>13){
+                table.addCell(new Cell(1,3).add(new Paragraph("IL-14 (Lux)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(array[13])).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            }
+            if(n_puntos>14){
+                table.addCell(new Cell(1,3).add(new Paragraph("IL-15 (Lux)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(array[14])).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            }
+            if(n_puntos>15){
+                table.addCell(new Cell(1,3).add(new Paragraph("IL-16 (Lux)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(array[15])).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            }
+            if(n_puntos>16){
+                table.addCell(new Cell(1,3).add(new Paragraph("IL-17 (Lux)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(array[16])).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            }
+            if(n_puntos>17){
+                table.addCell(new Cell(1,3).add(new Paragraph("IL-18 (Lux)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(array[17])).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            }
+            if(n_puntos>18){
+                table.addCell(new Cell(1,3).add(new Paragraph("IL-19 (Lux)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(array[18])).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            }
+            if(n_puntos>19){
+                table.addCell(new Cell(1,3).add(new Paragraph("IL-20 (Lux)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(array[19])).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            }
+            if(n_puntos>20){
+                table.addCell(new Cell(1,3).add(new Paragraph("IL-21 (Lux)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(array[20])).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            }
+            if(n_puntos>21){
+                table.addCell(new Cell(1,3).add(new Paragraph("IL-22 (Lux)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(array[21])).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            }
+            if(n_puntos>22){
+                table.addCell(new Cell(1,3).add(new Paragraph("IL-23 (Lux)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(array[22])).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            }
+            if(n_puntos>23){
+                table.addCell(new Cell(1,3).add(new Paragraph("IL-24 (Lux)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(array[23])).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            }
+            if(n_puntos>24){
+                table.addCell(new Cell(1,3).add(new Paragraph("IL-25 (Lux)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+                table.addCell(new Cell(1,3).add(new Paragraph(array[24])).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            }
+            if(n_puntos%2==1){
+                table.addCell(new Cell(1,6).add(new Paragraph(" ")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            }
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Cantidad de luminarias")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("N° de lámparas\n" + "por luminaria\n")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Altura de Plano\n" + "a Luminaria (m) ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Color Pared")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Color Piso")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Estado físico de\n" + "luminarias")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph(reg_detalle.getCant_iluminarias())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg_detalle.getN_lamparas())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg_detalle.getAltura_p_luminaria())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg_detalle.getColor_pared())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg_detalle.getColor_piso())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg_detalle.getEstado_fisico())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(2,12).add(new Paragraph("Tareas realizadas durante la medición")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,12).add(new Paragraph(reg.getActividades_realizadas())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("OBSERVACIONES")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,12).add(new Paragraph(reg.getObservacion())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(4,2).add(new Paragraph("Supervisor del\n" + "Servicio\n")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph("Nombre:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,10).add(new Paragraph("DNI:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(2,10).add(new Paragraph("Firma:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+
+            document.add(table);
+
+            // Cerrar el documento y guardar el archivo
+            document.close();
+
+            // Notificar al usuario que el archivo PDF se ha guardado exitosamente
+            Toast.makeText(requireActivity(), "Archivo PDF guardado en " + pdfFilePath, Toast.LENGTH_SHORT).show();
+
+            Bundle bundle = new Bundle();
+            bundle.putString("rutaPdf",pdfFilePath);
+            Pdf pdfFragment = new Pdf();
+            pdfFragment.setArguments(bundle);
+
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentContainerView, pdfFragment)
+                    .addToBackStack(null) // Si deseas agregar la transacción a la pila de retroceso
+                    .commit();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Notificar al usuario si ocurre algún error al guardar el archivo PDF
+            Toast.makeText(requireActivity(), "Error al guardar el archivo PDF", Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void generarPdf_Vibracion(File pdfFile, String pdfFilePath, RegistroFormatos reg, RegistroFormatos_Detalle reg_detalle){
+        try {
+            DAO_FormatosTrabajo daoFormato = new DAO_FormatosTrabajo(getContext());
+            Formatos_Trabajo formato = daoFormato.Buscar(reg.getId_plan_trabajo(), String.valueOf(reg.getId_formato()));
+
+            PdfWriter writer = new PdfWriter(pdfFile);
+            PdfDocument pdfDocument = new PdfDocument(writer);
+            Document document = new Document(pdfDocument, PageSize.A4);
+
+            float[] columnWidths = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}; // Definir anchos de columna
+            Table table = new Table(UnitValue.createPercentArray(columnWidths));
+            // Configurar la tabla para ocupar todo el ancho de la página
+            table.setWidth(UnitValue.createPercentValue(100));
+
+            // -------------------------------------------- C A B E C E R A ------------------------------------------------------------------------------
+            Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.logo);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            byte[] bitmapData = stream.toByteArray();
+            ImageData imageData = ImageDataFactory.create(bitmapData);
+            /*String imagePath = "logo.jpg";
+            ImageData imageData = ImageDataFactory.create(getContext().getAssets().open(imagePath));*/
+            Image image = new Image(imageData);
+            float maxWidthSize = 80f; // Tamaño máximo en píxeles
+            float maxHeightSize = 50f; // Tamaño máximo en píxeles
+            image.scaleToFit(maxWidthSize, maxHeightSize);
+
+            // Primera fila con diferentes anchos de columna
+            table.addCell(new Cell(4,2).add(image).setVerticalAlignment(VerticalAlignment.MIDDLE).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(2,6).add(new Paragraph("FORMATO DE CAMPO PARA\n" + "MEDICIÓN DE VIBRACIÓN")).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Código")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("MEIN-FORMATO-MV-01")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            // Segunda fila con diferentes anchos de columna
+            table.addCell(new Cell(1,1).add(new Paragraph("Versión")).setWidth(2).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("1")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(2,6).add(new Paragraph("SISTEMA INTEGRADO DE GESTIÓN")).setFontSize(10).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,1).add(new Paragraph("Fecha")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("02/01/2024")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Página")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("1")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            // -------------------------------------------------------------------------------------------------------------------------------------------
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Empresa")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(formato.getNom_cliente())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Analista de campo:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,6).add(new Paragraph(reg.getNom_analista())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Foto")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(!reg.getRuta_foto().equals("") || reg.getFoto()!=null?"X":"")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));// !reg.getRutaFoto().trim().isEmpty()
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Tipo de vibración:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getTipo_vibracion())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Equipo utilizado:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getCod_equipo1())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph("Número de serie: ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getSerie_eq1())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Hora de verificación:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getHora_situ())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph("Verificación In Situ:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            String contenido = reg.getVerf_insitu().equals("1") ? "SI" : "NO";
+            table.addCell(new Cell(1,3).add(new Paragraph(contenido).setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("HORA DE MONITOREO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Fecha:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Hora inicial")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Hora final")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Tiempo exposición (h)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Jornada (h)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getFec_monitoreo())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getHora_inicial())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(reg.getHora_final())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getTiempo_exposicion())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getJornada())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("DATOS DEL TRABAJADOR")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Nombre de trabajador")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,5).add(new Paragraph(reg.getNom_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph("Doc. identidad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph(reg.getTipo_doc_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getNum_doc_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Puesto:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getPuesto_trabajador())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Área de Trabajo:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getArea_trabajo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Actividades\n" + "Realizadas:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg.getActividades_realizadas())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Edad")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph(String.valueOf(reg.getEdad_trabajador()))).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("HORARIO DE TRABAJO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(2,2).add(new Paragraph("Horario de Trabajo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(2,3).add(new Paragraph(reg.getHora_trabajo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Horario de Refrigerio: ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg.getHorario_refrigerio())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Régimen laboral")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg.getRegimen_laboral())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("CONDICIONES DE TRABAJO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Fuente Generadora de\n" + "Vibración ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg_detalle.getFuente_generadora())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Descripción de la\n" + "fuente de vibracion:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,10).add(new Paragraph(reg_detalle.getDesc_fuente_frio())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            if(reg.getTipo_vibracion().equals("Mano - Brazo")){
+                table.addCell(new Cell(1,2).add(new Paragraph("Lateralidad en la mano")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.LEFT));
+                table.addCell(new Cell(1,10).add(new Paragraph(reg_detalle.getDesc_fuente_frio())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            }
+
+            table.addCell(new Cell(1,2).add(new Paragraph("Control de Ingeniería")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph(reg.getCtrl_ingenieria().equals("1")?"SI":"NO")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Nombre del control")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,7).add(new Paragraph(reg.getCtrl_ingenieria().equals("1")?reg.getNom_ctrl_ingenieria():"No tiene")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            // Por revisar semializacion
+            table.addCell(new Cell(3,2).add(new Paragraph("Control Administrativo")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,7).add(new Paragraph("Señalización de las áreas")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getSenializacion_vibracion().equals("1")?"SI":"NO")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,7).add(new Paragraph("Capacitación sobre de los riesgos a la exposición de vibración")).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph(reg.getCapacitacion().equals("1")?"SI":"No")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Manteminiento de la\n" + "fuente generadora de\n" + "vibración")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,1).add(new Paragraph(reg.getMantenimiento_vibracion().equals("1")?"SI":"No")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Frecuencia")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(reg_detalle.getFrecuencia())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(2,2).add(new Paragraph("EPPs")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Botas (" + (reg_detalle.getEpp_botas().equals("1")?"X":" ") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Guantes (" + (reg_detalle.getEpp_guantes().equals("1")?"X":" ") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Casco (" + (reg_detalle.getEpp_casco().equals("1")?"X":" ") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,3).add(new Paragraph("Protección auditiva (" + (reg_detalle.getEpp_orejeras().equals("1")?"X":" ") + ")")).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph("Otros: " + reg_detalle.getOtro_epp())).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+
+            table.addCell(new Cell(1,12).add(new Paragraph("RESULTADOS DEL MONITOREO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+
+            table.addCell(new Cell(3,2).add(new Paragraph("Resultados")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("X:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,8).add(new Paragraph(reg_detalle.getX())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Y:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,8).add(new Paragraph(reg_detalle.getY())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph("Z:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,8).add(new Paragraph(reg_detalle.getZ())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+
+            /*table.addCell(new Cell(1,12).add(new Paragraph("OBSERVACIONES")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,12).add(new Paragraph(reg.getObservacion())).setFontSize(9).setWidth(2).setTextAlignment(TextAlignment.CENTER));*/
+
+            table.addCell(new Cell(4,2).add(new Paragraph("Supervisor del\n" + "Servicio\n")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,10).add(new Paragraph("Nombre:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(1,10).add(new Paragraph("DNI:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+            table.addCell(new Cell(2,10).add(new Paragraph("Firma:")).setFontSize(8).setTextAlignment(TextAlignment.LEFT));
+
+            document.add(table);
+
+            // Cerrar el documento y guardar el archivo
+            document.close();
+
+            // Notificar al usuario que el archivo PDF se ha guardado exitosamente
+            Toast.makeText(requireActivity(), "Archivo PDF guardado en " + pdfFilePath, Toast.LENGTH_SHORT).show();
+
+            Bundle bundle = new Bundle();
+            bundle.putString("rutaPdf",pdfFilePath);
+            Pdf pdfFragment = new Pdf();
+            pdfFragment.setArguments(bundle);
+
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentContainerView, pdfFragment)
+                    .addToBackStack(null) // Si deseas agregar la transacción a la pila de retroceso
+                    .commit();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Notificar al usuario si ocurre algún error al guardar el archivo PDF
+            Toast.makeText(requireActivity(), "Error al guardar el archivo PDF", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // Abrir Formatos para edidcion
+
+    private void AbrirFormato(Fragment nuevo, RegistroFormatos registro, RegistroFormatos_Detalle detalle) {
+        /*bundle.putString("nombre_formato",registro.getNom_formato());
+        bundle.putString("id_pt_formato", String.valueOf(registro.getId_pt_formato()));// ENPAQUETAR DE PARAMETROS
+        bundle.putString("id_plan_Trabajo", String.valueOf(registro.getId_plan_trabajo()));// ENPAQUETAR DE PARAMETROS
+        bundle.putString("id_formato", String.valueOf(registro.getId_formato()));
+        bundle.putString("cantidad", String.valueOf(registro.getCantidad()));
+        bundle.putString("nomEmpresa",String.valueOf(registro.getNom_cliente()));*/
+        bundle.putParcelable("registroForm",registro);
+        bundle.putParcelable("detalleForm",detalle);
+        bundle.putString("nomUsuario", id_colaborador);
+        nuevo.setArguments(bundle);//ENVIAR PARAMETROS
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.fragmentContainerView, nuevo)
+                .addToBackStack(null) // Si deseas agregar la transacción a la pila de retroceso
+                .commit();
+    }
 }
+

@@ -438,7 +438,7 @@
                                 android:background="@drawable/style_input"
                                 android:hint="Ingrese jornada"
                                 android:textColor="@color/black"
-                                android:inputType="numberDecimal|text"
+                                android:inputType="number|numberDecimal"
                                 android:maxLength="5"
                                 android:textSize="15sp"
                                 android:paddingLeft="8dp"/>
@@ -470,7 +470,7 @@
                                 android:background="@drawable/style_input"
                                 android:hint="Ingrese jornada"
                                 android:textColor="@color/black"
-                                android:inputType="numberDecimal|text"
+                                android:inputType="number|numberDecimal"
                                 android:maxLength="5"
                                 android:textSize="15sp"
                                 android:paddingLeft="8dp"/>
@@ -494,7 +494,7 @@
                         android:textColorHint="@color/black"
                         android:background="@drawable/style_input"
                         android:hint="Ingrese jornada"
-                        android:inputType="numberDecimal|text"
+                        android:inputType="numberDecimal|number"
                         android:maxLength="10"
                         android:textColor="@color/black"
                         android:textSize="15sp"
@@ -589,7 +589,7 @@
                                     android:layout_marginTop="5dp"
                                     android:hint="Digite"
                                     android:paddingLeft="9dp"
-                                    android:inputType="numberSigned|text"
+                                    android:inputType="numberSigned|number"
                                     android:maxLength="8"
                                     android:textSize="16sp"/>
                             </LinearLayout>
@@ -674,15 +674,15 @@
                                     android:id="@+id/txt_edad"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:background="@drawable/style_input"
-                                    android:hint=" Digite"
+                                    style="@style/EditTextFocusStyle"
+                                    android:hint="Digite"
                                     android:textSize="15sp"
                                     android:paddingLeft="8dp"
                                     android:layout_marginTop="5dp"
                                     android:textColor="@color/black"
                                     android:textColorHint="@color/black"
-                                    android:inputType="numberSigned|text"
-                                    android:maxLength="3"/>
+                                    android:inputType="numberSigned|number"
+                                    android:maxLength="2"/>
                             </LinearLayout>
                             <LinearLayout
                                 android:layout_width="0dp"
@@ -712,7 +712,7 @@
                                     android:layout_marginTop="5dp"
                                     android:textColor="@color/black"
                                     android:textColorHint="@color/black"
-                                    android:inputType="numberDecimal|text"
+                                    android:inputType="numberDecimal|number"
                                     android:maxLength="3"/>
                             </LinearLayout>
                         </LinearLayout>
@@ -1570,6 +1570,79 @@
                             android:layout_marginTop="10dp"
                             android:orientation="horizontal">
 
+                            <!--Columna de FORRADAS-->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="sans-serif-light"
+                                    android:text="FORRADAS"
+                                    android:textStyle="bold"
+                                    android:textColor="@color/black"
+                                    android:textSize="12sp" />
+                                <RadioGroup
+                                    android:id="@+id/radioGroup_Forrada"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical">
+
+                                    <RadioButton
+                                        android:id="@+id/radio_monoTrabajo"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Mono de trabajo"
+                                        android:buttonTint="@android:color/holo_blue_light"
+                                        android:textColor="@color/black"
+                                        android:textSize="15sp"
+                                        android:checked="false"
+                                        android:tag="1"/>
+
+                                    <RadioButton
+                                        android:id="@+id/radio_pantalon"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Pantalón"
+                                        android:buttonTint="@android:color/holo_green_dark"
+                                        android:textColor="@color/black"
+                                        android:textSize="15sp"
+                                        android:checked="false"
+                                        android:tag="2"/>
+
+                                    <RadioButton
+                                        android:id="@+id/radio_chaqueta"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Chaqueta"
+                                        android:buttonTint="@android:color/holo_green_light"
+                                        android:textColor="@color/black"
+                                        android:textSize="15sp"
+                                        android:checked="false"
+                                        android:tag="3"/>
+
+                                    <RadioButton
+                                        android:id="@+id/radio_chaleco"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Chaleco"
+                                        android:buttonTint="@android:color/holo_orange_dark"
+                                        android:textColor="@color/black"
+                                        android:textSize="15sp"
+                                        android:checked="false"
+                                        android:tag="4"/>
+
+                                </RadioGroup>
+
+                            </LinearLayout>
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"

@@ -10,6 +10,9 @@ import com.mijael.mein.HELPER.MeinSQLiteHelper;
 import com.mijael.mein.Utilidades.Util_RegistroFormatos;
 import com.mijael.mein.Utilidades.Util_RegistroFormatos_Detalle;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class DAO_RegistroVibracion {
     public MeinSQLiteHelper datHelper;
     public DAO_RegistroVibracion(Context context){
@@ -56,12 +59,11 @@ public class DAO_RegistroVibracion {
         values.put(Util_RegistroFormatos.CAMPO_SENIALIZACION_VIBRACION, registro.getSenializacion_vibracion());
         values.put(Util_RegistroFormatos.CAMPO_CAPACITACION, registro.getCapacitacion());
         values.put(Util_RegistroFormatos.CAMPO_MANTENIMIENTO_VIBRACION, registro.getMantenimiento_vibracion());
+        values.put(Util_RegistroFormatos.CAMPO_RUTA_FOTO, registro.getRuta_foto());
         values.put(Util_RegistroFormatos.CAMPO_ESTADO, registro.getEstado());
         values.put(Util_RegistroFormatos.CAMPO_FEC_REG, registro.getFec_reg());
         values.put(Util_RegistroFormatos.CAMPO_USER_REG, registro.getUser_reg());
         values.put(Util_RegistroFormatos.CAMPO_ESTADO_SINCRO,1);// MARCANDO PARA SABER QUE FALTA SINCRONIZAR
-
-
         /*values.put(Util_VibracionRegistro.CAMPO_COD_FORMATO, registro.getCod_formato());
         values.put(Util_VibracionRegistro.CAMPO_ID_FORMATO, registro.getId_formato());
         values.put(Util_VibracionRegistro.CAMPO_ID_PLAN_TRABAJO, registro.getId_plan_trabajo());
@@ -109,7 +111,7 @@ public class DAO_RegistroVibracion {
         SQLiteDatabase db = datHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(Util_RegistroFormatos_Detalle.CAMPO_ID_FORMATO_REG_DETALLE,-1); //--------------------> PRUEBA PARA EL REGISTRO EN LA TABLA GENERAL
+        //values.put(Util_RegistroFormatos_Detalle.CAMPO_ID_FORMATO_REG_DETALLE,-1); //--------------------> PRUEBA PARA EL REGISTRO EN LA TABLA GENERAL
         values.put(Util_RegistroFormatos_Detalle.CAMPO_ID_PLAN_TRABAJO_FORMATO_REG, registro.getId_plan_trabajo_formato_reg());//----------------> PRUEBA PARA EL REGISTRO EN LA TABLA GENERAL
         values.put(Util_RegistroFormatos_Detalle.CAMPO_FUENTE_GENERADORA, registro.getFuente_generadora());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_DESC_FUENTE_FRIO, registro.getDesc_fuente_frio());
@@ -126,7 +128,6 @@ public class DAO_RegistroVibracion {
         values.put(Util_RegistroFormatos_Detalle.CAMPO_FEC_REG, registro.getFec_reg());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_USER_REG, registro.getUser_reg());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_ESTADO_SINCRO,1);// MARCANDO PARA SABER QUE FALTA SINCRONIZAR
-
 
         //values.put(Util_VibracionRegistroDetalle.CAMPO_ID_PLAN_TRABAJO_FORMATO_REG, registro.getId_plan_trabajo_formato_reg());
         /*values.put(Util_VibracionRegistroDetalle.CAMPO_FUENTE_GENERADORA, registro.getFuente_generadora());
@@ -145,6 +146,96 @@ public class DAO_RegistroVibracion {
         values.put(Util_VibracionRegistroDetalle.CAMPO_USER_REG, registro.getUser_reg());*/
 
         db.insert(Util_RegistroFormatos_Detalle.TABLA_REGISTRO_DETALLE,null,values);
+
+        return true;
+    }
+
+    public boolean ActualizarVibracion(Vibracion_Registro registro, int id_plan_trabajo_formato_reg){
+        SQLiteDatabase db = datHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String fecha = dateFormat.format(new Date());
+
+        values.put(Util_RegistroFormatos.CAMPO_COD_FORMATO, registro.getCod_formato());
+        values.put(Util_RegistroFormatos.CAMPO_COD_REGISTRO, registro.getCod_registro());
+        values.put(Util_RegistroFormatos.CAMPO_ID_FORMATO, registro.getId_formato());
+        values.put(Util_RegistroFormatos.CAMPO_ID_PLAN_TRABAJO, registro.getId_plan_trabajo());
+        values.put(Util_RegistroFormatos.CAMPO_ID_PT_FORMATO, registro.getId_pt_formato());
+        values.put(Util_RegistroFormatos.CAMPO_COD_EQUIPO1, registro.getCod_equipo1());
+        values.put(Util_RegistroFormatos.CAMPO_NOM_EQUIPO1, registro.getNom_equipo1());
+        values.put(Util_RegistroFormatos.CAMPO_SERIE_EQ1, registro.getSerie_eq1());
+        values.put(Util_RegistroFormatos.CAMPO_ID_EQUIPO1, registro.getId_equipo1());
+        values.put(Util_RegistroFormatos.CAMPO_ID_ANALISTA, registro.getId_analista());
+        values.put(Util_RegistroFormatos.CAMPO_NOM_ANALISTA, registro.getNom_analista());
+        values.put(Util_RegistroFormatos.CAMPO_TIPO_VIBRACION, registro.getTipo_vibracion());
+        values.put(Util_RegistroFormatos.CAMPO_LATERALIDAD_MANO, registro.getLateralidad_mano());
+        values.put(Util_RegistroFormatos.CAMPO_VERF_INSITU, registro.getVerf_insitu());
+        values.put(Util_RegistroFormatos.CAMPO_HORA_SITU, registro.getHora_situ());
+        values.put(Util_RegistroFormatos.CAMPO_FEC_MONITOREO, registro.getFec_monitoreo());
+        values.put(Util_RegistroFormatos.CAMPO_HORA_INICIAL, registro.getHora_inicial());
+        values.put(Util_RegistroFormatos.CAMPO_HORA_FINAL, registro.getHora_final());
+        values.put(Util_RegistroFormatos.CAMPO_TIEMPO_EXPOSICION, registro.getTiempo_exposicion());
+        values.put(Util_RegistroFormatos.CAMPO_JORNADA, registro.getJornada());
+        values.put(Util_RegistroFormatos.CAMPO_TIPO_DOC_TRABAJADOR, registro.getTipo_doc_trabajador());
+        values.put(Util_RegistroFormatos.CAMPO_NUM_DOC_TRABAJADOR, registro.getNum_doc_trabajador());
+        values.put(Util_RegistroFormatos.CAMPO_NOM_TRABAJADOR, registro.getNom_trabajador());
+        values.put(Util_RegistroFormatos.CAMPO_PUESTO_TRABAJADOR, registro.getPuesto_trabajador());
+        values.put(Util_RegistroFormatos.CAMPO_AREA_TRABAJO, registro.getArea_trabajo());
+        values.put(Util_RegistroFormatos.CAMPO_ACTIVIDADES_REALIZADAS, registro.getActividades_realizadas());
+        values.put(Util_RegistroFormatos.CAMPO_EDAD_TRABAJADOR, registro.getEdad_trabajador());
+        values.put(Util_RegistroFormatos.CAMPO_HORA_TRABAJO, registro.getHora_trabajo());
+        values.put(Util_RegistroFormatos.CAMPO_HORARIO_REFRIGERIO, registro.getHorario_refrigerio());
+        values.put(Util_RegistroFormatos.CAMPO_REGIMEN_LABORAL, registro.getRegimen_laboral());
+        values.put(Util_RegistroFormatos.CAMPO_CTRL_INGENIERIA, registro.getCtrl_ingenieria());
+        values.put(Util_RegistroFormatos.CAMPO_NOM_CTRL_INGENIERIA, registro.getNom_ctrl_ingenieria());
+        values.put(Util_RegistroFormatos.CAMPO_CTRL_ADMINISTRATIVO, registro.getCtrl_administrativo());
+        values.put(Util_RegistroFormatos.CAMPO_SENIALIZACION_VIBRACION, registro.getSenializacion_vibracion());
+        values.put(Util_RegistroFormatos.CAMPO_CAPACITACION, registro.getCapacitacion());
+        values.put(Util_RegistroFormatos.CAMPO_MANTENIMIENTO_VIBRACION, registro.getMantenimiento_vibracion());
+        values.put(Util_RegistroFormatos.CAMPO_RUTA_FOTO, registro.getRuta_foto());
+        values.put(Util_RegistroFormatos.CAMPO_ESTADO, registro.getEstado());
+        values.put(Util_RegistroFormatos.CAMPO_FEC_REG, registro.getFec_reg());
+        values.put(Util_RegistroFormatos.CAMPO_USER_REG, registro.getUser_reg());
+        values.put(Util_RegistroFormatos.CAMPO_FEC_ACT, fecha);
+        values.put(Util_RegistroFormatos.CAMPO_USER_ACT, registro.getUser_reg());
+        values.put(Util_RegistroFormatos.CAMPO_ESTADO_SINCRO,1);// MARCANDO PARA SABER QUE FALTA SINCRONIZAR
+
+        String whereClause = Util_RegistroFormatos.CAMPO_ID_PLAN_TRABAJO_FORMATO_REG + " = ?";
+        String[] whereArgs = {String.valueOf(id_plan_trabajo_formato_reg)};
+        db.update(Util_RegistroFormatos.TABLA_REGISTRO_FORMATOS, values, whereClause, whereArgs);
+
+        return true;
+    }
+
+    public boolean ActualizarVibracionDetalle(Vibracion_RegistroDetalle registro, int id_formato_reg_detalle){
+        SQLiteDatabase db = datHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String fecha = dateFormat.format(new Date());
+
+
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_ID_PLAN_TRABAJO_FORMATO_REG, registro.getId_plan_trabajo_formato_reg());//----------------> PRUEBA PARA EL REGISTRO EN LA TABLA GENERAL
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_FUENTE_GENERADORA, registro.getFuente_generadora());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_DESC_FUENTE_FRIO, registro.getDesc_fuente_frio());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_FRECUENCIA, registro.getFrecuencia());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_EPP_BOTAS, registro.getEpp_botas());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_EPP_GUANTES, registro.getEpp_guantes());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_EPP_CASCO, registro.getEpp_casco());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_EPP_OREJERAS, registro.getEpp_orejeras());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_OTRO_EPP, registro.getOtro_epp());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_X, registro.getX());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_Y, registro.getY());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_Z, registro.getZ());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_ESTADO, registro.getEstado());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_FEC_REG, registro.getFec_reg());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_USER_REG, registro.getUser_reg());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_FEC_ACT, fecha);
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_USER_ACT, registro.getUser_reg());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_ESTADO_SINCRO,1);// MARCANDO PARA SABER QUE FALTA SINCRONIZAR
+
+        String whereClause = Util_RegistroFormatos_Detalle.CAMPO_ID_FORMATO_REG_DETALLE + " = ?";
+        String[] whereArgs = {String.valueOf(id_formato_reg_detalle)};
+        db.update(Util_RegistroFormatos_Detalle.TABLA_REGISTRO_DETALLE, values, whereClause, whereArgs);
 
         return true;
     }

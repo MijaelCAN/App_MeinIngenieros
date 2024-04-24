@@ -648,7 +648,7 @@
                                 android:background="@drawable/style_input"
                                 android:hint="Digite"
                                 android:textColor="@color/black"
-                                android:inputType="numberDecimal|text"
+                                android:inputType="numberDecimal|number"
                                 android:maxLength="5"
                                 android:textSize="15sp"
                                 android:paddingLeft="8dp"/>
@@ -680,7 +680,7 @@
                                 android:background="@drawable/style_input"
                                 android:hint="Digite"
                                 android:textColor="@color/black"
-                                android:inputType="numberDecimal|text"
+                                android:inputType="numberDecimal|number"
                                 android:maxLength="5"
                                 android:textSize="15sp"
                                 android:paddingLeft="8dp"/>
@@ -717,7 +717,7 @@
                                 android:background="@drawable/style_input"
                                 android:hint="Digite"
                                 android:textColor="@color/black"
-                                android:inputType="numberDecimal|text"
+                                android:inputType="numberDecimal|number"
                                 android:maxLength="5"
                                 android:textSize="15sp"
                                 android:paddingLeft="8dp"/>
@@ -749,7 +749,7 @@
                                 android:background="@drawable/style_input"
                                 android:hint="Digite"
                                 android:textColor="@color/black"
-                                android:inputType="numberDecimal|text"
+                                android:inputType="numberDecimal|number"
                                 android:maxLength="5"
                                 android:textSize="15sp"
                                 android:paddingLeft="8dp"/>
@@ -786,7 +786,7 @@
                                 android:background="@drawable/style_input"
                                 android:hint="Digite"
                                 android:textColor="@color/black"
-                                android:inputType="numberDecimal|text"
+                                android:inputType="numberDecimal|number"
                                 android:maxLength="5"
                                 android:textSize="15sp"
                                 android:paddingLeft="8dp"/>
@@ -818,7 +818,7 @@
                                 android:background="@drawable/style_input"
                                 android:hint="Digite"
                                 android:textColor="@color/black"
-                                android:inputType="numberDecimal|text"
+                                android:inputType="numberDecimal|number"
                                 android:maxLength="5"
                                 android:textSize="15sp"
                                 android:paddingLeft="8dp"/>
@@ -855,7 +855,7 @@
                                 android:background="@drawable/style_input"
                                 android:hint="Digite"
                                 android:textColor="@color/black"
-                                android:inputType="numberDecimal|text"
+                                android:inputType="numberDecimal|number"
                                 android:maxLength="5"
                                 android:textSize="15sp"
                                 android:paddingLeft="8dp"/>
@@ -887,7 +887,7 @@
                                 android:background="@drawable/style_input"
                                 android:hint="Digite"
                                 android:textColor="@color/black"
-                                android:inputType="numberDecimal|text"
+                                android:inputType="numberDecimal|number"
                                 android:maxLength="5"
                                 android:textSize="15sp"
                                 android:paddingLeft="8dp"/>
@@ -924,7 +924,7 @@
                                 android:background="@drawable/style_input"
                                 android:hint="Digite"
                                 android:textColor="@color/black"
-                                android:inputType="numberDecimal|text"
+                                android:inputType="numberDecimal|number"
                                 android:maxLength="5"
                                 android:textSize="15sp"
                                 android:paddingLeft="8dp"/>
@@ -956,7 +956,7 @@
                                 android:background="@drawable/style_input"
                                 android:hint="Digite"
                                 android:textColor="@color/black"
-                                android:inputType="numberDecimal|text"
+                                android:inputType="numberDecimal|number"
                                 android:maxLength="5"
                                 android:textSize="15sp"
                                 android:paddingLeft="8dp"/>
@@ -1008,7 +1008,7 @@
                         android:background="@drawable/style_input"
                         android:hint="Digite"
                         android:textColor="@color/black"
-                        android:inputType="numberDecimal|text"
+                        android:inputType="numberDecimal|number"
                         android:maxLength="5"
                         android:textSize="15sp"
                         android:paddingLeft="8dp"/>

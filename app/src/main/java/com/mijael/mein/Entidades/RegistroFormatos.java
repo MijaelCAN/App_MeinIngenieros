@@ -1,6 +1,11 @@
 package com.mijael.mein.Entidades;
 
-public class RegistroFormatos {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
+public class RegistroFormatos implements Parcelable {
     public int id_plan_trabajo_formato_reg;
     public int id_formato;
     public String cod_registro;
@@ -1507,5 +1512,15 @@ public class RegistroFormatos {
 
     public void setEstado_sincro(boolean estado_sincro) {
         this.estado_sincro = estado_sincro;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+
     }
 }

@@ -368,137 +368,263 @@
                         android:orientation="vertical">
                         <!-- AREA DE TRABAJO-->
                         <LinearLayout
+                            android:id="@+id/Linear_PuestoTrabajo"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="horizontal">
-
+                            android:orientation="vertical"
+                            android:visibility="visible">
                             <LinearLayout
-                                android:layout_width="0dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:orientation="vertical">
-                                <!-- JORNADA DE TRABAJO-->
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="10dp"
-                                    android:layout_weight="1"
-                                    android:fontFamily="sans-serif-light"
-                                    android:text="Tipo de documento"
-                                    android:textColor="@color/black"
-                                    android:textSize="12sp" />
+                                android:orientation="horizontal">
 
-                                <Spinner
-                                    android:id="@+id/cbx_tipoDocumento"
-                                    android:layout_width="match_parent"
+                                <LinearLayout
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="5dp"
                                     android:layout_weight="1"
-                                    android:background="@drawable/style_input" />
+                                    android:orientation="vertical">
+                                    <!-- JORNADA DE TRABAJO-->
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="10dp"
+                                        android:layout_weight="1"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Tipo de documento"
+                                        android:textColor="@color/black"
+                                        android:textSize="12sp" />
+
+                                    <Spinner
+                                        android:id="@+id/cbx_tipoDocumento"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="5dp"
+                                        android:layout_weight="1"
+                                        android:background="@drawable/style_input" />
+                                </LinearLayout>
+                                <!-- Inicio de la Segunda fila Doble -->
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="15dp"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+                                    <!-- Nª DE PERSONAS TRABAJANDO-->
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="10dp"
+                                        android:layout_weight="1"
+                                        android:fontFamily="sans-serif-light"
+                                        android:text="Nº de Documento"
+                                        android:textColor="@color/black"
+                                        android:textSize="12sp" />
+
+                                    <EditText
+                                        android:id="@+id/cbx_numDocumento"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="5dp"
+                                        android:background="@drawable/style_input"
+                                        android:fontFamily="sans-serif-light"
+                                        android:hint="Digite"
+                                        android:inputType="number"
+                                        android:paddingLeft="8dp"
+                                        android:maxLength="8"
+                                        android:textColor="@color/black"
+                                        android:textColorHint="@color/black"
+                                        android:textSize="15dp" />
+                                </LinearLayout>
+                                <LinearLayout
+                                    android:id="@+id/linearBuscarDni"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="15dp"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical"
+                                    android:visibility="gone">
+
+                                    <androidx.appcompat.widget.AppCompatButton
+                                        android:id="@+id/btn_BuscarDni"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center_horizontal"
+                                        android:textAllCaps="false"
+                                        android:text="Buscar"
+                                        android:textSize="19dp"
+                                        android:textColor="@color/white"
+                                        android:layout_marginTop="33dp"
+                                        android:background="@drawable/style_4"/>
+                                </LinearLayout>
                             </LinearLayout>
-                            <!-- Inicio de la Segunda fila Doble -->
-                            <LinearLayout
-                                android:layout_width="0dp"
+                            <!-- ACTIVIDADES REALIZADA-->
+                            <TextView
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="15dp"
+                                android:layout_marginTop="10dp"
                                 android:layout_weight="1"
-                                android:orientation="vertical">
-                                <!-- Nª DE PERSONAS TRABAJANDO-->
-                                <TextView
-                                    android:layout_width="wrap_content"
+                                android:fontFamily="sans-serif-light"
+                                android:text="Nombre de Trabajador"
+                                android:textColor="@color/black"
+                                android:textSize="12sp" />
+
+                            <!-- HORARIO DE TRABAJO-->
+                            <EditText
+                                android:id="@+id/txt_Nom_Trabajador"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:background="@drawable/style_input"
+                                android:fontFamily="sans-serif-light"
+                                android:hint="Digite"
+                                android:paddingLeft="8dp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black"
+                                android:textSize="15sp" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:fontFamily="sans-serif-light"
+                                android:text="Puesto de Trabajador"
+                                android:textColor="@color/black"
+                                android:textSize="12sp" />
+
+                            <!-- PUESTO DE TRABAJO-->
+                            <EditText
+                                android:id="@+id/txt_PuestoTrabajador"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:background="@drawable/style_input"
+                                android:fontFamily="sans-serif-light"
+                                android:hint="Digite"
+                                android:paddingLeft="8dp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/black"
+                                android:textSize="15sp" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="2dp"
+                                android:orientation="horizontal">
+                                <LinearLayout
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="10dp"
                                     android:layout_weight="1"
-                                    android:fontFamily="sans-serif-light"
-                                    android:text="Nº de Documento"
-                                    android:textColor="@color/black"
-                                    android:textSize="12sp" />
+                                    android:orientation="vertical">
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="Horario de trabajo:"
+                                        android:textSize="12dp"
+                                        android:fontFamily="sans-serif-light"
+                                        android:textColor="@color/black"/>
 
-                                <EditText
-                                    android:id="@+id/cbx_numDocumento"
-                                    android:layout_width="match_parent"
+                                    <Spinner
+                                        android:id="@+id/cbx_horarioTrabajo"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="5dp"
+                                        android:layout_weight="1"
+                                        android:background="@drawable/style_spinner"
+                                        android:textSize="10sp" />
+                                </LinearLayout>
+                                <LinearLayout
+                                    android:id="@+id/linearOtroHorario"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="5dp"
-                                    android:background="@drawable/style_input"
-                                    android:fontFamily="sans-serif-light"
-                                    android:hint="Digite"
-                                    android:inputType="numberSigned|text"
-                                    android:paddingLeft="8dp"
-                                    android:maxLength="8"
-                                    android:textColor="@color/black"
-                                    android:textColorHint="@color/black"
-                                    android:textSize="15dp" />
+                                    android:layout_weight="1"
+                                    android:layout_marginLeft="15dp"
+                                    android:orientation="vertical"
+                                    android:visibility="gone">
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="Otro horario"
+                                        android:textSize="12sp"
+                                        android:fontFamily="sans-serif-light"
+                                        android:textColor="@color/black"/>
+
+                                    <EditText
+                                        android:id="@+id/txt_otroHorario"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="5dp"
+                                        style="@style/EditTextFocusStyle"
+                                        android:hint="Digite"
+                                        android:paddingLeft="8dp"
+                                        android:textSize="16sp"/>
+
+                                </LinearLayout>
                             </LinearLayout>
-                            <LinearLayout
-                                android:id="@+id/linearBuscarDni"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="15dp"
-                                android:layout_weight="1"
-                                android:orientation="vertical"
-                                android:visibility="gone">
 
-                                <androidx.appcompat.widget.AppCompatButton
-                                    android:id="@+id/btn_BuscarDni"
-                                    android:layout_width="wrap_content"
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="2dp"
+                                android:orientation="horizontal">
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_gravity="center_horizontal"
-                                    android:textAllCaps="false"
-                                    android:text="Buscar"
-                                    android:textSize="19dp"
-                                    android:textColor="@color/white"
-                                    android:layout_marginTop="33dp"
-                                    android:background="@drawable/style_4"/>
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="10dp"
+                                        android:layout_weight="1"
+                                        android:text="Regimen Laboral"
+                                        android:textSize="12sp"
+                                        android:fontFamily="sans-serif-light"
+                                        android:textColor="@color/black"/>
+
+                                    <Spinner
+                                        android:id="@+id/cbx_regimen"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="5dp"
+                                        android:layout_weight="1"
+                                        android:background="@drawable/style_spinner"/>
+                                </LinearLayout>
+                                <LinearLayout
+                                    android:id="@+id/linearOtroRegimen"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="15dp"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical"
+                                    android:visibility="gone">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:text="Otro Regimen"
+                                        android:textSize="12sp"
+                                        android:layout_marginTop="10dp"
+                                        android:fontFamily="sans-serif-light"
+                                        android:textColor="@color/black"/>
+
+                                    <EditText
+                                        android:id="@+id/txt_otroRegimen"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="5dp"
+                                        style="@style/EditTextFocusStyle"
+                                        android:hint="Digite"
+                                        android:paddingLeft="8dp"
+                                        android:textSize="16sp"/>
+                                </LinearLayout>
                             </LinearLayout>
                         </LinearLayout>
-                        <!-- ACTIVIDADES REALIZADA-->
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:layout_weight="1"
-                            android:fontFamily="sans-serif-light"
-                            android:text="Nombre de Trabajador"
-                            android:textColor="@color/black"
-                            android:textSize="12sp" />
-
-                        <!-- HORARIO DE TRABAJO-->
-                        <EditText
-                            android:id="@+id/txt_Nom_Trabajador"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:background="@drawable/style_input"
-                            android:fontFamily="sans-serif-light"
-                            android:hint="Digite"
-                            android:paddingLeft="8dp"
-                            android:textColor="@color/black"
-                            android:textColorHint="@color/black"
-                            android:textSize="15sp" />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:layout_weight="1"
-                            android:fontFamily="sans-serif-light"
-                            android:text="Puesto de Trabajador"
-                            android:textColor="@color/black"
-                            android:textSize="12sp" />
-
-                        <!-- HORARIO DE TRABAJO-->
-                        <EditText
-                            android:id="@+id/txt_PuestoTrabajador"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:background="@drawable/style_input"
-                            android:fontFamily="sans-serif-light"
-                            android:hint="Digite"
-                            android:paddingLeft="8dp"
-                            android:textColor="@color/black"
-                            android:textColorHint="@color/black"
-                            android:textSize="15sp" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -560,130 +686,11 @@
                                     android:background="@drawable/style_input"
                                     android:fontFamily="sans-serif-light"
                                     android:hint="Digite"
-                                    android:inputType="numberSigned"
+                                    android:inputType="number|numberDecimal"
                                     android:paddingLeft="8dp"
                                     android:textColor="@color/black"
                                     android:textColorHint="@color/black"
                                     android:textSize="15sp" />
-                            </LinearLayout>
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="2dp"
-                            android:orientation="horizontal">
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:text="Horario de trabajo:"
-                                    android:textSize="12dp"
-                                    android:fontFamily="sans-serif-light"
-                                    android:textColor="@color/black"/>
-
-                                <Spinner
-                                    android:id="@+id/cbx_horarioTrabajo"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="5dp"
-                                    android:layout_weight="1"
-                                    android:background="@drawable/style_spinner"
-                                    android:textSize="10sp" />
-                            </LinearLayout>
-                            <LinearLayout
-                                android:id="@+id/linearOtroHorario"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:layout_marginLeft="15dp"
-                                android:orientation="vertical"
-                                android:visibility="gone">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:text="Otro horario"
-                                    android:textSize="12sp"
-                                    android:fontFamily="sans-serif-light"
-                                    android:textColor="@color/black"/>
-
-                                <EditText
-                                    android:id="@+id/txt_otroHorario"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="5dp"
-                                    style="@style/EditTextFocusStyle"
-                                    android:hint="Digite"
-                                    android:paddingLeft="8dp"
-                                    android:textSize="16sp"/>
-
-                            </LinearLayout>
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="2dp"
-                            android:orientation="horizontal">
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="10dp"
-                                    android:layout_weight="1"
-                                    android:text="Regimen Laboral"
-                                    android:textSize="12sp"
-                                    android:fontFamily="sans-serif-light"
-                                    android:textColor="@color/black"/>
-
-                                <Spinner
-                                    android:id="@+id/cbx_regimen"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="5dp"
-                                    android:layout_weight="1"
-                                    android:background="@drawable/style_spinner"/>
-                            </LinearLayout>
-                            <LinearLayout
-                                android:id="@+id/linearOtroRegimen"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="15dp"
-                                android:layout_weight="1"
-                                android:orientation="vertical"
-                                android:visibility="gone">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:text="Otro Regimen"
-                                    android:textSize="12sp"
-                                    android:layout_marginTop="10dp"
-                                    android:fontFamily="sans-serif-light"
-                                    android:textColor="@color/black"/>
-
-                                <EditText
-                                    android:id="@+id/txt_otroRegimen"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="5dp"
-                                    style="@style/EditTextFocusStyle"
-                                    android:hint="Digite"
-                                    android:paddingLeft="8dp"
-                                    android:textSize="16sp"/>
                             </LinearLayout>
                         </LinearLayout>
                         <TextView
@@ -741,6 +748,7 @@
                             android:gravity="center_vertical"
                             android:paddingLeft="8dp"
                             android:text="Digite"
+                            android:inputType="number|numberDecimal"
                             android:textColor="@color/black"
                             android:textColorHint="@color/black"
                             android:textSize="15sp"
@@ -950,7 +958,7 @@
                                             android:layout_height="wrap_content"
                                             android:layout_marginTop="5dp"
                                             android:fontFamily="sans-serif-light"
-                                            android:inputType="none"
+                                            android:inputType="number|numberDecimal"
                                             android:paddingLeft="8dp"
                                             android:textColor="@color/black"
                                             android:textColorHint="@color/black"
@@ -981,7 +989,7 @@
                                             android:layout_height="wrap_content"
                                             android:layout_marginTop="5dp"
                                             android:fontFamily="sans-serif-light"
-                                            android:inputType="none"
+                                            android:inputType="number|numberDecimal"
                                             android:paddingLeft="8dp"
                                             android:textColor="@color/black"
                                             android:textColorHint="@color/black"
@@ -1013,7 +1021,7 @@
                                             android:layout_height="wrap_content"
                                             android:layout_marginTop="5dp"
                                             android:fontFamily="sans-serif-light"
-                                            android:inputType="none"
+                                            android:inputType="number|numberDecimal"
                                             android:paddingLeft="8dp"
                                             android:textColor="@color/black"
                                             android:textColorHint="@color/black"
@@ -1171,7 +1179,7 @@
                                             android:layout_height="wrap_content"
                                             android:layout_marginTop="5dp"
                                             android:fontFamily="sans-serif-light"
-                                            android:inputType="none"
+                                            android:inputType="number|numberDecimal"
                                             android:paddingLeft="8dp"
                                             android:textColor="@color/black"
                                             android:textColorHint="@color/black"
@@ -1601,7 +1609,7 @@
                                     android:gravity="center_vertical"
                                     android:hint="Digite"
                                     android:paddingLeft="8dp"
-                                    android:inputType="numberSigned|text"
+                                    android:inputType="number|number|numberDecimal"
                                     android:textColorHint="@color/black"
                                     android:textSize="15sp" />
                             </LinearLayout>

@@ -1,6 +1,7 @@
 package com.mijael.mein;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -37,6 +38,8 @@ import com.mijael.mein.Entidades.Equipos;
 import com.mijael.mein.Entidades.Formatos_Trabajo;
 import com.mijael.mein.Entidades.RadiacionElec_Registro;
 import com.mijael.mein.Entidades.RadiacionElect_RegistroDetalle;
+import com.mijael.mein.Entidades.RegistroFormatos;
+import com.mijael.mein.Entidades.RegistroFormatos_Detalle;
 import com.mijael.mein.Entidades.Usuario;
 import com.mijael.mein.Extras.FragmentoImagen;
 import com.mijael.mein.Extras.InputDateConfiguration;
@@ -48,6 +51,7 @@ import com.mijael.mein.SERVICIOS.DosimetriaService;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -69,6 +73,7 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
     TextView tv_nombreUsuario, tv_nomEmpresa;
     String id_plan_trabajo, id_pt_trabajo, id_formato,id_colaborador, nom_Empresa;
     // Declaraciones de variables de Android en Java agrupadas por tipo en una sola línea
+    String[] arrayYN,arrayDesc;
     AutoCompleteTextView spn_equipoMedicion;
     TextView tv_horaVerificacion, tv_fechaMonitoreo, tv_horaInicioMoni, tv_horaFinalMoni;
     RadioGroup radioGroupVerificacion;
@@ -88,7 +93,8 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
     Validaciones validar = new Validaciones();
     InputDateConfiguration config;
     DAO_RegistroFormatos dao_registroFormatos;
-
+    RegistroFormatos registros;
+    RegistroFormatos_Detalle detalles;
     public RadiacionElectromagneticaFragment() {
         // Required empty public constructor
         dao_registroFormatos = new DAO_RegistroFormatos(getActivity());
@@ -105,6 +111,8 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
             id_formato = bundle.getString("id_formato");
             id_colaborador = bundle.getString("nomUsuario");
             nom_Empresa = bundle.getString("nomEmpresa");
+            registros = bundle.getParcelable("registroForm");
+            detalles = bundle.getParcelable("detalleForm");
         }
     }
 
@@ -121,6 +129,9 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
         List<String> lista_CodEquipos = equipos.obtener_CodEquipos();
         DAO_Usuario usuario = new DAO_Usuario(getActivity());
         Usuario nuevo = usuario.BuscarUsuario(Integer.parseInt(id_colaborador));
+        arrayYN = new String[]{"DNI", "CE"};
+        arrayDesc = new String[]{"Trabajo al aire libre sin carga solar o bajo techo", "Trabajo al aire libre con carga solar"};
+
 
         config.configurarAutoCompleteTextView(spn_equipoMedicion,lista_CodEquipos);
 
@@ -138,8 +149,8 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
             }
         });
 
-        spn_tipoDoc.setAdapter(config.LlenarSpinner(new String[]{"DNI", "CE"}));
-        spn_descTrabajo.setAdapter(config.LlenarSpinner(new String[]{"Trabajo al aire libre sin carga solar o bajo techo", "Trabajo al aire libre con carga solar"}));
+        spn_tipoDoc.setAdapter(config.LlenarSpinner(arrayYN));
+        spn_descTrabajo.setAdapter(config.LlenarSpinner(arrayDesc));
         spn_horarioTrabajo.setAdapter(config.LlenarSpinner("horario_trab_fromato_medicion","desc_horario",getActivity()));
         spn_regimen.setAdapter(config.LlenarSpinner("regimen_formato_medicion","nom_regimen",getActivity()));
         spn_horarioRefrigerio.setAdapter(config.LlenarSpinner("horario_refrig_formato_medicion","nom_horario",getActivity()));
@@ -194,7 +205,7 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
         btn_guardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(
+                /*if(
                         validar.validarCampoObligatorio(spn_equipoMedicion) &&
                         validar.validarCampoObligatorio(tv_horaVerificacion) &&
                         validar.validarImagen(cargarImagen,getActivity()) &&
@@ -233,7 +244,7 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
                         validar.validarCampoObligatorio(txt_z2) &&
                         validar.validarCampoObligatorio(txt_z4) &&
                         validar.validarCampoObligatorio(txt_z6)
-                ){
+                ){*/
                     String valorEquipoMed = spn_equipoMedicion.getText().toString();
                     String valorHoraVerificacion = tv_horaVerificacion.getText().toString();
                     int valorGroupVerifi = validar.getValor2(radioGroupVerificacion,rootView);
@@ -280,16 +291,33 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
                     if(valorRegimen.equals("OTRO")) valorRegimen = txt_otroRegimen.getText().toString();
                     if(valorRefrigerio.equals("OTRO")) valorRefrigerio = txt_otroRefrigerio.getText().toString();
 
-                    String fecha_registro = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
                     Equipos equipos1 = equipos.Buscar(valorEquipoMed);
 
-                    ArrayList<HashMap<String, String>> resultList = dao_registroFormatos.getListCantidadFormatoId(Integer.parseInt(id_pt_trabajo));
-                    int total_registros = dao_registroFormatos.get_cant_formato_medicion();
-                    String cod_formato = config.GenerarCodigoFormato(Integer.parseInt(id_formato),resultList.size());
-                    String cod_registro = config.generarCodigoRegistro(total_registros);
+                    String fecha_registro = "";
+                    String cod_formato;
+                    String cod_registro;
+                    String valorRutaFoto;
+                    int id_plan_formato_reg;
 
-                    String valorRutaFoto = uri.getEncodedPath();
-                    int id_plan_formato_reg = dao_registroFormatos.getRecordIdByPosition();
+                    if(registros==null){
+                        id_plan_formato_reg = dao_registroFormatos.getRecordIdByPosition() +1;
+                        fecha_registro = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+                        ArrayList<HashMap<String, String>> resultList = dao_registroFormatos.getListCantidadFormatoId(Integer.parseInt(id_pt_trabajo));
+                        int total_registros = dao_registroFormatos.get_cant_formato_medicion();
+                        cod_formato = config.GenerarCodigoFormato(Integer.parseInt(id_formato),resultList.size());
+                        cod_registro = config.generarCodigoRegistro(total_registros);
+                        valorRutaFoto = uri.getEncodedPath();
+                        if(uri!=null){valorRutaFoto = uri.getEncodedPath();}
+                    }else {
+                        id_plan_formato_reg = registros.getId_plan_trabajo_formato_reg();
+                        fecha_registro = registros.getFec_reg();
+                        cod_registro = registros.getCod_registro();
+                        cod_formato = registros.getCod_formato();
+                        valorRutaFoto = registros.getRuta_foto();
+                        id_formato = String.valueOf(registros.getId_formato());
+                        id_plan_trabajo = String.valueOf(registros.getId_plan_trabajo());
+                        id_pt_trabajo = String.valueOf(registros.getId_pt_formato());
+                    }
 
                     RadiacionElec_Registro cabecera = new RadiacionElec_Registro(
                             -1,
@@ -331,7 +359,7 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
                             valorRutaFoto
                     );
                     RadiacionElect_RegistroDetalle detalle = new RadiacionElect_RegistroDetalle(
-                            (id_plan_formato_reg+1),
+                            id_plan_formato_reg,
                             valorFuenteGen,
                             valorVestimenta,
                             valor_x0,
@@ -397,30 +425,75 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
                         getFragmentManager().popBackStack();
                     }else{
                         DAO_RegistroRadiacion nuevoRegistro = new DAO_RegistroRadiacion(getActivity());
-                        nuevoRegistro.RegistroRadiacion(cabecera);
-                        nuevoRegistro.RegistrarRadiacionDetalle(detalle);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle("Guardar formulario");
+                        builder.setMessage("¿Deseas seguir llenando el formulario o terminar?");
 
-                        DAO_FormatosTrabajo dao_fromatosTrabajo = new DAO_FormatosTrabajo(getActivity());
-                        for_Electro = dao_fromatosTrabajo.Buscar(id_plan_trabajo,id_formato);
-                        for_Electro.setRealizado(for_Electro.getRealizado()+1);
-                        for_Electro.setPor_realizar(for_Electro.getPor_realizar()-1);
+                        builder.setPositiveButton("Seguir", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if(registros == null){
+                                    nuevoRegistro.RegistroRadiacion(cabecera);
+                                    nuevoRegistro.RegistrarRadiacionDetalle(detalle);
+                                    DAO_FormatosTrabajo dao_fromatosTrabajo = new DAO_FormatosTrabajo(getActivity());
+                                    for_Electro = dao_fromatosTrabajo.Buscar(id_plan_trabajo,id_formato);
+                                    for_Electro.setRealizado(for_Electro.getRealizado()+1);
+                                    for_Electro.setPor_realizar(for_Electro.getPor_realizar()-1);
+                                    dao_fromatosTrabajo.actualizarFormatoTrabajo(for_Electro);
 
-                        dao_fromatosTrabajo.actualizarFormatoTrabajo(for_Electro);
+                                }else{
+                                    nuevoRegistro.ActualizarRadiacion(cabecera,registros.getId_plan_trabajo_formato_reg());
+                                    nuevoRegistro.ActualizarRadiacionDetalle(detalle,detalles.getId_formato_reg_detalle());
+                                }
+                            }
+                        });
+                        builder.setNegativeButton("Terminar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if(registros == null){
+                                    nuevoRegistro.RegistroRadiacion(cabecera);
+                                    nuevoRegistro.RegistrarRadiacionDetalle(detalle);
+                                    DAO_FormatosTrabajo dao_fromatosTrabajo = new DAO_FormatosTrabajo(getActivity());
+                                    for_Electro = dao_fromatosTrabajo.Buscar(id_plan_trabajo,id_formato);
+                                    for_Electro.setRealizado(for_Electro.getRealizado()+1);
+                                    for_Electro.setPor_realizar(for_Electro.getPor_realizar()-1);
+                                    dao_fromatosTrabajo.actualizarFormatoTrabajo(for_Electro);
 
-
-                        new AlertDialog.Builder(getActivity())
-                                .setTitle("Registro guardado Localmente")
-                                .setMessage("El registro ha sido guardado exitosamente.")
-                                .setPositiveButton(android.R.string.ok, null)
-                                .show();
-
-                        // Regresa al Fragment anterior
-                        getFragmentManager().popBackStack();
+                                }else{
+                                    nuevoRegistro.ActualizarRadiacion(cabecera,registros.getId_plan_trabajo_formato_reg());
+                                    nuevoRegistro.ActualizarRadiacionDetalle(detalle,detalles.getId_formato_reg_detalle());
+                                }
+                                new AlertDialog.Builder(getActivity())
+                                        .setTitle("Registro guardado Localmente")
+                                        .setMessage("El registro ha sido guardado exitosamente.")
+                                        .setPositiveButton(android.R.string.ok, null)
+                                        .show();
+                                Volver();
+                            }
+                        });
+                        builder.show();
                     }
-                }
+                //}
             }
         });
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        if(registros!=null){
+            if(detalles!=null){
+                EditarCampos();
+            }else{
+                builder.setTitle("Aviso")
+                        .setMessage("Registro sin Detalle.")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+                Volver();
+            }
 
+        }else{
+            builder.setTitle("Aviso")
+                    .setMessage("Realizara un nuevo registro.")
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }
         return rootView;
     }
 
@@ -493,5 +566,71 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
             /*File imageFile = new File(imageUri.getEncodedPath());
             config.uploadImage(imageFile);*/
         }
+    }
+    private void EditarCampos(){
+        spn_equipoMedicion.setText(registros.getCod_equipo1());
+        tv_horaVerificacion.setText(registros.getHora_situ());
+        if (registros.getVerf_insitu().equals("1")) {
+            radioGroupVerificacion.check(R.id.verf_insitusi);
+        } else {
+            radioGroupVerificacion.check(R.id.verf_insituno);
+        }
+        imgRadiacion.setImageURI(Uri.parse(registros.getRuta_foto()));
+        String fecha = "";
+        if (!registros.getFec_monitoreo().isEmpty()) {
+            String[] fec = registros.getFec_monitoreo().split(" ");
+            String[] nueva_fec = fec[0].split("-");
+            fecha = nueva_fec[0] + "/" + nueva_fec[1] + "/" + nueva_fec[2];
+        }
+        tv_fechaMonitoreo.setText(fecha);
+        tv_horaInicioMoni.setText(registros.getHora_inicial());
+        tv_horaFinalMoni.setText(registros.getHora_final());
+        txt_timeMedicion.setText(registros.getTiempo_medicion());
+        int indice1 = Arrays.asList(arrayYN).indexOf(registros.getTipo_doc_trabajador());
+        spn_tipoDoc.setSelection(indice1 + 1);
+        txt_numDoc.setText(registros.getNum_doc_trabajador());
+        txt_nomTrabajador.setText(registros.getNom_trabajador());
+        txt_edad.setText(String.valueOf(registros.getEdad_trabajador()));
+        txt_areaTrabajo.setText(registros.getArea_trabajo());
+        txt_puestoTrabajo.setText(registros.getPuesto_trabajador());
+        txt_aRealizada.setText(registros.getActividades_realizadas());
+        config.asignarAdaptadorYSeleccion(spn_horarioTrabajo, "horario_trab_fromato_medicion", "desc_horario", registros.getHora_trabajo(), getContext());
+        if (spn_horarioTrabajo.getSelectedItem().equals("OTRO")) {
+            txt_otroHorario.setText(registros.getHora_trabajo());
+        }
+        config.asignarAdaptadorYSeleccion(spn_regimen, "regimen_formato_medicion", "nom_regimen", registros.getRegimen_laboral(), getContext());
+        if (spn_regimen.getSelectedItem().equals("OTRO")) {
+            txt_otroRegimen.setText(registros.getRegimen_laboral());
+        }
+        config.asignarAdaptadorYSeleccion(spn_horarioRefrigerio, "horario_refrig_formato_medicion", "nom_horario", registros.getHorario_refrigerio(), getContext());
+        if (spn_horarioRefrigerio.getSelectedItem().equals("OTRO")) {
+            txt_otroRefrigerio.setText(registros.getHora_trabajo());
+        }
+        txt_jornadaTrabajo.setText(registros.getJornada());
+        txt_fuenteGen.setText(detalles.getFuente_generadora());
+        txt_timeExpo.setText(registros.getTiempo_exposicion());
+        String valorDesc = registros.getDesc_area_trabajo();
+        int indice3 = Arrays.asList(arrayDesc).indexOf(valorDesc);
+        spn_descTrabajo.setSelection(indice3 + 1);
+        txt_vestimenta.setText(detalles.getVestimenta_personal());
+        txt_controlIng.setText(registros.getNom_ctrl_ingenieria());
+        txt_controlAdm.setText(registros.getNom_ctrl_admin());
+        txt_Epps.setText(registros.getNom_epp());
+        txt_x0.setText(detalles.getX());
+        txt_x2.setText(detalles.getX2());
+        txt_x4.setText(detalles.getX3());
+        txt_x6.setText(detalles.getX4());
+        txt_y0.setText(detalles.getY());
+        txt_y2.setText(detalles.getY2());
+        txt_y4.setText(detalles.getY3());
+        txt_y6.setText(detalles.getY4());
+        txt_z0.setText(detalles.getZ());
+        txt_z2.setText(detalles.getZ2());
+        txt_z4.setText(detalles.getZ3());
+        txt_z6.setText(detalles.getZ4());
+
+    }
+    private void Volver(){
+        getFragmentManager().popBackStack();// Regresa al Fragment anterior
     }
 }

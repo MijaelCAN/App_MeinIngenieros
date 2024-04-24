@@ -138,6 +138,7 @@ tools:context=".EstresTermicoFragment">
             android:outlineSpotShadowColor="@color/white"
             app:cardCornerRadius="8dp"
             app:cardElevation="2dp">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -151,58 +152,61 @@ tools:context=".EstresTermicoFragment">
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="vertical">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Equipo de Estres Termico:"
                         android:fontFamily="sans-serif-light"
+                        android:text="Equipo de Estres Termico:"
                         android:textColor="@color/black"
-                        android:textSize="12dp"/>
+                        android:textSize="12dp" />
 
                     <AutoCompleteTextView
                         android:id="@+id/tv_estresTermico"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/style_input"
-                        android:hint="Seleccione"
                         android:layout_marginTop="5dp"
+                        android:background="@drawable/style_input"
                         android:fontFamily="sans-serif-light"
+                        android:hint="Seleccione"
+                        android:paddingLeft="8dp"
                         android:textColor="@color/black"
                         android:textColorHint="@color/black"
-                        android:textSize="15dp"
-                        android:paddingLeft="8dp"/>
+                        android:textSize="15dp" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="10dp">
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Equipo de Anemómetro:"
                             android:fontFamily="sans-serif-light"
+                            android:text="Equipo de Anemómetro:"
                             android:textColor="@color/black"
-                            android:textSize="12sp"/>
+                            android:textSize="12sp" />
 
                         <AutoCompleteTextView
                             android:id="@+id/tv_anemometro"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/style_input"
-                            android:hint="Seleccione"
                             android:layout_marginTop="5dp"
+                            android:background="@drawable/style_input"
                             android:fontFamily="sans-serif-light"
+                            android:hint="Seleccione"
+                            android:paddingLeft="8dp"
                             android:textColor="@color/black"
                             android:textColorHint="@color/black"
-                            android:textSize="15dp"
-                            android:paddingLeft="8dp"/>
+                            android:textSize="15dp" />
                         <!--android:onItemSelected="Equipo_Vibracion"-->
 
                     </LinearLayout>
@@ -210,16 +214,18 @@ tools:context=".EstresTermicoFragment">
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
                         android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginLeft="15dp">
+                        android:orientation="vertical">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Hora de verificación:"
                             android:fontFamily="sans-serif-light"
+                            android:text="Hora de verificación:"
                             android:textColor="@color/black"
-                            android:textSize="12sp"/>
+                            android:textSize="12sp" />
+
                         <TextView
                             android:id="@+id/tv_horaVerificacion"
                             android:layout_width="match_parent"
@@ -243,34 +249,37 @@ tools:context=".EstresTermicoFragment">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Verificación In Situ:"
+                    android:layout_marginTop="10dp"
                     android:fontFamily="sans-serif-light"
+                    android:text="Verificación In Situ:"
                     android:textColor="@color/black"
-                    android:textSize="12sp"
-                    android:layout_marginTop="10dp"/>
+                    android:textSize="12sp" />
+
                 <RadioGroup
                     android:id="@+id/radioGroupVerificacion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
+
                     <RadioButton
                         android:id="@+id/verf_insitusi"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Sí"
+                        android:buttonTint="@color/teal_200"
                         android:checked="false"
                         android:fontFamily="sans-serif-light"
-                        android:buttonTint="@color/teal_200"
-                        android:textColor="@color/black"/>
+                        android:text="Sí"
+                        android:textColor="@color/black" />
+
                     <RadioButton
                         android:id="@+id/verf_insituno"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="NO"
+                        android:buttonTint="@color/purple_200"
                         android:checked="true"
                         android:fontFamily="sans-serif-light"
-                        android:buttonTint="@color/purple_200"
-                        android:textColor="@color/black"/>
+                        android:text="NO"
+                        android:textColor="@color/black" />
                 </RadioGroup>
 
                 <!-- ... Otros elementos similares ... -->
@@ -278,25 +287,26 @@ tools:context=".EstresTermicoFragment">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Foto:"
                     android:fontFamily="sans-serif-light"
+                    android:text="Foto:"
                     android:textColor="@color/black"
-                    android:textSize="12sp"/>
+                    android:textSize="12sp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
+
                     <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/btn_subirFotoEstres"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:textAllCaps="false"
-                        android:text="Subir Foto"
-                        android:textColor="@color/white"
                         android:layout_marginTop="20dp"
-                        android:background="@drawable/style_4"/>
+                        android:background="@drawable/style_4"
+                        android:text="Subir Foto"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white" />
 
                     <ImageView
                         android:id="@+id/img_Estres"
@@ -309,9 +319,9 @@ tools:context=".EstresTermicoFragment">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginLeft="12dp"
                     android:layout_marginTop="20dp"
-                    android:layout_gravity="center_horizontal"
                     android:fontFamily="sans-serif-light"
                     android:text="Hora de Monitoreo"
                     android:textColor="@color/generic_color"
@@ -321,24 +331,24 @@ tools:context=".EstresTermicoFragment">
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Fecha:"
-                    android:textSize="12dp"
                     android:fontFamily="sans-serif-light"
-                    android:textColor="@color/black"/>
+                    android:text="Fecha:"
+                    android:textColor="@color/black"
+                    android:textSize="12dp" />
 
                 <TextView
                     android:id="@+id/tv_fechaMonitoreo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColorHint="@color/black"
-                    android:background="@drawable/style_input"
                     android:layout_marginTop="5dp"
-                    android:textSize="15sp"
+                    android:background="@drawable/style_input"
                     android:gravity="center_vertical"
-                    android:textColor="@color/black"
                     android:hint="Seleccione Fecha"
+                    android:onClick="showDatePickerDialog"
                     android:paddingLeft="8dp"
-                    android:onClick="showDatePickerDialog" />
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"
+                    android:textSize="15sp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -356,24 +366,24 @@ tools:context=".EstresTermicoFragment">
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Hora Inicial"
-                            android:textSize="12sp"
                             android:fontFamily="sans-serif-light"
-                            android:textColor="@color/black"/>
+                            android:text="Hora Inicial"
+                            android:textColor="@color/black"
+                            android:textSize="12sp" />
 
                         <TextView
                             android:id="@+id/tv_horaInicioMoni"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textColorHint="@color/black"
-                            android:background="@drawable/style_input"
                             android:layout_marginTop="5dp"
-                            android:textSize="15sp"
+                            android:background="@drawable/style_input"
                             android:gravity="center_vertical"
-                            android:textColor="@color/black"
                             android:hint="Seleccione Hora"
+                            android:onClick="showTimePickerDialog"
                             android:paddingLeft="8dp"
-                            android:onClick="showTimePickerDialog" />
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="15sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -388,26 +398,27 @@ tools:context=".EstresTermicoFragment">
                             android:layout_height="wrap_content"
 
                             android:layout_weight="1"
-                            android:text="Hora final"
-                            android:textSize="12sp"
                             android:fontFamily="sans-serif-light"
-                            android:textColor="@color/black"/>
+                            android:text="Hora final"
+                            android:textColor="@color/black"
+                            android:textSize="12sp" />
 
                         <TextView
                             android:id="@+id/tv_horaFinalMoni"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textColorHint="@color/black"
-                            android:background="@drawable/style_input"
                             android:layout_marginTop="5dp"
-                            android:textSize="15sp"
+                            android:background="@drawable/style_input"
                             android:gravity="center_vertical"
-                            android:textColor="@color/black"
                             android:hint="Seleccione Hora"
+                            android:onClick="showTimePickerDialog"
                             android:paddingLeft="8dp"
-                            android:onClick="showTimePickerDialog" />
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="15sp" />
                     </LinearLayout>
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -424,23 +435,23 @@ tools:context=".EstresTermicoFragment">
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Tiempo Medicion(min)"
-                            android:textSize="12sp"
                             android:fontFamily="sans-serif-light"
-                            android:textColor="@color/black"/>
+                            android:text="Tiempo Medicion(min)"
+                            android:textColor="@color/black"
+                            android:textSize="12sp" />
 
                         <EditText
                             android:id="@+id/txt_timeMedMin"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:textColorHint="@color/black"
                             android:background="@drawable/style_input"
-                            android:textColor="@color/black"
-                            android:inputType="numberSigned"
+                            android:inputType="numberSigned|numberDecimal"
                             android:maxLength="5"
-                            android:textSize="15sp"
-                            android:paddingLeft="8dp"/>
+                            android:paddingLeft="8dp"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="15sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -455,47 +466,49 @@ tools:context=".EstresTermicoFragment">
                             android:layout_height="wrap_content"
 
                             android:layout_weight="1"
-                            android:text="Tiempo Exposicion (h)"
-                            android:textSize="12sp"
                             android:fontFamily="sans-serif-light"
-                            android:textColor="@color/black"/>
+                            android:text="Tiempo Exposicion (h)"
+                            android:textColor="@color/black"
+                            android:textSize="12sp" />
 
                         <EditText
                             android:id="@+id/txt_timeExpoHora"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:textColorHint="@color/black"
                             android:background="@drawable/style_input"
                             android:hint="Digite"
-                            android:textColor="@color/black"
-                            android:inputType="numberSigned"
+                            android:inputType="numberSigned|numberDecimal"
                             android:maxLength="5"
-                            android:textSize="15sp"
-                            android:paddingLeft="8dp"/>
+                            android:paddingLeft="8dp"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:textSize="15sp" />
                     </LinearLayout>
                 </LinearLayout>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:layout_weight="1"
-                    android:text="Jornada de Trabajo (h)"
-                    android:textSize="12sp"
                     android:fontFamily="sans-serif-light"
-                    android:textColor="@color/black"/>
+                    android:text="Jornada de Trabajo (h)"
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
 
                 <EditText
                     android:id="@+id/txt_jornadaTrabajo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:textColorHint="@color/black"
                     android:background="@drawable/style_input"
                     android:hint="Ingrese jornada"
+                    android:inputType="numberDecimal|numberSigned"
+                    android:paddingLeft="8dp"
                     android:textColor="@color/black"
-                    android:textSize="15sp"
-                    android:paddingLeft="8dp"/>
+                    android:textColorHint="@color/black"
+                    android:textSize="15sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
         <!-- Tercer CardView -->
@@ -583,8 +596,9 @@ tools:context=".EstresTermicoFragment">
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/style_input"
                                 android:layout_marginTop="5dp"
+                                android:paddingLeft="8dp"
                                 android:hint=" Digite"
-                                android:inputType="numberSigned"
+                                android:inputType="number"
                                 android:maxLength="8"
                                 android:textSize="12sp"/>
                         </LinearLayout>
@@ -676,8 +690,8 @@ tools:context=".EstresTermicoFragment">
                                 android:layout_marginTop="5dp"
                                 android:textColor="@color/black"
                                 android:textColorHint="@color/black"
-                                android:inputType="numberSigned|text"
-                                android:maxLength="3"/>
+                                android:inputType="number"
+                                android:maxLength="2"/>
                         </LinearLayout>
                         <LinearLayout
                             android:layout_width="0dp"
@@ -1963,6 +1977,7 @@ tools:context=".EstresTermicoFragment">
                                         android:layout_marginTop="5dp"
                                         android:fontFamily="sans-serif-light"
                                         android:hint="Digite"
+                                        android:inputType="number|numberDecimal"
                                         android:paddingLeft="8dp"
                                         android:textColor="@color/black"
                                         android:textColorHint="@color/black"

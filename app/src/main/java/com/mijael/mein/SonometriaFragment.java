@@ -174,7 +174,7 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
         cbx_tiempoMedicion.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                    //sumarTiempo();
+                    sumarTiempo();
             }
         });
         btn_subirFotoSono.setOnClickListener(new View.OnClickListener() {
@@ -193,7 +193,7 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
 
         tv_horaCalibracion.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {showTimePickerDialog(rootView,tv_horaCalibracion);}});
         tv_horaInicioMonitoreo.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {showTimePickerDialog(rootView,tv_horaInicioMonitoreo);}});
-        tv_horaFinal.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {showTimePickerDialog(rootView,tv_horaFinal);}});
+        //tv_horaFinal.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {showTimePickerDialog(rootView,tv_horaFinal);}});
         tv_fechaMonitoreo.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {showDatePickerDialog(rootView,tv_fechaMonitoreo);}});
 
         btn_calcularMedicion.setOnClickListener(new View.OnClickListener() {
@@ -252,7 +252,7 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
                         validar.validarCampoObligatorio(txt_velViento)&&
                         validar.validarCampoObligatorio(txt_humedadRelatva)&&
                         validar.validarCalculo(calculoRealizado,getActivity())&&
-                        validar.validarImagen(cargarImagen,getActivity())&&
+                        validar.validarImagen(cargarImagen,getActivity())
                         //validar.validarCampoObligatorio(radioGroupIng,getActivity())&&
                         //validar.validarCampoObligatorio(radioaislateSI,getActivity())&&
                         //validar.validarCampoObligatorio(radioCabinaSI,getActivity())&&
@@ -262,8 +262,8 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
                         //validar.validarCampoObligatorio(cbx_marcaOrej)&&
                         //validar.validarCampoObligatorio(cbx_modeloOrej)&&
                         //validar.validarCampoObligatorio(radioGroupOrej,getActivity())&&
-                        validar.validarCampoObligatorio(txt_observaciones))
-                {
+                        //validar.validarCampoObligatorio(txt_observaciones)
+                ) {
                     String valorTvSonometro = tv_sonometro.getText().toString();
                     String valorTvCalibrador = tv_calibrador.getText().toString();
                     String valorTvAnemometro = tv_anemometro.getText().toString();

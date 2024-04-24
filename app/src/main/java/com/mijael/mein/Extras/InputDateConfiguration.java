@@ -253,7 +253,7 @@ public class InputDateConfiguration {
             SimpleDateFormat formatoEntrada = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
             try {
                 Date fechadate = formatoEntrada.parse(fechaEntradaStr);
-                SimpleDateFormat formatoSalida = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                SimpleDateFormat formatoSalida = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault());
                 fechaSalidaStr = formatoSalida.format(fechadate);
                 //tv_mostarFecha.setText(String.valueOf(fechaSalidaStr));
 
@@ -278,7 +278,7 @@ public class InputDateConfiguration {
             if (childView instanceof EditText) {
                 ((EditText) childView).setText("");
             } else if (childView instanceof Spinner) {
-                ((Spinner) childView).setSelection(0);
+                //((Spinner) childView).setSelection(0);
             } else if (childView instanceof RadioGroup) {
                 ((RadioGroup) childView).clearCheck();
             } else if (childView instanceof ViewGroup) {
@@ -500,5 +500,15 @@ public class InputDateConfiguration {
         }
         return codigo;
     }
-
+    public void asignarAdaptadorYSeleccion(Spinner spinner, String nombreTabla, String campoTabla, String valorSeleccionado, Context context) {
+        ArrayAdapter<String> adapter = LlenarSpinner(nombreTabla, campoTabla, context);
+        spinner.setAdapter(adapter);
+        int posicionSeleccionada = adapter.getPosition(valorSeleccionado);
+        if (posicionSeleccionada != -1) {
+            spinner.setSelection(posicionSeleccionada);
+        }else{
+            int posicionFinal = adapter.getCount() - 1; // Obtén el último índice de la lista
+            spinner.setSelection(posicionFinal);
+        }
+    }
 }

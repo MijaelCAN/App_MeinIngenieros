@@ -1,21 +1,14 @@
 package com.mijael.mein;
 
 
-import static androidx.navigation.fragment.FragmentKt.findNavController;
-
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.NavController;
-import androidx.navigation.NavDirections;
-import androidx.navigation.Navigation;
-import androidx.navigation.fragment.FragmentKt;
-
-import android.content.Intent;
-import android.content.SharedPreferences;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import android.content.pm.PackageManager;
+import android.Manifest;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.InputType;
-import android.util.Log;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -30,7 +23,7 @@ import com.android.volley.toolbox.Volley;
 
 
 public class LoginActivity extends AppCompatActivity {
-
+    private static final int CAMERA_PERMISSION_REQUEST_CODE = 100;
     Button btn_login, btn_update;
     ImageView btn_visible;
     EditText user, pass;
@@ -42,6 +35,8 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        // Verificar y solicitar permisos de la cámara
+        checkCameraPermission();
         //Stetho.initializeWithDefaults(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
@@ -152,4 +147,22 @@ public class LoginActivity extends AppCompatActivity {
         user = findViewById(R.id.username);
         cbx_rememberMe = findViewById(R.id.remember_me);
     }*/
+
+    private void checkCameraPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.CAMERA }, CAMERA_PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permiso de cámara concedido, puedes continuar con la lógica de tu actividad aquí
+            } else {
+                // Permiso de cámara denegado, muestra un mensaje o toma alguna acción adicional
+            }
+        }
+    }
 }

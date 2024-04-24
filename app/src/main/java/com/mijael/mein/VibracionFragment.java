@@ -1,6 +1,7 @@
 package com.mijael.mein;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -35,6 +36,8 @@ import com.mijael.mein.DAO.DAO_RegistroVibracion;
 import com.mijael.mein.DAO.DAO_Usuario;
 import com.mijael.mein.Entidades.Equipos;
 import com.mijael.mein.Entidades.Formatos_Trabajo;
+import com.mijael.mein.Entidades.RegistroFormatos;
+import com.mijael.mein.Entidades.RegistroFormatos_Detalle;
 import com.mijael.mein.Entidades.Usuario;
 import com.mijael.mein.Entidades.Vibracion_Registro;
 import com.mijael.mein.Entidades.Vibracion_RegistroDetalle;
@@ -46,6 +49,7 @@ import com.mijael.mein.SERVICIOS.DosimetriaService;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -66,7 +70,7 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
     View rootView;
     TextView tv_nombreUsuario, tv_nomEmpresa;
     String id_plan_trabajo, id_pt_trabajo, id_formato,id_colaborador, nom_Empresa;
-    // Ejemplos de variables para vistas
+    String[] arrayTipoVibra, arrayYN,arrayLateralidad;
     TextView tv_horaVerificacion, tv_fechaMonitoreo, tv_horaInicioMoni, tv_horaFinalMoni;
     AutoCompleteTextView spn_equipoutilizado;
     Spinner spn_tipoVibracion, spn_tipoDoc, spn_horarioTrabajo, spn_regimen, spn_horarioRefrig, spn_frecuencia, spn_lateralidadMano;
@@ -84,6 +88,8 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
     ImageView imgVibra;
     Uri uri;
     DAO_RegistroFormatos dao_registroFormatos;
+    RegistroFormatos registros;
+    RegistroFormatos_Detalle detalles;
     public VibracionFragment() {
         // Required empty public constructor
         dao_registroFormatos = new DAO_RegistroFormatos(getContext());
@@ -101,6 +107,8 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
             id_formato = bundle.getString("id_formato");
             id_colaborador = bundle.getString("nomUsuario");
             nom_Empresa = bundle.getString("nomEmpresa");
+            registros = bundle.getParcelable("registroForm");
+            detalles = bundle.getParcelable("detalleForm");
         }
     }
 
@@ -116,11 +124,14 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
         List<String> lista_CodEquipos = equipos.obtener_CodEquipos();
         DAO_Usuario usuario = new DAO_Usuario(getActivity());
         Usuario nuevo = usuario.BuscarUsuario(Integer.parseInt(id_colaborador));
+        arrayTipoVibra = new String[]{"Cuerpo Completo", "Mano - Brazo"};
+        arrayYN = new String[]{"DNI", "CE"};
+        arrayLateralidad = new String[]{"Diestro","Zurdo"};
 
         config.ConfigPantalla();
-        spn_tipoVibracion.setAdapter(config.LlenarSpinner(new String[]{"Cuerpo Completo", "Mano - Brazo"}));
-        spn_lateralidadMano.setAdapter(config.LlenarSpinner(new String[]{"Diestro","Zurdo"}));
-        spn_tipoDoc.setAdapter(config.LlenarSpinner(new String[]{"DNI", "CE"}));
+        spn_tipoVibracion.setAdapter(config.LlenarSpinner(arrayTipoVibra));
+        spn_lateralidadMano.setAdapter(config.LlenarSpinner(arrayLateralidad));
+        spn_tipoDoc.setAdapter(config.LlenarSpinner(arrayYN));
         config.configurarAutoCompleteTextView(spn_equipoutilizado,lista_CodEquipos);
 
         spn_tipoVibracion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -210,7 +221,7 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
         btn_guardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(
+                /*if(
                         validar.validarCampoObligatorio(spn_tipoVibracion) &&
                         validar.validarCampoObligatorio(spn_equipoutilizado) &&
                         validar.validarCampoObligatorio(tv_horaVerificacion) &&
@@ -235,7 +246,7 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
                         validar.validarCampoObligatorio(txt_resulX) &&
                         validar.validarCampoObligatorio(txt_resulY) &&
                         validar.validarCampoObligatorio(txt_resulZ)
-                ){
+                ){*/
                     String valorTipoVibracion = spn_tipoVibracion.getSelectedItem().toString();
                     String valorLaterMano = spn_lateralidadMano.getSelectedItem().toString();
                     String valorEquipoUtil = spn_equipoutilizado.getText().toString();
@@ -286,17 +297,35 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
                     if(valorRegimen.equals("OTRO")) valorRegimen = txt_otroRegimen.getText().toString();
                     if(valorRefrigerio.equals("OTRO")) valorRefrigerio = txt_otroRefrigerio.getText().toString();
 
-
-                    String fecha_registro = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
                     Equipos equipos1 = equipos.Buscar(valorEquipoUtil);
 
+
+                String fecha_registro = "";
+                String cod_formato;
+                String cod_registro;
+                String valorRutaFoto;
+                int id_plan_formato_reg;
+
+                if(registros==null){
+                    id_plan_formato_reg = dao_registroFormatos.getRecordIdByPosition() +1;
+                    fecha_registro = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
                     ArrayList<HashMap<String, String>> resultList = dao_registroFormatos.getListCantidadFormatoId(Integer.parseInt(id_pt_trabajo));
                     int total_registros = dao_registroFormatos.get_cant_formato_medicion();
-                    String cod_formato = config.GenerarCodigoFormato(Integer.parseInt(id_formato),resultList.size());
-                    String cod_registro = config.generarCodigoRegistro(total_registros);
+                    cod_formato = config.GenerarCodigoFormato(Integer.parseInt(id_formato),resultList.size());
+                    cod_registro = config.generarCodigoRegistro(total_registros);
+                    valorRutaFoto = uri.getEncodedPath();
+                    if(uri!=null){valorRutaFoto = uri.getEncodedPath();}
+                }else {
+                    id_plan_formato_reg = registros.getId_plan_trabajo_formato_reg();
+                    fecha_registro = registros.getFec_reg();
+                    cod_registro = registros.getCod_registro();
+                    cod_formato = registros.getCod_formato();
+                    valorRutaFoto = registros.getRuta_foto();
+                    id_formato = String.valueOf(registros.getId_formato());
+                    id_plan_trabajo = String.valueOf(registros.getId_plan_trabajo());
+                    id_pt_trabajo = String.valueOf(registros.getId_pt_formato());
+                }
 
-                    String valorRutaFoto = uri.getEncodedPath();
-                    int id_plan_formato_reg = dao_registroFormatos.getRecordIdByPosition();
 
                     Vibracion_Registro registro = new Vibracion_Registro(
                             -1,
@@ -341,7 +370,7 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
                             valorRutaFoto
                     );
                     Vibracion_RegistroDetalle detalle = new Vibracion_RegistroDetalle(
-                            (id_plan_formato_reg+1),
+                            id_plan_formato_reg,
                             valorFuenteGenVibra,
                             valorDescripcionFuente,
                             valorFrecuencia,
@@ -406,29 +435,74 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
 
                     }else{
                         DAO_RegistroVibracion nuevoRegistro = new DAO_RegistroVibracion(getActivity());
-                        nuevoRegistro.RegistroVibracion(registro);
-                        nuevoRegistro.RegistrarVibracionDetalle(detalle);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle("Guardar formulario");
+                        builder.setMessage("¿Deseas seguir llenando el formulario o terminar?");
 
-                        DAO_FormatosTrabajo dao_fromatosTrabajo = new DAO_FormatosTrabajo(getActivity());
-                        for_Vibracion = dao_fromatosTrabajo.Buscar(id_plan_trabajo,id_formato);
-                        for_Vibracion.setRealizado(for_Vibracion.getRealizado()+1);
-                        for_Vibracion.setPor_realizar(for_Vibracion.getPor_realizar()-1);
+                        builder.setPositiveButton("Seguir", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if(registros == null){
+                                    nuevoRegistro.RegistroVibracion(registro);
+                                    nuevoRegistro.RegistrarVibracionDetalle(detalle);
+                                    DAO_FormatosTrabajo dao_fromatosTrabajo = new DAO_FormatosTrabajo(getActivity());
+                                    for_Vibracion = dao_fromatosTrabajo.Buscar(id_plan_trabajo,id_formato);
+                                    for_Vibracion.setRealizado(for_Vibracion.getRealizado()+1);
+                                    for_Vibracion.setPor_realizar(for_Vibracion.getPor_realizar()-1);
+                                    dao_fromatosTrabajo.actualizarFormatoTrabajo(for_Vibracion);
+                                }else{
+                                    nuevoRegistro.ActualizarVibracion(registro,registros.getId_plan_trabajo_formato_reg());
+                                    nuevoRegistro.ActualizarVibracionDetalle(detalle,detalles.getId_formato_reg_detalle());
+                                }
+                            }
+                        });
+                        builder.setNegativeButton("Terminar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if(registros == null){
+                                    nuevoRegistro.RegistroVibracion(registro);
+                                    nuevoRegistro.RegistrarVibracionDetalle(detalle);
+                                    DAO_FormatosTrabajo dao_fromatosTrabajo = new DAO_FormatosTrabajo(getActivity());
+                                    for_Vibracion = dao_fromatosTrabajo.Buscar(id_plan_trabajo,id_formato);
+                                    for_Vibracion.setRealizado(for_Vibracion.getRealizado()+1);
+                                    for_Vibracion.setPor_realizar(for_Vibracion.getPor_realizar()-1);
+                                    dao_fromatosTrabajo.actualizarFormatoTrabajo(for_Vibracion);
+                                }else{
+                                    nuevoRegistro.ActualizarVibracion(registro,registros.getId_plan_trabajo_formato_reg());
+                                    nuevoRegistro.ActualizarVibracionDetalle(detalle,detalles.getId_formato_reg_detalle());
+                                }
+                                new AlertDialog.Builder(getActivity())
+                                        .setTitle("Registro guardado Localmente")
+                                        .setMessage("El registro ha sido guardado exitosamente.")
+                                        .setPositiveButton(android.R.string.ok, null)
+                                        .show();
+                                Volver();
+                            }
+                        });
+                        builder.show();
 
-                        dao_fromatosTrabajo.actualizarFormatoTrabajo(for_Vibracion);
-
-                        // O muestra un AlertDialog con el mensaje
-                        new AlertDialog.Builder(getActivity())
-                                .setTitle("Registro guardado Localmente")
-                                .setMessage("El registro ha sido guardado exitosamente.")
-                                .setPositiveButton(android.R.string.ok, null)
-                                .show();
-
-                        // Regresa al Fragment anterior
-                        getFragmentManager().popBackStack();
                     }
-                }
+                //}
             }
         });
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        if(registros!=null){
+            if(detalles!=null){
+                EditarCampos();
+            }else{
+                builder.setTitle("Aviso")
+                        .setMessage("Registro sin Detalle.")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+                Volver();
+            }
+
+        }else{
+            builder.setTitle("Aviso")
+                    .setMessage("Realizara un nuevo registro.")
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }
         return rootView;
     }
     public void init(View view){
@@ -498,8 +572,6 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
         linearLateralidadMano = view.findViewById(R.id.linear_LateralidadMano);
 
     }
-
-
     @Override
     public void onImagePicked(Uri imageUri) {
         this.uri = imageUri;
@@ -515,5 +587,90 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
         } else {
             card.setVisibility(View.GONE);
         }
+    }
+
+    private void EditarCampos(){
+        int indice = Arrays.asList(arrayTipoVibra).indexOf(registros.getTipo_vibracion());
+        //Log.e("preuba", registros.getTipo_vibracion() + " - " + indice);
+        spn_tipoVibracion.setSelection(indice+1);
+        if(indice+1==2){
+            int indice2 = Arrays.asList(arrayLateralidad).indexOf(registros.getLateralidad_mano());
+            spn_lateralidadMano.setSelection(indice2+1);
+        }
+        spn_equipoutilizado.setText(registros.getCod_equipo1());
+        tv_horaVerificacion.setText(registros.getHora_situ());
+
+        if(registros.getVerf_insitu().equals("1")){
+            radioGroupVerificacion.check(R.id.verf_insitusi);
+        }else{
+            radioGroupVerificacion.check(R.id.verf_insituno);
+        }
+        imgVibra.setImageURI(Uri.parse(registros.getRuta_foto()));
+        String fecha = "";
+        if (!registros.getFec_monitoreo().isEmpty()) {
+            String[] fec = registros.getFec_monitoreo().split(" ");
+            String[] nueva_fec = fec[0].split("-");
+            fecha = nueva_fec[0] + "/" + nueva_fec[1] + "/" + nueva_fec[2];
+        }
+        tv_fechaMonitoreo.setText(fecha);
+        tv_horaInicioMoni.setText(registros.getHora_inicial());
+        tv_horaFinalMoni.setText(registros.getHora_final());
+        txt_jornada.setText(registros.getJornada());
+        txt_timeExpo.setText(registros.getTiempo_exposicion());
+
+        int indice3 = Arrays.asList(arrayYN).indexOf(registros.getTipo_doc_trabajador());
+        spn_tipoDoc.setSelection(indice3+1);
+        txt_numDoc.setText(registros.getNum_doc_trabajador());
+        txt_nomTrab.setText(registros.getNom_trabajador());
+        txt_edadTrab.setText(String.valueOf(registros.getEdad_trabajador()));
+        txt_areaTrab.setText(registros.getArea_trabajo());
+        txt_puestoTrab.setText(registros.getPuesto_trabajador());
+        txt_actRealizada.setText(registros.getActividades_realizadas());
+
+        config.asignarAdaptadorYSeleccion(spn_horarioTrabajo, "horario_trab_fromato_medicion", "desc_horario", registros.getHora_trabajo(), getContext());
+        if (spn_horarioTrabajo.getSelectedItem().equals("OTRO")) {
+            txt_otroHorario.setText(registros.getHora_trabajo());
+        }
+        config.asignarAdaptadorYSeleccion(spn_regimen, "regimen_formato_medicion", "nom_regimen", registros.getRegimen_laboral(), getContext());
+        if (spn_regimen.getSelectedItem().equals("OTRO")) {
+            txt_otroRegimen.setText(registros.getRegimen_laboral());
+        }
+        config.asignarAdaptadorYSeleccion(spn_horarioRefrig, "horario_refrig_formato_medicion", "nom_horario", registros.getHorario_refrigerio(), getContext());
+        if (spn_horarioRefrig.getSelectedItem().equals("OTRO")) {
+            txt_otroRefrigerio.setText(registros.getHora_trabajo());
+        }
+
+        txt_fuenteGenVibra.setText(detalles.getFuente_generadora());
+        txt_descFuenteGen.setText(detalles.getDesc_fuente_frio());
+
+        if(registros.getCtrl_ingenieria().equals("1")){
+            radioGroupIng.check(R.id.radioIngenieriaSi);
+            txt_nombreControl.setText(registros.getNom_ctrl_ingenieria());
+        }else{
+            radioGroupIng.check(R.id.radioUngenieriaNo);
+        }
+        if(registros.getCtrl_administrativo().equals("1")){
+            radioGroupAdm.check(R.id.radio_AdministrativoSi);
+            if(registros.getSenializacion_area().equals("1")){radioGroupSeñal.check(R.id.radioEppSi);}else{radioGroupSeñal.check(R.id.radioEppNo);}
+            if(registros.getCapacitacion().equals("1")){radioGroupCapac.check(R.id.radioAdminExpoSi);}else{radioGroupCapac.check(R.id.radioAdminExpoNo);}
+            if(registros.getMantenimiento_vibracion().equals("1")){radioGroupMante.check(R.id.radioRotacionSi);}else{radioGroupMante.check(R.id.radioRotacionSi);}
+            config.asignarAdaptadorYSeleccion(spn_frecuencia, "frecuencia", "nom_frecuencia", detalles.getFrecuencia(), getContext());
+        }else{
+            radioGroupAdm.check(R.id.radio_AdministrativoNo);
+        }
+
+        check_botas.setChecked(detalles.getEpp_botas().equals("1"));
+        check_guantes.setChecked(detalles.getEpp_guantes().equals("1"));
+        check_casco.setChecked(detalles.getEpp_casco().equals("1"));
+        check_proteccionAud.setChecked(detalles.getEpp_orejeras().equals("1"));
+        txt_otrosAdmin.setText(detalles.getOtro_epp());
+
+        txt_resulX.setText(detalles.getX());
+        txt_resulY.setText(detalles.getY());
+        txt_resulZ.setText(detalles.getZ());
+
+    }
+    private void Volver(){
+        getFragmentManager().popBackStack();// Regresa al Fragment anterior
     }
 }

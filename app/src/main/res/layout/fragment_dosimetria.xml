@@ -706,6 +706,7 @@
                                     style="@style/EditTextFocusStyle"
                                     android:layout_marginTop="5dp"
                                     android:hint="Digite"
+                                    android:inputType="numberSigned|number"
                                     android:textColor="@color/black"
                                     android:textColorHint="@color/black"
                                     android:textSize="15sp"
@@ -795,8 +796,13 @@
                                     android:layout_height="wrap_content"
                                     style="@style/EditTextFocusStyle"
                                     android:hint="Digite"
+                                    android:textSize="15sp"
                                     android:paddingLeft="8dp"
-                                    android:textSize="16sp"/>
+                                    android:layout_marginTop="5dp"
+                                    android:textColor="@color/black"
+                                    android:textColorHint="@color/black"
+                                    android:inputType="numberSigned|number"
+                                    android:maxLength="2"/>
                             </LinearLayout>
                         </LinearLayout>
                         <!-- Fin de la primera fila Doble -->

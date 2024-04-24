@@ -92,7 +92,7 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
 
     // RadioGroup
     RadioGroup radioGroupVerificacion, radioGroupIng, radioGroup_RopaInterior,radioGroup_CamisasBlusas,radioGroup_Pantalones, radioGroup_Pullover, radioGroup_PrendaAbrigo,
-            radioGroup_Chaqueta;
+            radioGroup_Chaqueta,radioGroup_Forrada;
 
     // EditTexts
     EditText txt_timeMed, txt_timeExpo, txt_jornada, txt_numDoc, txt_nomTrab, txt_areaTrab,txt_tasaMetabolicaW, txt_tasaMetabolicaK,txt_frecuenciaCardiaca,
@@ -485,8 +485,8 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
                         validar.validarCampoObligatorio(txt_t_aire) &&
                         validar.validarCampoObligatorio(txt_t_aireNegro) &&
                         validar.validarCampoObligatorio(txt_humedadRelativa) &&
-                        validar.validarCampoObligatorio(txt_velViento) &&
-                        validar.validarCampoObligatorio(txt_observaciones)
+                        validar.validarCampoObligatorio(txt_velViento)
+                        //validar.validarCampoObligatorio(txt_observaciones)
                 ){
                     String valorEstresFrio = spn_equipoEstresFrio.getText().toString();
                     String valorAnemometro = spn_equipoAnemometro.getText().toString();
@@ -525,6 +525,7 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
                     int valorGroup_Pullover = validar.getValorTag(radioGroup_Pullover);
                     int valorGroup_PrendaAbrigo = validar.getValorTag(radioGroup_PrendaAbrigo);
                     int valorGroup_Chaqueta = validar.getValorTag(radioGroup_Chaqueta);
+                    int valorGroup_Forrada = validar.getValorTag(radioGroup_Forrada);
                     /*String valorcheck_calz = String.valueOf(check_calz.isChecked());
                     String valorcheck_calzLargo = String.valueOf(check_calzLargo.isChecked());
                     String valorcheck_camisaTirantes= String.valueOf(check_camisaTirantes.isChecked());
@@ -771,6 +772,7 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
                             valorGroup_Pullover,
                             valorGroup_PrendaAbrigo,
                             valorGroup_Chaqueta,
+                            valorGroup_Forrada,
                             valorcheck_divZapatodelgado,
                             valorcheck_divZapatogrueso,
                             valorcheck_divCalcetines,
@@ -946,6 +948,7 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
         radioGroup_Pullover = view.findViewById(R.id.radioGroup_Pullover);
         radioGroup_PrendaAbrigo = view.findViewById(R.id.radioGroup_PrendaAbrigo);
         radioGroup_Chaqueta = view.findViewById(R.id.radioGroup_Chaqueta);
+        radioGroup_Forrada = view.findViewById(R.id.radioGroup_Forrada);
 
         /*check_calz = view.findViewById(R.id.check_calz);
         check_calzLargo = view.findViewById(R.id.check_calzLargo);

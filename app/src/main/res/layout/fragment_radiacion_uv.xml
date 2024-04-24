@@ -494,6 +494,7 @@
                         android:textColorHint="@color/black"
                         android:background="@drawable/style_input"
                         android:hint="Ingrese jornada"
+                        android:inputType="number|numberDecimal"
                         android:textColor="@color/black"
                         android:textSize="15sp"
                         android:paddingLeft="8dp"/>
@@ -585,7 +586,7 @@
                                     android:background="@drawable/style_input"
                                     android:layout_marginTop="5dp"
                                     android:hint=" Digite"
-                                    android:inputType="numberSigned"
+                                    android:inputType="number"
                                     android:maxLength="8"
                                     android:textSize="12sp"/>
                             </LinearLayout>
@@ -677,8 +678,8 @@
                                     android:layout_marginTop="5dp"
                                     android:textColor="@color/black"
                                     android:textColorHint="@color/black"
-                                    android:inputType="numberSigned|text"
-                                    android:maxLength="3"/>
+                                    android:inputType="number"
+                                    android:maxLength="2"/>
                             </LinearLayout>
                             <LinearLayout
                                 android:layout_width="0dp"
@@ -1204,7 +1205,8 @@
                             android:fontFamily="sans-serif-light"
                             android:text="Tipo de fuente de Radiación:"
                             android:textColor="@color/black"
-                            android:textSize="12sp" />
+                            android:textSize="12sp"
+                            android:visibility="gone"/>
                         <EditText
                             android:id="@+id/txt_tipoFuenteRadiacion"
                             android:layout_width="match_parent"
@@ -1216,7 +1218,8 @@
                             android:paddingLeft="8dp"
                             android:textColor="@color/black"
                             android:textColorHint="@color/black"
-                            android:textSize="15sp" />
+                            android:textSize="15sp"
+                            android:visibility="gone"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -1241,7 +1244,8 @@
                             android:fontFamily="sans-serif-light"
                             android:text="Mantenimiento de fuente (Artificial):"
                             android:textColor="@color/black"
-                            android:textSize="12sp" />
+                            android:textSize="12sp"
+                            android:visibility="gone"/>
                         <EditText
                             android:id="@+id/txt_mantenimientoFuente"
                             android:layout_width="match_parent"
@@ -1252,7 +1256,8 @@
                             android:inputType="none"
                             android:background="@drawable/style_input"
                             android:textColor="@color/black"
-                            android:textSize="12sp" />
+                            android:textSize="12sp"
+                            android:visibility="gone"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -2266,7 +2271,7 @@
                                     android:checked="false"
                                     android:fontFamily="sans-serif-light"
                                     android:text="Otro"
-                                    android:tag="2"
+                                    android:tag="3"
                                     android:textColorHint="@color/black" />
                             </RadioGroup>
                         <TextView

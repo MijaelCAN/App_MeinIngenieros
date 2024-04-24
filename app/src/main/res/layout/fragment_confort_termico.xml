@@ -439,7 +439,7 @@
                                 android:background="@drawable/style_input"
                                 android:hint="Ingrese jornada"
                                 android:textColor="@color/black"
-                                android:inputType="numberDecimal|text"
+                                android:inputType="number|numberDecimal"
                                 android:maxLength="5"
                                 android:textSize="15sp"
                                 android:paddingLeft="8dp"/>
@@ -471,7 +471,7 @@
                                 android:background="@drawable/style_input"
                                 android:hint="Ingrese jornada"
                                 android:textColor="@color/black"
-                                android:inputType="numberDecimal|text"
+                                android:inputType="number|numberDecimal"
                                 android:maxLength="5"
                                 android:textSize="15sp"
                                 android:paddingLeft="8dp"/>
@@ -495,7 +495,7 @@
                         android:textColorHint="@color/black"
                         android:background="@drawable/style_input"
                         android:hint="Ingrese jornada"
-                        android:inputType="numberDecimal|text"
+                        android:inputType="number|numberDecimal"
                         android:maxLength="10"
                         android:textColor="@color/black"
                         android:textSize="15sp"
@@ -590,7 +590,7 @@
                                     android:layout_marginTop="5dp"
                                     android:hint="Digite"
                                     android:paddingLeft="9dp"
-                                    android:inputType="numberSigned|text"
+                                    android:inputType="numberSigned"
                                     android:maxLength="8"
                                     android:textSize="16sp"/>
                             </LinearLayout>
@@ -676,14 +676,14 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:background="@drawable/style_input"
-                                    android:hint=" Digite"
+                                    android:hint="Digite"
                                     android:textSize="15sp"
                                     android:paddingLeft="8dp"
                                     android:layout_marginTop="5dp"
                                     android:textColor="@color/black"
                                     android:textColorHint="@color/black"
-                                    android:inputType="numberSigned|text"
-                                    android:maxLength="3"/>
+                                    android:inputType="numberSigned|number"
+                                    android:maxLength="2"/>
                             </LinearLayout>
                             <LinearLayout
                                 android:layout_width="0dp"
@@ -713,7 +713,7 @@
                                     android:layout_marginTop="5dp"
                                     android:textColor="@color/black"
                                     android:textColorHint="@color/black"
-                                    android:inputType="numberDecimal|text"
+                                    android:inputType="number|numberDecimal"
                                     android:maxLength="3"/>
                             </LinearLayout>
                         </LinearLayout>

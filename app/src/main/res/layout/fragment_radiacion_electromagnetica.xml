@@ -408,7 +408,7 @@ tools:context=".RadiacionElectromagneticaFragment">
                     android:textColor="@color/black"
                     android:textSize="15sp"
                     android:paddingLeft="8dp"
-                    android:inputType="numberSigned|text"
+                    android:inputType="number|numberDecimal"
                     android:maxLength="5"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -501,7 +501,7 @@ tools:context=".RadiacionElectromagneticaFragment">
                                 android:textSize="12sp"
                                 android:paddingLeft="8dp"
                                 android:maxLength="8"
-                                android:inputType="numberSigned|text"/>
+                                android:inputType="number"/>
                         </LinearLayout>
                         <LinearLayout
                             android:id="@+id/linearBuscarDni"
@@ -590,8 +590,8 @@ tools:context=".RadiacionElectromagneticaFragment">
                                 android:layout_marginTop="5dp"
                                 android:textColor="@color/black"
                                 android:textColorHint="@color/black"
-                                android:inputType="numberSigned|text"
-                                android:maxLength="3"/>
+                                android:inputType="number"
+                                android:maxLength="2"/>
                         </LinearLayout>
                         <LinearLayout
                             android:layout_width="0dp"
@@ -1000,7 +1000,7 @@ tools:context=".RadiacionElectromagneticaFragment">
                         android:textColor="@color/black"
                         android:textColorHint="@color/black"
                         android:textSize="15sp"
-                        android:inputType="numberSigned|text"
+                        android:inputType="number|numberDecimal"
                         android:maxLength="8"/>
                     <TextView
                         android:layout_width="wrap_content"
@@ -1237,7 +1237,7 @@ tools:context=".RadiacionElectromagneticaFragment">
                                     android:paddingLeft="8dp"
                                     android:textColor="@color/black"
                                     android:textSize="12sp"
-                                    android:inputType="numberSigned|text"
+                                    android:inputType="number|numberDecimal"
                                     android:maxLength="8"/>
 
                                 <EditText
@@ -1250,7 +1250,7 @@ tools:context=".RadiacionElectromagneticaFragment">
                                     android:paddingLeft="8dp"
                                     android:textColor="@color/black"
                                     android:textSize="12sp"
-                                    android:inputType="numberSigned|text"
+                                    android:inputType="number|numberDecimal"
                                     android:maxLength="8"/>
 
                                 <EditText
@@ -1263,7 +1263,7 @@ tools:context=".RadiacionElectromagneticaFragment">
                                     android:paddingLeft="8dp"
                                     android:textColor="@color/black"
                                     android:textSize="12sp"
-                                    android:inputType="numberSigned|text"
+                                    android:inputType="number|numberDecimal"
                                     android:maxLength="8"/>
                             </LinearLayout>
                             <!-- COLUMNA MEDICION 3 -->
@@ -1295,7 +1295,7 @@ tools:context=".RadiacionElectromagneticaFragment">
                                     android:paddingLeft="8dp"
                                     android:textColor="@color/black"
                                     android:textSize="12sp"
-                                    android:inputType="numberSigned|text"
+                                    android:inputType="number|numberDecimal"
                                     android:maxLength="8"/>
 
                                 <EditText
@@ -1308,7 +1308,7 @@ tools:context=".RadiacionElectromagneticaFragment">
                                     android:paddingLeft="8dp"
                                     android:textColor="@color/black"
                                     android:textSize="12sp"
-                                    android:inputType="numberSigned|text"
+                                    android:inputType="number|numberDecimal"
                                     android:maxLength="8"/>
 
                                 <EditText
@@ -1321,7 +1321,7 @@ tools:context=".RadiacionElectromagneticaFragment">
                                     android:paddingLeft="8dp"
                                     android:textColor="@color/black"
                                     android:textSize="12sp"
-                                    android:inputType="numberSigned|text"
+                                    android:inputType="number|numberDecimal"
                                     android:maxLength="8"/>
                             </LinearLayout>
                             <!-- COLUMNA MEDICION 4 -->
@@ -1353,7 +1353,7 @@ tools:context=".RadiacionElectromagneticaFragment">
                                     android:paddingLeft="8dp"
                                     android:textColor="@color/black"
                                     android:textSize="12sp"
-                                    android:inputType="numberSigned|text"
+                                    android:inputType="number|numberDecimal"
                                     android:maxLength="8"/>
 
                                 <EditText
@@ -1366,7 +1366,7 @@ tools:context=".RadiacionElectromagneticaFragment">
                                     android:paddingLeft="8dp"
                                     android:textColor="@color/black"
                                     android:textSize="12sp"
-                                    android:inputType="numberSigned|text"
+                                    android:inputType="number|numberDecimal"
                                     android:maxLength="8"/>
 
                                 <EditText
@@ -1379,7 +1379,7 @@ tools:context=".RadiacionElectromagneticaFragment">
                                     android:paddingLeft="8dp"
                                     android:textColor="@color/black"
                                     android:textSize="12sp"
-                                    android:inputType="numberSigned|text"
+                                    android:inputType="number|numberDecimal"
                                     android:maxLength="8"/>
                             </LinearLayout>
                             <!-- COLUMNA MEDICION 5 -->
@@ -1411,7 +1411,7 @@ tools:context=".RadiacionElectromagneticaFragment">
                                     android:paddingLeft="8dp"
                                     android:textColor="@color/black"
                                     android:textSize="12sp"
-                                    android:inputType="numberSigned|text"
+                                    android:inputType="number|numberDecimal"
                                     android:maxLength="8"/>
 
                                 <EditText
@@ -1424,7 +1424,7 @@ tools:context=".RadiacionElectromagneticaFragment">
                                     android:paddingLeft="8dp"
                                     android:textColor="@color/black"
                                     android:textSize="12sp"
-                                    android:inputType="numberSigned|text"
+                                    android:inputType="number|numberDecimal"
                                     android:maxLength="8"/>
 
                                 <EditText
@@ -1437,7 +1437,7 @@ tools:context=".RadiacionElectromagneticaFragment">
                                     android:paddingLeft="8dp"
                                     android:textColor="@color/black"
                                     android:textSize="12sp"
-                                    android:inputType="numberSigned|text"
+                                    android:inputType="number|numberDecimal"
                                     android:maxLength="8"/>
                             </LinearLayout>
                         </LinearLayout>

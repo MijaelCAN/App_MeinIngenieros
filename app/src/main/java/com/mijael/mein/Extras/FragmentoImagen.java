@@ -1,5 +1,6 @@
 package com.mijael.mein.Extras;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -13,12 +14,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
 
@@ -87,9 +91,14 @@ public class FragmentoImagen extends DialogFragment {
         textCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, REQUEST_IMAGE_CAPTURE);
+                } else {
+                    //openCamera();
+                //}
                 // Abrir cámara
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                //if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
                     String photoFile = null;
                     try {
                         photoFile = createImageFile();
@@ -140,6 +149,60 @@ public class FragmentoImagen extends DialogFragment {
         return builder.create();
     }
 
+    private void openCamera() {
+        Log.e("function","ENTRO A ABRIR CAMARA");
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        //if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            String photoFile = null;
+            try {
+                photoFile = createImageFile();
+                Log.e("hhgg","entro al TRY");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                Log.e("ff","eRROR AL CREAR ARCHIVO DE IMAGEN",ex);
+            }
+            if (photoFile != null) {
+                Log.e("XXX","entro a guardar");
+                Uri photoURI = FileProvider.getUriForFile(getActivity(),
+                        "com.mijael.mein.fileprovider",
+                        new File(photoFile));
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+
+                // Resto de tu código relacionado con la cámara
+                // Agregar la foto a la galería
+                Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                File f = new File(photoFile);
+                Uri contentUri = Uri.fromFile(f);
+                mediaScanIntent.setData(contentUri);
+                getActivity().sendBroadcast(mediaScanIntent);
+
+                MediaScannerConnection.scanFile(getActivity(), new String[]{photoFile}, null,
+                        new MediaScannerConnection.OnScanCompletedListener() {
+                            @Override
+                            public void onScanCompleted(String path, Uri uri) {
+                                // Archivo escaneado con éxito
+                                // Puedes mostrar un mensaje o realizar acciones adicionales si es necesario
+                            }
+                        });
+            }
+        /*}else{
+            Log.e("sdsds","NO ENTRO A FUNCON");
+        }*/
+    }
+
+    /*
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_IMAGE_CAPTURE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openCamera();
+            } else {
+                // Permiso denegado, muestra un mensaje o toma alguna acción adicional
+            }
+        }
+    }*/
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

@@ -57,58 +57,54 @@ public class FormatosFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        String id_plan_trabajo = "";
+        String numero_orden = "";
+        String nombre_empresa = "";
 
         MainActivity activity = (MainActivity) getActivity();
         assert activity != null;
+
         tv_usu = activity.findViewById(R.id.txt_usuario);
         txt_buscar = activity.findViewById(R.id.txt_buscarOrden);
-        txt_buscar.setVisibility(View.VISIBLE);
-        //txt_buscar.setText("");
         tv_usu2 = activity.findViewById(R.id.txt_usuario2);
+        fragmentContainer = activity.findViewById(R.id.fragmentContainerView);
+
+        txt_buscar.setVisibility(View.VISIBLE);
         tv_usu2.setText("");
         tv_usu.setVisibility(View.VISIBLE);
-        fragmentContainer = activity.findViewById(R.id.fragmentContainerView);
+
+
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) fragmentContainer.getLayoutParams();
         params.topMargin = 400;
         fragmentContainer.setLayoutParams(params);
 
         bundle = new Bundle();
-
-        // Inflate the layout for this fragment
-        String id_plan_trabajo = "";
-        String numero_orden = "";
         Bundle bundle = getArguments();
         if (bundle != null) {
             id_plan_trabajo = bundle.getString("id_plan_Trabajo");
             numero_orden = bundle.getString("numero_orden");
             idColaborador = bundle.getString("idCola");
+            nombre_empresa = bundle.getString("nombre_empresa");
         }
+
         assert id_plan_trabajo != null; //verificacion en tiempo real que la variable no sea nula
-        Log.e("NUEVA2.5",id_plan_trabajo);
+
+        // INFLANDO LA VISTA FROMATOS-FRAGMENT
         rootView = inflater.inflate(R.layout.fragment_formatos, container, false);
 
-        txt_buscar.setHint("Buscar Formato");
-        Num_orden = rootView.findViewById(R.id.numero_orden);
-        Num_orden.setText(numero_orden);
 
+        Num_orden = rootView.findViewById(R.id.numero_orden);
         linearLayout = rootView.findViewById(R.id.contenedor_Card);
+        tv_empresa = rootView.findViewById(R.id.nombre_empresa);
+
+        txt_buscar.setHint("Buscar Formato");
+        Num_orden.setText(numero_orden);
+        tv_empresa.setText(nombre_empresa);
 
         DAO_FormatosTrabajo dao_fromatosTrabajo = new DAO_FormatosTrabajo(getActivity());
         formatos_trabajoList = dao_fromatosTrabajo.obtenerFormatosTrabajo(parseInt(id_plan_trabajo));
         Log.e("NUEVA3",id_plan_trabajo);
-        //Log.e("NUEVA4",String.valueOf(formatos_trabajoList.size()));
 
-        /*txt_buscar.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String formato_aBuscar = s.toString().toLowerCase().trim();//Obtener el texto Actual Ingreso
-                Filtrar(formato_aBuscar,formatos_trabajoList, inflater);
-            }
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });*/
         // aqui el metodo Mostrar
         for (Formatos_Trabajo registro : formatos_trabajoList) {
             MostrarFOrmatos(registro, inflater);
@@ -150,7 +146,7 @@ public class FormatosFragment extends Fragment {
 
     private void init(View view) {
         tv_formato = view.findViewById(R.id.text_view_formato);
-        //tv_empresa = view.findViewById(R.id.text_view_empresa);
+        //tv_empresa = view.findViewById(R.id.nombre_empresa);
         tv_total = view.findViewById(R.id.text_view_total);
         //tv_Realizado = view.findViewById(R.id.text_view_realizado);
         //tv_porRealizar = view.findViewById(R.id.text_view_realizar);

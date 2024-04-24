@@ -14,6 +14,8 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 import androidx.work.Worker;
 
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -133,21 +135,22 @@ public class LoginFragment extends Fragment {
 
 
         //BOTON PARA VISUALIZAR LA CONTRASEÑA
-        /*btn_visible.setOnClickListener(new View.OnClickListener() {
+        btn_visible.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isPasswordVisible) {
-                    // Si la contraseña es visible, ocultarla
-                    pass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                } else {
+                if (pass.getTransformationMethod() instanceof PasswordTransformationMethod) {
                     // Si la contraseña está oculta, mostrarla
-                    pass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                    pass.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    btn_visible.setImageResource(R.drawable.ic_visibility);
+                } else {
+                    // Si la contraseña es visible, ocultarla
+                    pass.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    btn_visible.setImageResource(R.drawable.ic_visibility);
                 }
                 // Mover el cursor al final del texto
                 pass.setSelection(pass.getText().length());
-                isPasswordVisible = !isPasswordVisible;
             }
-        });*/
+        });
 
         //BOTON RECORDAR CREDENCIALES
         SharedPreferences preferences = getActivity().getSharedPreferences("DatosdeSesion", Context.MODE_PRIVATE);
@@ -180,7 +183,7 @@ public class LoginFragment extends Fragment {
     private void init(View rootView) {
         btn_login = rootView.findViewById(R.id.login_button);
         btn_update = rootView.findViewById(R.id.btn_actualizar);
-        //btn_visible = rootView.findViewById(R.id.password_toggle);//password_toggle = id del boton de visualizacion
+        btn_visible = rootView.findViewById(R.id.password_toggle);//password_toggle = id del boton de visualizacion
         pass = rootView.findViewById(R.id.password);
         user = rootView.findViewById(R.id.username);
         cbx_rememberMe = rootView.findViewById(R.id.remember_me);

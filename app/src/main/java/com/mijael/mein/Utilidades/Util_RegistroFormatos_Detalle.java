@@ -43,6 +43,7 @@ public class Util_RegistroFormatos_Detalle {
     public static final String CAMPO_PULLOVER = "pullover";
     public static final String CAMPO_ABRIGO = "abrigo";
     public static final String CAMPO_CHAQUETA = "chaqueta";
+    public static final String CAMPO_FORRADA = "forrada";
     public static final String CAMPO_DIVERSOS = "diversos";
     public static final String CAMPO_ACLIMATADO = "aclimatado";
     public static final String CAMPO_ZONA_SOMBRA = "zona_sombra";
@@ -294,6 +295,7 @@ public class Util_RegistroFormatos_Detalle {
             + CAMPO_PULLOVER + " TEXT, "
             + CAMPO_ABRIGO + " TEXT, "
             + CAMPO_CHAQUETA + " TEXT, "
+            + CAMPO_FORRADA + " TEXT, "
             + CAMPO_DIVERSOS + " TEXT, "
             + CAMPO_ACLIMATADO + " TEXT, "
             + CAMPO_ZONA_SOMBRA + " TEXT, "

@@ -134,7 +134,8 @@
                     android:layout_gravity="end"
                     android:textColor="@color/white"
                     android:textColorHint="@color/white"
-                    android:background="@drawable/ic_delete"/>
+                    android:background="@drawable/ic_delete"
+                    android:visibility="gone"/>
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>

@@ -144,6 +144,7 @@ public class Orden_TrabajoFragment2 extends Fragment {
                 bundle.putString("id_plan_Trabajo", registro.getId_plan_trabajo() );
                 bundle.putString("numero_orden", registro.getCod_ot());
                 bundle.putString("idCola", idColaborador);
+                bundle.putString("nombre_empresa",registro.getNom_cliente());
                 nuevo.setArguments(bundle);
                 getParentFragmentManager().beginTransaction()
                         .replace(R.id.fragmentContainerView, nuevo)

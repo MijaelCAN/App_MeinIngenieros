@@ -1,6 +1,7 @@
 package com.mijael.mein;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -40,6 +41,8 @@ import com.mijael.mein.Entidades.Equipos;
 import com.mijael.mein.Entidades.EstresTermico_Registro;
 import com.mijael.mein.Entidades.EstresTermico_RegistroDetalle;
 import com.mijael.mein.Entidades.Formatos_Trabajo;
+import com.mijael.mein.Entidades.RegistroFormatos;
+import com.mijael.mein.Entidades.RegistroFormatos_Detalle;
 import com.mijael.mein.Entidades.Usuario;
 import com.mijael.mein.Extras.FragmentoImagen;
 import com.mijael.mein.Extras.InputDateConfiguration;
@@ -50,6 +53,7 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -68,9 +72,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class EstresTermicoFragment extends Fragment implements FragmentoImagen.ImagePickerListener{
     private boolean cargarImagen = false;
     private int contadorTareas = 0;
+    private int cont = 0;
     View rootView;
     TextView tv_nombreUsuario, tv_nomEmpresa;
     String id_plan_trabajo, id_pt_trabajo, id_formato,id_colaborador, nom_Empresa;
+    String[] arrayYN,arrayFuent,arrayDesc,arrayCond, arrayNivel, arrayTanteo, arrayObs, arrayAnalisis,arrayClase,arrayTipTrab,
+            arrayGenero,arrayTipMed;
+    HashMap<String, String[]> ocupacionesPorTipoTrabajo;
     AutoCompleteTextView tv_estresTermico, tv_anemometro;
     TextView tv_horaVerificacion, tv_fechaMonitoreo, tv_horaInicioMoni, tv_horaFinalMoni,tv_desTrabajoDetalle, tv_tasaMetabolica;
     EditText txt_colorPredominante, txt_wbgt01, txt_wbgt11, txt_wbgt17, txt_t_aire01, txt_t_aire11, txt_t_aire17, txt_t_globo01, txt_tasaMetabolicaW, txt_tasaMetabolicaK,
@@ -97,6 +105,8 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
     LinearLayout linearOtroHorario, linearOtroRegimen, linearOtroRefrigerio;
     EditText txt_otroHorario, txt_otroRegimen, txt_otroRefrigerio;
     DAO_RegistroFormatos dao_registroFormatos;
+    RegistroFormatos registros;
+    RegistroFormatos_Detalle detalles;
     public EstresTermicoFragment() {
         // Required empty public constructor
         dao_registroFormatos = new DAO_RegistroFormatos(getActivity());
@@ -117,6 +127,8 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
             id_formato = bundle.getString("id_formato");
             id_colaborador = bundle.getString("nomUsuario");
             nom_Empresa = bundle.getString("nomEmpresa");
+            registros = bundle.getParcelable("registroForm");
+            detalles = bundle.getParcelable("detalleForm");
         }
     }
 
@@ -133,19 +145,31 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
         List<String> lista_CodEquipos = equipos.obtener_CodEquipos();
         DAO_Usuario usuario = new DAO_Usuario(getActivity());
         Usuario nuevo = usuario.BuscarUsuario(Integer.parseInt(id_colaborador));
+        arrayYN = new String[]{"DNI","CE"};
+        arrayFuent = new String[]{"Natural","Artificial","Natural - artificial"};
+        arrayDesc = new String[]{"Trabajo al aire libre sin carga solar o bajo techo", "Trabajo al aire libre con carga solar"};
+        arrayCond = new String[]{"Aclimatado", "No aclimatado"};
+        arrayNivel = new String[]{"Tanteo", "Observación","Análisis"};
+        arrayTanteo = new String[]{"1A - Clasificación del tamaño de la ocupación", "1B - Clasificación del tamaño de la actividad"};
+        arrayObs = new String[]{"Tablas para actividades específicas"};
+        arrayAnalisis = new String[]{"Medida del ritmo cardiaco bajo condiciones determi"};
+        arrayTipMed = new String[]{"Medición a una altura","Medición a tres alturas"};
+        arrayGenero = new String[]{"Hombre","Mujer"};
+        arrayTipTrab = new String[]{"Oficina","Artesanos","Minería","Industria","Artes","Agricultura","Transporte","Diversos"};
+        arrayClase = new String[]{"Descanso","Tasa metabólica baja","Tasa metabólica moderada","Tasa metabólica alta","Tasa metabólica muy alta"};
 
-        spn_tipoDoc.setAdapter(config.LlenarSpinner(new String[]{"DNI","CE"}));
-        spn_fuenteGen.setAdapter(config.LlenarSpinner(new String[]{"Natural","Artificial","Natural - artificial"}));
-        spn_descTrabajo.setAdapter(config.LlenarSpinner(new String[]{"Trabajo al aire libre sin carga solar o bajo techo", "Trabajo al aire libre con carga solar"}));
-        spn_condicionTrab.setAdapter(config.LlenarSpinner(new String[]{"Aclimatado", "No aclimatado"}));
-        spn_nivelDeterminacion.setAdapter(config.LlenarSpinner(new String[]{"Tanteo", "Observación","Análisis"}));
-        spn_tipoMedicion.setAdapter(config.LlenarSpinner(new String[]{"Medición a una altura","Medición a tres alturas"}));
-        spn_genero.setAdapter(config.LlenarSpinner(new String[]{"Hombre","Mujer"}));
-        spn_tipoTrab.setAdapter(config.LlenarSpinner(new String[]{"Oficina","Artesanos","Minería","Industria","Artes","Agricultura","Transporte","Diversos"}));
+        spn_tipoDoc.setAdapter(config.LlenarSpinner(arrayYN));
+        spn_fuenteGen.setAdapter(config.LlenarSpinner(arrayFuent));
+        spn_descTrabajo.setAdapter(config.LlenarSpinner(arrayDesc));
+        spn_condicionTrab.setAdapter(config.LlenarSpinner(arrayCond));
+        spn_nivelDeterminacion.setAdapter(config.LlenarSpinner(arrayNivel));
+        spn_tipoMedicion.setAdapter(config.LlenarSpinner(arrayTipMed));
+        spn_genero.setAdapter(config.LlenarSpinner(arrayGenero));
+        spn_tipoTrab.setAdapter(config.LlenarSpinner(arrayTipTrab));
         //spn_ocupacion.setAdapter(config.LlenarSpinner(new String[]{"Ayudante de laboratorio","Profesor","Dependiente de Comercio","Secretario"}));
-        spn_clase.setAdapter(config.LlenarSpinner(new String[]{"Descanso","Tasa metabólica baja","Tasa metabólica moderada","Tasa metabólica alta","Tasa metabólica muy alta"}));
+        spn_clase.setAdapter(config.LlenarSpinner(arrayClase));
 
-        HashMap<String, String[]> ocupacionesPorTipoTrabajo = new HashMap<>();
+        ocupacionesPorTipoTrabajo = new HashMap<>();
         ocupacionesPorTipoTrabajo.put("Oficina", new String[]{"Trabajo de sedentario", "Trabajo administrativo"});
         ocupacionesPorTipoTrabajo.put("Artesanos", new String[]{"Coserje", "Albañil", "Carpintero", "Cristalero", "Pintor", "Panadero", "Carnicero", "Relojero"});
         ocupacionesPorTipoTrabajo.put("Minería", new String[]{"Operador de vagoneta", "Picador de carbón", "Operador de horno de coque"});
@@ -268,11 +292,20 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                 config.limpiarElementos((ViewGroup) Card_Observacion.getChildAt(0));
                 tv_tasaMetabolica.setText("");
                 if (seleccion.equals("Tanteo")) {
-                    spn_metodoDeterminacion.setAdapter(config.LlenarSpinner(new String[]{"1A - Clasificación del tamaño de la ocupación", "1B - Clasificación del tamaño de la actividad"}));
+                    spn_metodoDeterminacion.setAdapter(config.LlenarSpinner(arrayTanteo));
+                    if(registros!=null){
+                        ActualizarTanteo();
+                    }
                 } else if (seleccion.equals("Observación")) {
-                    spn_metodoDeterminacion.setAdapter(config.LlenarSpinner(new String[]{"Tablas para actividades específicas"}));
+                    spn_metodoDeterminacion.setAdapter(config.LlenarSpinner(arrayObs));
+                    if(registros!=null){
+                        ActualizarObservacion();
+                    }
                 } else if (seleccion.equals("Análisis")){
-                    spn_metodoDeterminacion.setAdapter(config.LlenarSpinner(new String[]{"Medida del ritmo cardiaco bajo condiciones determi"}));
+                    spn_metodoDeterminacion.setAdapter(config.LlenarSpinner(arrayAnalisis));
+                    if(registros!=null){
+                        ActualizarAnalisis();
+                    }
                 }
             }
 
@@ -309,6 +342,11 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                     Card_Observacion.setVisibility(View.VISIBLE);
                     linear1A.setVisibility(View.GONE);
                     linear1B.setVisibility(View.GONE);
+                    if(registros!=null){
+                        for(int i = 0; i<Integer.parseInt(detalles.getNtareas());i++){
+                            agregarNuevaTarea(config,(i+1));
+                        }
+                    }
                 } else if (seleccion.equals("Medida del ritmo cardiaco bajo condiciones determi")) {
                     Card_Tanteo.setVisibility(View.GONE);
                     Card_Analisis.setVisibility(View.VISIBLE);
@@ -467,8 +505,6 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
         radioGroupIng.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {@Override public void onCheckedChanged(RadioGroup group, int checkedId) {mostrarOpcionesGone(group,checkedId,card_ingenier,radio_ingenierSI);}});
 
 
-
-
         tv_horaVerificacion.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {config.showTimePickerDialog(rootView,tv_horaVerificacion);}});
         tv_fechaMonitoreo.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {config.showDatePickerDialog(rootView,tv_fechaMonitoreo);}});
         tv_horaInicioMoni.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {config.showTimePickerDialog(rootView,tv_horaInicioMoni);}});
@@ -531,7 +567,7 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                     if(contadorTareas==5){
                         btnAgregarTareas.setVisibility(View.GONE);
                     }
-                    agregarNuevaTarea(config);
+                    agregarNuevaTarea(config, contadorTareas);
 
                 } else {
                     btnAgregarTareas.setVisibility(View.GONE);
@@ -541,7 +577,7 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
         btn_guardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(
+                /*if(
                         validar.validarCampoObligatorio(tv_estresTermico) &&
                         validar.validarCampoObligatorio(tv_anemometro) &&
                         validar.validarCampoObligatorio(tv_horaVerificacion) &&
@@ -611,8 +647,8 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                         validar.validarCampoObligatorio(txt_h_relativa11) &&
                         validar.validarCampoObligatorio(txt_h_relativa17) &&
                         validar.validarCampoObligatorio(txt_velViento) &&
-                        validar.validarCampoObligatorio(txt_observacion)*/
-                ){
+                        validar.validarCampoObligatorio(txt_observacion)
+                ){*/
                     String valorEstresTermico = tv_estresTermico.getText().toString();
                     String valorAnemometro = tv_anemometro.getText().toString();
                     String valorHoraVerificacion = tv_horaVerificacion.getText().toString();
@@ -702,7 +738,13 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                     String valorGenero = "";
                     String valorTasaMetaW = "";
                     String valorTasaMetaK = "";
-                    String valorMetodoDeter = spn_metodoDeterminacion.getSelectedItem().toString();
+                    String valorMetodoDeter = "";
+
+                    if(spn_metodoDeterminacion.getSelectedItem()!=null){
+                        valorMetodoDeter = spn_metodoDeterminacion.getSelectedItem().toString();
+                    }
+
+
                     if(valorMetodoDeter.equals("1A - Clasificación del tamaño de la ocupación")){
                         valorId_metodo_deter = 1;
                         valorTipoTrabajo = spn_tipoTrab.getSelectedItem().toString();
@@ -721,6 +763,7 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                         valorFrecencia = txt_frecuenciaCardiaca.getText().toString();
                         valorGenero = spn_genero.getSelectedItem().toString();
                     }
+
                     // Tarea 1
                     String tarea1 = "";
                     String cicloTrab1 = "";
@@ -749,6 +792,7 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                     String intensidad5 = "";
                     String valorMetrosSub = "";
 
+                    Log.e("Conta",contadorTareas+"");
                     if(1<=contadorTareas){
                          tarea1 = valoresTareas.get("tarea1");
                          cicloTrab1 = valoresTareas.get("cicloTrab1");
@@ -802,17 +846,35 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                     String valorVelViento3 = txt_velViento3.getText().toString();
                     String valorObserbaciones = txt_observacion.getText().toString();
 
-                    String fecha_registro = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
                     Equipos equipos1 = equipos.Buscar(valorEstresTermico);
                     Equipos equipos2 = equipos.Buscar(valorAnemometro);
 
-                    ArrayList<HashMap<String, String>> resultList = dao_registroFormatos.getListCantidadFormatoId(Integer.parseInt(id_pt_trabajo));
-                    int total_registros = dao_registroFormatos.get_cant_formato_medicion();
-                    String cod_formato = config.GenerarCodigoFormato(Integer.parseInt(id_formato),resultList.size());
-                    String cod_registro = config.generarCodigoRegistro(total_registros);
+                    String fecha_registro = "";
+                    String cod_formato;
+                    String cod_registro;
+                    String valorRutaFoto;
+                    int id_plan_formato_reg;
 
-                    String valorRutaFoto = uri.getEncodedPath();
-                    int id_plan_formato_reg = dao_registroFormatos.getRecordIdByPosition();
+                    if(registros==null){
+                        id_plan_formato_reg = dao_registroFormatos.getRecordIdByPosition() +1;
+                        fecha_registro = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+                        ArrayList<HashMap<String, String>> resultList = dao_registroFormatos.getListCantidadFormatoId(Integer.parseInt(id_pt_trabajo));
+                        int total_registros = dao_registroFormatos.get_cant_formato_medicion();
+                        cod_formato = config.GenerarCodigoFormato(Integer.parseInt(id_formato),resultList.size());
+                        cod_registro = config.generarCodigoRegistro(total_registros);
+                        valorRutaFoto = uri.getEncodedPath();
+                        if(uri!=null){valorRutaFoto = uri.getEncodedPath();}
+                    }else {
+                        id_plan_formato_reg = registros.getId_plan_trabajo_formato_reg();
+                        fecha_registro = registros.getFec_reg();
+                        cod_registro = registros.getCod_registro();
+                        cod_formato = registros.getCod_formato();
+                        valorRutaFoto = registros.getRuta_foto();
+                        id_formato = String.valueOf(registros.getId_formato());
+                        id_plan_trabajo = String.valueOf(registros.getId_plan_trabajo());
+                        id_pt_trabajo = String.valueOf(registros.getId_pt_formato());
+                    }
+                    obtenerValoresTareas();
 
                     EstresTermico_Registro cabecera = new EstresTermico_Registro(
                             -1,
@@ -866,7 +928,7 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                             valorRutaFoto
                     );
                     EstresTermico_RegistroDetalle detalle = new EstresTermico_RegistroDetalle(
-                            (id_plan_formato_reg+1),
+                            id_plan_formato_reg,
                             valorFuenteGen,
                             valorDesFuenteGen,
                             "" +valorGroupZonaSombra,
@@ -993,31 +1055,74 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                         getFragmentManager().popBackStack();
                     }else{
                         DAO_RegistroEstreTermico nuevoRegistro = new DAO_RegistroEstreTermico(getActivity());
-                        nuevoRegistro.RegistroEstresTermico(cabecera);
-                        nuevoRegistro.RegistrarEstresTermicoDetalle(detalle);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle("Guardar formulario");
+                        builder.setMessage("¿Deseas seguir llenando el formulario o terminar?");
 
-                        DAO_FormatosTrabajo dao_fromatosTrabajo = new DAO_FormatosTrabajo(getActivity());
-                        for_Estres = dao_fromatosTrabajo.Buscar(id_plan_trabajo,id_formato);
-                        for_Estres.setRealizado(for_Estres.getRealizado()+1);
-                        for_Estres.setPor_realizar(for_Estres.getPor_realizar()-1);
-
-                        dao_fromatosTrabajo.actualizarFormatoTrabajo(for_Estres);
-
-
-                        new AlertDialog.Builder(getActivity())
-                                .setTitle("Registro guardado Localmente")
-                                .setMessage("El registro ha sido guardado exitosamente.")
-                                .setPositiveButton(android.R.string.ok, null)
-                                .show();
-
-                        // Regresa al Fragment anterior
-                        getFragmentManager().popBackStack();
+                        builder.setPositiveButton("Seguir", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if(registros == null){
+                                    nuevoRegistro.RegistroEstresTermico(cabecera);
+                                    nuevoRegistro.RegistrarEstresTermicoDetalle(detalle);
+                                    DAO_FormatosTrabajo dao_fromatosTrabajo = new DAO_FormatosTrabajo(getActivity());
+                                    for_Estres = dao_fromatosTrabajo.Buscar(id_plan_trabajo,id_formato);
+                                    for_Estres.setRealizado(for_Estres.getRealizado()+1);
+                                    for_Estres.setPor_realizar(for_Estres.getPor_realizar()-1);
+                                    dao_fromatosTrabajo.actualizarFormatoTrabajo(for_Estres);
+                                }else{
+                                    nuevoRegistro.ActualizarEstresTermico(cabecera,registros.getId_plan_trabajo_formato_reg());
+                                    nuevoRegistro.ActualizarEstresTermicoDetalle(detalle,detalles.getId_formato_reg_detalle());
+                                }
+                            }
+                        });
+                        builder.setNegativeButton("Terminar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if(registros == null){
+                                    nuevoRegistro.RegistroEstresTermico(cabecera);
+                                    nuevoRegistro.RegistrarEstresTermicoDetalle(detalle);
+                                    DAO_FormatosTrabajo dao_fromatosTrabajo = new DAO_FormatosTrabajo(getActivity());
+                                    for_Estres = dao_fromatosTrabajo.Buscar(id_plan_trabajo,id_formato);
+                                    for_Estres.setRealizado(for_Estres.getRealizado()+1);
+                                    for_Estres.setPor_realizar(for_Estres.getPor_realizar()-1);
+                                    dao_fromatosTrabajo.actualizarFormatoTrabajo(for_Estres);
+                                }else{
+                                    nuevoRegistro.ActualizarEstresTermico(cabecera,registros.getId_plan_trabajo_formato_reg());
+                                    nuevoRegistro.ActualizarEstresTermicoDetalle(detalle,detalles.getId_formato_reg_detalle());
+                                }
+                                new AlertDialog.Builder(getActivity())
+                                        .setTitle("Registro guardado Localmente")
+                                        .setMessage("El registro ha sido guardado exitosamente.")
+                                        .setPositiveButton(android.R.string.ok, null)
+                                        .show();
+                                Volver();
+                            }
+                        });
+                        builder.show();
                     }
-
-                }
+                //}
             }
         });
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        if (registros != null) {
+            if (detalles != null) {
+                EditarCampos();
+            } else {
+                builder.setTitle("Aviso")
+                        .setMessage("Registro sin Detalle.")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+                Volver();
+            }
+
+        } else {
+            builder.setTitle("Aviso")
+                    .setMessage("Realizara un nuevo registro.")
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }
         return rootView;
     }
 
@@ -1152,7 +1257,6 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
 
 
     }
-
     @Override
     public void onImagePicked(Uri imageUri) {
         this.uri = imageUri;
@@ -1162,7 +1266,6 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
             config.uploadImage(imageFile);*/
         }
     }
-
     private void mostrarOpcionesGone(RadioGroup group, int checkedId, CardView card, RadioButton radio) {
         if (checkedId == radio.getId()) {
             card.setVisibility(View.VISIBLE);
@@ -1170,18 +1273,62 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
             card.setVisibility(View.GONE);
         }
     }
-    private void agregarNuevaTarea(InputDateConfiguration config) {
+    private void agregarNuevaTarea(InputDateConfiguration config, int n) {
         // Inflar el diseño de la tarea y agregarlo al contenedor
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         View nuevaTarea = inflater.inflate(R.layout.layout_tarea, null);
+
         TextView txtNumeroTarea  = nuevaTarea.findViewById(R.id.tv_nomTarea);
+        EditText txt_nomTarea = nuevaTarea.findViewById(R.id.txt_tarea);
+        EditText txt_cicloTrabajo = nuevaTarea.findViewById(R.id.txt_cicloTrabajo);
         Spinner spn_posicion = nuevaTarea.findViewById(R.id.cbx_posicion);
         Spinner spn_partesCuerpo = nuevaTarea.findViewById(R.id.cbx_partesCuerpo);
         Spinner spn_intensidad = nuevaTarea.findViewById(R.id.cbx_intensidad);
+
         AppCompatButton btn_eliminarTarea = nuevaTarea.findViewById(R.id.btn_eliminarTarea);
         spn_posicion.setAdapter(config.LlenarSpinner("posicion","nom_pos",getActivity()));
         spn_partesCuerpo.setAdapter(config.LlenarSpinner("partes_cuerpo","nom_cuerpo",getActivity()));
         spn_intensidad.setAdapter(config.LlenarSpinner("intensidad","nom_intensidad",getActivity()));
+
+        if(registros!=null){
+            if(n==1){
+                txt_nomTarea.setText(detalles.getNom_tarea1());
+                txt_cicloTrabajo.setText(detalles.getCiclo_trabajo1());
+                config.asignarAdaptadorYSeleccion(spn_posicion, "posicion", "nom_pos", detalles.getPosicion_1(), getContext());
+                config.asignarAdaptadorYSeleccion(spn_partesCuerpo, "partes_cuerpo", "nom_cuerpo", detalles.getPcuerpo_1(), getContext());
+                config.asignarAdaptadorYSeleccion(spn_intensidad, "intensidad", "nom_intensidad", detalles.getIntensidad_1(), getContext());
+            }
+            if(n==2){
+                txt_nomTarea.setText(detalles.getNom_tarea2());
+                txt_cicloTrabajo.setText(detalles.getCiclo_trabajo2());
+                config.asignarAdaptadorYSeleccion(spn_posicion, "posicion", "nom_pos", detalles.getPosicion_2(), getContext());
+                config.asignarAdaptadorYSeleccion(spn_partesCuerpo, "partes_cuerpo", "nom_cuerpo", detalles.getPcuerpo_2(), getContext());
+                config.asignarAdaptadorYSeleccion(spn_intensidad, "intensidad", "nom_intensidad", detalles.getIntensidad_2(), getContext());
+            }
+            if(n==3){
+                txt_nomTarea.setText(detalles.getNom_tarea3());
+                txt_cicloTrabajo.setText(detalles.getCiclo_trabajo3());
+                config.asignarAdaptadorYSeleccion(spn_posicion, "posicion", "nom_pos", detalles.getPosicion_3(), getContext());
+                config.asignarAdaptadorYSeleccion(spn_partesCuerpo, "partes_cuerpo", "nom_cuerpo", detalles.getPcuerpo_3(), getContext());
+                config.asignarAdaptadorYSeleccion(spn_intensidad, "intensidad", "nom_intensidad", detalles.getIntensidad_3(), getContext());
+            }
+            if(n==4){
+                txt_nomTarea.setText(detalles.getNom_tarea4());
+                txt_cicloTrabajo.setText(detalles.getCiclo_trabajo4());
+                config.asignarAdaptadorYSeleccion(spn_posicion, "posicion", "nom_pos", detalles.getPosicion_4(), getContext());
+                config.asignarAdaptadorYSeleccion(spn_partesCuerpo, "partes_cuerpo", "nom_cuerpo", detalles.getPcuerpo_4(), getContext());
+                config.asignarAdaptadorYSeleccion(spn_intensidad, "intensidad", "nom_intensidad", detalles.getIntensidad_4(), getContext());
+            }
+            if(n==5){
+                txt_nomTarea.setText(detalles.getNom_tarea5());
+                txt_cicloTrabajo.setText(detalles.getCiclo_trabajo5());
+                config.asignarAdaptadorYSeleccion(spn_posicion, "posicion", "nom_pos", detalles.getPosicion_5(), getContext());
+                config.asignarAdaptadorYSeleccion(spn_partesCuerpo, "partes_cuerpo", "nom_cuerpo", detalles.getPcuerpo_5(), getContext());
+                config.asignarAdaptadorYSeleccion(spn_intensidad, "intensidad", "nom_intensidad", detalles.getIntensidad_5(), getContext());
+            }
+            txt_metroSubida.setText(detalles.getMtr_subida());
+
+        }
 
         // Hacer todos los botones de eliminar invisibles
         for (int i = 0; i < linearContenedorTareas.getChildCount(); i++) {
@@ -1209,8 +1356,11 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
 
             }
         });
-
-        txtNumeroTarea.setText("TAREA " + contadorTareas);
+        if(registros!=null){
+            txtNumeroTarea.setText("TAREA " + n);
+        }else{
+            txtNumeroTarea.setText("TAREA " + contadorTareas);
+        }
         linearContenedorTareas.addView(nuevaTarea);
     }
     private void obtenerValoresTareas() {
@@ -1239,6 +1389,208 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
             valoresTareas.put("posicion" +""+(i+1) , valorPosicion);
             valoresTareas.put("partesCuerpo" +""+(i+1) , valorPartesCuerpo);
             valoresTareas.put("intensidad" +""+(i+1) , valorIntensidad);
+        }
+    }
+
+    private void EditarCampos(){
+        tv_estresTermico.setText(registros.getCod_equipo1());
+        tv_anemometro.setText(registros.getCod_equipo2());
+        tv_horaVerificacion.setText(registros.getHora_situ());
+        if (registros.getVerf_insitu().equals("1")) {
+            radioGroupVerificacion.check(R.id.verf_insitusi);
+        } else {
+            radioGroupVerificacion.check(R.id.verf_insituno);
+        }
+        imgE_Termico.setImageURI(Uri.parse(registros.getRuta_foto()));
+        String fecha = "";
+        if (!registros.getFec_monitoreo().isEmpty()) {
+            String[] fec = registros.getFec_monitoreo().split(" ");
+            String[] nueva_fec = fec[0].split("-");
+            fecha = nueva_fec[0] + "/" + nueva_fec[1] + "/" + nueva_fec[2];
+        }
+        tv_fechaMonitoreo.setText(fecha);
+        tv_horaInicioMoni.setText(registros.getHora_inicial());
+        tv_horaFinalMoni.setText(registros.getHora_final());
+        txt_timeMedMin.setText(registros.getTiempo_medicion());
+        txt_timeExpoHora.setText(registros.getTiempo_exposicion());
+        txt_jornadaTrabajo.setText(registros.getJornada());
+
+        int indice1 = Arrays.asList(arrayYN).indexOf(registros.getTipo_doc_trabajador());
+        spn_tipoDoc.setSelection(indice1 + 1);
+        txt_numDoc.setText(registros.getNum_doc_trabajador());
+        txt_nomTrabajador.setText(registros.getNom_trabajador());
+        txt_edad.setText(String.valueOf(registros.getEdad_trabajador()));
+        txt_peso.setText(registros.getPeso_trabajador());
+        txt_areaTrabajo.setText(registros.getArea_trabajo());
+        txt_puestoTrabajo.setText(registros.getPuesto_trabajador());
+        txt_aRealizada.setText(registros.getActividades_realizadas());
+
+        config.asignarAdaptadorYSeleccion(spn_horarioTrabajo, "horario_trab_fromato_medicion", "desc_horario", registros.getHora_trabajo(), getContext());
+        if (spn_horarioTrabajo.getSelectedItem().equals("OTRO")) {
+            txt_otroHorario.setText(registros.getHora_trabajo());
+        }
+        config.asignarAdaptadorYSeleccion(spn_regimen, "regimen_formato_medicion", "nom_regimen", registros.getRegimen_laboral(), getContext());
+        if (spn_regimen.getSelectedItem().equals("OTRO")) {
+            txt_otroRegimen.setText(registros.getRegimen_laboral());
+        }
+        config.asignarAdaptadorYSeleccion(spn_horarioRefrigerio, "horario_refrig_formato_medicion", "nom_horario", registros.getHorario_refrigerio(), getContext());
+        if (spn_horarioRefrigerio.getSelectedItem().equals("OTRO")) {
+            txt_otroRefrigerio.setText(registros.getHora_trabajo());
+        }
+        int indice2 = Arrays.asList(arrayFuent).indexOf(detalles.getFuente_generadora());
+        spn_fuenteGen.setSelection(indice2 +1);
+        txt_descFuenteGen.setText(detalles.getDesc_fuente_frio());
+
+        int indice3 = Arrays.asList(arrayDesc).indexOf(detalles.getDesc_amb_trabajo());
+        spn_descTrabajo.setSelection(indice3+1);
+        tv_desTrabajoDetalle.setText(registros.getDesc_area_trabajo());
+
+        if(registros.getCtrl_ingenieria().equals("1")){
+            radioGroupIng.check(R.id.radioIngenieriaSi);
+            txt_nomControl.setText(registros.getNom_ctrl_ingenieria());
+        }else{
+            radioGroupIng.check(R.id.radioUngenieriaNo);
+        }
+        String idd_anio = registros.getAnio_ocu_cargo().replaceAll("\\D", "");
+        String idd_mes = registros.getMes_ocu_cargo().replaceAll("\\D", "");
+
+        if (!idd_anio.isEmpty()) {
+            spn_timeCargoAnyo.setSelection(Integer.parseInt(idd_anio));
+        } else {
+            spn_timeCargoAnyo.setSelection(0);
+        }
+        if (!idd_mes.isEmpty()) {
+            spn_timeCargoMes.setSelection(Integer.parseInt(idd_mes));
+        } else {
+            spn_timeCargoMes.setSelection(0);
+        }
+        int indice4 = Arrays.asList(arrayCond).indexOf(registros.getCond_trab());
+        spn_condicionTrab.setSelection(indice4+1);
+
+        if(detalles.getZona_sombra().equals("1")){
+            radioGroupZonaSombra.check(R.id.radio_AireLibreSi);
+        }else{
+            radioGroupZonaSombra.check(R.id.radio_AireLibreNo);
+        }
+        if(detalles.getRotacion_personal().equals("1")){
+            radioGroupRotacion.check(R.id.radio_RotacionPersonalSi);
+        }else{
+            radioGroupRotacion.check(R.id.radio_RotacionPersonalNo);
+        }
+        if(detalles.getTiempo_recuperacion().equals("1")){
+            radioGroupRecuperacion.check(R.id.radio_tiempoRecuperacionSi);
+        }else{
+            radioGroupRecuperacion.check(R.id.radio_tiempoRecuperacionNo);
+        }
+        if(detalles.getDispensador().equals("1")){
+            radioGroupDispensador.check(R.id.radio_dispensadorSi);
+        }else{
+            radioGroupDispensador.check(R.id.radio_dispensadorNo);
+        }
+        if(detalles.getCapa_expo_frio().equals("1")){
+            radioGroupCapacitacion.check(R.id.radio_riegoFuenteCalorSi);
+        }else{
+            radioGroupCapacitacion.check(R.id.radio_riegoFuenteCalorNo);
+        }
+        config.asignarAdaptadorYSeleccion(spn_porcActividad, "actividad_Descanso", "nom_act_des", detalles.getCat_trabajo(), getContext());
+        config.asignarAdaptadorYSeleccion(spn_porcDescanso, "actividad_Descanso", "nom_act_des", detalles.getPorc_desca(), getContext());
+        config.asignarAdaptadorYSeleccion(spn_vestimenta, "vestimenta", "nom_vestimenta", detalles.getVestimenta_personal(), getContext());
+        config.asignarAdaptadorYSeleccion(spn_materialPrenda, "materialVestimenta", "nom_material", detalles.getMaterial_prenda(), getContext());
+        txt_colorPredominante.setText(detalles.getColor_predominante());
+
+        check_zapatos.setChecked(detalles.getEpp_zs().equals("1"));
+        check_casco.setChecked(detalles.getEpp_casco().equals("1"));
+        check_lentes.setChecked(detalles.getEpp_lentes().equals("1"));
+        check_guantes.setChecked(detalles.getEpp_guantes().equals("1"));
+        check_orejeras.setChecked(detalles.getEpp_orejeras().equals("1"));
+        check_tapones.setChecked(detalles.getEpp_tapones().equals("1"));
+        check_cubreNuca.setChecked(detalles.getEpp_cnuca().equals("1"));
+
+        txt_otrosEpps.setText(detalles.getOtro_epp());
+
+        int indice5 = Arrays.asList(arrayNivel).indexOf(detalles.getNom_nivel_d());
+        spn_nivelDeterminacion.setSelection(indice5 +1);
+        // ------------- actualizar Metodos -------------------
+
+
+        int indice6 = Arrays.asList(arrayTipMed).indexOf(registros.getNom_tipo_medicion());
+        spn_tipoMedicion.setSelection(indice6+1);
+
+        txt_wbgt01.setText(detalles.getT_bulbo());
+        txt_t_aire01.setText(detalles.getT_aire());
+        txt_t_globo01.setText(detalles.getT_globo());
+        txt_h_relativa01.setText(detalles.getH_relativa());
+        txt_velViento.setText(detalles.getV_viento());
+
+        if((indice6+1)==2){
+            txt_wbgt11.setText(detalles.getT_bulbo2());
+            txt_wbgt17.setText(detalles.getT_bulbo3());
+
+            txt_t_aire11.setText(detalles.getT_aire_2());
+            txt_t_aire17.setText(detalles.getT_aire_3());
+
+            txt_t_globo11.setText(detalles.getT_globo_2());
+            txt_t_globo17.setText(detalles.getT_globo_3());
+
+            txt_h_relativa11.setText(detalles.getH_relativa_2());
+            txt_h_relativa17.setText(detalles.getH_relativa_3());
+
+            txt_velViento2.setText(detalles.getV_viento_2());
+            txt_velViento3.setText(detalles.getV_viento_3());
+        }
+        txt_observacion.setText(registros.getObservacion());
+    }
+    private void Volver() {
+        getFragmentManager().popBackStack();// Regresa al Fragment anterior
+    }
+    private void ActualizarObservacion(){
+        int indice5 = Arrays.asList(arrayNivel).indexOf(detalles.getNom_nivel_d());
+        //spn_nivelDeterminacion.setSelection(indice5 +1);
+        Log.e("indice", indice5+"");
+
+        if((indice5+1)==2){
+            Log.e("tan","ENTRO A OBS");
+            int in1 = Arrays.asList(arrayObs).indexOf(detalles.getMetodo_determ());
+            spn_metodoDeterminacion.setSelection(in1+1);
+            int nTareas= Integer.parseInt(detalles.getNtareas());
+            contadorTareas = nTareas;
+
+            txt_metroSubida.setText(detalles.getMtr_subida());
+        }
+    }
+    private void ActualizarTanteo(){
+        int indice5 = Arrays.asList(arrayNivel).indexOf(detalles.getNom_nivel_d());
+        if((indice5+1)==1){
+            Log.e("tan","ENTRO A TANTEOI");
+            int in1 = Arrays.asList(arrayTanteo).indexOf(detalles.getMetodo_determ());
+            spn_metodoDeterminacion.setSelection(in1+1);
+            if((in1+1)==1){
+                int in2 = Arrays.asList(arrayTipTrab).indexOf(detalles.getTipo_trabajo());
+                spn_tipoTrab.setSelection(in2+1);
+                String[] ocupaciones = ocupacionesPorTipoTrabajo.get(detalles.getTipo_trabajo());
+                int in3 = Arrays.asList(ocupaciones).indexOf(detalles.getOcupacion());
+                spn_ocupacion.setSelection(in3+1);
+                tv_tasaMetabolica.setText(detalles.getRango_tasa_metab());
+            }
+            if((in1+1)==2){
+                int in2 = Arrays.asList(arrayClase).indexOf(detalles.getClase());
+                spn_clase.setSelection(in2+1);
+                txt_actividad.setText(detalles.getActividad_deter());
+            }
+            txt_tasaMetabolicaW.setText(detalles.getTasa_metab());
+            txt_tasaMetabolicaK.setText(detalles.getTasa_metab_kcal());
+        }
+    }
+    private void ActualizarAnalisis(){
+        int indice5 = Arrays.asList(arrayNivel).indexOf(detalles.getNom_nivel_d());
+        if((indice5+1)==3){
+            Log.e("tan","ENTRO A ANALISIS");
+            int in1 = Arrays.asList(arrayAnalisis).indexOf(detalles.getMetodo_determ());
+            spn_metodoDeterminacion.setSelection(in1+1);
+            int in2 = Arrays.asList(arrayGenero).indexOf(detalles.getGenero_deter());
+            spn_genero.setSelection(in2+1);
+            Log.e("sdfdf",detalles.getFrecuencia_deter());
+            txt_frecuenciaCardiaca.setText(detalles.getFrecuencia_deter());
         }
     }
 }

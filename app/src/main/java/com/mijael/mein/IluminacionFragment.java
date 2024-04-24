@@ -1,21 +1,17 @@
 package com.mijael.mein;
 
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
-import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 
 import android.text.Editable;
 import android.text.InputType;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,44 +21,38 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.mijael.mein.DAO.DAO_DatosLocal;
 import com.mijael.mein.DAO.DAO_Equipos;
 import com.mijael.mein.DAO.DAO_FormatosTrabajo;
 import com.mijael.mein.DAO.DAO_RegistroFormatos;
 import com.mijael.mein.DAO.DAO_RegistroIluminacion;
-import com.mijael.mein.DAO.DAO_RegistroRadiacion;
 import com.mijael.mein.DAO.DAO_Usuario;
 import com.mijael.mein.Entidades.Equipos;
 import com.mijael.mein.Entidades.Formatos_Trabajo;
 import com.mijael.mein.Entidades.Iluminacion_Registro;
 import com.mijael.mein.Entidades.Iluminacion_RegistroDetalle;
+import com.mijael.mein.Entidades.RegistroFormatos;
+import com.mijael.mein.Entidades.RegistroFormatos_Detalle;
 import com.mijael.mein.Entidades.Usuario;
 import com.mijael.mein.Extras.FragmentoImagen;
 import com.mijael.mein.Extras.InputDateConfiguration;
 import com.mijael.mein.Extras.Validaciones;
-import com.mijael.mein.HELPER.EquiposSQLiteHelper;
-import com.mijael.mein.HELPER.FormatoTrabajoSQLiteHelper;
 import com.mijael.mein.SERVICIOS.DosimetriaService;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -82,6 +72,7 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
     private boolean cargarImagen = false;
     int hora,min;
     String id_plan_trabajo, id_pt_trabajo, id_formato,id_colaborador, nom_Empresa;
+    String[] arrayYN, arrayT_Ilu,arrayT_Med, arrayEstado;
     View rootView;
     CardView Card_Puesto, Card_Area;
     TextView tv_nombreUsuario, tv_nomEmpresa;
@@ -97,10 +88,12 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
     FloatingActionButton btn_guardar;
     ExtendedFloatingActionButton btnCancelar;
     AppCompatButton btn_BuscarDni;
-    LinearLayout linearOtroHorario, linearOtroRegimen, linearPuntosMedicion, linearBuscarDni;
+    LinearLayout linearOtroHorario, linearOtroRegimen, linearPuntosMedicion, linearBuscarDni, linear_PuestoTrabajo;
     ImageView imgIliminacion;
     Uri uri;
     DAO_RegistroFormatos dao_registroFormatos;
+    RegistroFormatos registros;
+    RegistroFormatos_Detalle detalles;
     public IluminacionFragment() {
         // Required empty public constructor
         dao_registroFormatos = new DAO_RegistroFormatos(getContext());
@@ -121,6 +114,8 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
             id_formato = bundle.getString("id_formato");
             id_colaborador = bundle.getString("nomUsuario");
             nom_Empresa = bundle.getString("nomEmpresa");
+            registros = bundle.getParcelable("registroForm");
+            detalles = bundle.getParcelable("detalleForm");
         }
     }
 
@@ -139,13 +134,17 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
         List<String> lista_CodEquipos = equipos.obtener_CodEquipos();
         DAO_Usuario usuario = new DAO_Usuario(getActivity());
         Usuario nuevo = usuario.BuscarUsuario(Integer.parseInt(id_colaborador));
+        arrayYN = new String[]{"DNI", "CE"};
+        arrayT_Ilu = new String[]{"Natural", "Artificial", "Natural y Artificial"};
+        arrayT_Med = new String[]{"Medición por puesto de trabajo", "Medición por área de trabajo"};
+        arrayEstado = new String[]{"Operativa","Inoperativa/Averiada","Tenues/Amarillas"};
 
         config.configurarAutoCompleteTextView(tv_luxometro,lista_CodEquipos);
         hora_verificacion.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {config.showTimePickerDialog(rootView,hora_verificacion);}});
         fechaMonitoreo.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {config.showDatePickerDialog(rootView,fechaMonitoreo);}});
         hora_monitoreo.setOnClickListener(new View.OnClickListener() {@Override public void onClick(View v) {config.showTimePickerDialog(rootView,hora_monitoreo);}});
         cbx_lux.setAdapter(config.LlenarSpinner(new String[]{"0.0 lux"}));
-        tipoDoc.setAdapter(config.LlenarSpinner(new String[]{"DNI", "CE"}));
+        tipoDoc.setAdapter(config.LlenarSpinner(arrayYN));
 
 
         tipoDoc.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -175,8 +174,6 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                 }
             }
         });
-
-
         btnSubirFotoIlu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -239,8 +236,8 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
         });
 
         //FECHA Y HORA DE MONITOREO ARRIBA
-        spn_tipoIluminacion.setAdapter(config.LlenarSpinner(new String[]{"Natural", "Artificial", "Natural y Artificial"}));
-        spn_tipoMedicion.setAdapter(config.LlenarSpinner(new String[]{"Medición por puesto de trabajo", "Medición por área de trabajo"}));
+        spn_tipoIluminacion.setAdapter(config.LlenarSpinner(arrayT_Ilu));
+        spn_tipoMedicion.setAdapter(config.LlenarSpinner(arrayT_Med));
         spn_tipoMedicion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -249,10 +246,25 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                     Card_Puesto.setVisibility(View.VISIBLE);;
                     Card_Area.setVisibility(View.GONE);
                     tv_altura.setText("Altura de plano a Luminaria(m)");
+                    linear_PuestoTrabajo.setVisibility(View.VISIBLE);
                 } else if (seleccion.equals("Medición por área de trabajo")) {
                     Card_Puesto.setVisibility(View.GONE);;
                     Card_Area.setVisibility(View.VISIBLE);
                     tv_altura.setText("Alt. de Plano de Trabajo(m):");
+
+                    linear_PuestoTrabajo.setVisibility(View.GONE);
+
+
+                    //Limpiar los Campos
+                    tipoDoc.setSelection(0);
+                    numDoc.setText("");
+                    nomTrabajador.setText("");
+                    puestoTrabajador.setText("");
+                    horario_Trab.setSelection(0);
+                    regimen.setSelection(0);
+
+
+
                 }
             }
 
@@ -261,7 +273,6 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
 
             }
         });
-
         // SECCION DONDE HACE EL CALCULO AUTOMATICO PARA LOS CAMPOS  * CONSTANTE DE SALON Y NUMERO MINIMO DE PUNTOS DE MEDICION
         TextWatcher watcher = new TextWatcher() {
             @Override
@@ -298,12 +309,13 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                 String val2 = txt_anchoSalon.getText().toString();
                 String val3 = txt_alt_PlanosTrabajo_ilu.getText().toString();
                 Log.e("gggg","ENTRO AL CAMBIO");
-                if (!val1.isEmpty() && TextUtils.isDigitsOnly(texto)&&
-                        !val2.isEmpty() && TextUtils.isDigitsOnly(texto)&&
-                        !val3.isEmpty() && TextUtils.isDigitsOnly(texto)) {
+                if (!val1.isEmpty() &&
+                        !val2.isEmpty() &&
+                        !val3.isEmpty()) {
                     Constante_Salon(val1, val2, val3);
                 }else {
                     txt_constanteSalon.setText("");
+                    txt_numMinPuntosMedicion.setText("");
                 }
             }
             @Override
@@ -333,7 +345,7 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                 // Crea los EditText de forma dinámica y los agrega al layout
                 for (int i = 0; i < puntos; i++) {
                     EditText editText = new EditText(getActivity());
-                    editText.setHint("IL-0" + (i + 1));
+                    editText.setHint("Digite IL-0" + (i + 1));
                     editText.setPadding(8,0,0,0);
                     editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
                     editText.setBackgroundResource(R.drawable.style_input);
@@ -355,9 +367,7 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
         txt_numPuntosMedicion.addTextChangedListener(watcher2);
         txt_numMinPuntosMedicion.addTextChangedListener(watcher2);
 
-        estadoLuminarias.setAdapter(config.LlenarSpinner(new String[]{"Operativa","Inoperativa/Averiada","Tenues/Amarillas"}));
-
-
+        estadoLuminarias.setAdapter(config.LlenarSpinner(arrayEstado));
         btnCancelar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -375,29 +385,21 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
         btn_guardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(
+                /*if(
                         validar.validarCampoObligatorio(tv_luxometro) &&
                         validar.validarCampoObligatorio(ubicacionEquipo) &&
                         validar.validarCampoObligatorio(hora_verificacion) &&
                         validar.validarCampoObligatorio(cbx_lux) &&
-                        validar.validarCampoObligatorio(tipoDoc) &&
-                        validar.validarCampoObligatorio(numDoc) &&
-                        validar.validarCampoObligatorio(nomTrabajador) &&
-                        validar.validarCampoObligatorio(puestoTrabajador) &&
+                        validar.validarCampoObligatorio(spn_tipoMedicion) &&
                         validar.validarCampoObligatorio(areaTrabajo) &&
                         validar.validarCampoObligatorio(numTrabajadores) &&
-                        validar.validarCampoObligatorio(horario_Trab) &&
-                        validar.validarCampoObligatorio(regimen) &&
                         validar.validarCampoObligatorio(tareaVisual) &&
                         //validar.validarCampoObligatorio(tipoArea) &&
                         //validar.validarCampoObligatorio(nivelMinimo) &&
                         validar.validarCampoObligatorio(fechaMonitoreo) &&
                         validar.validarCampoObligatorio(hora_monitoreo) &&
                         validar.validarCampoObligatorio(spn_tipoIluminacion) &&
-                        validar.validarCampoObligatorio(spn_tipoMedicion) &&
-
                                 //todo lo que es Oculto no es Validado
-
                         //validar.validarImagen(cargarImagen,getActivity()) &&
                         //validar.validarCampoObligatorio(il1) &&
                         //validar.validarCampoObligatorio(il2) &&
@@ -415,9 +417,17 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                         validar.validarCampoObligatorio(colorPared) &&
                         validar.validarCampoObligatorio(colorPiso) &&
                         validar.validarCampoObligatorio(estadoLuminarias) &&
-                        validar.validarCampoObligatorio(tareasRealizadas) &&
-                        validar.validarCampoObligatorio(observaciones)
-                ){
+                        validar.validarCampoObligatorio(tareasRealizadas)
+                        //validar.validarCampoObligatorio(observaciones)
+                ){*/
+                    /*if(spn_tipoMedicion.getSelectedItem().toString().equals("Medición por puesto de trabajo")){
+                        validar.validarCampoObligatorio(tipoDoc);
+                                validar.validarCampoObligatorio(numDoc);
+                                validar.validarCampoObligatorio(nomTrabajador);
+                                validar.validarCampoObligatorio(puestoTrabajador);
+                                validar.validarCampoObligatorio(horario_Trab);
+                                validar.validarCampoObligatorio(regimen);
+                    }*/
                     String valorTvLuxometro = tv_luxometro.getText().toString();
                     int valorGroupLuminaria = validar.getValor2(radioGroupLuminaria,rootView);
                     String valorUbiEquipo = ubicacionEquipo.getText().toString();
@@ -491,16 +501,33 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                     String valorTareasRealizadas = tareasRealizadas.getText().toString();
                     String valorObservaciones = observaciones.getText().toString();
 
-                    String fecha_registro = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
                     Equipos equipos1 = equipos.Buscar(valorTvLuxometro);
 
-                    ArrayList<HashMap<String, String>> resultList = dao_registroFormatos.getListCantidadFormatoId(Integer.parseInt(id_pt_trabajo));
-                    int total_registros = dao_registroFormatos.get_cant_formato_medicion();
-                    String cod_formato = config.GenerarCodigoFormato(Integer.parseInt(id_formato),resultList.size());// CODIGO DE FORMATO
-                    String cod_registro = config.generarCodigoRegistro(total_registros);// CODIGO DE REGISTRO
+                    String fecha_registro = "";
+                    String cod_formato;
+                    String cod_registro;
+                    String valorRutaFoto;
+                    int id_plan_formato_reg;
 
-                    String valorRutaFoto = uri.getEncodedPath();
-                    int id_plan_formato_reg = dao_registroFormatos.getRecordIdByPosition();
+                    if(registros==null){
+                        id_plan_formato_reg = dao_registroFormatos.getRecordIdByPosition() +1;
+                        fecha_registro = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+                        ArrayList<HashMap<String, String>> resultList = dao_registroFormatos.getListCantidadFormatoId(Integer.parseInt(id_pt_trabajo));
+                        int total_registros = dao_registroFormatos.get_cant_formato_medicion();
+                        cod_formato = config.GenerarCodigoFormato(Integer.parseInt(id_formato),resultList.size());
+                        cod_registro = config.generarCodigoRegistro(total_registros);
+                        valorRutaFoto = uri.getEncodedPath();
+                        if(uri!=null){valorRutaFoto = uri.getEncodedPath();}
+                    }else {
+                        id_plan_formato_reg = registros.getId_plan_trabajo_formato_reg();
+                        fecha_registro = registros.getFec_reg();
+                        cod_registro = registros.getCod_registro();
+                        cod_formato = registros.getCod_formato();
+                        valorRutaFoto = registros.getRuta_foto();
+                        id_formato = String.valueOf(registros.getId_formato());
+                        id_plan_trabajo = String.valueOf(registros.getId_plan_trabajo());
+                        id_pt_trabajo = String.valueOf(registros.getId_pt_formato());
+                    }
 
                     Iluminacion_Registro cabecera = new Iluminacion_Registro(
                             -1,
@@ -539,7 +566,7 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                     );
 
                     Iluminacion_RegistroDetalle detalle = new Iluminacion_RegistroDetalle(
-                            (id_plan_formato_reg+1),
+                            id_plan_formato_reg,
                             valorTipoIluminacion,
                             valorIdTipoMedicion,
                             valorTipoMedicion,
@@ -612,31 +639,75 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                         getFragmentManager().popBackStack();
                     }else{
                         DAO_RegistroIluminacion nuevoRegistro = new DAO_RegistroIluminacion(getActivity());
-                        nuevoRegistro.RegistroIluminacion(cabecera);
-                        nuevoRegistro.RegistroIluminacionDetalle(detalle);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle("Guardar formulario");
+                        builder.setMessage("¿Deseas seguir llenando el formulario o terminar?");
 
-                        DAO_FormatosTrabajo dao_formatosTrabajo = new DAO_FormatosTrabajo(getActivity());
-                        for_Iluminacion = dao_formatosTrabajo.Buscar(id_plan_trabajo,id_formato);
-                        for_Iluminacion.setRealizado(for_Iluminacion.getRealizado()+1);
-                        for_Iluminacion.setPor_realizar(for_Iluminacion.getPor_realizar()-1);
-
-                        dao_formatosTrabajo.actualizarFormatoTrabajo(for_Iluminacion);
-
-
-                        new AlertDialog.Builder(getActivity())
-                                .setTitle("Registro guardado Localmente")
-                                .setMessage("El registro ha sido guardado exitosamente.")
-                                .setPositiveButton(android.R.string.ok, null)
-                                .show();
-
-                        // Regresa al Fragment anterior
-                        getFragmentManager().popBackStack();
+                        builder.setPositiveButton("Seguir", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if(registros == null){
+                                    nuevoRegistro.RegistroIluminacion(cabecera);
+                                    nuevoRegistro.RegistroIluminacionDetalle(detalle);
+                                    DAO_FormatosTrabajo dao_formatosTrabajo = new DAO_FormatosTrabajo(getActivity());
+                                    for_Iluminacion = dao_formatosTrabajo.Buscar(id_plan_trabajo,id_formato);
+                                    for_Iluminacion.setRealizado(for_Iluminacion.getRealizado()+1);
+                                    for_Iluminacion.setPor_realizar(for_Iluminacion.getPor_realizar()-1);
+                                    dao_formatosTrabajo.actualizarFormatoTrabajo(for_Iluminacion);
+                                }else{
+                                    nuevoRegistro.ActualizarIluminacion(cabecera,registros.getId_plan_trabajo_formato_reg());
+                                    nuevoRegistro.ActualizacionIluminacionDetalle(detalle,detalles.getId_formato_reg_detalle());
+                                }
+                            }
+                        });
+                        builder.setNegativeButton("Terminar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if(registros == null){
+                                    nuevoRegistro.RegistroIluminacion(cabecera);
+                                    nuevoRegistro.RegistroIluminacionDetalle(detalle);
+                                    DAO_FormatosTrabajo dao_formatosTrabajo = new DAO_FormatosTrabajo(getActivity());
+                                    for_Iluminacion = dao_formatosTrabajo.Buscar(id_plan_trabajo,id_formato);
+                                    for_Iluminacion.setRealizado(for_Iluminacion.getRealizado()+1);
+                                    for_Iluminacion.setPor_realizar(for_Iluminacion.getPor_realizar()-1);
+                                    dao_formatosTrabajo.actualizarFormatoTrabajo(for_Iluminacion);
+                                }else{
+                                    nuevoRegistro.ActualizarIluminacion(cabecera,registros.getId_plan_trabajo_formato_reg());
+                                    nuevoRegistro.ActualizacionIluminacionDetalle(detalle,detalles.getId_formato_reg_detalle());
+                                }
+                                new AlertDialog.Builder(getActivity())
+                                        .setTitle("Registro guardado Localmente")
+                                        .setMessage("El registro ha sido guardado exitosamente.")
+                                        .setPositiveButton(android.R.string.ok, null)
+                                        .show();
+                                Volver();
+                            }
+                        });
+                        builder.show();
                     }
 
-                }
+                //}
             }
         });
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        if (registros != null) {
+            if (detalles != null) {
+                EditarCampos(lista, editTextList);
+            } else {
+                builder.setTitle("Aviso")
+                        .setMessage("Registro sin Detalle.")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+                Volver();
+            }
+
+        } else {
+            builder.setTitle("Aviso")
+                    .setMessage("Realizara un nuevo registro.")
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }
         return rootView;
     }
 
@@ -664,6 +735,8 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
         fechaMonitoreo = view.findViewById(R.id.tv_fechaMonitoreo);
         hora_monitoreo = view.findViewById(R.id.tv_horaMonitoreo);
         spn_tipoIluminacion = view.findViewById(R.id.cbx_tipoIluminacion);//Agregado recientemente
+
+        linear_PuestoTrabajo = rootView.findViewById(R.id.Linear_PuestoTrabajo);
 
         spn_tipoMedicion = view.findViewById(R.id.cbx_tipoMedicion);
         txt_longSalon = view.findViewById(R.id.txt_longSalon);
@@ -715,7 +788,6 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
 
 
     }
-
     @Override
     public void onImagePicked(Uri imageUri) {
         this.uri = imageUri;
@@ -723,7 +795,6 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
             imgIliminacion.setImageURI(imageUri);
         }
     }
-
     public void Valida_Punto_Medicion(String largoEscri, String anchoEscri){
         Log.e("FFFF", "entro a validacion de punto");
         Log.e("valores", largoEscri + " - " + anchoEscri);
@@ -741,7 +812,6 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
         Log.e("gghfg",String.valueOf(resultado1));
         txt_numPuntosMedicion.setText(String.valueOf(resultado1));
     }
-
     public void Constante_Salon(String longSalon, String anchoSalon, String altPlanLumin){
         if (longSalon==null || anchoSalon==null || altPlanLumin==null) {
             txt_constanteSalon.setText("");
@@ -757,7 +827,6 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
         txt_constanteSalon.setText(String.valueOf(resultado1));
         Num_Minimo_Punto_Med(resultado1);
     }
-
     public void Num_Minimo_Punto_Med(float constSalon){
         // Aplicar la lógica de la fórmula
         int resultado;
@@ -784,6 +853,85 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
             return false;
         }
         return true;
+    }
+
+    private void EditarCampos(HashMap<String, String> lista, List<EditText> editTextList){
+        tv_luxometro.setText(registros.getCod_equipo1());
+        if (detalles.getPlan_mantenimiento_ilum().equals("1")) {
+            radioGroupLuminaria.check(R.id.radioLuninariaSi);
+        } else {
+            radioGroupLuminaria.check(R.id.radioLumninariaNo);
+        }
+        ubicacionEquipo.setText(registros.getUbic_equip());
+        hora_verificacion.setText(registros.getHora_situ());
+        cbx_lux.setSelection(1); // asumiendo que solo se selecciona uno
+        imgIliminacion.setImageURI(Uri.parse(registros.getRuta_foto()));
+
+        areaTrabajo.setText(registros.getArea_trabajo());
+        numTrabajadores.setText(String.valueOf(registros.getN_personas()));
+        List<String> opciones = new ArrayList<>(lista.values());
+        int indice2 = opciones.indexOf(registros.getTarea_visual());
+        tareaVisual.setSelection(indice2);
+        tipoArea.setText(registros.getTipo_tarea_visual());
+        nivelMinimo.setText(registros.getNivel_min_ilu());
+
+        fechaMonitoreo.setText(registros.getFec_monitoreo());
+        hora_monitoreo.setText(registros.getHora_inicial());
+
+        int indice3 = Arrays.asList(arrayT_Ilu).indexOf(detalles.getTipo_iluminacion());
+        spn_tipoIluminacion.setSelection(indice3 + 1);
+        int indice4 = Arrays.asList(arrayT_Med).indexOf(detalles.getTipo_medicion_ilu());
+        spn_tipoMedicion.setSelection(indice4 + 1);
+
+        if((indice4+1)==1){
+            int indice1 = Arrays.asList(arrayYN).indexOf(registros.getTipo_doc_trabajador());
+            tipoDoc.setSelection(indice1 + 1);
+            numDoc.setText(registros.getNum_doc_trabajador());
+            nomTrabajador.setText(registros.getNom_trabajador());
+            puestoTrabajador.setText(registros.getPuesto_trabajador());
+            config.asignarAdaptadorYSeleccion(horario_Trab, "horario_trab_fromato_medicion", "desc_horario", registros.getHora_trabajo(), getContext());
+            if (horario_Trab.getSelectedItem().equals("OTRO")) {
+                txt_otroHorario.setText(registros.getHora_trabajo());
+            }
+            config.asignarAdaptadorYSeleccion(regimen, "regimen_formato_medicion", "nom_regimen", registros.getRegimen_laboral(), getContext());
+            if (regimen.getSelectedItem().equals("OTRO")) {
+                txt_otroRegimen.setText(registros.getRegimen_laboral());
+            }
+            // ----------------------------------- adicionales ------------------------
+            txt_largoEscri.setText(detalles.getLarg_escrit());
+            txt_anchoEscri.setText(detalles.getAnch_escrit());
+            txt_numPuntosMedicion.setText(detalles.getNum_pmedicion());
+            txt_altura_pTrabajo.setText(detalles.getAltura_p_trabajo());
+
+            String[] array = detalles.getPuntos_med().split("\\*");
+            for (int i = 0; i < editTextList.size(); i++) {
+                editTextList.get(i).setText(array[i]);
+            }
+        }
+        if((indice4+1)==2){
+            txt_longSalon.setText(detalles.getLong_salon());
+            txt_anchoSalon.setText(detalles.getAnch_salon());
+            txt_alt_PlanosTrabajo_ilu.setText(detalles.getAlt_pltrabajo_ilu());
+            txt_constanteSalon.setText(detalles.getConst_salon());
+            txt_numMinPuntosMedicion.setText(detalles.getNum_min_pmedic());
+            String[] array = detalles.getPuntos_med().split("\\*");
+            for (int i = 0; i < editTextList.size(); i++) {
+                editTextList.get(i).setText(array[i]);
+            }
+        }
+
+        numLuminarias.setText(detalles.getCant_iluminarias());
+        numLamparas.setText(detalles.getN_lamparas());
+        altura_pLuminaria.setText(detalles.getAltura_p_luminaria());
+        colorPared.setText(detalles.getColor_pared());
+        colorPiso.setText(detalles.getColor_piso());
+        int indice5 = Arrays.asList(arrayEstado).indexOf(detalles.getEstado_fisico());
+        estadoLuminarias.setSelection(indice5 + 1);
+        tareasRealizadas.setText(registros.getActividades_realizadas());
+
+    }
+    private void Volver() {
+        getFragmentManager().popBackStack();// Regresa al Fragment anterior
     }
 
 }

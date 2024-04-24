@@ -468,8 +468,8 @@ public class ConfortTermicoFragment extends Fragment implements FragmentoImagen.
                                 validar.validarCampoObligatorio(txt_t_aire) &&
                                 validar.validarCampoObligatorio(txt_t_aireNegro) &&
                                 validar.validarCampoObligatorio(txt_humedadRelativa) &&
-                                validar.validarCampoObligatorio(txt_velViento) &&
-                                validar.validarCampoObligatorio(txt_observaciones)
+                                validar.validarCampoObligatorio(txt_velViento)
+                                //validar.validarCampoObligatorio(txt_observaciones)
                 ){
                     String valorConfort = spn_equipoConfort.getText().toString();
                     String valorAnemometro = spn_equipoAnemometro.getText().toString();

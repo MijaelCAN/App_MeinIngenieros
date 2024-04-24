@@ -1,6 +1,11 @@
 package com.mijael.mein.Entidades;
 
-public class RegistroFormatos_Detalle {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
+public class RegistroFormatos_Detalle implements Parcelable {
     public int id_formato_reg_detalle;
     public int id_plan_trabajo_formato_reg;
     public int orden;
@@ -42,6 +47,7 @@ public class RegistroFormatos_Detalle {
     public String pullover;
     public String abrigo;
     public String chaqueta;
+    public String forrada;
     public String diversos;
     public String aclimatado;
     public String zona_sombra;
@@ -241,7 +247,7 @@ public class RegistroFormatos_Detalle {
     public int user_eli;
     public boolean estado_sincro;
 
-    public RegistroFormatos_Detalle(int id_formato_reg_detalle, int id_plan_trabajo_formato_reg, int orden, String lj_db, String fj, String lj_10, String _10_pot_lj, String multi, String plan_mantenimiento_ilum, String il_1, String il_2, String il_3, String il_4, String il_5, String il_6, String il_7, String il_8, String puntos_med, String tipo_iluminacion, String tipo_iluminacion_art, String tipo_iluminacion_nat, String desc_amb_trabajo, String cant_iluminarias, String area_trabajo_m2, String altura_p_trabajo, String n_lamparas, String altura_p_luminaria, String color_pared, String color_piso, String estado_fisico, String frecuencia, String fuente_generadora, String desc_fuente_frio, String tipo_fuente, String mant_fuente, String ropa_interior, String camisa_blusa, String pantalon, String pullover, String abrigo, String chaqueta, String diversos, String aclimatado, String zona_sombra, String rotacion_personal, String tiempo_recuperacion, String bebida_caliente, String capa_expo_frio, String dispensador, String cat_trabajo, String porc_desca, String vestimenta_personal, String material_prenda, String at_desnudo, String at_ligero, String at_medio, String at_pesado, String color_predominante, String epp_zs, String epp_casco, String epp_lentes, String epp_guantes, String epp_orejeras, String epp_tapones, String epp_cnuca, String epp_gorro, String epp_botas, String otro_epp, String epp_lentes_brillo, String prot_lat, String epp_gorro_2, String epp_casco_2, String epp_ninguno, String prot_legion, String prot_aancha, String rop_ccerti, String rop_coscuro, String rop_mlarga, String tgruesa, String util_fps, String frec_aplic, String otra_frecuencia, String cubre_nuca, String lent_osc, String tecnica_acondaire, String detalle_tecnica_acondaire, String desc_atuendo, String p_aacondicionado, String t_globo, String t_globo_2, String t_globo_3, String t_bulbo, String t_bulbo2, String t_bulbo3, String ntareas, String nom_tarea1, String ciclo_trabajo1, String posicion_1, String pcuerpo_1, String intensidad_1, String nom_tarea2, String ciclo_trabajo2, String posicion_2, String pcuerpo_2, String intensidad_2, String nom_tarea3, String ciclo_trabajo3, String posicion_3, String pcuerpo_3, String intensidad_3, String nom_tarea4, String ciclo_trabajo4, String posicion_4, String pcuerpo_4, String intensidad_4, String nom_tarea5, String ciclo_trabajo5, String posicion_5, String pcuerpo_5, String intensidad_5, String horario_lv, String horario_s, String wbgt, String wbgt_2, String wbgt_3, String t_aire, String t_aire_2, String t_aire_3, String h_relativa, String h_relativa_2, String h_relativa_3, String v_viento, String v_viento_2, String v_viento_3, String v_vto4, String v_vto5, String v_vto6, String v_vto7, String v_vto8, String v_vto9, String v_vto10, String otro_vest, String id_tipo_medicion_ilu, String tipo_medicion_ilu, String larg_escrit, String anch_escrit, String num_pmedicion, String alt_pltrabajo, String long_salon, String anch_salon, String alt_pltrabajo_ilu, String const_salon, String num_min_pmedic, String temp, String mtr_subida, String tipo_piel, String color_piel, String sombra_descanso, String malla_oscura, String prog_expo_radiacion, String trab_aire_libre, String r_certificacion, String r_oscura, String mangal, String telag, String utiliza, String guia_fps, String frecuencia_aplicacion, String traj_prot_electromagnetica, String b_mafnetico, String x, String y, String z, String ri_calz, String ri_calzl, String ri_camist, String ri_camismc, String ri_camisml, String ri_sujetb, String cb_mangac, String cb_ligeramc, String cb_normalml, String cb_cfranml, String cb_bligmc, String p_cor, String p_lig, String p_norm, String p_fran, String pul_chasm, String pul_lig, String pul_med, String pul_grue, String pa_abri, String pa_chal, String pa_park, String pa_monf, String ch_lig, String ch_chaq, String ch_batat, String ch_monot, String d_zapsd, String d_zapsg, String d_calc, String d_med, String d_calcgc, String d_calcgl, String d_botas, String d_guant, String id_nivel_d, String nom_nivel_d, String id_metodo_determ, String metodo_determ, String id_tipo_trabajo, String tipo_trabajo, String ocupacion, String rango_tasa_metab, String clase, String actividad_deter, String tasa_metab, String tasa_metab_kcal, String frecuencia_deter, String genero_deter, String x2, String y2, String z2, String x3, String y3, String z3, String x4, String y4, String z4, int estado, String fec_reg, int user_reg, String fec_act, int user_act, String fec_eli, int user_eli, boolean estado_sincro) {
+    public RegistroFormatos_Detalle(int id_formato_reg_detalle, int id_plan_trabajo_formato_reg, int orden, String lj_db, String fj, String lj_10, String _10_pot_lj, String multi, String plan_mantenimiento_ilum, String il_1, String il_2, String il_3, String il_4, String il_5, String il_6, String il_7, String il_8, String puntos_med, String tipo_iluminacion, String tipo_iluminacion_art, String tipo_iluminacion_nat, String desc_amb_trabajo, String cant_iluminarias, String area_trabajo_m2, String altura_p_trabajo, String n_lamparas, String altura_p_luminaria, String color_pared, String color_piso, String estado_fisico, String frecuencia, String fuente_generadora, String desc_fuente_frio, String tipo_fuente, String mant_fuente, String ropa_interior, String camisa_blusa, String pantalon, String pullover, String abrigo, String forrada, String chaqueta, String diversos, String aclimatado, String zona_sombra, String rotacion_personal, String tiempo_recuperacion, String bebida_caliente, String capa_expo_frio, String dispensador, String cat_trabajo, String porc_desca, String vestimenta_personal, String material_prenda, String at_desnudo, String at_ligero, String at_medio, String at_pesado, String color_predominante, String epp_zs, String epp_casco, String epp_lentes, String epp_guantes, String epp_orejeras, String epp_tapones, String epp_cnuca, String epp_gorro, String epp_botas, String otro_epp, String epp_lentes_brillo, String prot_lat, String epp_gorro_2, String epp_casco_2, String epp_ninguno, String prot_legion, String prot_aancha, String rop_ccerti, String rop_coscuro, String rop_mlarga, String tgruesa, String util_fps, String frec_aplic, String otra_frecuencia, String cubre_nuca, String lent_osc, String tecnica_acondaire, String detalle_tecnica_acondaire, String desc_atuendo, String p_aacondicionado, String t_globo, String t_globo_2, String t_globo_3, String t_bulbo, String t_bulbo2, String t_bulbo3, String ntareas, String nom_tarea1, String ciclo_trabajo1, String posicion_1, String pcuerpo_1, String intensidad_1, String nom_tarea2, String ciclo_trabajo2, String posicion_2, String pcuerpo_2, String intensidad_2, String nom_tarea3, String ciclo_trabajo3, String posicion_3, String pcuerpo_3, String intensidad_3, String nom_tarea4, String ciclo_trabajo4, String posicion_4, String pcuerpo_4, String intensidad_4, String nom_tarea5, String ciclo_trabajo5, String posicion_5, String pcuerpo_5, String intensidad_5, String horario_lv, String horario_s, String wbgt, String wbgt_2, String wbgt_3, String t_aire, String t_aire_2, String t_aire_3, String h_relativa, String h_relativa_2, String h_relativa_3, String v_viento, String v_viento_2, String v_viento_3, String v_vto4, String v_vto5, String v_vto6, String v_vto7, String v_vto8, String v_vto9, String v_vto10, String otro_vest, String id_tipo_medicion_ilu, String tipo_medicion_ilu, String larg_escrit, String anch_escrit, String num_pmedicion, String alt_pltrabajo, String long_salon, String anch_salon, String alt_pltrabajo_ilu, String const_salon, String num_min_pmedic, String temp, String mtr_subida, String tipo_piel, String color_piel, String sombra_descanso, String malla_oscura, String prog_expo_radiacion, String trab_aire_libre, String r_certificacion, String r_oscura, String mangal, String telag, String utiliza, String guia_fps, String frecuencia_aplicacion, String traj_prot_electromagnetica, String b_mafnetico, String x, String y, String z, String ri_calz, String ri_calzl, String ri_camist, String ri_camismc, String ri_camisml, String ri_sujetb, String cb_mangac, String cb_ligeramc, String cb_normalml, String cb_cfranml, String cb_bligmc, String p_cor, String p_lig, String p_norm, String p_fran, String pul_chasm, String pul_lig, String pul_med, String pul_grue, String pa_abri, String pa_chal, String pa_park, String pa_monf, String ch_lig, String ch_chaq, String ch_batat, String ch_monot, String d_zapsd, String d_zapsg, String d_calc, String d_med, String d_calcgc, String d_calcgl, String d_botas, String d_guant, String id_nivel_d, String nom_nivel_d, String id_metodo_determ, String metodo_determ, String id_tipo_trabajo, String tipo_trabajo, String ocupacion, String rango_tasa_metab, String clase, String actividad_deter, String tasa_metab, String tasa_metab_kcal, String frecuencia_deter, String genero_deter, String x2, String y2, String z2, String x3, String y3, String z3, String x4, String y4, String z4, int estado, String fec_reg, int user_reg, String fec_act, int user_act, String fec_eli, int user_eli, boolean estado_sincro) {
         this.id_formato_reg_detalle = id_formato_reg_detalle;
         this.id_plan_trabajo_formato_reg = id_plan_trabajo_formato_reg;
         this.orden = orden;
@@ -282,6 +288,7 @@ public class RegistroFormatos_Detalle {
         this.pantalon = pantalon;
         this.pullover = pullover;
         this.abrigo = abrigo;
+        this.forrada = forrada;
         this.chaqueta = chaqueta;
         this.diversos = diversos;
         this.aclimatado = aclimatado;
@@ -801,6 +808,14 @@ public class RegistroFormatos_Detalle {
 
     public void setAbrigo(String abrigo) {
         this.abrigo = abrigo;
+    }
+
+    public String getForrada() {
+        return forrada;
+    }
+
+    public void setForrada(String forrada) {
+        this.forrada = forrada;
     }
 
     public String getChaqueta() {
@@ -2393,5 +2408,15 @@ public class RegistroFormatos_Detalle {
 
     public void setEstado_sincro(boolean estado_sincro) {
         this.estado_sincro = estado_sincro;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+
     }
 }
