@@ -98,7 +98,8 @@ public class DAO_RegistroEstresFrio {
         values.put(Util_RegistroFormatos_Detalle.CAMPO_D_GUANT, detalle.getD_guant());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_ROTACION_PERSONAL, detalle.getRotacion_personal());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_TIEMPO_RECUPERACION, detalle.getTiempo_recuperacion());
-        values.put(Util_RegistroFormatos_Detalle.CAMPO_DISPENSADOR, detalle.getDispensador());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_BEBIDA_CALIENTE, detalle.getDispensador());
+        //values.put(Util_RegistroFormatos_Detalle.CAMPO_DISPENSADOR, detalle.getDispensador());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_CAPA_EXPO_FRIO, detalle.getCapa_expo_frio());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_ID_NIVEL_D, detalle.getId_nivel_d());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_NOM_NIVEL_D, detalle.getNom_nivel_d());

@@ -449,7 +449,9 @@ public class HumedadRelativaFragment extends Fragment implements FragmentoImagen
         tv_horaFinalMoni.setText(registros.getHora_final());
         txt_humedadRelativaMax.setText(detalles.getH_relativa());
         txt_humedadRelativaMin.setText(detalles.getH_relativa_2());
-        imgHumedad.setImageURI(Uri.parse(registros.getRuta_foto()));
+        if(registros.getRuta_foto()!=null) {
+            imgHumedad.setImageURI(Uri.parse(registros.getRuta_foto()));
+        }
         txt_observaciones.setText(registros.getObservacion());
     }
     private void Volver(){

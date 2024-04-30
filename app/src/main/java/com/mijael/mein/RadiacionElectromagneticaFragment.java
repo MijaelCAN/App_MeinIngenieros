@@ -575,7 +575,9 @@ public class RadiacionElectromagneticaFragment extends Fragment implements Fragm
         } else {
             radioGroupVerificacion.check(R.id.verf_insituno);
         }
-        imgRadiacion.setImageURI(Uri.parse(registros.getRuta_foto()));
+        if(registros.getRuta_foto()!=null) {
+            imgRadiacion.setImageURI(Uri.parse(registros.getRuta_foto()));
+        }
         String fecha = "";
         if (!registros.getFec_monitoreo().isEmpty()) {
             String[] fec = registros.getFec_monitoreo().split(" ");

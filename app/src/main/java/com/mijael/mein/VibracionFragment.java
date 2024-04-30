@@ -605,7 +605,9 @@ public class VibracionFragment extends Fragment implements FragmentoImagen.Image
         }else{
             radioGroupVerificacion.check(R.id.verf_insituno);
         }
-        imgVibra.setImageURI(Uri.parse(registros.getRuta_foto()));
+        if(registros.getRuta_foto()!=null) {
+            imgVibra.setImageURI(Uri.parse(registros.getRuta_foto()));
+        }
         String fecha = "";
         if (!registros.getFec_monitoreo().isEmpty()) {
             String[] fec = registros.getFec_monitoreo().split(" ");

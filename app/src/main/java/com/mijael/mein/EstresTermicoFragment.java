@@ -744,7 +744,6 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
                         valorMetodoDeter = spn_metodoDeterminacion.getSelectedItem().toString();
                     }
 
-
                     if(valorMetodoDeter.equals("1A - Clasificación del tamaño de la ocupación")){
                         valorId_metodo_deter = 1;
                         valorTipoTrabajo = spn_tipoTrab.getSelectedItem().toString();
@@ -1356,11 +1355,6 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
 
             }
         });
-        if(registros!=null){
-            txtNumeroTarea.setText("TAREA " + n);
-        }else{
-            txtNumeroTarea.setText("TAREA " + contadorTareas);
-        }
         linearContenedorTareas.addView(nuevaTarea);
     }
     private void obtenerValoresTareas() {
@@ -1401,7 +1395,9 @@ public class EstresTermicoFragment extends Fragment implements FragmentoImagen.I
         } else {
             radioGroupVerificacion.check(R.id.verf_insituno);
         }
-        imgE_Termico.setImageURI(Uri.parse(registros.getRuta_foto()));
+        if(registros.getRuta_foto()!=null) {
+            imgE_Termico.setImageURI(Uri.parse(registros.getRuta_foto()));
+        }
         String fecha = "";
         if (!registros.getFec_monitoreo().isEmpty()) {
             String[] fec = registros.getFec_monitoreo().split(" ");

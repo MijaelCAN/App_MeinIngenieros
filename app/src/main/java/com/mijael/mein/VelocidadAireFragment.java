@@ -508,7 +508,9 @@ public class VelocidadAireFragment extends Fragment implements FragmentoImagen.I
         tv_fechaMonitoreo.setText(fecha);
         tv_horaInicioMoni.setText(registros.getHora_inicial());
         tv_horaFinalMoni.setText(registros.getHora_final());
-        imgVelo.setImageURI(Uri.parse(registros.getRuta_foto()));
+        if(registros.getRuta_foto()!=null) {
+            imgVelo.setImageURI(Uri.parse(registros.getRuta_foto()));
+        }
         txt_vel1.setText(detalles.getV_viento());
         txt_vel2.setText(detalles.getV_viento_2());
         txt_vel3.setText(detalles.getV_viento_3());

@@ -357,17 +357,37 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
                         int valorEnferOido = validar.getValor2(radioGroup_Enferm, rootView);
                         String valorDetalleEnf = txt_detalleEnferm.getText().toString();
                         int valorGroupIng = validar.getValor2(radioGroup_Ingenieria, rootView);
-                        int valorGroupAislante = validar.getValor2(radioGroup_Aislante, rootView);
-                        int valorGroupFachada = validar.getValor2(radioGroup_Fachada, rootView);
-                        int valorGroupTechos = validar.getValor2(radioGroup_Techo, rootView);
-                        int valorGroupCerramiento = validar.getValor2(radioGroup_Cerramiento, rootView);
-                        int valorGroupCabinas = validar.getValor2(radioGroup_Cabinas, rootView);
+
+                        int valorGroupAislante = 2;
+                        int valorGroupFachada = 2;
+                        int valorGroupTechos = 2;
+                        int valorGroupCerramiento = 2;
+                        int valorGroupCabinas = 2;
+                        if(valorGroupIng == 1){
+                            valorGroupAislante = validar.getValor2(radioGroup_Aislante, rootView);
+                            valorGroupFachada = validar.getValor2(radioGroup_Fachada, rootView);
+                            valorGroupTechos = validar.getValor2(radioGroup_Techo, rootView);
+                            valorGroupCerramiento = validar.getValor2(radioGroup_Cerramiento, rootView);
+                            valorGroupCabinas = validar.getValor2(radioGroup_Cabinas, rootView);
+                        }
+
+
                         int valorGroupAdm = validar.getValor2(radioGroup_Adminis, rootView);
-                        int valorGroupCapac = validar.getValor2(radioGroup_Capac, rootView);
-                        int valorGroupSenalPresion = validar.getValor2(radioGroup_SenalPresion, rootView);
-                        int valorGroupSenalEpp = validar.getValor2(radioGroup_SenalEpps, rootView);
-                        int valorGroupAdmTiempoExpo = validar.getValor2(radioGroup_AdmTiempoExpo, rootView);
-                        int valorGroupRotacion = validar.getValor2(radioGroup_Rotacion, rootView);
+
+                        int valorGroupCapac = 2;
+                        int valorGroupSenalPresion = 2;
+                        int valorGroupSenalEpp = 2;
+                        int valorGroupAdmTiempoExpo = 2;
+                        int valorGroupRotacion = 2;
+
+                        if(valorGroupAdm==1){
+                            valorGroupCapac = validar.getValor2(radioGroup_Capac, rootView);
+                            valorGroupSenalPresion = validar.getValor2(radioGroup_SenalPresion, rootView);
+                            valorGroupSenalEpp = validar.getValor2(radioGroup_SenalEpps, rootView);
+                            valorGroupAdmTiempoExpo = validar.getValor2(radioGroup_AdmTiempoExpo, rootView);
+                            valorGroupRotacion = validar.getValor2(radioGroup_Rotacion, rootView);
+                        }
+
                         int valorGroupoTapones = validar.getValor2(radioGroup_Tapones, rootView);
                         int valorGroupOrejeras = validar.getValor2(radioGroup_Orejeras, rootView);
 
@@ -510,7 +530,7 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
                                 String.valueOf(valorGroupSenalPresion),
                                 String.valueOf(valorGroupSenalEpp),
                                 String.valueOf(valorGroupRotacion),
-                                valorTxtTiempo_Expo,
+                                String.valueOf(valorGroupAdmTiempoExpo),
                                 valorTxtOtroAdministrativo,
                                 String.valueOf(valorGroupoTapones),
                                 valorMarcaTapones,
@@ -555,8 +575,8 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
                             RequestBody json = RequestBody.create(MediaType.parse("application/json"), cadenaJson);
 
                             Call<ResponseBody> call1 = service1.insertDosimetria(json);
-                            String finalCod_formato = cod_formato;
-                            String finalCod_registro = cod_registro;
+                            String finalCod_formato = cod_formato; // Obsevacion
+                            String finalCod_registro = cod_registro; // Observacion
                             call1.enqueue(new Callback<ResponseBody>() {
                                 @Override
                                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

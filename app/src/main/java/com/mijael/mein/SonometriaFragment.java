@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -42,6 +43,7 @@ import com.mijael.mein.DAO.DAO_RegistroSonometria;
 import com.mijael.mein.DAO.DAO_Usuario;
 import com.mijael.mein.Entidades.Equipos;
 import com.mijael.mein.Entidades.Formatos_Trabajo;
+import com.mijael.mein.Entidades.RegistroFormatos;
 import com.mijael.mein.Entidades.Sonometria_Registro;
 import com.mijael.mein.Entidades.Usuario;
 import com.mijael.mein.Extras.FragmentoImagen;
@@ -73,6 +75,7 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
     private boolean cargarImagen = false;
     int hora,min;
     String id_plan_trabajo, id_pt_trabajo, id_formato,id_colaborador, nom_Empresa;
+    String[] arrayYN, arrayTMed;
     EditText  txt_areaTrabajo, txt_actRealizadas, txt_numTrabajadores, txt_fuenteGenRuido, txt_jornada;
     AutoCompleteTextView tv_sonometro, tv_calibrador, tv_anemometro;
     TextView tv_horaCalibracion, tv_mensajeImagen, tv_limitePermisible;
@@ -99,6 +102,7 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
     private View rootView;
     Formatos_Trabajo for_Sonometria;
     DAO_RegistroFormatos dao_registroFormatos;
+    RegistroFormatos registros;
 
     public SonometriaFragment() {
         // Required empty public constructor
@@ -118,6 +122,7 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
             id_formato = bundle.getString("id_formato");
             id_colaborador = bundle.getString("nomUsuario");
             nom_Empresa = bundle.getString("nomEmpresa");
+            registros = bundle.getParcelable("registroForm");
         }
     }
 
@@ -135,6 +140,9 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
         String cadena = nuevo.getUsuario_nombres() + " "+ nuevo.getUsuario_apater();
         tv_nombreUsuario.setText(cadena);
         tv_nomEmpresa.setText(nom_Empresa);
+
+        arrayYN = new String[]{"SI","NO"};
+        arrayTMed = new String[]{"15 min","25 min"};
 
         // LLENAR DATOS A SPINNERS
 
@@ -232,7 +240,7 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
         btn_guardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(validar.validarCampoObligatorio(tv_sonometro)&&
+                /*if(validar.validarCampoObligatorio(tv_sonometro)&&
                     validar.validarCampoObligatorio(tv_calibrador)&&
                     validar.validarCampoObligatorio(tv_anemometro)&&
                     validar.validarCampoObligatorio(tv_horaCalibracion)&&
@@ -263,7 +271,7 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
                         //validar.validarCampoObligatorio(cbx_modeloOrej)&&
                         //validar.validarCampoObligatorio(radioGroupOrej,getActivity())&&
                         //validar.validarCampoObligatorio(txt_observaciones)
-                ) {
+                ) {*/
                     String valorTvSonometro = tv_sonometro.getText().toString();
                     String valorTvCalibrador = tv_calibrador.getText().toString();
                     String valorTvAnemometro = tv_anemometro.getText().toString();
@@ -336,19 +344,36 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
                         if(modeloTapones.equals("OTRO")) modeloTapones = txt_otroModeloTapones.getText().toString();
 
                         String estado_resultado = "1";
-                        String fecha_registro = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
 
                         Equipos equipo1 = equipos.Buscar(valorTvSonometro);
                         Equipos equipo2 = equipos.Buscar(valorTvCalibrador);
                         Equipos equipo3 = equipos.Buscar(valorTvAnemometro);
 
-                        ArrayList<HashMap<String, String>> resultList = dao_registroFormatos.getListCantidadFormatoId(Integer.parseInt(id_pt_trabajo));
-                        int total_registros = dao_registroFormatos.get_cant_formato_medicion();
-                        String cod_formato = config.GenerarCodigoFormato(Integer.parseInt(id_formato),resultList.size());
-                        String cod_registro = config.generarCodigoRegistro(total_registros);
+                        String fecha_registro;
+                        String cod_formato = "";
+                        String cod_registro = "";
+                        String valorRutaFoto = "";
 
-                        String valorRutaFoto = uri.getEncodedPath();
-                        int id_plan_formato_reg = dao_registroFormatos.getRecordIdByPosition();
+                        if(registros==null){
+                            fecha_registro = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+
+                            ArrayList<HashMap<String, String>> resultList = dao_registroFormatos.getListCantidadFormatoId(Integer.parseInt(id_pt_trabajo));
+                            int total_registros = dao_registroFormatos.get_cant_formato_medicion();
+                            cod_formato = config.GenerarCodigoFormato(Integer.parseInt(id_formato), resultList.size());
+                            cod_registro = config.generarCodigoRegistro(total_registros);
+                            if(uri!=null){
+                                valorRutaFoto = uri.getEncodedPath();
+                            }
+                        }else{
+                            fecha_registro = registros.getFec_reg();
+                            cod_registro = registros.getCod_registro();
+                            cod_formato = registros.getCod_formato();
+                            valorRutaFoto = registros.getRuta_foto();
+                            id_formato = String.valueOf(registros.getId_formato());
+                            id_plan_trabajo = String.valueOf(registros.getId_plan_trabajo());
+                            id_pt_trabajo = String.valueOf(registros.getId_pt_formato());
+
+                        }
 
                         Sonometria_Registro cabecera = new Sonometria_Registro(
                                 -1,
@@ -458,12 +483,14 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
                             RequestBody json = RequestBody.create(MediaType.parse("application/json"), cadenaJson);
 
                             Call<ResponseBody> call1 = service1.insertSonometria(json); //INSERTAR A SONOMETRIA
+                            String finalCod_formato = cod_formato; // Obsevacion
+                            String finalCod_registro = cod_registro; // Observacion
                             call1.enqueue(new Callback<ResponseBody>() {
                                 @Override
                                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                     Log.e("exitoso", "se inserto el registro");
                                     File imageFile = new File(uri.getEncodedPath());
-                                    config.uploadImage(imageFile, cod_formato,id_pt_trabajo,cod_registro);
+                                    config.uploadImage(imageFile, finalCod_formato,id_pt_trabajo,finalCod_registro);
                                     // Mostrar el JSON en el log
                                     Log.e("JSON", cadenaJson);
                                     Log.e("Respuesta",response.toString());
@@ -481,36 +508,68 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
                                     .show();
                             getFragmentManager().popBackStack();
                         }else{
-
                             DAO_RegistroSonometria nuevoRegistro = new DAO_RegistroSonometria(getActivity());//INSTANCIAR LA CLASE PARA USAR EL METODO DE INSERTAR
-                            nuevoRegistro.RegistroSonometria(cabecera); //LLAMAR AL METODO PARA INSERTAR LOS REGISTROS
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                            builder.setTitle("Guardar formulario");
+                            builder.setMessage("¿Deseas seguir llenando el formulario o terminar?");
 
-                            DAO_FormatosTrabajo dao_fromatosTrabajo = new DAO_FormatosTrabajo(getActivity());
-                            for_Sonometria = dao_fromatosTrabajo.Buscar(id_plan_trabajo,id_formato);
-                            for_Sonometria.setRealizado(for_Sonometria.getRealizado()+1);
-                            for_Sonometria.setPor_realizar(for_Sonometria.getPor_realizar()-1);
-                            dao_fromatosTrabajo.actualizarFormatoTrabajo(for_Sonometria);
-
-                            // O muestra un AlertDialog con el mensaje
-                            new AlertDialog.Builder(getActivity())
-                                    .setTitle("Registro guardado Localmente")
-                                    .setMessage("El registro ha sido guardado exitosamente.")
-                                    .setPositiveButton(android.R.string.ok, null)
-                                    .show();
-
-                            // Regresa al Fragment anterior
-                            getFragmentManager().popBackStack();
-
+                            builder.setPositiveButton("Seguir", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if(registros == null){
+                                        nuevoRegistro.RegistroSonometria(cabecera);
+                                        DAO_FormatosTrabajo dao_fromatosTrabajo = new DAO_FormatosTrabajo(getActivity());
+                                        for_Sonometria = dao_fromatosTrabajo.Buscar(id_plan_trabajo,id_formato);
+                                        for_Sonometria.setRealizado(for_Sonometria.getRealizado()+1);
+                                        for_Sonometria.setPor_realizar(for_Sonometria.getPor_realizar()-1);
+                                        dao_fromatosTrabajo.actualizarFormatoTrabajo(for_Sonometria);
+                                    }else{
+                                        nuevoRegistro.ActualizarSonometria(cabecera,registros.getId_plan_trabajo_formato_reg());
+                                    }
+                                }
+                            });
+                            builder.setNegativeButton("Terminar", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if(registros == null){
+                                        nuevoRegistro.RegistroSonometria(cabecera);
+                                        DAO_FormatosTrabajo dao_fromatosTrabajo = new DAO_FormatosTrabajo(getActivity());
+                                        for_Sonometria = dao_fromatosTrabajo.Buscar(id_plan_trabajo,id_formato);
+                                        for_Sonometria.setRealizado(for_Sonometria.getRealizado()+1);
+                                        for_Sonometria.setPor_realizar(for_Sonometria.getPor_realizar()-1);
+                                        dao_fromatosTrabajo.actualizarFormatoTrabajo(for_Sonometria);
+                                    }else{
+                                        nuevoRegistro.ActualizarSonometria(cabecera,registros.getId_plan_trabajo_formato_reg());
+                                    }
+                                    new AlertDialog.Builder(getActivity())
+                                            .setTitle("Registro guardado Localmente")
+                                            .setMessage("El registro ha sido guardado exitosamente.")
+                                            .setPositiveButton(android.R.string.ok, null)
+                                            .show();
+                                    getFragmentManager().popBackStack();
+                                }
+                            });
+                            builder.show();
                         }
 
                     }else {
                         tv_calibrador.setError("Equipo no debe Repetir");
                         tv_calibrador.requestFocus();
                     }
-                }
+                //}
             }
         });
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        if (registros != null) {
+            EditarCampos();
+
+        } else {
+            builder.setTitle("Aviso")
+                    .setMessage("Realizara un nuevo registro.")
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }
         return rootView;
     }
 
@@ -930,5 +989,155 @@ public class SonometriaFragment extends Fragment implements FragmentoImagen.Imag
                 limpiarElementos((ViewGroup) childView);
             }
         }
+    }
+
+    private void EditarCampos(){
+        tv_sonometro.setText(registros.getCod_equipo1());
+        tv_calibrador.setText(registros.getCod_equipo2());
+        tv_anemometro.setText(registros.getCod_equipo3());
+        tv_horaCalibracion.setText(registros.getHora_situ());
+        config.asignarAdaptadorYSeleccion(cbx_nivel, "nivel_formato_medicion", "nom_nivel", registros.getNivel(), getContext());
+        config.asignarAdaptadorYSeleccion(cbx_variacion, "variacion_formato_medicion", "nom_variacion", registros.getVariacion(), getContext());
+
+        txt_areaTrabajo.setText(registros.getArea_trabajo());
+        txt_actRealizadas.setText(registros.getActividades_realizadas());
+
+        config.asignarAdaptadorYSeleccion(cbx_horario, "horario_trab_fromato_medicion", "desc_horario", registros.getHora_trabajo(), getContext());
+        if (cbx_horario.getSelectedItem().equals("OTRO")) {
+            txt_otroHorario.setText(registros.getHora_trabajo());
+        }
+        txt_jornada.setText(registros.getJornada());
+        txt_numTrabajadores.setText(String.valueOf(registros.getN_personas()));
+        txt_fuenteGenRuido.setText(registros.getRuido_generado_por());
+
+        int indice1 = Arrays.asList(arrayYN).indexOf(registros.getArea_req_concentr());
+        cbx_aConcentracion.setSelection(indice1 + 1);
+        tv_limitePermisible.setText(registros.getLim_max_permis());
+
+        String fecha ="";
+        if(!registros.getFec_monitoreo().isEmpty()){
+            String[] fec = registros.getFec_monitoreo().split(" ");
+            String[] nueva_fec = fec[0].split("-");
+            fecha = nueva_fec[0] +"/"+ nueva_fec[1] +"/"+ nueva_fec[2];
+        }
+        tv_fechaMonitoreo.setText(fecha);
+
+        tv_horaInicioMonitoreo.setText(registros.getHora_inicial());
+        tv_horaFinal.setText(registros.getHora_final());
+        int indice2 = Arrays.asList(arrayTMed).indexOf(registros.getTiempo_medicion());
+        cbx_tiempoMedicion.setSelection(indice2 + 1);
+        txt_velViento.setText(registros.getV_viento());
+        txt_humedadRelatva.setText(registros.getH_relativa());
+
+        txt_leq1.setText(String.valueOf(registros.getLequi_md1()));
+        txt_leq2.setText(String.valueOf(registros.getLequi_md2()));
+        txt_leq3.setText(String.valueOf(registros.getLequi_md3()));
+        txt_leq4.setText(String.valueOf(registros.getLequi_md4()));
+        txt_leq5.setText(String.valueOf(registros.getLequi_md5()));
+
+        txt_lmax1.setText(String.valueOf(registros.getLmax_md1()));
+        txt_lmax2.setText(String.valueOf(registros.getLmax_md2()));
+        txt_lmax3.setText(String.valueOf(registros.getLmax_md3()));
+        txt_lmax4.setText(String.valueOf(registros.getLmax_md4()));
+        txt_lmax5.setText(String.valueOf(registros.getLmax_md5()));
+
+        txt_lmin1.setText(String.valueOf(registros.getLmin_md1()));
+        txt_lmin2.setText(String.valueOf(registros.getLmin_md2()));
+        txt_lmin3.setText(String.valueOf(registros.getLmin_md3()));
+        txt_lmin4.setText(String.valueOf(registros.getLmin_md4()));
+        txt_lmin5.setText(String.valueOf(registros.getLmin_md5()));
+
+        tv_resLmin.setText(String.valueOf(registros.getLmin()));
+        tv_resLmax.setText(String.valueOf(registros.getLmax()));
+        tv_resLeq.setText(String.valueOf(registros.getLequi()));
+
+        if(registros.getRuta_foto()!=null){
+            imagen_sono.setImageURI(Uri.parse(registros.getRuta_foto()));
+        }
+        if (registros.getCtrl_ingenieria().equals("1")) {
+            radioGroupIng.check(R.id.radioIngenieriaSi);
+            if (registros.getAislamiento().equals("1")) {
+                radioGroup_Aislante.check(R.id.radioAislanteSi);
+            } else {
+                radioGroup_Aislante.check(R.id.radioAislanteNo);
+            }
+            if (registros.getCabinas().equals("1")) {
+                radioGroup_Cabinas.check(R.id.radioCabinaSi);
+            } else {
+                radioGroup_Cabinas.check(R.id.radioCabinaNo);
+            }
+            txt_otroIng.setText(registros.getOtro_ingenieria());
+        }else{
+            radioGroupIng.check(R.id.radioUngenieriaNo);
+        }
+
+        if (registros.getCtrl_administrativo().equals("1")) {
+            radioGroupAdmin.check(R.id.radio_AdministrativoSi);
+            if (registros.getCapacitacion().equals("1")) {
+                radioGroupRiesgos.check(R.id.radioRiesgosSi);
+            } else {
+                radioGroupRiesgos.check(R.id.radioRiesgosNo);
+            }
+            if (registros.getSenializacion_precion().equals("1")) {
+                radioGroupPresionSono.check(R.id.radioPresionSi);
+            } else {
+                radioGroupPresionSono.check(R.id.radioPresionNo);
+            }
+            if (registros.getSenializacion_epp().equals("1")) {
+                radioGroupEppOblig.check(R.id.radioEppSi);
+            } else {
+                radioGroupEppOblig.check(R.id.radioEppNo);
+            }
+            if (registros.getAdm_tiempo_expo().equals("1")) {
+                radioGroupTimeExpo.check(R.id.radioAdminExpoSi);
+            } else {
+                radioGroupTimeExpo.check(R.id.radioAdminExpoNo);
+            }
+            if (registros.getRotacion().equals("1")) {
+                radioGroupRotacion.check(R.id.radioRotacionSi);
+            } else {
+                radioGroupRotacion.check(R.id.radioRotacionNo);
+            }
+            txt_otrosAdmin.setText(registros.getOtro_administrativo());
+        }else{
+            radioGroupAdmin.check(R.id.radio_AdministrativoNo);
+        }
+
+        if (registros.getTapones_au().equals("1")) {
+            radioGroupTapones.check(R.id.radioTaponesSi);
+        } else {
+            radioGroupTapones.check(R.id.radioTaponesNo);
+        }
+        if (registros.getOrejereas().equals("1")) {
+            radioGroupOrej.check(R.id.radio_OrejerasSi);
+        } else {
+            radioGroupOrej.check(R.id.radio_OrejerasNo);
+        }
+        if (registros.getTapones_au().equals("1")) {
+            config.asignarAdaptadorYSeleccion(cbx_marcaTapones, "marca_formato_medicion", "nom_marca", registros.getMarca_tapones_audi(), getContext());
+            if (cbx_marcaTapones.getSelectedItem().equals("OTRO")) {
+                txt_otroMarcaTapones.setText(registros.getMarca_tapones_audi());
+            }
+            config.asignarAdaptadorYSeleccion(cbx_modeloTapones, "modelo_Tapones", "nom_modelo", registros.getModelo_tapones_audi(), getContext());
+            if (cbx_modeloTapones.getSelectedItem().equals("OTRO")) {
+                txt_otroModeloTapones.setText(registros.getModelo_tapones_audi());
+
+            }
+        }
+        tv_nrrTapones.setText(registros.getNrr_tapones_audi());
+        if (registros.getOrejereas().equals("1")) {
+            config.asignarAdaptadorYSeleccion(cbx_marcaOrej, "marca_formato_medicion", "nom_marca", registros.getMarca_orejeras(), getContext());
+            if (cbx_marcaOrej.getSelectedItem().equals("OTRO")) {
+                txt_otroMarcaOrej.setText(registros.getMarca_orejeras());
+            }
+            config.asignarAdaptadorYSeleccion(cbx_modeloOrej, "modelo_Tapones", "nom_modelo", registros.getModelo_orejeras(), getContext());
+            if (cbx_modeloOrej.getSelectedItem().equals("OTRO")) {
+                txt_otroModeloOrej.setText(registros.getModelo_orejeras());
+            }
+
+        }
+        tv_nrrOrej.setText(registros.getNrr_orejeras());
+        txt_observaciones.setText(registros.getObservacion());
+
     }
 }

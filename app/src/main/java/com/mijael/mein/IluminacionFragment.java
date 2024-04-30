@@ -477,9 +477,14 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
 
                     List<String> editTextValues = new ArrayList<>();
                     for (EditText editText : editTextList) {
-                        editTextValues.add(editText.getText().toString());
+                        String editTextValue = editText.getText().toString();
+                        // Verificar si el EditText está vacío
+                        if (editTextValue.isEmpty()) {
+                            editTextValue = "0"; // Asignar "0" si el EditText está vacío
+                        }
+                        editTextValues.add(editTextValue);
+                        //editTextValues.add(editText.getText().toString());
                     }
-                    Log.e("dfsdfsdf",editTextValues.toString());
                     String valorPuntosMedicion = String.join("*", editTextValues.toArray(new String[0]));
                     String valorIL1 = il1.getText().toString();
                     String valorIL2 = il2.getText().toString();
@@ -865,7 +870,9 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
         ubicacionEquipo.setText(registros.getUbic_equip());
         hora_verificacion.setText(registros.getHora_situ());
         cbx_lux.setSelection(1); // asumiendo que solo se selecciona uno
-        imgIliminacion.setImageURI(Uri.parse(registros.getRuta_foto()));
+        if(registros.getRuta_foto()!=null) {
+            imgIliminacion.setImageURI(Uri.parse(registros.getRuta_foto()));
+        }
 
         areaTrabajo.setText(registros.getArea_trabajo());
         numTrabajadores.setText(String.valueOf(registros.getN_personas()));

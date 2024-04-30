@@ -511,4 +511,22 @@ public class InputDateConfiguration {
             spinner.setSelection(posicionFinal);
         }
     }
+    public void marcarRadioButtonPorTag(RadioGroup radioGroup, int tag) {
+        RadioButton radioButton = null;
+
+        for (int i = 0; i < radioGroup.getChildCount(); i++) {
+            View view = radioGroup.getChildAt(i);
+            if (view instanceof RadioButton) {
+                RadioButton tempRadioButton = (RadioButton) view;
+                if (Integer.parseInt(tempRadioButton.getTag().toString()) == tag) {
+                    radioButton = tempRadioButton;
+                    break;
+                }
+            }
+        }
+
+        if (radioButton != null) {
+            radioButton.setChecked(true);
+        }
+    }
 }
