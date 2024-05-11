@@ -23,6 +23,7 @@ import com.android.volley.toolbox.Volley;
 
 
 public class LoginActivity extends AppCompatActivity {
+    private static final int REQUEST_CODE_STORAGE_PERMISSION = 1;
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 100;
     Button btn_login, btn_update;
     ImageView btn_visible;
@@ -151,6 +152,9 @@ public class LoginActivity extends AppCompatActivity {
     private void checkCameraPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.CAMERA }, CAMERA_PERMISSION_REQUEST_CODE);
+        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_STORAGE_PERMISSION);
         }
     }
 

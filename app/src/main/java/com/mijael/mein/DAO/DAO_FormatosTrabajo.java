@@ -47,7 +47,7 @@ public class DAO_FormatosTrabajo {
             }while (cursor.moveToNext());
         }
         cursor.close();
-        db.close();
+        //db.close();
         return listFormatos;
     }
 
@@ -73,7 +73,7 @@ public class DAO_FormatosTrabajo {
         } else {
             Log.d("TAG-D", "FORMATOS TRABAJO actualizado en la base de datos local");
         }
-        db.close();
+        //db.close();
     }
 
     public int contarFormatos() {
@@ -93,7 +93,7 @@ public class DAO_FormatosTrabajo {
                 cursor.close();
             }
             if (db != null && db.isOpen()) {
-                db.close(); // Cerrar la base de datos si está abierta
+                //db.close(); // Cerrar la base de datos si está abierta
             }
         }
         return count;
@@ -132,7 +132,7 @@ public class DAO_FormatosTrabajo {
         } finally {
             if (db != null && db.isOpen()) {
                 db.endTransaction(); // Finalizar la transacción si aún está abierta
-                db.close(); // Cerrar la base de datos
+                //db.close(); // Cerrar la base de datos
             }
         }
     }
@@ -151,7 +151,7 @@ public class DAO_FormatosTrabajo {
             return false;
         } finally {
             if (cursor != null) {
-                cursor.close();
+                //cursor.close();
             }
         }
     }
@@ -176,7 +176,7 @@ public class DAO_FormatosTrabajo {
         } else {
             Log.d("TAG-D", "FROMATO TRABAJO insertado en la base de datos local");
         }
-        db.close();
+        //db.close();
     }
 
     //BUSCAR UN FORMATO DE TRABAJO
@@ -202,7 +202,7 @@ public class DAO_FormatosTrabajo {
             }while (cursor.moveToNext());
         }
         cursor.close();
-        db.close();
+        //db.close();
         return formato;
     }
 

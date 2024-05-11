@@ -50,7 +50,7 @@ public class DAO_Equipos {
             }while(cursor.moveToNext());
         }
         cursor.close();
-        db.close();
+        //db.close();
         return equiposList;
     }
 
@@ -85,7 +85,7 @@ public class DAO_Equipos {
         } else {
             Log.d("TAG-D", "EQUIPOS actualizado en la base de datos local");
         }
-        db.close();
+        //db.close();
     }
 
     public int contarEquipos() {
@@ -105,7 +105,7 @@ public class DAO_Equipos {
                 cursor.close();
             }
             if (db != null && db.isOpen()) {
-                db.close(); // Cerrar la base de datos si está abierta
+                //db.close(); // Cerrar la base de datos si está abierta
             }
         }
         return count;
@@ -152,7 +152,7 @@ public class DAO_Equipos {
         } finally {
             if (db != null && db.isOpen()) {
                 db.endTransaction(); // Finalizar la transacción si aún está abierta
-                db.close(); // Cerrar la base de datos
+                //db.close(); // Cerrar la base de datos
             }
         }
     }
@@ -198,7 +198,7 @@ public class DAO_Equipos {
 
         Long idResultante = db.insert(Util_Equipos.TABLA_EQUIPOS, Util_Equipos.CAMPO_ID_EQUIPO,values);
 
-        db.close();
+        //db.close();
     }
 
     public List<String> obtener_CodEquipos(){
@@ -212,7 +212,7 @@ public class DAO_Equipos {
             }while (cursor.moveToNext());
         }
         cursor.close();
-        db.close();
+        //db.close();
         return codigosList;
     }
 
@@ -246,7 +246,7 @@ public class DAO_Equipos {
             }while (cursor.moveToNext());
         }
         cursor.close();
-        db.close();
+        //db.close();
         return equipo;
     }
 

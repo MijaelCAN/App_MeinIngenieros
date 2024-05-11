@@ -8,6 +8,14 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
@@ -18,15 +26,6 @@ import androidx.work.NetworkType;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 import androidx.work.Worker;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.barteksc.pdfviewer.PDFView;
 import com.itextpdf.io.image.ImageData;
@@ -75,6 +74,7 @@ public class DetalleFormatosFragment extends Fragment {
     AppCompatButton btn_subirDatos, btn_subirDatosReg,btn_calcularMedicion;
     LinearLayout linearLayout, linearAdvertencia,linearDosimetria, linearSonometria, linearHoraFinal, linearEstresTermico, linearVibracion, linearEstresFrio_Confort,
     linearBulbo, linearRadElectro;
+    InputDateConfiguration config;
     DAO_RegistroFormatos dao_registroFormatos;
     DAO_RegistroFormatosDetalle dao_registroDetalle;
     private static final int SYNC_INTERVAL_MIN = 15;
@@ -107,7 +107,7 @@ public class DetalleFormatosFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_detalle_formatos, container, false);
 
-        InputDateConfiguration config = new InputDateConfiguration(getActivity(),id_colaborador,nom_Empresa,rootView);
+        config = new InputDateConfiguration(getActivity(),id_colaborador,nom_Empresa,rootView);
         linearLayout = rootView.findViewById(R.id.contenedor_Card);
         btn_subirDatos = rootView.findViewById(R.id.btn_subirDatosDet);
         btn_subirDatosReg = rootView.findViewById(R.id.btn_subirDatosReg);
@@ -951,7 +951,7 @@ public class DetalleFormatosFragment extends Fragment {
             table.addCell(new Cell(1,3).add(new Paragraph("Tiempo exposición (h)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,3).add(new Paragraph("Jornada (h)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
 
-            table.addCell(new Cell(1,2).add(new Paragraph(reg.getFec_monitoreo())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(config.convertirFecha2(reg.getFec_monitoreo()))).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,2).add(new Paragraph(reg.getHora_inicial())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,2).add(new Paragraph(reg.getHora_final())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,3).add(new Paragraph(reg.getTiempo_exposicion())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
@@ -1315,7 +1315,7 @@ public class DetalleFormatosFragment extends Fragment {
             table.addCell(new Cell(1,12).add(new Paragraph("RESULTADOS DEL MONITOREO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
 
             table.addCell(new Cell(2,2).add(new Paragraph("Fecha de Monitoreo:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
-            table.addCell(new Cell(2,3).add(new Paragraph(reg.getFec_monitoreo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(2,3).add(new Paragraph(config.convertirFecha2(reg.getFec_monitoreo()))).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,2).add(new Paragraph("Hora inicial ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,2).add(new Paragraph(reg.getHora_inicial())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,3).add(new Paragraph("Foto")).setFontSize(8).setTextAlignment(TextAlignment.CENTER).setBackgroundColor(new DeviceRgb(221, 235, 247)));
@@ -1454,7 +1454,7 @@ public class DetalleFormatosFragment extends Fragment {
             table.addCell(new Cell(1,12).add(new Paragraph("RESULTADOS DEL MONITOREO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
 
             table.addCell(new Cell(2,2).add(new Paragraph("Fecha de Monitoreo:")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
-            table.addCell(new Cell(2,3).add(new Paragraph(reg.getFec_monitoreo())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(2,3).add(new Paragraph(config.convertirFecha2(reg.getFec_monitoreo()))).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,2).add(new Paragraph("Hora inicial ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,2).add(new Paragraph(reg.getHora_inicial())).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,3).add(new Paragraph("Foto")).setFontSize(8).setTextAlignment(TextAlignment.CENTER).setBackgroundColor(new DeviceRgb(221, 235, 247)));
@@ -1573,7 +1573,7 @@ public class DetalleFormatosFragment extends Fragment {
             table.addCell(new Cell(1,4).add(new Paragraph("Tiempo medición (min)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
             //table.addCell(new Cell(1,3).add(new Paragraph("Jornada (h)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
 
-            table.addCell(new Cell(1,2).add(new Paragraph(reg.getFec_monitoreo())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(config.convertirFecha2(reg.getFec_monitoreo()))).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,3).add(new Paragraph(reg.getHora_inicial())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,3).add(new Paragraph(reg.getHora_final())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,4).add(new Paragraph(reg.getTiempo_medicion())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
@@ -1763,7 +1763,7 @@ public class DetalleFormatosFragment extends Fragment {
             table.addCell(new Cell(1,3).add(new Paragraph("Tiempo Exposición (h)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,3).add(new Paragraph("Jornada")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
 
-            table.addCell(new Cell(1,2).add(new Paragraph(reg.getFec_monitoreo())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(config.convertirFecha2(reg.getFec_monitoreo()))).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,2).add(new Paragraph(reg.getHora_inicial())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,2).add(new Paragraph(reg.getHora_final())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,3).add(new Paragraph(reg.getTiempo_exposicion())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
@@ -1978,7 +1978,7 @@ public class DetalleFormatosFragment extends Fragment {
             table.addCell(new Cell(1,3).add(new Paragraph("Tiempo exposición (h)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,3).add(new Paragraph("Jornada (h)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
 
-            table.addCell(new Cell(1,2).add(new Paragraph(reg.getFec_monitoreo())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(config.convertirFecha2(reg.getFec_monitoreo()))).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,2).add(new Paragraph(reg.getHora_inicial())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,2).add(new Paragraph(reg.getHora_final())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,3).add(new Paragraph(reg.getTiempo_exposicion())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
@@ -2357,7 +2357,7 @@ public class DetalleFormatosFragment extends Fragment {
             table.addCell(new Cell(1,3).add(new Paragraph("Tiempo exposición (h)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,3).add(new Paragraph("Jornada (h)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
 
-            table.addCell(new Cell(1,2).add(new Paragraph(reg.getFec_monitoreo())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(config.convertirFecha2(reg.getFec_monitoreo()))).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,2).add(new Paragraph(reg.getHora_inicial())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,2).add(new Paragraph(reg.getHora_final())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,3).add(new Paragraph(reg.getTiempo_exposicion())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
@@ -2651,7 +2651,7 @@ public class DetalleFormatosFragment extends Fragment {
             table.addCell(new Cell(1,2).add(new Paragraph("Jornada (h)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,1).add(new Paragraph("Foto")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(0,32,96)).setTextAlignment(TextAlignment.CENTER));
 
-            table.addCell(new Cell(1,2).add(new Paragraph(reg.getFec_monitoreo())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(config.convertirFecha2(reg.getFec_monitoreo()))).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,4).add(new Paragraph(reg.getHora_inicial())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,1).add(new Paragraph(reg.getHora_final())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,2).add(new Paragraph(reg.getTiempo_exposicion())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
@@ -2894,7 +2894,7 @@ public class DetalleFormatosFragment extends Fragment {
             table.addCell(new Cell(1,12).add(new Paragraph("RESULTADOS DEL MONITOREO")).setFontSize(9).setWidth(2).setBackgroundColor(new DeviceRgb(91, 144, 194)).setTextAlignment(TextAlignment.CENTER));
 
             table.addCell(new Cell(1,2).add(new Paragraph("Fecha")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
-            table.addCell(new Cell(1,4).add(new Paragraph(reg.getFec_monitoreo())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,4).add(new Paragraph(config.convertirFecha2(reg.getFec_monitoreo()))).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,3).add(new Paragraph("Hora Inicial ")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,2).add(new Paragraph(reg.getHora_inicial())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,1).add(new Paragraph("Foto")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(0,32,96)).setTextAlignment(TextAlignment.CENTER));
@@ -3125,7 +3125,7 @@ public class DetalleFormatosFragment extends Fragment {
             table.addCell(new Cell(1, 3).add(new Paragraph("Tipo de iluminación")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1, 3).add(new Paragraph("Tipo de medición")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
 
-            table.addCell(new Cell(1, 3).add(new Paragraph(reg.getFec_monitoreo())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1, 3).add(new Paragraph(config.convertirFecha2(reg.getFec_monitoreo()))).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1, 3).add(new Paragraph(reg.getHora_inicial())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1, 3).add(new Paragraph(reg_detalle.getTipo_iluminacion())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1, 3).add(new Paragraph(reg_detalle.getTipo_medicion_ilu())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
@@ -3397,7 +3397,7 @@ public class DetalleFormatosFragment extends Fragment {
             table.addCell(new Cell(1,3).add(new Paragraph("Tiempo exposición (h)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,3).add(new Paragraph("Jornada (h)")).setFontSize(8).setWidth(2).setBackgroundColor(new DeviceRgb(221, 235, 247)).setTextAlignment(TextAlignment.CENTER));
 
-            table.addCell(new Cell(1,2).add(new Paragraph(reg.getFec_monitoreo())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(new Cell(1,2).add(new Paragraph(config.convertirFecha2(reg.getFec_monitoreo()))).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,2).add(new Paragraph(reg.getHora_inicial())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,2).add(new Paragraph(reg.getHora_final())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell(1,3).add(new Paragraph(reg.getTiempo_exposicion())).setFontSize(8).setWidth(2).setTextAlignment(TextAlignment.CENTER));

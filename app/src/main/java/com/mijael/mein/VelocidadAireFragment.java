@@ -335,8 +335,10 @@ public class VelocidadAireFragment extends Fragment implements FragmentoImagen.I
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 //config.uploadImage(imageFile, cod_formato, id_pt_trabajo);
-                                File imageFile = new File(uri.getEncodedPath());
-                                config.uploadImage(imageFile, cod_formato, id_pt_trabajo, cod_registro);
+                                if(uri!=null){
+                                    File imageFile = new File(uri.getEncodedPath());
+                                    config.uploadImage(imageFile, cod_formato, id_pt_trabajo, cod_registro);
+                                }
                                 Log.e("exitoso", "se inserto el registro");
                                 // Mostrar el JSON en el log
                                 Log.e("JSON", cadenaJson);
@@ -501,9 +503,10 @@ public class VelocidadAireFragment extends Fragment implements FragmentoImagen.I
 
         String fecha = "";
         if (!registros.getFec_monitoreo().isEmpty()) {
-            String[] fec = registros.getFec_monitoreo().split(" ");
+            /*String[] fec = registros.getFec_monitoreo().split(" ");
             String[] nueva_fec = fec[0].split("-");
-            fecha = nueva_fec[0] + "/" + nueva_fec[1] + "/" + nueva_fec[2];
+            fecha = nueva_fec[0] + "/" + nueva_fec[1] + "/" + nueva_fec[2];*/
+            fecha = config.convertirFecha2(registros.getFec_monitoreo());
         }
         tv_fechaMonitoreo.setText(fecha);
         tv_horaInicioMoni.setText(registros.getHora_inicial());

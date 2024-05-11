@@ -445,6 +445,7 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
                         String cod_formato = "";
                         String cod_registro = "";
                         String valorRutaFoto = "";
+                        int id_plan_trabajo_formato_reg = -1;
 
                         if(registros==null){
                             fecha_registro = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
@@ -457,6 +458,7 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
                                 valorRutaFoto = uri.getEncodedPath();
                             }
                         }else{
+                            id_plan_trabajo_formato_reg = registros.getId_plan_trabajo_formato_reg();
                             fecha_registro = registros.getFec_reg();
                             cod_registro = registros.getCod_registro();
                             cod_formato = registros.getCod_formato();
@@ -471,7 +473,7 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
                         int id_plan_formato_reg = dao_registroFormatos.getRecordIdByPosition();
 
                         Dosimetria_Registro cabecera = new Dosimetria_Registro( //AGREGANDO LOS VALORES A LA ENTIDAD DEL FORMATO DE DOSIMETRIA
-                                -1,
+                                id_plan_trabajo_formato_reg,
                                 cod_formato,
                                 cod_registro,
                                 id_formato,
@@ -581,8 +583,10 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
                                 @Override
                                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                     Log.e("exitoso", "se inserto el registro");
-                                    File imageFile = new File(uri.getEncodedPath());
-                                    config.uploadImage(imageFile, finalCod_formato, id_pt_trabajo, finalCod_registro);
+                                    if(uri!=null){
+                                        File imageFile = new File(uri.getEncodedPath());
+                                        config.uploadImage(imageFile, finalCod_formato, id_pt_trabajo, finalCod_registro);
+                                    }
                                     // Mostrar el JSON en el log
                                     Log.e("JSON", cadenaJson);
                                     Log.e("Respuesta", response.toString());
@@ -949,9 +953,10 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
 
         String fecha ="";
         if(!registros.getFec_monitoreo().isEmpty()){
-            String[] fec = registros.getFec_monitoreo().split(" ");
+            /*String[] fec = registros.getFec_monitoreo().split(" ");
             String[] nueva_fec = fec[0].split("-");
-            fecha = nueva_fec[0] +"/"+ nueva_fec[1] +"/"+ nueva_fec[2];
+            fecha = nueva_fec[0] + "/" + nueva_fec[1] + "/" + nueva_fec[2];*/
+            fecha = config.convertirFecha2(registros.getFec_monitoreo());
         }
         tv_fecha.setText(fecha);
 

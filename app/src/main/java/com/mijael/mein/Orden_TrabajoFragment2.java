@@ -15,21 +15,38 @@ import android.widget.TextView;
 
 import com.mijael.mein.DAO.DAO_OrdenTrabajo;
 import com.mijael.mein.Entidades.Orden_Trabajo;
+import com.mijael.mein.Extras.Validaciones;
+import com.mijael.mein.GET.ApiOrdenesService;
 import com.mijael.mein.HELPER.OrdenTrabajoSQLiteHelper;
+import com.mijael.mein.SERVICIOS.OrdenesTrabajoService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Orden_TrabajoFragment2 extends Fragment {
     View rootView;
     LinearLayout linearLayout;
     EditText txt_buscar;
-    List<Orden_Trabajo> ordenTrabajos;
+    //List<Orden_Trabajo> ordenTrabajos;
+    OrdenesTrabajoService ordenesService;
+    List<Orden_Trabajo> lista_ordenes_api;
+    List<Orden_Trabajo> ordenesFiltradas;
+    Validaciones validar;
     String idColaborador;
     private OnSearchListener searchListener;
     private FragmentContainerView fragmentContainer;
     public Orden_TrabajoFragment2() {
         // Required empty public constructor
+        // Obtener el servicio de órdenes de trabajo
+        ordenesService = ApiOrdenesService.getInstance().getOrdenesService();
+        ordenesFiltradas = new ArrayList<>();
+        validar = new Validaciones();
     }
     public void setOnSearchListener(OnSearchListener listener) {
         this.searchListener = listener;
@@ -63,10 +80,46 @@ public class Orden_TrabajoFragment2 extends Fragment {
         linearLayout = rootView.findViewById(R.id.contenedor_Card);
         txt_buscar = rootView.findViewById(R.id.txt_buscarOrden);
         txt_buscar.setHint("Buscar Orden");
-        DAO_OrdenTrabajo dao_ordenTrabajo = new DAO_OrdenTrabajo(getActivity());
-        ordenTrabajos = dao_ordenTrabajo.obtenerOrdenesTrabajo(Integer.valueOf(idColaborador));
-        Log.e("NUEVA",idColaborador);
-        Log.e("NUEVA2",String.valueOf(ordenTrabajos.size()));
+
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("id_colaborador", idColaborador);
+        if(validar.isOnline(getContext())){ // verificar si tiene internet
+            Call<List<Orden_Trabajo>> call = ordenesService.getOrdenesTrabajobyId(requestBody);
+            call.enqueue(new Callback<List<Orden_Trabajo>>() {
+                @Override
+                public void onResponse(Call<List<Orden_Trabajo>> call, Response<List<Orden_Trabajo>> response) {
+                    if(response.isSuccessful()){
+                        ordenesFiltradas = response.body();
+                    /*for (Orden_Trabajo orden : lista_ordenes_api) {
+                        if(orden.getId_colaborador()!=null){
+                            if (orden.getId_colaborador().equals(idColaborador)) {
+                                ordenesFiltradas.add(orden);
+                            }
+
+                        }
+                    }*/
+                        for (Orden_Trabajo registro : ordenesFiltradas) { // REEMPLAZAR LA LISTA DEPENDIENDO SI TIENE O NO INTERNET
+                            MostrarOrdenes(registro,inflater);
+                        }
+                    }else{
+                        Log.e("info: ", "No trajo datos del Servidor");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<Orden_Trabajo>> call, Throwable t) {
+                    Log.e("Error de API", "Error al realizar la llamada a la API: " + t.getMessage());
+                }
+            });
+        }else{
+            // PARA CUANDO NO TENGA INTERNET ---------------> INICIO
+            DAO_OrdenTrabajo dao_ordenTrabajo = new DAO_OrdenTrabajo(getActivity());
+            List<Orden_Trabajo> ordenesFiltradas = dao_ordenTrabajo.obtenerOrdenesTrabajo(Integer.valueOf(idColaborador));
+            // -------------------------------> FIN
+            for (Orden_Trabajo registro : ordenesFiltradas) { // REEMPLAZAR LA LISTA DEPENDIENDO SI TIENE O NO INTERNET
+                MostrarOrdenes(registro,inflater);
+            }
+        }
 
         /*tv_buscar.addTextChangedListener(new TextWatcher() {
             @Override
@@ -86,21 +139,18 @@ public class Orden_TrabajoFragment2 extends Fragment {
             }
         });*/
 
-        for (Orden_Trabajo registro : ordenTrabajos) {
-            MostrarOrdenes(registro,inflater);
-        }
         return rootView;
     }
     public void filtrarDesdeActivity(String textoABuscar) {
         String orden_aBuscar = textoABuscar.toLowerCase().trim();
-        Filtrar(orden_aBuscar, ordenTrabajos, getLayoutInflater());
+        Filtrar(orden_aBuscar, ordenesFiltradas, getLayoutInflater());
     }
 
-    private void Filtrar(String ordenABuscar, List<Orden_Trabajo> ordenTrabajos, LayoutInflater inflater) {
+    private void Filtrar(String ordenABuscar, List<Orden_Trabajo> ordenesFiltradas, LayoutInflater inflater) { // REEMPLAZAR LA LISTA DEPENDIENDO SI TIENE O NO INTERNET
         List<Orden_Trabajo> lista_filtrada = new ArrayList<>();
 
         // Recorrer la lista original y agregar a la lista filtrada aquellos elementos que coincidan
-        for (Orden_Trabajo registro : ordenTrabajos) {
+        for (Orden_Trabajo registro : ordenesFiltradas) { // REEMPLAZAR LA LISTA DEPENDIENDO SI TIENE O NO INTERNET
             if (registro.getCod_ot().toLowerCase().contains(ordenABuscar.toLowerCase())) {
                 lista_filtrada.add(registro);
             }

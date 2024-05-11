@@ -184,7 +184,7 @@ public class DAO_RegistroFormatos {
             }while(cursor.moveToNext());
         }
         cursor.close();
-        db.close();
+        //db.close();
         return registrosList;
     }
     public List<RegistroFormatos> listarRegistrosConEstadoSincro(int estado_sinc){
@@ -350,7 +350,7 @@ public class DAO_RegistroFormatos {
             }while(cursor.moveToNext());
         }
         cursor.close();
-        db.close();
+        //db.close();
         return registrosList;
     }
     public void actualizarRegistro(RegistroFormatos registro) {
@@ -518,7 +518,7 @@ public class DAO_RegistroFormatos {
         } else {
             Log.d("TAG-D", "REGISTRO-FORMATOS  actualizado en la base de datos local");
         }
-        db.close();
+        //db.close();
     }
     public int contarRegistros() {
         SQLiteDatabase db = dataHelper.getReadableDatabase();
@@ -537,7 +537,7 @@ public class DAO_RegistroFormatos {
                 cursor.close();
             }
             if (db != null && db.isOpen()) {
-                db.close(); // Cerrar la base de datos si está abierta
+                //db.close(); // Cerrar la base de datos si está abierta
             }
         }
         return count;
@@ -718,7 +718,7 @@ public class DAO_RegistroFormatos {
         } finally {
             if (db != null && db.isOpen()) {
                 db.endTransaction(); // Finalizar la transacción si aún está abierta
-                db.close(); // Cerrar la base de datos
+                //db.close(); // Cerrar la base de datos
             }
         }
     }
@@ -897,7 +897,7 @@ public class DAO_RegistroFormatos {
 
         Long idResultante = db.insert(Util_RegistroFormatos.TABLA_REGISTRO_FORMATOS, Util_RegistroFormatos.CAMPO_ID_PLAN_TRABAJO_FORMATO_REG,values);
 
-        db.close();
+        //db.close();
     }
     /*public List<String> obtener_CodEquipos(){
         List<String> codigosList = new ArrayList<>();
@@ -1076,7 +1076,7 @@ public class DAO_RegistroFormatos {
             }while (cursor.moveToNext());
         }
         cursor.close();
-        db.close();
+        //db.close();
         return registro;
     }
     public ArrayList<HashMap<String, String>> getListCantidadFormatoId(int idPtFormato) {
@@ -1109,7 +1109,7 @@ public class DAO_RegistroFormatos {
         }
 
         cursor.close();
-        db.close();
+        //db.close();
 
         return resultList;
     }
@@ -1130,7 +1130,7 @@ public class DAO_RegistroFormatos {
         }
         cambiarEstadoSincronizacion(idRegistro,false);
         db.update(Util_RegistroFormatos.TABLA_REGISTRO_FORMATOS, valores, Util_RegistroFormatos.CAMPO_ID_PLAN_TRABAJO_FORMATO_REG + "=?", new String[]{String.valueOf(idRegistro)});
-        db.close();
+        //db.close();
     }
     public void cambiarEstadoSincronizacion(int idRegistro, Boolean estadoSincronizacion) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
@@ -1172,7 +1172,7 @@ public class DAO_RegistroFormatos {
         }
 
         cursor.close();
-        db.close();
+        //db.close();
         return recordId;
     }
 

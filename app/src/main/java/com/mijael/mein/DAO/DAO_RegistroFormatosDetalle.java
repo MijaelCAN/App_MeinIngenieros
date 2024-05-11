@@ -273,7 +273,7 @@ public class DAO_RegistroFormatosDetalle {
             }while(cursor.moveToNext());
         }
         cursor.close();
-        db.close();
+        //db.close();
         return detalleList;
     }
     public List<RegistroFormatos_Detalle> listarRegistrosConEstadoSincro(int estado_sinc){
@@ -529,7 +529,7 @@ public class DAO_RegistroFormatosDetalle {
             }while(cursor.moveToNext());
         }
         cursor.close();
-        db.close();
+        //db.close();
         return detallesList;
     }
     public void actualizarRegistroDetalle(RegistroFormatos_Detalle detalle) {
@@ -577,6 +577,7 @@ public class DAO_RegistroFormatosDetalle {
         values.put(Util_RegistroFormatos_Detalle.CAMPO_PULLOVER, detalle.getPullover());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_ABRIGO, detalle.getAbrigo());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_CHAQUETA, detalle.getChaqueta());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_FORRADA, detalle.getForrada());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_DIVERSOS, detalle.getDiversos());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_ACLIMATADO, detalle.getAclimatado());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_ZONA_SOMBRA, detalle.getZona_sombra());
@@ -785,7 +786,7 @@ public class DAO_RegistroFormatosDetalle {
         } else {
             Log.d("TAG-D", "REGISTRO_DETALLE - FORMATOS actualizado en la base de datos local");
         }
-        db.close();
+        //db.close();
     }
     public int contarRegistroDetalle() {
         SQLiteDatabase db = dataHelper.getReadableDatabase();
@@ -804,7 +805,7 @@ public class DAO_RegistroFormatosDetalle {
                 cursor.close();
             }
             if (db != null && db.isOpen()) {
-                db.close(); // Cerrar la base de datos si está abierta
+                //db.close(); // Cerrar la base de datos si está abierta
             }
         }
         return count;
@@ -860,6 +861,7 @@ public class DAO_RegistroFormatosDetalle {
                 values.put(Util_RegistroFormatos_Detalle.CAMPO_PULLOVER, detalle.getPullover());
                 values.put(Util_RegistroFormatos_Detalle.CAMPO_ABRIGO, detalle.getAbrigo());
                 values.put(Util_RegistroFormatos_Detalle.CAMPO_CHAQUETA, detalle.getChaqueta());
+                values.put(Util_RegistroFormatos_Detalle.CAMPO_FORRADA, detalle.getForrada());
                 values.put(Util_RegistroFormatos_Detalle.CAMPO_DIVERSOS, detalle.getDiversos());
                 values.put(Util_RegistroFormatos_Detalle.CAMPO_ACLIMATADO, detalle.getAclimatado());
                 values.put(Util_RegistroFormatos_Detalle.CAMPO_ZONA_SOMBRA, detalle.getZona_sombra());
@@ -1073,7 +1075,7 @@ public class DAO_RegistroFormatosDetalle {
         } finally {
             if (db != null && db.isOpen()) {
                 db.endTransaction(); // Finalizar la transacción si aún está abierta
-                db.close(); // Cerrar la base de datos
+                //db.close(); // Cerrar la base de datos
             }
         }
     }
@@ -1121,6 +1123,7 @@ public class DAO_RegistroFormatosDetalle {
         values.put(Util_RegistroFormatos_Detalle.CAMPO_PULLOVER, detalle.getPullover());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_ABRIGO, detalle.getAbrigo());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_CHAQUETA, detalle.getChaqueta());
+        values.put(Util_RegistroFormatos_Detalle.CAMPO_FORRADA, detalle.getForrada());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_DIVERSOS, detalle.getDiversos());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_ACLIMATADO, detalle.getAclimatado());
         values.put(Util_RegistroFormatos_Detalle.CAMPO_ZONA_SOMBRA, detalle.getZona_sombra());
@@ -1322,7 +1325,7 @@ public class DAO_RegistroFormatosDetalle {
 
         Long idResultante = db.insert(Util_RegistroFormatos_Detalle.TABLA_REGISTRO_DETALLE, Util_RegistroFormatos_Detalle.CAMPO_ID_FORMATO_REG_DETALLE,values);
 
-        db.close();
+        //db.close();
     }
     /*public List<String> obtener_CodEquipos(){
         List<String> codigosList = new ArrayList<>();
@@ -1386,8 +1389,8 @@ public class DAO_RegistroFormatosDetalle {
                         cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos_Detalle.CAMPO_PANTALON)),
                         cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos_Detalle.CAMPO_PULLOVER)),
                         cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos_Detalle.CAMPO_ABRIGO)),
-                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos_Detalle.CAMPO_FORRADA)),
                         cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos_Detalle.CAMPO_CHAQUETA)),
+                        cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos_Detalle.CAMPO_FORRADA)),
                         cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos_Detalle.CAMPO_DIVERSOS)),
                         cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos_Detalle.CAMPO_ACLIMATADO)),
                         cursor.getString(cursor.getColumnIndex(Util_RegistroFormatos_Detalle.CAMPO_ZONA_SOMBRA)),
@@ -1591,7 +1594,7 @@ public class DAO_RegistroFormatosDetalle {
             }while (cursor.moveToNext());
         }
         cursor.close();
-        db.close();
+        //db.close();
         return detalle;
     }
     public RegistroFormatos_Detalle Buscar_Id_Registro(String id_registro){
@@ -1847,7 +1850,7 @@ public class DAO_RegistroFormatosDetalle {
             }while (cursor.moveToNext());
         }
         cursor.close();
-        db.close();
+        //db.close();
         return detalle;
     }
     public void actualizarRegistro(int idRegistro, Map<String, Object> camposAActualizar) {
@@ -1867,7 +1870,7 @@ public class DAO_RegistroFormatosDetalle {
         }
         cambiarEstadoSincronizacion(idRegistro,false);
         db.update(Util_RegistroFormatos_Detalle.TABLA_REGISTRO_DETALLE, valores, Util_RegistroFormatos_Detalle.CAMPO_ID_PLAN_TRABAJO_FORMATO_REG+ "=?", new String[]{String.valueOf(idRegistro)});
-        db.close();
+        //db.close();
     }
     public void cambiarEstadoSincronizacion(int idRegistro, Boolean estadoSincronizacion) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();

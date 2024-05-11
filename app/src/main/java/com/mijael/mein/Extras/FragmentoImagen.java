@@ -226,7 +226,12 @@ public class FragmentoImagen extends DialogFragment {
         String imageFileName = "JPEG_" + timeStamp + "_";
 
         // Obtiene el directorio de almacenamiento externo
-        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        //File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        // Especifica el directorio de almacenamiento DCIM
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "Camera");
+        if (!storageDir.exists()) {
+            storageDir.mkdirs(); // Crea el directorio si no existe
+        }
 
         // Crea el archivo de imagen
         File imageFile = File.createTempFile(

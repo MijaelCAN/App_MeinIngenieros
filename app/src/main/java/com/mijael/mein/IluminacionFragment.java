@@ -625,8 +625,10 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 Log.e("exitoso", "se inserto el registro");
                                 // Mostrar el JSON en el log
-                                File imageFile = new File(uri.getEncodedPath());
-                                config.uploadImage(imageFile, cod_formato,id_pt_trabajo,cod_registro);
+                                if(uri!=null){
+                                    File imageFile = new File(uri.getEncodedPath());
+                                    config.uploadImage(imageFile, cod_formato,id_pt_trabajo,cod_registro);
+                                }
                                 Log.e("JSON", cadenaJson);
                                 Log.e("Respuesta",response.toString());
                             }
@@ -882,7 +884,15 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
         tipoArea.setText(registros.getTipo_tarea_visual());
         nivelMinimo.setText(registros.getNivel_min_ilu());
 
-        fechaMonitoreo.setText(registros.getFec_monitoreo());
+
+        String fecha = "";
+        if (!registros.getFec_monitoreo().isEmpty()) {
+            /*String[] fec = registros.getFec_monitoreo().split(" ");
+            String[] nueva_fec = fec[0].split("-");
+            fecha = nueva_fec[0] + "/" + nueva_fec[1] + "/" + nueva_fec[2];*/
+            fecha = config.convertirFecha2(registros.getFec_monitoreo());
+        }
+        fechaMonitoreo.setText(fecha);
         hora_monitoreo.setText(registros.getHora_inicial());
 
         int indice3 = Arrays.asList(arrayT_Ilu).indexOf(detalles.getTipo_iluminacion());

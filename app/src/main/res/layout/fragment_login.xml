@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,20 +12,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="190dp"
         android:text="Bienvenido a"
-        android:textColor="#FFFFFF"/>
+        android:textColor="#FFFFFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
     <TextView
         android:id="@+id/name_empresa"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="170dp"
+        android:layout_marginTop="10dp"
         android:text="MEIN Ingenieros"
         android:textStyle="bold"
         android:textSize="35dp"
         android:fontFamily="sans-serif-light"
-        android:textColor="#FFFFFF"/>
+        android:textColor="#FFFFFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titulo"/>
     <!--<ImageView
         android:id="@+id/logoImageView"
         android:layout_width="120dp"
@@ -39,7 +45,7 @@
 
     <EditText
         android:id="@+id/username"
-        android:layout_width="match_parent"
+        android:layout_width="400dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/name_empresa"
         android:layout_marginTop="120dp"
@@ -48,11 +54,14 @@
         android:textColor="@color/blanco_claro"
         android:textColorHint="@color/blanco_claro"
         android:background="@drawable/hexagonal_border"
-        android:padding="10dp"/>
+        android:padding="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/name_empresa"/>
 
     <EditText
         android:id="@+id/password"
-        android:layout_width="match_parent"
+        android:layout_width="400dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/username"
         android:layout_marginTop="16dp"
@@ -61,7 +70,10 @@
         android:textColor="@color/blanco_claro"
         android:textColorHint="@color/blanco_claro"
         android:background="@drawable/hexagonal_border"
-        android:padding="10dp"/>
+        android:padding="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/username"/>
     <ImageView
         android:id="@+id/password_toggle"
         android:layout_width="wrap_content"
@@ -71,7 +83,9 @@
         android:layout_alignEnd="@id/password"
         android:padding="8dp"
         android:src="@drawable/ic_visibility"
-        android:contentDescription="@string/visibility_toggle_description"/>
+        android:contentDescription="@string/visibility_toggle_description"
+        app:layout_constraintEnd_toEndOf="@+id/password"
+        app:layout_constraintBottom_toBottomOf="@+id/password"/>
     <CheckBox
         android:id="@+id/remember_me"
         android:layout_width="300dp"
@@ -80,18 +94,26 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="6dp"
         android:text="Recuérdame"
-        android:textColor="#FFFFFF" />
+        android:textColor="#FFFFFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/password"
+        app:layout_constraintHorizontal_bias="0.5"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/login_button"
-        android:layout_width="match_parent"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/remember_me"
         android:layout_marginTop="4dp"
         android:text="Iniciar Sesión"
         android:background="@drawable/style_border"
         android:textColor="#FFFFFF"
-        android:padding="12dp" />
+        android:padding="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/remember_me"
+        app:layout_constraintHorizontal_bias="0.5"/>
 
     <TextView
         android:id="@+id/forgotPasswordTextView"
@@ -101,7 +123,11 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
         android:text="¿Olvidaste tu contraseña?"
-        android:textColor="#FFFFFF"/>
+        android:textColor="#FFFFFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/login_button"
+        app:layout_constraintHorizontal_bias="0.5"/>
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_actualizar"
         android:layout_width="150dp"
@@ -111,5 +137,9 @@
         android:text="@string/name_update"
         android:textColor="@color/blanco_claro"
         android:background="@drawable/style_1"
-        android:visibility="gone"/>
-</RelativeLayout>
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/forgotPasswordTextView"
+        app:layout_constraintHorizontal_bias="0.5"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

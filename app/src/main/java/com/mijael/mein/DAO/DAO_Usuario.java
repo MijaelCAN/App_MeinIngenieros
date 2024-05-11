@@ -43,7 +43,7 @@ public class DAO_Usuario {
             }while (cursor.moveToNext());
         }
         cursor.close();
-        db.close();
+        //db.close();
         return listaUsuarios;
     }
     public void ActualizarUsuario(Usuario usuario) {
@@ -71,7 +71,7 @@ public class DAO_Usuario {
             Log.d("TAG-D", "USUARIO actualizado en la base de datos local");
         }
 
-        db.close();
+        //db.close();
     }
     public int contarUsuarios() {
         SQLiteDatabase db = dataHelper.getReadableDatabase();
@@ -90,7 +90,7 @@ public class DAO_Usuario {
                 cursor.close();
             }
             if (db != null && db.isOpen()) {
-                db.close(); // Cerrar la base de datos si está abierta
+                //db.close(); // Cerrar la base de datos si está abierta
             }
         }
         return count;
@@ -129,7 +129,7 @@ public class DAO_Usuario {
         } finally {
             if (db != null && db.isOpen()) {
                 db.endTransaction(); // Finalizar la transacción si aún está abierta
-                db.close(); // Cerrar la base de datos
+                //db.close(); // Cerrar la base de datos
             }
         }
     }
@@ -173,7 +173,7 @@ public class DAO_Usuario {
         } else {
             Log.d("TAG-D", "USAURIO insertado en la base de datos local");
         }
-        database.close();
+        //database.close();
     }
     public Usuario BuscarUsuario(String user, String pass) {
         Usuario usuario = null;
@@ -206,7 +206,7 @@ public class DAO_Usuario {
             );
         }
         cursor.close();
-        db.close();
+        //db.close();
         return usuario;
     }
 
@@ -231,7 +231,7 @@ public class DAO_Usuario {
             }while (cursor.moveToNext());
         }
         cursor.close();
-        db.close();
+        //db.close();
         return usuario;
     }
 }

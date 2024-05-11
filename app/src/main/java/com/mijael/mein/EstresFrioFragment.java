@@ -203,7 +203,7 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
         spn_ingestaBebidas.setAdapter(config.LlenarSpinner(arraySINO));
         spn_CapacRiesgosExpo.setAdapter(config.LlenarSpinner(arraySINO));
 
-        if(registros!=null){
+        if(detalles!=null){
             SelctSpinner();
         }
 
@@ -932,8 +932,10 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 Log.e("exitoso", "se inserto el registro");
-                                File imageFile = new File(uri.getEncodedPath());
-                                config.uploadImage(imageFile, cod_formato,id_pt_trabajo,cod_registro);
+                                if(uri!=null){
+                                    File imageFile = new File(uri.getEncodedPath());
+                                    config.uploadImage(imageFile, cod_formato,id_pt_trabajo,cod_registro);
+                                }
                                 // Mostrar el JSON en el log
                                 Log.e("JSON", cadenaJson);
                                 Log.e("Respuesta",response.toString());
@@ -1299,9 +1301,10 @@ public class EstresFrioFragment extends Fragment implements FragmentoImagen.Imag
         }
         String fecha = "";
         if (!registros.getFec_monitoreo().isEmpty()) {
-            String[] fec = registros.getFec_monitoreo().split(" ");
+            /*String[] fec = registros.getFec_monitoreo().split(" ");
             String[] nueva_fec = fec[0].split("-");
-            fecha = nueva_fec[0] + "/" + nueva_fec[1] + "/" + nueva_fec[2];
+            fecha = nueva_fec[0] + "/" + nueva_fec[1] + "/" + nueva_fec[2];*/
+            fecha = config.convertirFecha2(registros.getFec_monitoreo());
         }
         tv_fechaMonitoreo.setText(fecha);
         tv_horaInicioMoni.setText(registros.getHora_inicial());

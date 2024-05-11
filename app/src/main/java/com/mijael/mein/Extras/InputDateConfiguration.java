@@ -253,7 +253,7 @@ public class InputDateConfiguration {
             SimpleDateFormat formatoEntrada = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
             try {
                 Date fechadate = formatoEntrada.parse(fechaEntradaStr);
-                SimpleDateFormat formatoSalida = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault());
+                SimpleDateFormat formatoSalida = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault());
                 fechaSalidaStr = formatoSalida.format(fechadate);
                 //tv_mostarFecha.setText(String.valueOf(fechaSalidaStr));
 
@@ -262,6 +262,23 @@ public class InputDateConfiguration {
             }
         }
         return fechaSalidaStr;
+    }
+    public String convertirFecha2(String fechaOriginal) {
+        String fechaFormateada = "";
+        try {
+            // Define el formato de la fecha original
+            SimpleDateFormat formatoOriginal = new SimpleDateFormat("yyyy-MM-dd");
+            // Parsea la fecha original al formato Date
+            Date date = formatoOriginal.parse(fechaOriginal);
+
+            // Define el nuevo formato de la fecha
+            SimpleDateFormat formatoNuevo = new SimpleDateFormat("dd/MM/yyyy");
+            // Formatea la fecha Date al nuevo formato
+            fechaFormateada = formatoNuevo.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return fechaFormateada;
     }
     public void mostrarOpcionesGone(RadioGroup group, int checkedId, CardView card, RadioButton radio) {
         if (checkedId == radio.getId()) {

@@ -86,7 +86,7 @@ public class DAO_OrdenTrabajo {
             Log.d("TAG-D", "ORDEN TRABAJO actualizado en la base de datos local");
         }
 
-        db.close();
+        //db.close();
     }
     public int contarOrdenes() {
         SQLiteDatabase db = databaseHelper.getReadableDatabase();
@@ -105,7 +105,7 @@ public class DAO_OrdenTrabajo {
                 cursor.close();
             }
             if (db != null && db.isOpen()) {
-                db.close(); // Cerrar la base de datos si está abierta
+                //db.close(); // Cerrar la base de datos si está abierta
             }
         }
         return count;
@@ -146,7 +146,7 @@ public class DAO_OrdenTrabajo {
         } finally {
             if (db != null && db.isOpen()) {
                 db.endTransaction(); // Finalizar la transacción si aún está abierta
-                db.close(); // Cerrar la base de datos
+                //db.close(); // Cerrar la base de datos
             }
         }
     }
@@ -192,7 +192,7 @@ public class DAO_OrdenTrabajo {
         } else {
             Log.d("TAG-D", "ORDEN TRABAJO insertado en la base de datos local");
         }
-        database.close();
+        //database.close();
     }
     public Orden_Trabajo BuscarOrden(String cod_OT) {
         Orden_Trabajo orden = null;
@@ -229,7 +229,7 @@ public class DAO_OrdenTrabajo {
             );
         }
         cursor.close();
-        db.close();
+        //db.close();
         return orden;
     }
 }

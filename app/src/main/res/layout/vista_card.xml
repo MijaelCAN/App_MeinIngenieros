@@ -8,7 +8,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
-        app:cardCornerRadius="8dp">
+        app:cardCornerRadius="8dp"
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="35dp">
         <LinearLayout
             android:id="@+id/idCard"
             android:layout_width="match_parent"
@@ -33,7 +35,7 @@
                         android:layout_height="wrap_content"
                         android:text="OT_001_761_2023"
                         android:textStyle="bold"
-                        android:textSize="16sp"
+                        android:textSize="18sp"
                         android:textColor="@color/generic_color"/>
                 </LinearLayout>
                 <LinearLayout

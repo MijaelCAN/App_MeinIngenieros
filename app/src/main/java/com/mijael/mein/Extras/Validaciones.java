@@ -2,6 +2,8 @@ package com.mijael.mein.Extras;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -185,4 +187,9 @@ public class Validaciones {
             }
         }).start();
     }*/
+    public boolean isOnline(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnected();
+    }
 }
