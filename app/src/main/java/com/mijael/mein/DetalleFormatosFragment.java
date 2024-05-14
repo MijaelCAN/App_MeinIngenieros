@@ -28,6 +28,7 @@ import androidx.work.WorkManager;
 import androidx.work.Worker;
 
 import com.github.barteksc.pdfviewer.PDFView;
+import com.google.gson.Gson;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.colors.DeviceRgb;
@@ -46,18 +47,29 @@ import com.mijael.mein.DAO.DAO_FormatosTrabajo;
 import com.mijael.mein.DAO.DAO_RegistroFormatos;
 import com.mijael.mein.DAO.DAO_RegistroFormatosDetalle;
 import com.mijael.mein.Entidades.Formatos_Trabajo;
+import com.mijael.mein.Entidades.Orden_Trabajo;
 import com.mijael.mein.Entidades.RegistroFormatos;
 import com.mijael.mein.Entidades.RegistroFormatos_Detalle;
 import com.mijael.mein.Extras.InputDateConfiguration;
 import com.mijael.mein.Extras.Validaciones;
+import com.mijael.mein.GET.ApiRegistroFormatosDetalleService;
+import com.mijael.mein.GET.ApiRegistroFormatosService;
+import com.mijael.mein.SERVICIOS.RegistrosFormatosService;
+import com.mijael.mein.SERVICIOS.RegistrosFormatos_DetalleService;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DetalleFormatosFragment extends Fragment {
 
@@ -77,12 +89,19 @@ public class DetalleFormatosFragment extends Fragment {
     InputDateConfiguration config;
     DAO_RegistroFormatos dao_registroFormatos;
     DAO_RegistroFormatosDetalle dao_registroDetalle;
+    RegistrosFormatosService formatosService;
+    RegistrosFormatos_DetalleService detalleService;
+    RegistroFormatos registro_api;
+    RegistroFormatos_Detalle detalle_api;
     private static final int SYNC_INTERVAL_MIN = 15;
     Bundle bundle;
     public DetalleFormatosFragment() {
         // Required empty public constructor
         dao_registroFormatos = new DAO_RegistroFormatos(getActivity());
         dao_registroDetalle = new DAO_RegistroFormatosDetalle(getActivity());
+        formatosService = ApiRegistroFormatosService.getInstance().getRegistrosFormatosService();
+        detalleService = ApiRegistroFormatosDetalleService.getInstance().getRegistrosFormatos_detalleService();
+        registro_api = new RegistroFormatos();
         bundle = new Bundle();
     }
     Validaciones validar = new Validaciones();
@@ -102,8 +121,7 @@ public class DetalleFormatosFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_detalle_formatos, container, false);
 
@@ -112,18 +130,38 @@ public class DetalleFormatosFragment extends Fragment {
         btn_subirDatos = rootView.findViewById(R.id.btn_subirDatosDet);
         btn_subirDatosReg = rootView.findViewById(R.id.btn_subirDatosReg);
         ConfigPantalla();
-
-
         //texto.setText("Lista de Registros de " + nom_formato);
 
-        ArrayList<HashMap<String, String>> resultList = dao_registroFormatos.getListCantidadFormatoId(Integer.parseInt(id_pt_trabajo));
+        if(validar.isOnline(getContext())){
+            Map<String, String> requestBody = new HashMap<>();
+            requestBody.put("id_pt_trabajo", id_pt_trabajo);
+            Call<ArrayList<HashMap<String,String>>> call = formatosService.getRegistrosFormatosById(requestBody);
+            call.enqueue(new Callback<ArrayList<HashMap<String, String>>>() {
+                @Override
+                public void onResponse(Call<ArrayList<HashMap<String, String>>> call, Response<ArrayList<HashMap<String, String>>> response) {
+                    ArrayList<HashMap<String, String>> resultList = response.body();
+                    int cantidadRegistros = resultList.size();
+                    Log.e("sdfgdf", String.valueOf(cantidadRegistros));
+                    for(int i = 0; i < cantidadRegistros; i++){
+                        MostrarFOrmatos(resultList,inflater,i);
+                    }
+                }
 
-        int cantidadRegistros = resultList.size();
-        Log.e("sdfgdf", String.valueOf(cantidadRegistros));
-        for(int i = 0; i < cantidadRegistros; i++){
-            MostrarFOrmatos(resultList,inflater,i);
+                @Override
+                public void onFailure(Call<ArrayList<HashMap<String, String>>> call, Throwable t) {
+
+                }
+            });
         }
+        else{
+            ArrayList<HashMap<String, String>> resultList = dao_registroFormatos.getListCantidadFormatoId(Integer.parseInt(id_pt_trabajo));
 
+            int cantidadRegistros = resultList.size();
+            Log.e("sdfgdf", String.valueOf(cantidadRegistros));
+            for(int i = 0; i < cantidadRegistros; i++){
+                MostrarFOrmatos(resultList,inflater,i);
+            }
+        }
         return rootView;
     }
 
@@ -154,94 +192,76 @@ public class DetalleFormatosFragment extends Fragment {
 
 
         PDFView pdfView = ViewPdf.findViewById(R.id.pdfView);
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("id_plan_trabajo_formato_reg", idregistro);
         tv_pdf.setOnClickListener(new View.OnClickListener() {
-            RegistroFormatos reg = dao_registroFormatos.Buscar(idregistro);
-            RegistroFormatos_Detalle reg_detalle = dao_registroDetalle.Buscar_Id_Registro(String.valueOf(reg.id_plan_trabajo_formato_reg));
             @Override
             public void onClick(View v) {
-                String pdfFileName = reg.getCod_registro() + ".pdf";
-                File pdfFile = new File(requireActivity().getExternalFilesDir(null), pdfFileName);
-                String pdfFilePath = pdfFile.getAbsolutePath();
+                if(validar.isOnline(getContext())){
 
-                // Verificar si el archivo existente debe ser eliminado
-                if (pdfFile.exists()) {
-                    // Eliminar el archivo existente
-                    if (pdfFile.delete()) {
-                        Log.d("PDF", "Archivo existente eliminado");
-                    } else {
-                        Log.d("PDF", "No se pudo eliminar el archivo existente");
-                    }
+                    Call<Map<String,Object>> call = formatosService.getRegistroFormatosById(requestBody);
+                    call.enqueue(new Callback<Map<String, Object>>() {
+                        @Override
+                        public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
+                            Map<String,Object> responseData = response.body();
+                            if(responseData!=null){
+                                Gson gson = new Gson();
+                                RegistroFormatos reg = gson.fromJson(gson.toJsonTree(responseData.get("plan_trabajo_formato_reg")), RegistroFormatos.class);
+                                RegistroFormatos_Detalle reg_detalle = gson.fromJson(gson.toJsonTree(responseData.get("plan_trabajo_formato_reg_detalle")), RegistroFormatos_Detalle.class);
+
+
+                                generateCombinedPDF(reg,reg_detalle);
+                            }else{
+                                Log.e("rrrr","ENTRO AQUI");
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Map<String, Object>> call, Throwable t) {
+                            Log.e("Error de API", "Error al realizar la llamada a la API: " + t.getMessage());
+                        }
+                    });
+
                 }
-                AlertDialog.Builder builder;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    builder = new AlertDialog.Builder(getContext(), android.R.style.Theme_Material_Dialog_Alert);
-                } else {
-                    builder = new AlertDialog.Builder(getContext());
-                }
-                // Crear el archivo PDF
-                if(reg.getId_formato()==1){ // Dosimetria
-                    generarPdf_Dosimetria(pdfFile,pdfFilePath,reg,reg_detalle);
-                } else if (reg.getId_formato()==2) { // Sonometria
-                    generarPdf_Sonometria(pdfFile,pdfFilePath,reg,reg_detalle);
-                }else if (reg.getId_formato()==3) { // Iluminacion
-                    generarPdf_Iluminacion(pdfFile,pdfFilePath,reg,reg_detalle);
-                }else if (reg.getId_formato()==4) { //ESTRES POR FRIO
-                    generarPdf_EstresFrio(pdfFile,pdfFilePath,reg,reg_detalle);
-                }else if (reg.getId_formato()==5) { // ESTRES TERMICO
-                    generarPdf_EstresTermico(pdfFile,pdfFilePath,reg,reg_detalle);
-                }else if (reg.getId_formato()==6) { // CONFORT TERMICO
-                    generarPdf_ConfortTermico(pdfFile,pdfFilePath,reg,reg_detalle);
-                }else if (reg.getId_formato()==7) { // Radiacion UV
-                    generarPdf_RadiacionUV(pdfFile,pdfFilePath,reg,reg_detalle);
-                }else if (reg.getId_formato()==8) { // Vibracion
-                    generarPdf_Vibracion(pdfFile,pdfFilePath,reg,reg_detalle);
-                }else if (reg.getId_formato()==9) {// Radiacion Electromanetico
-                    generarPdf_RadiacionElectro(pdfFile,pdfFilePath,reg,reg_detalle);
-                }else if (reg.getId_formato()==29) {// Humedad Relativa
-                    generarPdf_HumedadRelativa(pdfFile,pdfFilePath,reg,reg_detalle);
-                }else if (reg.getId_formato()==31) {// Velocidad del Aire
-                    generarPdf_VelocidadAire(pdfFile,pdfFilePath,reg,reg_detalle);
+                else{
+                    RegistroFormatos reg = dao_registroFormatos.Buscar(idregistro);
+                    RegistroFormatos_Detalle reg_detalle = dao_registroDetalle.Buscar_Id_Registro(String.valueOf(reg.id_plan_trabajo_formato_reg));
+                    generateCombinedPDF(reg,reg_detalle);
                 }
             }
         });
         tv_editar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RegistroFormatos reg = dao_registroFormatos.Buscar(idregistro);
-                RegistroFormatos_Detalle detalle = dao_registroDetalle.Buscar_Id_Registro(String.valueOf(reg.id_plan_trabajo_formato_reg));
-                if(reg.id_formato==1){
-                    Fragment dosimetria = new DosimetriaFragment();//INSTANCIA DEL FRAGMENTO A DONDE QUIERO IR
-                    AbrirFormato(dosimetria, reg,detalle);
-                } else if (reg.id_formato==2) {
-                    Fragment sonometria = new SonometriaFragment();
-                    AbrirFormato(sonometria,reg,detalle);
-                } else if (reg.id_formato==3) {
-                    Fragment iluminacion = new IluminacionFragment();
-                    AbrirFormato(iluminacion,reg,detalle);
-                } else if (reg.id_formato==4) {
-                    Fragment estresfrio = new EstresFrioFragment();
-                    AbrirFormato(estresfrio,reg,detalle);
-                } else if (reg.id_formato==5) {
-                    Fragment estresTermico = new EstresTermicoFragment();
-                    AbrirFormato(estresTermico,reg,detalle);
-                } else if (reg.id_formato==6) {
-                    Fragment confort = new ConfortTermicoFragment();
-                    AbrirFormato(confort,reg,detalle);
-                } else if (reg.id_formato == 7) {
-                    Fragment radiacionUV = new RadiacionUvFragment();
-                    AbrirFormato(radiacionUV,reg,detalle);
-                } else if (reg.id_formato == 8) {
-                    Fragment vibracion = new VibracionFragment();
-                    AbrirFormato(vibracion,reg,detalle);
-                } else if (reg.id_formato == 9) {
-                    Fragment rad_electro = new RadiacionElectromagneticaFragment();
-                    AbrirFormato(rad_electro,reg,detalle);
-                } else if (reg.id_formato==29) {
-                    Fragment humedad = new HumedadRelativaFragment();
-                    AbrirFormato(humedad,reg,detalle);
-                } else if (reg.id_formato ==31) {
-                    Fragment velocidad = new VelocidadAireFragment();
-                    AbrirFormato(velocidad, reg,detalle);
+
+                if(validar.isOnline(getContext())){
+                    Call<Map<String,Object>> call = formatosService.getRegistroFormatosById(requestBody);
+                    call.enqueue(new Callback<Map<String, Object>>() {
+                        @Override
+                        public void onResponse(Call<Map<String, Object>> call, Response<Map<String, Object>> response) {
+                            Map<String,Object> responseData = response.body();
+                            if(responseData!=null){
+                                Gson gson = new Gson();
+                                RegistroFormatos reg = gson.fromJson(gson.toJsonTree(responseData.get("plan_trabajo_formato_reg")), RegistroFormatos.class);
+                                RegistroFormatos_Detalle reg_detalle = gson.fromJson(gson.toJsonTree(responseData.get("plan_trabajo_formato_reg_detalle")), RegistroFormatos_Detalle.class);
+
+
+                                generateEditFormatos(reg,reg_detalle);
+                            }else{
+                                Log.e("rrrr","ENTRO AQUI");
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Map<String, Object>> call, Throwable t) {
+
+                        }
+                    });
+                }
+                else {
+                    RegistroFormatos reg = dao_registroFormatos.Buscar(idregistro);
+                    RegistroFormatos_Detalle detalle = dao_registroDetalle.Buscar_Id_Registro(String.valueOf(reg.id_plan_trabajo_formato_reg));
+                    generateEditFormatos(reg,detalle);
                 }
 
                 /*RegistroFormatos reg = dao_registroFormatos.Buscar(idregistro);
@@ -3528,6 +3548,97 @@ public class DetalleFormatosFragment extends Fragment {
                 .replace(R.id.fragmentContainerView, nuevo)
                 .addToBackStack(null) // Si deseas agregar la transacción a la pila de retroceso
                 .commit();
+    }
+
+    private void checkAndGeneratePDF(RegistroFormatos registro, RegistroFormatos_Detalle detalle) {
+        // Verifica si ambos conjuntos de datos están disponibles para generar el PDF
+        Log.e("ALERTA1","Entro a Gnerar PDF");
+        if (registro != null && detalle != null) {
+            // Genera el PDF combinando los datos de ambas entidades
+            generateCombinedPDF(registro, detalle);
+        }
+    }
+    private void generateCombinedPDF(RegistroFormatos registro, RegistroFormatos_Detalle detalle) {
+        Log.e("ALERTA1","Entro a Gnerar PDF Conbinado");
+        String pdfFileName = registro.getCod_registro() + ".pdf";
+        File pdfFile = new File(requireActivity().getExternalFilesDir(null), pdfFileName);
+        String pdfFilePath = pdfFile.getAbsolutePath();
+
+        // Verificar si el archivo existente debe ser eliminado
+        if (pdfFile.exists()) {
+            // Eliminar el archivo existente
+            if (pdfFile.delete()) {
+                Log.d("PDF", "Archivo existente eliminado");
+            } else {
+                Log.d("PDF", "No se pudo eliminar el archivo existente");
+            }
+        }
+        AlertDialog.Builder builder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder = new AlertDialog.Builder(getContext(), android.R.style.Theme_Material_Dialog_Alert);
+        } else {
+            builder = new AlertDialog.Builder(getContext());
+        }
+        // Crear el archivo PDF
+        if(registro.getId_formato()==1){ // Dosimetria
+            generarPdf_Dosimetria(pdfFile,pdfFilePath, registro, detalle);
+        } else if (registro.getId_formato()==2) { // Sonometria
+            generarPdf_Sonometria(pdfFile,pdfFilePath, registro, detalle);
+        }else if (registro.getId_formato()==3) { // Iluminacion
+            generarPdf_Iluminacion(pdfFile,pdfFilePath, registro, detalle);
+        }else if (registro.getId_formato()==4) { //ESTRES POR FRIO
+            generarPdf_EstresFrio(pdfFile,pdfFilePath, registro, detalle);
+        }else if (registro.getId_formato()==5) { // ESTRES TERMICO
+            generarPdf_EstresTermico(pdfFile,pdfFilePath, registro, detalle);
+        }else if (registro.getId_formato()==6) { // CONFORT TERMICO
+            generarPdf_ConfortTermico(pdfFile,pdfFilePath, registro, detalle);
+        }else if (registro.getId_formato()==7) { // Radiacion UV
+            generarPdf_RadiacionUV(pdfFile,pdfFilePath, registro, detalle);
+        }else if (registro.getId_formato()==8) { // Vibracion
+            generarPdf_Vibracion(pdfFile,pdfFilePath, registro, detalle);
+        }else if (registro.getId_formato()==9) {// Radiacion Electromanetico
+            generarPdf_RadiacionElectro(pdfFile,pdfFilePath, registro, detalle);
+        }else if (registro.getId_formato()==29) {// Humedad Relativa
+            generarPdf_HumedadRelativa(pdfFile,pdfFilePath, registro, detalle);
+        }else if (registro.getId_formato()==31) {// Velocidad del Aire
+            generarPdf_VelocidadAire(pdfFile,pdfFilePath, registro, detalle);
+        }
+    }
+    private void generateEditFormatos(RegistroFormatos reg, RegistroFormatos_Detalle detalle){
+        if(reg.id_formato==1){
+            Fragment dosimetria = new DosimetriaFragment();//INSTANCIA DEL FRAGMENTO A DONDE QUIERO IR
+            AbrirFormato(dosimetria, reg,detalle);
+        } else if (reg.id_formato==2) {
+            Fragment sonometria = new SonometriaFragment();
+            AbrirFormato(sonometria,reg,detalle);
+        } else if (reg.id_formato==3) {
+            Fragment iluminacion = new IluminacionFragment();
+            AbrirFormato(iluminacion,reg,detalle);
+        } else if (reg.id_formato==4) {
+            Fragment estresfrio = new EstresFrioFragment();
+            AbrirFormato(estresfrio,reg,detalle);
+        } else if (reg.id_formato==5) {
+            Fragment estresTermico = new EstresTermicoFragment();
+            AbrirFormato(estresTermico,reg,detalle);
+        } else if (reg.id_formato==6) {
+            Fragment confort = new ConfortTermicoFragment();
+            AbrirFormato(confort,reg,detalle);
+        } else if (reg.id_formato == 7) {
+            Fragment radiacionUV = new RadiacionUvFragment();
+            AbrirFormato(radiacionUV,reg,detalle);
+        } else if (reg.id_formato == 8) {
+            Fragment vibracion = new VibracionFragment();
+            AbrirFormato(vibracion,reg,detalle);
+        } else if (reg.id_formato == 9) {
+            Fragment rad_electro = new RadiacionElectromagneticaFragment();
+            AbrirFormato(rad_electro,reg,detalle);
+        } else if (reg.id_formato==29) {
+            Fragment humedad = new HumedadRelativaFragment();
+            AbrirFormato(humedad,reg,detalle);
+        } else if (reg.id_formato ==31) {
+            Fragment velocidad = new VelocidadAireFragment();
+            AbrirFormato(velocidad, reg,detalle);
+        }
     }
 }
 

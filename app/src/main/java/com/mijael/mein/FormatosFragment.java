@@ -24,10 +24,19 @@ import android.widget.TextView;
 
 import com.mijael.mein.DAO.DAO_FormatosTrabajo;
 import com.mijael.mein.Entidades.Formatos_Trabajo;
+import com.mijael.mein.Extras.Validaciones;
+import com.mijael.mein.GET.ApiFormatosService;
 import com.mijael.mein.HELPER.MeinSQLiteHelper;
+import com.mijael.mein.SERVICIOS.FormatosService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FormatosFragment extends Fragment {
     TextView tv_total, tv_porRealizar, tv_Realizado, tv_empresa, tv_formato, Num_orden;
@@ -36,7 +45,9 @@ public class FormatosFragment extends Fragment {
     View cardViewLayout, rootView;
     CardView cardView;
     LinearLayout linearLayout;
+    FormatosService formatosService;
     List<Formatos_Trabajo> formatos_trabajoList;
+    Validaciones validar;
     String idColaborador;
     Bundle bundle;
     ProgressBar progressBar;
@@ -44,6 +55,8 @@ public class FormatosFragment extends Fragment {
     private MeinSQLiteHelper dataHelper;
     public FormatosFragment(Context context) {
         dataHelper = MeinSQLiteHelper.getInstance(context);
+        formatosService = ApiFormatosService.getInstance().getFormatosService();
+        validar = new Validaciones();
     }
 
 
@@ -101,13 +114,37 @@ public class FormatosFragment extends Fragment {
         Num_orden.setText(numero_orden);
         tv_empresa.setText(nombre_empresa);
 
-        DAO_FormatosTrabajo dao_fromatosTrabajo = new DAO_FormatosTrabajo(getActivity());
-        formatos_trabajoList = dao_fromatosTrabajo.obtenerFormatosTrabajo(parseInt(id_plan_trabajo));
-        Log.e("NUEVA3",id_plan_trabajo);
+        if(validar.isOnline(getActivity())){
+            Map<String, String> requestBody = new HashMap<>();
+            requestBody.put("id_plan_Trabajo", id_plan_trabajo);
 
-        // aqui el metodo Mostrar
-        for (Formatos_Trabajo registro : formatos_trabajoList) {
-            MostrarFOrmatos(registro, inflater);
+            Call<List<Formatos_Trabajo>> call = formatosService.getFormatosTrabajobyId(requestBody);
+            call.enqueue(new Callback<List<Formatos_Trabajo>>() {
+                @Override
+                public void onResponse(Call<List<Formatos_Trabajo>> call, Response<List<Formatos_Trabajo>> response) {
+                    if(response.isSuccessful()){
+                        formatos_trabajoList = response.body();
+                        for (Formatos_Trabajo registro : formatos_trabajoList) {
+                            MostrarFOrmatos(registro, inflater);
+                        }
+                    }else{
+                        Log.e("info: ", "No trajo datos del Servidor");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<Formatos_Trabajo>> call, Throwable t) {
+                    Log.e("Error de API", "Error al realizar la llamada a la API: " + t.getMessage());
+                }
+            });
+        }
+        else{
+            DAO_FormatosTrabajo dao_fromatosTrabajo = new DAO_FormatosTrabajo(getActivity());
+            formatos_trabajoList = dao_fromatosTrabajo.obtenerFormatosTrabajo(parseInt(id_plan_trabajo));
+            // aqui el metodo Mostrar
+            for (Formatos_Trabajo registro : formatos_trabajoList) {
+                MostrarFOrmatos(registro, inflater);
+            }
         }
 
         return rootView;

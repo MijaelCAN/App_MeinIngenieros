@@ -156,7 +156,9 @@ public class RegistroFormatos implements Parcelable {
     public String fec_eli;
     public int user_eli;
     public boolean estado_sincro;
+    public RegistroFormatos(){
 
+    }
     public RegistroFormatos(int id_plan_trabajo_formato_reg, int id_formato, String cod_registro, String cod_formato, String id_plan_trabajo, String id_pt_formato,
                             int id_analista, String nom_analista, String cod_equipo1, String nom_equipo1, String cod_equipo2, String nom_equipo2, String cod_equipo3,
                             String nom_equipo3, String serie_eq1, String serie_eq2, String serie_eq3, int id_equipo1, int id_equipo2, int id_equipo3, String verf_insitu,

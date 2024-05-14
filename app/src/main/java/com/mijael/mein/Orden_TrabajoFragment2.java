@@ -90,14 +90,6 @@ public class Orden_TrabajoFragment2 extends Fragment {
                 public void onResponse(Call<List<Orden_Trabajo>> call, Response<List<Orden_Trabajo>> response) {
                     if(response.isSuccessful()){
                         ordenesFiltradas = response.body();
-                    /*for (Orden_Trabajo orden : lista_ordenes_api) {
-                        if(orden.getId_colaborador()!=null){
-                            if (orden.getId_colaborador().equals(idColaborador)) {
-                                ordenesFiltradas.add(orden);
-                            }
-
-                        }
-                    }*/
                         for (Orden_Trabajo registro : ordenesFiltradas) { // REEMPLAZAR LA LISTA DEPENDIENDO SI TIENE O NO INTERNET
                             MostrarOrdenes(registro,inflater);
                         }
