@@ -50,6 +50,7 @@ import com.mijael.mein.Extras.Validaciones;
 import com.mijael.mein.SERVICIOS.DosimetriaService;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -513,6 +514,7 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                     String cod_registro;
                     String valorRutaFoto;
                     int id_plan_formato_reg;
+                    int id_plan_trabajo_formato_reg = -1;
 
                     if(registros==null){
                         id_plan_formato_reg = dao_registroFormatos.getRecordIdByPosition() +1;
@@ -524,6 +526,7 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                         valorRutaFoto = uri.getEncodedPath();
                         if(uri!=null){valorRutaFoto = uri.getEncodedPath();}
                     }else {
+                        id_plan_trabajo_formato_reg = registros.getId_plan_trabajo_formato_reg();
                         id_plan_formato_reg = registros.getId_plan_trabajo_formato_reg();
                         fecha_registro = registros.getFec_reg();
                         cod_registro = registros.getCod_registro();
@@ -535,7 +538,7 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                     }
 
                     Iluminacion_Registro cabecera = new Iluminacion_Registro(
-                            -1,
+                            id_plan_trabajo_formato_reg,
                             cod_formato,
                             cod_registro,
                             id_formato,
@@ -623,14 +626,25 @@ public class IluminacionFragment extends Fragment implements FragmentoImagen.Ima
                         call1.enqueue(new Callback<ResponseBody>() {
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                                Log.e("exitoso", "se inserto el registro");
-                                // Mostrar el JSON en el log
-                                if(uri!=null){
-                                    File imageFile = new File(uri.getEncodedPath());
-                                    config.uploadImage(imageFile, cod_formato,id_pt_trabajo,cod_registro);
+                                if (response.isSuccessful()) {
+                                    try {
+                                        // Obtener el mensaje de respuesta del endpoint
+                                        String respuesta = response.body().string();
+                                        Log.e("Respuesta del endpoint", respuesta);
+                                        // Aquí puedes agregar el código adicional que necesites
+                                        if(uri!=null){
+                                            File imageFile = new File(uri.getEncodedPath());
+                                            config.uploadImage(imageFile, cod_formato,id_pt_trabajo,cod_registro);
+                                        }
+                                        // Mostrar el JSON en el log
+                                        Log.e("JSON", cadenaJson);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                } else {
+                                    // Manejar la respuesta de error del servidor
+                                    Log.e("Error en la respuesta", "Código de estado: " + response.code());
                                 }
-                                Log.e("JSON", cadenaJson);
-                                Log.e("Respuesta",response.toString());
                             }
 
                             @Override

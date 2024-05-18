@@ -6,7 +6,7 @@ import java.util.Date;
 
 
 public class Dosimetria_Registro {
-    private int id;
+    private int id_plan_trabajo_formato_reg;
     private String cod_formato;
     private String cod_registro;
     private String id_formato;
@@ -91,8 +91,8 @@ public class Dosimetria_Registro {
         this.var1 = var1;
     }
 
-    public Dosimetria_Registro(int id, String cod_formato, String cod_registro, String id_formato, String id_plan_trabajo, String id_pt_formato, String cod_equipo1, String nom_equipo1, String cod_equipo2, String nom_equipo2, String serie_eq1, String serie_eq2, String id_equipo1, String id_equipo2, String id_analista, String nom_analista, String hora_situ, String nivel, String variacion, String fec_monitoreo, String hora_inicial, String hora_final, String tiempo_exposicion, String jornada, String tipo_doc_trabajador, String num_doc_trabajador, String nom_trabajador, String puesto_trabajador, String area_trabajo, String actividades_realizadas, String edad_trabajador, String ch_ruido_externo, String ch_ruido_antiguo, String ch_ruido_generado_por, String ruido_generado_por, String otro_ruido, String hora_trabajo, String regimen_laboral, String horario_refrigerio, String anio_ocu_cargo, String mes_ocu_cargo, String molestia_oido, String enfermedad_oido, String detalle_enf_oido, String fecha_ultimo_examen, String mes_ultimo_examen, String anio_ultimo_examen, String ctrl_ingenieria, String aislamiento, String techos, String cabinas, String orientacion, String cerramiento, String otro_ingenieria, String ctrl_administrativo, String capacitacion, String senializacion_precion, String senializacion_epp, String rotacion, String adm_tiempo_expo, String otro_administrativo, String tapones_au, String marca_tapones_audi, String modelo_tapones_audi, String nrr_tapones_audi, String orejereas, String marca_orejeras, String modelo_orejeras, String nrr_orejeras, String leq_dba, String lpico_dba, String lmax_dba, String lmin_dba, String observacion, String estado_resultado, String user_reg, String fec_reg, String var1, String ruta_foto) {
-        this.id = id;
+    public Dosimetria_Registro(int id_plan_trabajo_formato_reg, String cod_formato, String cod_registro, String id_formato, String id_plan_trabajo, String id_pt_formato, String cod_equipo1, String nom_equipo1, String cod_equipo2, String nom_equipo2, String serie_eq1, String serie_eq2, String id_equipo1, String id_equipo2, String id_analista, String nom_analista, String hora_situ, String nivel, String variacion, String fec_monitoreo, String hora_inicial, String hora_final, String tiempo_exposicion, String jornada, String tipo_doc_trabajador, String num_doc_trabajador, String nom_trabajador, String puesto_trabajador, String area_trabajo, String actividades_realizadas, String edad_trabajador, String ch_ruido_externo, String ch_ruido_antiguo, String ch_ruido_generado_por, String ruido_generado_por, String otro_ruido, String hora_trabajo, String regimen_laboral, String horario_refrigerio, String anio_ocu_cargo, String mes_ocu_cargo, String molestia_oido, String enfermedad_oido, String detalle_enf_oido, String fecha_ultimo_examen, String mes_ultimo_examen, String anio_ultimo_examen, String ctrl_ingenieria, String aislamiento, String techos, String cabinas, String orientacion, String cerramiento, String otro_ingenieria, String ctrl_administrativo, String capacitacion, String senializacion_precion, String senializacion_epp, String rotacion, String adm_tiempo_expo, String otro_administrativo, String tapones_au, String marca_tapones_audi, String modelo_tapones_audi, String nrr_tapones_audi, String orejereas, String marca_orejeras, String modelo_orejeras, String nrr_orejeras, String leq_dba, String lpico_dba, String lmax_dba, String lmin_dba, String observacion, String estado_resultado, String user_reg, String fec_reg, String var1, String ruta_foto) {
+        this.id_plan_trabajo_formato_reg = id_plan_trabajo_formato_reg;
         this.cod_formato = cod_formato;
         this.cod_registro = cod_registro;
         this.id_formato = id_formato;
@@ -174,11 +174,11 @@ public class Dosimetria_Registro {
     }
 
     public int getId() {
-        return id;
+        return id_plan_trabajo_formato_reg;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setId(int id_plan_trabajo_formato_reg) {
+        this.id_plan_trabajo_formato_reg = id_plan_trabajo_formato_reg;
     }
 
     public String getCod_formato() {

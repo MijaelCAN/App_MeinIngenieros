@@ -676,6 +676,7 @@ public class ConfortTermicoFragment extends Fragment implements FragmentoImagen.
                     String cod_registro;
                     String valorRutaFoto;
                     int id_plan_formato_reg;
+                    int id_plan_trabajo_formato_reg = -1;
 
                     if(registros==null){
                         id_plan_formato_reg = dao_registroFormatos.getRecordIdByPosition() +1;
@@ -687,6 +688,7 @@ public class ConfortTermicoFragment extends Fragment implements FragmentoImagen.
                         valorRutaFoto = uri.getEncodedPath();
                         if(uri!=null){valorRutaFoto = uri.getEncodedPath();}
                     }else {
+                        id_plan_trabajo_formato_reg = registros.getId_plan_trabajo_formato_reg();
                         id_plan_formato_reg = registros.getId_plan_trabajo_formato_reg();
                         fecha_registro = registros.getFec_reg();
                         cod_registro = registros.getCod_registro();
@@ -700,7 +702,7 @@ public class ConfortTermicoFragment extends Fragment implements FragmentoImagen.
                     obtenerValoresTareas();
 
                     Confort_Registro cabecera = new Confort_Registro(
-                            -1,
+                            id_plan_trabajo_formato_reg,
                             cod_formato,
                             cod_registro,
                             id_formato,
@@ -824,21 +826,25 @@ public class ConfortTermicoFragment extends Fragment implements FragmentoImagen.
                         call1.enqueue(new Callback<ResponseBody>() {
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                                Log.e("exitoso", "se inserto el registro");
-                                if(uri!=null){
-                                    File imageFile = new File(uri.getEncodedPath());
-                                    config.uploadImage(imageFile, cod_formato,id_pt_trabajo,cod_registro);
+                                if (response.isSuccessful()) {
+                                    try {
+                                        // Obtener el mensaje de respuesta del endpoint
+                                        String respuesta = response.body().string();
+                                        Log.e("Respuesta del endpoint", respuesta);
+                                        // Aquí puedes agregar el código adicional que necesites
+                                        if(uri!=null){
+                                            File imageFile = new File(uri.getEncodedPath());
+                                            config.uploadImage(imageFile, cod_formato,id_pt_trabajo,cod_registro);
+                                        }
+                                        // Mostrar el JSON en el log
+                                        Log.e("JSON", cadenaJson);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                } else {
+                                    // Manejar la respuesta de error del servidor
+                                    Log.e("Error en la respuesta", "Código de estado: " + response.code());
                                 }
-                                // Mostrar el JSON en el log
-                                Log.e("JSON", cadenaJson);
-                                String responseBody = null;
-                                try {
-                                    responseBody = response.body() != null ? response.body().string(): "No hay contenido en la respuesta";
-                                } catch (IOException e) {
-                                    throw new RuntimeException(e);
-                                }
-                                // Muestra el mensaje de respuesta del servidor
-                                Log.i("Upload", "Respuesta del servidor: " + responseBody);
                             }
 
                             @Override

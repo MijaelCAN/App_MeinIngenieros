@@ -1040,14 +1040,49 @@
         </LinearLayout>
     </ScrollView>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <!--<com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabGuardar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:src="@drawable/ic_check"
-        android:clickable="true"/>
+        android:clickable="true"
+        app:tint="@color/white"
+        app:backgroundTint="@color/generic_color"/>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_actualizar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_check"
+        android:clickable="true"/>-->
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabGuardar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_check"
+        android:layout_gravity="bottom|end"
+        android:clickable="true"
+        app:tint="@color/white"
+        app:fabSize="normal"
+        android:layout_margin="16dp"
+        app:backgroundTint="@color/generic_color"
+        android:visibility="visible"/>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_actualizar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_update"
+        android:layout_gravity="bottom|end"
+        android:clickable="true"
+        app:tint="@color/white"
+        app:fabSize="normal"
+        android:layout_margin="16dp"
+        app:backgroundTint="@color/color_flotante"
+        android:visibility="gone"/>
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fabCancelar"
         android:layout_width="90dp"

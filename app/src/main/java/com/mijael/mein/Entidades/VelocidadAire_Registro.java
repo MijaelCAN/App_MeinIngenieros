@@ -1,7 +1,7 @@
 package com.mijael.mein.Entidades;
 
 public class VelocidadAire_Registro {
-    public int id;
+    public int id_plan_trabajo_formato_reg;
     public String cod_formato;
     public String cod_registro;
     public String id_formato;
@@ -26,11 +26,11 @@ public class VelocidadAire_Registro {
     public String user_reg;
     private String ruta_foto;
 
-    public VelocidadAire_Registro(int id, String cod_formato, String cod_registro, String id_formato, String id_plan_trabajo, String id_pt_formato, String id_equipo1,
+    public VelocidadAire_Registro(int id_plan_trabajo_formato_reg, String cod_formato, String cod_registro, String id_formato, String id_plan_trabajo, String id_pt_formato, String id_equipo1,
                                   String cod_equipo1, String nom_equipo1, String serie_eq1, String id_analista, String nom_analista, String hora_inicial, String hora_final,
                                   String area_trabajo, String actividades_realizadas, String hora_trabajo, String desc_area_trabajo, String fec_monitoreo, String observacion,
                                   String fec_reg, String user_reg, String ruta_foto) {
-        this.id = id;
+        this.id_plan_trabajo_formato_reg = id_plan_trabajo_formato_reg;
         this.cod_formato = cod_formato;
         this.cod_registro = cod_registro;
         this.id_formato = id_formato;
@@ -56,11 +56,11 @@ public class VelocidadAire_Registro {
     }
 
     public int getId() {
-        return id;
+        return id_plan_trabajo_formato_reg;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setId(int id_plan_trabajo_formato_reg) {
+        this.id_plan_trabajo_formato_reg = id_plan_trabajo_formato_reg;
     }
 
     public String getCod_formato() {

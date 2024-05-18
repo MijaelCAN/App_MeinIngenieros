@@ -53,6 +53,7 @@ import com.mijael.mein.Extras.Validaciones;
 import com.mijael.mein.SERVICIOS.DosimetriaService;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -582,14 +583,25 @@ public class DosimetriaFragment extends Fragment implements FragmentoImagen.Imag
                             call1.enqueue(new Callback<ResponseBody>() {
                                 @Override
                                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                                    Log.e("exitoso", "se inserto el registro");
-                                    if(uri!=null){
-                                        File imageFile = new File(uri.getEncodedPath());
-                                        config.uploadImage(imageFile, finalCod_formato, id_pt_trabajo, finalCod_registro);
+                                    if (response.isSuccessful()) {
+                                        try {
+                                            // Obtener el mensaje de respuesta del endpoint
+                                            String respuesta = response.body().string();
+                                            Log.e("Respuesta del endpoint", respuesta);
+                                            // Aquí puedes agregar el código adicional que necesites
+                                            if(uri!=null){
+                                                File imageFile = new File(uri.getEncodedPath());
+                                                config.uploadImage(imageFile, finalCod_formato,id_pt_trabajo,finalCod_registro);
+                                            }
+                                            // Mostrar el JSON en el log
+                                            Log.e("JSON", cadenaJson);
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    } else {
+                                        // Manejar la respuesta de error del servidor
+                                        Log.e("Error en la respuesta", "Código de estado: " + response.code());
                                     }
-                                    // Mostrar el JSON en el log
-                                    Log.e("JSON", cadenaJson);
-                                    Log.e("Respuesta", response.toString());
                                 }
 
                                 @Override

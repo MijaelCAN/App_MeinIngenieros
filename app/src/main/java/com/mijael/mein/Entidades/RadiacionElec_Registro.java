@@ -1,7 +1,7 @@
 package com.mijael.mein.Entidades;
 
 public class RadiacionElec_Registro {
-    public int id;
+    public int id_plan_trabajo_formato_reg;
     public String cod_formato;
     public String cod_registro;
     public String id_formato;
@@ -40,13 +40,13 @@ public class RadiacionElec_Registro {
     public String user_reg;
     private String ruta_foto;
 
-    public RadiacionElec_Registro(int id, String cod_formato, String cod_registro, String id_formato, String id_plan_trabajo, String id_pt_formato, String id_equipo1, String cod_equipo1, String nom_equipo1,
+    public RadiacionElec_Registro(int id_plan_trabajo_formato_reg, String cod_formato, String cod_registro, String id_formato, String id_plan_trabajo, String id_pt_formato, String id_equipo1, String cod_equipo1, String nom_equipo1,
                                   String serie_eq1, String id_analista, String nom_analista, String hora_situ, String verf_insitu, String fec_monitoreo, String hora_inicial,
                                   String hora_final, String tipo_doc_trabajador, String num_doc_trabajador, String nom_trabajador, String puesto_trabajador, String area_trabajo,
                                   String actividades_realizadas, String edad_trabajador, String hora_trabajo, String horario_refrigerio, String regimen_laboral, String jornada,
                                   String tiempo_medicion, String tiempo_exposicion, String desc_area_trabajo, String nom_ctrl_ingenieria, String nom_ctrl_admin, String nom_epp,
                                   String fec_reg, String user_reg, String ruta_foto) {
-        this.id = id;
+        this.id_plan_trabajo_formato_reg = id_plan_trabajo_formato_reg;
         this.cod_formato = cod_formato;
         this.cod_registro = cod_registro;
         this.id_formato = id_formato;
@@ -87,11 +87,11 @@ public class RadiacionElec_Registro {
     }
 
     public int getId() {
-        return id;
+        return id_plan_trabajo_formato_reg;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setId(int id_plan_trabajo_formato_reg) {
+        this.id_plan_trabajo_formato_reg = id_plan_trabajo_formato_reg;
     }
 
     public String getCod_formato() {

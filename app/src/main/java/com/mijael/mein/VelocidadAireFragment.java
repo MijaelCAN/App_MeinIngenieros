@@ -40,9 +40,11 @@ import com.mijael.mein.Entidades.VelocidadAire_RegistroDetalle;
 import com.mijael.mein.Extras.FragmentoImagen;
 import com.mijael.mein.Extras.InputDateConfiguration;
 import com.mijael.mein.Extras.Validaciones;
+import com.mijael.mein.GET.ApiDosimetriaService;
 import com.mijael.mein.SERVICIOS.DosimetriaService;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,6 +52,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -75,10 +78,12 @@ public class VelocidadAireFragment extends Fragment implements FragmentoImagen.I
     TextView tv_fechaMonitoreo, tv_horaInicioMoni, tv_horaFinalMoni;
     AppCompatButton btnSubirFotoVel;
     FloatingActionButton btn_guardar;
+    FloatingActionButton btn_update;
     ExtendedFloatingActionButton btnCancelar;
     ImageView imgVelo;
     Uri uri;
     InputDateConfiguration config;
+    DosimetriaService service;
     DAO_RegistroFormatos dao_registroFormatos;
     RegistroFormatos registros;
     RegistroFormatos_Detalle detalles;
@@ -86,6 +91,7 @@ public class VelocidadAireFragment extends Fragment implements FragmentoImagen.I
     public VelocidadAireFragment() {
         // Required empty public constructor
         dao_registroFormatos = new DAO_RegistroFormatos(getContext());
+        service = ApiDosimetriaService.getInstance().getService();
     }
 
     Formatos_Trabajo for_Velocidad;
@@ -241,6 +247,7 @@ public class VelocidadAireFragment extends Fragment implements FragmentoImagen.I
                     String cod_formato;
                     String valorRutaFoto ="";
                     int id_plan_formato_reg;
+                    int id_plan_trabajo_formato_reg = -1;
 
                     if(registros==null){
                         id_plan_formato_reg = dao_registroFormatos.getRecordIdByPosition() + 1;
@@ -251,6 +258,7 @@ public class VelocidadAireFragment extends Fragment implements FragmentoImagen.I
                         cod_registro = config.generarCodigoRegistro(total_registros);
                         if(uri!=null){valorRutaFoto = uri.getEncodedPath();}
                     } else{
+                        id_plan_trabajo_formato_reg = registros.getId_plan_trabajo_formato_reg();
                         id_plan_formato_reg = registros.getId_plan_trabajo_formato_reg();
                         fecha_registro = registros.getFec_reg();
                         cod_registro = registros.getCod_registro();
@@ -262,7 +270,7 @@ public class VelocidadAireFragment extends Fragment implements FragmentoImagen.I
                     }
 
                 VelocidadAire_Registro cabecera = new VelocidadAire_Registro(
-                            -1,
+                            id_plan_trabajo_formato_reg,
                             cod_formato,
                             cod_registro,
                             id_formato,
@@ -326,36 +334,46 @@ public class VelocidadAireFragment extends Fragment implements FragmentoImagen.I
                         JsonObject detalleJson = gson.toJsonTree(detalle).getAsJsonObject();
                         jsonObject.add("detalle", detalleJson);
 
+                            String cadenaJson = gson.toJson(jsonObject);
+                            RequestBody json = RequestBody.create(MediaType.parse("application/json"), cadenaJson);
 
-                        String cadenaJson = gson.toJson(jsonObject);
-                        RequestBody json = RequestBody.create(MediaType.parse("application/json"), cadenaJson);
-
-                        Call<ResponseBody> call1 = service1.insertVelocidadAire(json);//INSERT A VELOCIDAD DEL AIRE
-                        call1.enqueue(new Callback<ResponseBody>() {
-                            @Override
-                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                                //config.uploadImage(imageFile, cod_formato, id_pt_trabajo);
-                                if(uri!=null){
-                                    File imageFile = new File(uri.getEncodedPath());
-                                    config.uploadImage(imageFile, cod_formato, id_pt_trabajo, cod_registro);
+                            Call<ResponseBody> call = service1.insertVelocidadAire(json);//INSERT A VELOCIDAD DEL AIRE
+                            call.enqueue(new Callback<ResponseBody>() {
+                                @Override
+                                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                    if (response.isSuccessful()) {
+                                        try {
+                                            // Obtener el mensaje de respuesta del endpoint
+                                            String respuesta = response.body().string();
+                                            Log.e("Respuesta del endpoint", respuesta);
+                                            // Aquí puedes agregar el código adicional que necesites
+                                            if(uri!=null){
+                                                File imageFile = new File(uri.getEncodedPath());
+                                                config.uploadImage(imageFile, cod_formato,id_pt_trabajo,cod_registro);
+                                            }
+                                            // Mostrar el JSON en el log
+                                            Log.e("JSON", cadenaJson);
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    } else {
+                                        // Manejar la respuesta de error del servidor
+                                        Log.e("Error en la respuesta", "Código de estado: " + response.code());
+                                    }
                                 }
-                                Log.e("exitoso", "se inserto el registro");
-                                // Mostrar el JSON en el log
-                                Log.e("JSON", cadenaJson);
-                                Log.e("Respuesta", response.toString());
-                            }
 
-                            @Override
-                            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                                Log.e("error", "Error al insertar el registro");
-                            }
-                        });
-                        new AlertDialog.Builder(getContext())
-                                .setTitle("Registro guardado en WEB")
-                                .setMessage("El registro ha sido guardado exitosamente.")
-                                .setPositiveButton(android.R.string.ok, null)
-                                .show();
-                        getFragmentManager().popBackStack();
+                                @Override
+                                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                    Log.e("error", "Error al insertar el registro");
+                                }
+                            });
+                            new AlertDialog.Builder(getContext())
+                                    .setTitle("Registro guardado en WEB")
+                                    .setMessage("El registro ha sido guardado exitosamente.")
+                                    .setPositiveButton(android.R.string.ok, null)
+                                    .show();
+                            getFragmentManager().popBackStack();
+
                     } else {
                         DAO_VelocidadAire nuevoRegistro = new DAO_VelocidadAire(getActivity());
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -461,6 +479,7 @@ public class VelocidadAireFragment extends Fragment implements FragmentoImagen.I
         txt_observaciones = view.findViewById(R.id.txt_observaciones);
 
         btn_guardar = view.findViewById(R.id.fabGuardar);
+        btn_update = view.findViewById(R.id.btn_actualizar);
         btnCancelar = view.findViewById(R.id.fabCancelar);
     }
 

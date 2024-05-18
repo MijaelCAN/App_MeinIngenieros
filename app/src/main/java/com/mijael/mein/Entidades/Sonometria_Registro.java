@@ -1,7 +1,7 @@
 package com.mijael.mein.Entidades;
 
 public class Sonometria_Registro {
-    private int id;
+    private int id_plan_trabajo_formato_reg;
     private String cod_formato;
     private String cod_registro;
     private String id_formato;
@@ -85,7 +85,7 @@ public class Sonometria_Registro {
     private String user_reg;
     private String ruta_foto;
 
-    public Sonometria_Registro(int id, String cod_formato, String cod_registro, String id_formato, String id_plan_trabajo, String id_pt_formato, String cod_equipo1, String nom_equipo1, String cod_equipo2,
+    public Sonometria_Registro(int id_plan_trabajo_formato_reg, String cod_formato, String cod_registro, String id_formato, String id_plan_trabajo, String id_pt_formato, String cod_equipo1, String nom_equipo1, String cod_equipo2,
                                String nom_equipo2, String cod_equipo3, String nom_equipo3, String serie_eq1, String serie_eq2, String serie_eq3, String id_equipo1, String id_equipo2,
                                String id_equipo3, String id_analista, String nom_analista, String hora_situ, String nivel, String variacion, String area_trabajo, String actividades_realizadas,
                                String id_horario, String hora_trabajo, String n_personas, String ruido_generado_por, String area_req_concentr, String lim_max_permis, String fec_monitoreo,
@@ -95,7 +95,7 @@ public class Sonometria_Registro {
                                String cabinas, String otro_ingenieria, String capacitacion, String senializacion_precion, String senializacion_epp, String rotacion, String tiempo_exposicion,
                                String otro_administrativo, String observacion, String tapones_au, String marca_tapones_audi, String modelo_tapones_audi, String nrr_tapones_audi, String orejereas,
                                String marca_orejeras, String modelo_orejeras, String nrr_orejeras, String jornada, String fec_reg, String user_reg, String ruta_foto) {
-        this.id = id;
+        this.id_plan_trabajo_formato_reg = id_plan_trabajo_formato_reg;
         this.cod_formato = cod_formato;
         this.cod_registro = cod_registro;
         this.id_formato = id_formato;
@@ -177,11 +177,11 @@ public class Sonometria_Registro {
     }
 
     public int getId() {
-        return id;
+        return id_plan_trabajo_formato_reg;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setId(int id_plan_trabajo_formato_reg) {
+        this.id_plan_trabajo_formato_reg = id_plan_trabajo_formato_reg;
     }
 
     public String getCod_formato() {
